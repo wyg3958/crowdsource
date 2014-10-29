@@ -5,4 +5,4 @@ EXPOSE 8080
 
 ADD ${project.build.finalName}.jar /srv/
 
-ENTRYPOINT java -jar ${project.build.finalName}.jar
+ENTRYPOINT java -jar /srv/${project.build.finalName}.jar

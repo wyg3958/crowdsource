@@ -26,7 +26,10 @@
     <build>
         <resources>
             <resource>
-                <directory>src/main/docker</directory>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+            <directory>src/main/docker</directory>
                 <targetPath>${project.build.directory}/docker</targetPath>
                 <filtering>true</filtering>
             </resource>
@@ -95,7 +98,7 @@
     <profiles>
         <!-- if activated a tomcat will be launched for integration tests -->
         <profile>
-            <id>jar</id>
+            <id>tomcat</id>
             <build>
                 <plugins>
                     <plugin>

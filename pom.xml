@@ -19,7 +19,6 @@
     <properties>
         <!-- version specified here is used as an embedded server by spring-boot -->
         <tomcat.version>8.0.14</tomcat.version>
-        <cucumber.version>1.1.8</cucumber.version>
     </properties>
 
     <build>
@@ -28,11 +27,6 @@
             <testResource>
                 <directory>${project.basedir}/src/test/resources</directory>
                 <filtering>true</filtering>
-            </testResource>
-            <!-- cucumber tests -->
-            <testResource>
-                <directory>${project.basedir}/src/test/cucumber</directory>
-                <filtering>false</filtering>
             </testResource>
         </testResources>
         <plugins>

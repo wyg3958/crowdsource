@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableAutoConfiguration
-@ComponentScan
+@ComponentScan(excludeFilters = @ComponentScan.Filter(Configuration.class))
 public class CrowdSourceConfig {
 
     public static void main(String[] args) {

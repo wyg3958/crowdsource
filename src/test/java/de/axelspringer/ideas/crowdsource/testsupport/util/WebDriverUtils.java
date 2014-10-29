@@ -29,6 +29,8 @@ public class WebDriverUtils {
      */
     public RemoteWebDriver provideDriver() {
 
+        System.out.println(phantomBinaryPath);
+
         if (new File(phantomBinaryPath).exists()) {
             log.info("providing phantomjs driver");
             DesiredCapabilities capabilities = new DesiredCapabilities();
@@ -51,6 +53,9 @@ public class WebDriverUtils {
      */
     public void closeWebDriver(WebDriver driver) {
 
+        if (driver == null) {
+            return;
+        }
         if (driver instanceof PhantomJSDriver) {
             driver.quit();
         }

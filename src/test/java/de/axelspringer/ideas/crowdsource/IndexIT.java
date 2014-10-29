@@ -9,6 +9,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
@@ -19,6 +21,8 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
 public class IndexIT {
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Value("${de.axelspringer.ideas.crowdsource.test.server.port}")
     private String serverPort;
@@ -40,6 +44,7 @@ public class IndexIT {
 
     @Test
     public void testIndexPage() {
+        log.debug("connecting host http://localhost:" + serverPort);
         webDriver.get("http://localhost:" + serverPort);
         final IndexPage indexPage = PageFactory.initElements(webDriver, IndexPage.class);
         assertEquals("AS CrowdSource", indexPage.exampleElementText());

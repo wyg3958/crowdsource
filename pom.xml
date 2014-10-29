@@ -100,46 +100,6 @@
     </build>
 
     <profiles>
-        <!-- if activated a tomcat will be launched for integration tests -->
-        <profile>
-            <id>tomcat</id>
-            <properties>
-                <it.application.port>9999</it.application.port>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.tomcat.maven</groupId>
-                        <artifactId>tomcat7-maven-plugin</artifactId>
-                        <version>2.2</version>
-                        <configuration>
-                            <ignorePackaging>true</ignorePackaging>
-                            <port>${it.application.port}</port>
-                            <path>/</path>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>start tomcat for it-tests</id>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <configuration>
-                                    <fork>true</fork>
-                                </configuration>
-                                <phase>pre-integration-test</phase>
-                            </execution>
-                            <execution>
-                                <id>stop tomcat after it-tests</id>
-                                <goals>
-                                    <goal>shutdown</goal>
-                                </goals>
-                                <phase>post-integration-test</phase>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
         <!-- if activated, docker container will be build, used for integration tests and pushed to dockerhub on mvn:deploy -->
         <profile>
             <id>docker</id>

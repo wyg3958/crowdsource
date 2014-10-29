@@ -31,7 +31,7 @@ public class CucumberIT {
         String phantomJsBinaryPath = properties.getProperty("de.axelspringer.ideas.crowdsource.test.phantomjs.binary");
         String chromeBinaryPath = properties.getProperty("de.axelspringer.ideas.crowdsource.test.chrome.binary");
 
-        APP_URL = "http://localhost:" + properties.getProperty("de.axelspringer.ideas.crowdsource.test.server.port");
+        APP_URL = "http://127.0.0.1:" + properties.getProperty("de.axelspringer.ideas.crowdsource.test.server.port");
         DRIVER = WebDriverUtils.provideDriver(phantomJsBinaryPath, chromeBinaryPath);
     }
 

@@ -150,8 +150,9 @@
                                 <configuration>
                                     <executable>chmod</executable>
                                     <arguments>
+                                        <argument>-R</argument>
                                         <argument>+x</argument>
-                                        <argument>${project.build.directory}/docker/*.sh</argument>
+                                        <argument>${project.build.directory}/docker/</argument>
                                     </arguments>
                                 </configuration>
                             </execution>

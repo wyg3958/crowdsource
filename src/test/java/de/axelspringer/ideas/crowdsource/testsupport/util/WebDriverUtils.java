@@ -8,33 +8,24 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import java.io.File;
 
-@Service
 public class WebDriverUtils {
 
-    private Logger log = LoggerFactory.getLogger(getClass());
-
-    @Value("${de.axelspringer.ideas.crowdsource.test.phantomjs.binary}")
-    private String phantomBinaryPath;
-
-    @Value("${de.axelspringer.ideas.crowdsource.test.chrome.binary}")
-    private String chromeBinaryPath;
+    private final static Logger log = LoggerFactory.getLogger(WebDriverUtils.class);
 
     /**
+     * @param phantomJsBinaryPath
+     * @param chromeBinaryPath
      * @return {@link org.openqa.selenium.phantomjs.PhantomJSDriver}-instance if binary specified, {@link org.openqa.selenium.chrome.ChromeDriver} if binary specified (and not phantomjs), fallback to firefox
      */
-    public RemoteWebDriver provideDriver() {
+    public static RemoteWebDriver provideDriver(String phantomJsBinaryPath, String chromeBinaryPath) {
 
-        System.out.println(phantomBinaryPath);
-
-        if (new File(phantomBinaryPath).exists()) {
+        if (new File(phantomJsBinaryPath).exists()) {
             log.info("providing phantomjs driver");
             DesiredCapabilities capabilities = new DesiredCapabilities();
-            capabilities.setCapability("phantomjs.binary.path", phantomBinaryPath);
+            capabilities.setCapability("phantomjs.binary.path", phantomJsBinaryPath);
             return new PhantomJSDriver(capabilities);
         }
 
@@ -51,14 +42,15 @@ public class WebDriverUtils {
     /**
      * @param driver will be shut-down (in case of phantom .quit() - else .(close))
      */
-    public void closeWebDriver(WebDriver driver) {
+    public static void closeWebDriver(WebDriver driver) {
 
-        if (driver == null) {
-            return;
+        try {
+            if (driver instanceof PhantomJSDriver) {
+                driver.quit();
+            }
+            driver.close();
+        } catch (Exception e) {
+            log.debug("exception closing webdriver", e);
         }
-        if (driver instanceof PhantomJSDriver) {
-            driver.quit();
-        }
-        driver.close();
     }
 }

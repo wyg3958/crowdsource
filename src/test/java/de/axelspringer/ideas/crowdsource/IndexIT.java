@@ -11,7 +11,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -27,19 +26,22 @@ public class IndexIT {
     @Value("${de.axelspringer.ideas.crowdsource.test.server.port}")
     private String serverPort;
 
-    @Autowired
-    private WebDriverUtils webDriverUtils;
+    @Value("${de.axelspringer.ideas.crowdsource.test.phantomjs.binary}")
+    private String phantomBinaryPath;
+
+    @Value("${de.axelspringer.ideas.crowdsource.test.chrome.binary}")
+    private String chromeBinaryPath;
 
     private WebDriver webDriver;
 
     @Before
     public void initDriver() {
-        webDriver = webDriverUtils.provideDriver();
+        webDriver = WebDriverUtils.provideDriver(phantomBinaryPath, chromeBinaryPath);
     }
 
     @After
     public void closeDriver() {
-        webDriver.quit();
+        WebDriverUtils.closeWebDriver(webDriver);
     }
 
     @Test

@@ -20,7 +20,8 @@
         <!-- version specified here is used as an embedded server by spring-boot -->
         <tomcat.version>8.0.14</tomcat.version>
         <!-- tomcat/docker will expose the application under this port for integration tests -->
-        <it.application.port>9999</it.application.port>
+        <it.application.port>8080</it.application.port>
+        <cucumber.version>1.1.8</cucumber.version>
     </properties>
 
     <build>
@@ -29,12 +30,15 @@
                 <directory>src/main/resources</directory>
             </resource>
             <resource>
-            <directory>src/main/docker</directory>
+                <directory>src/main/docker</directory>
                 <targetPath>${project.build.directory}/docker</targetPath>
                 <filtering>true</filtering>
             </resource>
         </resources>
         <testResources>
+            <testResource>
+                <directory>${project.basedir}/src/test/cucumber</directory>
+            </testResource>
             <!--enable filtering for test resources (to expose build variables like phantomjs binary-path to tests) -->
             <testResource>
                 <directory>${project.basedir}/src/test/resources</directory>
@@ -99,6 +103,9 @@
         <!-- if activated a tomcat will be launched for integration tests -->
         <profile>
             <id>tomcat</id>
+            <properties>
+                <it.application.port>9999</it.application.port>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -136,6 +143,9 @@
         <!-- if activated, docker container will be build, used for integration tests and pushed to dockerhub on mvn:deploy -->
         <profile>
             <id>docker</id>
+            <properties>
+                <it.application.port>9999</it.application.port>
+            </properties>
             <build>
                 <plugins>
                     <!-- after an hour of fun with a bunch of docker-plugins i decided to use exec with shell scripts. if you do not like it, feel free to refactor -->
@@ -258,6 +268,18 @@
             <groupId>com.github.detro</groupId>
             <artifactId>phantomjsdriver</artifactId>
             <version>1.2.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <version>${cucumber.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

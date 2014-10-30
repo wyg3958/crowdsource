@@ -138,6 +138,17 @@
                                     </arguments>
                                 </configuration>
                             </execution>
+                            <!-- FIXME: clean might cause problems due to script not yet being copied/executable
+                                <execution>-->
+                            <!--<id>clean docker containers</id>-->
+                            <!--<phase>clean</phase>-->
+                            <!--<goals>-->
+                            <!--<goal>exec</goal>-->
+                            <!--</goals>-->
+                            <!--<configuration>-->
+                            <!--<executable>${project.build.directory}/docker/clean.sh</executable>-->
+                            <!--</configuration>-->
+                            <!--</execution>-->
                             <execution>
                                 <id>build docker container</id>
                                 <phase>package</phase>
@@ -165,7 +176,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>${project.build.directory}/docker/kill.sh</executable>
+                                    <executable>${project.build.directory}/docker/shutdown.sh</executable>
                                 </configuration>
                             </execution>
                             <execution>

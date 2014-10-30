@@ -1,10 +1,5 @@
 #!/bin/sh
 
-# clean
-docker kill crowdsource
-docker rm crowdsource
-docker rmi 'asideas/crowdsource'
-
 docker run -p ${it.application.port}:8080 -d --name="crowdsource" "asideas/crowdsource:latest"
 # wait a few seconds for app to boot
 sleep 10

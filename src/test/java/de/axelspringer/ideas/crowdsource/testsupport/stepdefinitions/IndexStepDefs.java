@@ -20,6 +20,6 @@ public class IndexStepDefs {
     public void the_message_is_shown(String message) throws Throwable {
 
         final IndexPage indexPage = PageFactory.initElements(CucumberIT.DRIVER, IndexPage.class);
-        assertEquals(message, indexPage.exampleElementText());
+        assertEquals(message, indexPage.helloText());
     }
 }

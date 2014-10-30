@@ -48,6 +48,6 @@ public class IndexIT {
     public void testIndexPage() {
         webDriver.get("http://localhost:" + serverPort + "/index.html");
         final IndexPage indexPage = PageFactory.initElements(webDriver, IndexPage.class);
-        assertEquals("AS CrowdSource", indexPage.exampleElementText());
+        assertEquals("AS CrowdSource says hi", indexPage.helloText());
     }
 }

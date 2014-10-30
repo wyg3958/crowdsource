@@ -39,6 +39,9 @@
             <testResource>
                 <directory>${project.basedir}/src/test/cucumber</directory>
             </testResource>
+            <testResource>
+                <directory>${project.basedir}/src/test/javascript</directory>
+            </testResource>
             <!--enable filtering for test resources (to expose build variables like phantomjs binary-path to tests) -->
             <testResource>
                 <directory>${project.basedir}/src/test/resources</directory>
@@ -95,6 +98,23 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <!-- javascript-tests -->
+            <plugin>
+                <groupId>com.kelveden</groupId>
+                <artifactId>maven-karma-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <browsers>PhantomJS</browsers>
+                    <configFile>${project.basedir}/src/test/javascript/karma.conf.js</configFile>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -226,6 +246,7 @@
             <artifactId>spring-test</artifactId>
             <!-- provided by spring-boot-starter-parent -->
             <version>${spring.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>

@@ -8,10 +8,10 @@ import org.openqa.selenium.support.FindBy;
  */
 public class IndexPage {
 
-    @FindBy(className = "example")
-    private WebElement exampleElement;
+    @FindBy(className = "hello")
+    private WebElement helloDiv;
 
-    public String exampleElementText() {
-        return exampleElement.getText();
+    public String helloText() {
+        return helloDiv.getText();
     }
 }

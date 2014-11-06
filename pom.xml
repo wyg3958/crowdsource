@@ -206,6 +206,10 @@
                                 </goals>
                                 <configuration>
                                     <executable>${project.build.directory}/docker/deploy.sh</executable>
+                                    <arguments>
+                                        <argument>${project.basedir}/src/main/docker</argument>
+                                        <argument>ec2-54-171-172-74.eu-west-1.compute.amazonaws.com</argument>
+                                    </arguments>
                                 </configuration>
                             </execution>
                         </executions>

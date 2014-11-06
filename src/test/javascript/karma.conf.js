@@ -7,7 +7,6 @@ module.exports = function (config) {
             'src/main/resources/public/lib/angular-1.3.0-rc.4/angular-resource.min.js',
 
             'src/test/javascript/lib/jquery-1.11.0.min.js',
-            'src/test/javascript/lib/jasmine-jquery.js',
             'src/test/javascript/lib/angular-1.3.0-rc.4/angular-mocks.js',
 
             'src/main/resources/public/app/crowdsource.js',
@@ -43,6 +42,7 @@ module.exports = function (config) {
             'karma-phantomjs-launcher',
             'karma-ng-html2js-preprocessor',
             'karma-jasmine',
+            'karma-jasmine-jquery',
             'karma-junit-reporter'
         ],
 

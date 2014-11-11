@@ -134,7 +134,6 @@
             <id>docker</id>
             <properties>
                 <it.application.port>9999</it.application.port>
-                <dockerhost.ip>${dockerhost.ip}</dockerhost.ip>
             </properties>
             <build>
                 <plugins>

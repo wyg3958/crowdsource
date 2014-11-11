@@ -28,16 +28,17 @@ public class CucumberIT {
     public static void init() throws IOException {
         // load properties
         Properties properties = new Properties();
+
         properties.load(CucumberIT.class.getResourceAsStream("/de/axelspringer/ideas/crowdsource/test.properties"));
         String phantomJsBinaryPath = properties.getProperty("de.axelspringer.ideas.crowdsource.test.phantomjs.binary");
         String chromeBinaryPath = properties.getProperty("de.axelspringer.ideas.crowdsource.test.chrome.binary");
 
-        final String dockerHostIp = properties.getProperty("de.axelspringer.ideas.crowdsource.test.dockerhost.ip");
+        final String dockerHost = System.getProperty("dockerhost");
         final String serverPort = properties.getProperty("de.axelspringer.ideas.crowdsource.test.server.port");
 
-        if (StringUtils.isNoneEmpty(dockerHostIp)) {
-            APP_URL = "http://" + dockerHostIp + ":" + serverPort;
-            System.out.println("Using external docker host ip: " + dockerHostIp);
+        if (StringUtils.isNoneEmpty(dockerHost)) {
+            APP_URL = "http://" + dockerHost + ":" + serverPort;
+            System.out.println("Using external docker host: " + dockerHost);
         } else {
             APP_URL = "http://127.0.0.1:" + serverPort;
         }

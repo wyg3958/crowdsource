@@ -3,6 +3,7 @@ package de.axelspringer.ideas.crowdsource;
 import cucumber.api.CucumberOptions;
 import cucumber.api.junit.Cucumber;
 import de.axelspringer.ideas.crowdsource.testsupport.util.WebDriverUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -31,7 +32,16 @@ public class CucumberIT {
         String phantomJsBinaryPath = properties.getProperty("de.axelspringer.ideas.crowdsource.test.phantomjs.binary");
         String chromeBinaryPath = properties.getProperty("de.axelspringer.ideas.crowdsource.test.chrome.binary");
 
-        APP_URL = "http://127.0.0.1:" + properties.getProperty("de.axelspringer.ideas.crowdsource.test.server.port");
+        final String dockerHostIp = properties.getProperty("de.axelspringer.ideas.crowdsource.test.dockerhost.ip");
+        final String serverPort = properties.getProperty("de.axelspringer.ideas.crowdsource.test.server.port");
+
+        if (StringUtils.isNoneEmpty(dockerHostIp)) {
+            APP_URL = "http://" + dockerHostIp + ":" + serverPort;
+            System.out.println("Using external docker host ip: " + dockerHostIp);
+        } else {
+            APP_URL = "http://127.0.0.1:" + serverPort;
+        }
+
         DRIVER = WebDriverUtils.provideDriver(phantomJsBinaryPath, chromeBinaryPath);
     }
 
@@ -39,4 +49,6 @@ public class CucumberIT {
     public static void tearDown() {
         WebDriverUtils.closeWebDriver(DRIVER);
     }
+
+
 }

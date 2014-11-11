@@ -134,6 +134,7 @@
             <id>docker</id>
             <properties>
                 <it.application.port>9999</it.application.port>
+                <dockerhost.ip>${dockerhost.ip}</dockerhost.ip>
             </properties>
             <build>
                 <plugins>
@@ -173,7 +174,7 @@
                                 </configuration>
                             </execution>
                             <execution>
-                            <id>build docker container</id>
+                                <id>build docker container</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>exec</goal>

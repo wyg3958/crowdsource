@@ -21,4 +21,3 @@ Enable phantomjs-profile (-Pphantomjs) to use phantomjs (will be downloaded).
 Specifiy path to chromedriver/chrom in test.properties to use chrome (untested). 
 Firefox is the fallback. Do nothing and use the worst possible browser by default.
 
-[ ![Codeship Status for as-ideas/crowdsource](https://www.codeship.io/projects/769a1f50-4171-0132-68f0-66505a825983/status)](https://www.codeship.io/projects/44171)

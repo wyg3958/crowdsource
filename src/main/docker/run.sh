@@ -7,7 +7,7 @@ HOST_IP=`netstat -nr | grep '^0\.0\.0\.0' | awk '{print $2}'`
 
 # curl as health check
 EXECUTION_STRING="curl -I http://$HOST_IP:${it.application.port} | grep \"200 OK\""
-echo "CHECKING AVAILABILITY OF LOCALLY LAUNCHED SERVICE ($EXECUTION_STRING)..."
+echo "CHECKING AVAILABILITY OF LAUNCHED SERVICE ($EXECUTION_STRING)..."
 
 STATUS=1
 for i in {1..30}

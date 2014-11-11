@@ -41,6 +41,7 @@ public class CucumberIT {
             System.out.println("Using external docker host: " + dockerHost);
         } else {
             APP_URL = "http://127.0.0.1:" + serverPort;
+            System.out.println("Using default docker host.");
         }
 
         DRIVER = WebDriverUtils.provideDriver(phantomJsBinaryPath, chromeBinaryPath);

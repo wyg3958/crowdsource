@@ -2,8 +2,11 @@
 docker run -p ${it.application.port}:8080 -d --name="crowdsource" "asideas/crowdsource:latest"
 # wait a few seconds for app to boot
 
+# get host ip
+netstat -nr | grep '^0\.0\.0\.0' | awk '{print $2}'
+
 # curl as health check
-EXECUTION_STRING="curl -sI http://localhost:${it.application.port} | grep \"200 OK\""
+EXECUTION_STRING="curl -I http://localhost:${it.application.port} | grep \"200 OK\""
 echo "CHECKING AVAILABILITY OF LOCALLY LAUNCHED SERVICE ($EXECUTION_STRING)..."
 
 STATUS=1

@@ -9,4 +9,4 @@ docker -H tcp://10.1.42.1:2375 rmi 'asideas/crowdsource'
 cd ${project.build.directory}/docker
 cp ${project.build.directory}/${project.build.finalName}.jar .
 
-docker build -H tcp://10.1.42.1:2375 -t "asideas/crowdsource" .
+docker -H tcp://10.1.42.1:2375 build -t "asideas/crowdsource" .

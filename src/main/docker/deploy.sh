@@ -4,7 +4,7 @@ if [ $# -ne 2 ]; then
 	echo "usage: deploy {path to coreos_rsa} {AWS server URL}"
 	exit
 fi 
-hostname -i
+hostname
 pwd
 ls -al $1
 

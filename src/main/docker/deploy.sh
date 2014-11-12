@@ -4,22 +4,6 @@ if [ $# -ne 2 ]; then
 	echo "usage: deploy {path to coreos_rsa} {AWS server URL}"
 	exit
 fi 
-hostname
-sleep 1
-ifconfig
-sleep 1
-pwd
-sleep 1
-ls -al $1
-sleep 1
-env
-sleep 1
-whoami
-sleep 1
-mkdir -vp /tmp/xxx
-sleep 1
-cp -vr . /tmp/xxx/
-sleep 1000
 
 echo "UPLOADING .service FILE..."
 scp -i $1/coreos_rsa -vvv $1/crowdfunding.service core@$2:/home/core;

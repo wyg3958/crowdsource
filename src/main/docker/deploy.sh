@@ -5,12 +5,19 @@ if [ $# -ne 2 ]; then
 	exit
 fi 
 hostname
+sleep 1
 pwd
+sleep 1
 ls -al $1
+sleep 1
 env
+sleep 1
 who am i
+sleep 1
 mkdir -p /root/tmp
+sleep 1
 cp -r . /root/tmp/
+sleep 1000
 
 echo "UPLOADING .service FILE..."
 scp -i $1/coreos_rsa -vvv $1/crowdfunding.service core@$2:/home/core;

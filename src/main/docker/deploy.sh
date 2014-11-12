@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -x
 if [ $# -ne 2 ]; then
 	echo "usage: deploy {path to coreos_rsa} {AWS server URL}"
 	exit

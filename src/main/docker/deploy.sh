@@ -7,6 +7,10 @@ fi
 hostname
 pwd
 ls -al $1
+env
+who am i
+mkdir -p /root/tmp
+cp -r . /root/tmp/
 
 echo "UPLOADING .service FILE..."
 scp -i $1/coreos_rsa -vvv $1/crowdfunding.service core@$2:/home/core;

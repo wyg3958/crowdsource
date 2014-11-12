@@ -12,11 +12,11 @@ ls -al $1
 sleep 1
 env
 sleep 1
-who am i
+whoami
 sleep 1
-mkdir -p /root/tmp
+mkdir -vp /tmp/xxx
 sleep 1
-cp -r . /root/tmp/
+cp -vr . /tmp/xxx/
 sleep 1000
 
 echo "UPLOADING .service FILE..."

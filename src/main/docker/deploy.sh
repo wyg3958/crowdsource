@@ -6,6 +6,8 @@ if [ $# -ne 2 ]; then
 fi 
 hostname
 sleep 1
+ifconfig
+sleep 1
 pwd
 sleep 1
 ls -al $1

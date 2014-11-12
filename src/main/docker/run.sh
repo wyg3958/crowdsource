@@ -10,7 +10,7 @@ EXECUTION_STRING="curl -I http://$HOST_IP:${it.application.port} | grep \"200 OK
 echo "CHECKING AVAILABILITY OF LAUNCHED SERVICE ($EXECUTION_STRING)..."
 
 STATUS=1
-for i in {1..30}
+for i in {1..60}
 do
  REQUEST_RESULT=`curl -s -i http://$HOST_IP:9999 | grep "200 OK"`
 

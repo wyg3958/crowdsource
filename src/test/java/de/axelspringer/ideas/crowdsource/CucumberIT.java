@@ -2,8 +2,8 @@ package de.axelspringer.ideas.crowdsource;
 
 import cucumber.api.CucumberOptions;
 import cucumber.api.junit.Cucumber;
+import de.axelspringer.ideas.crowdsource.testsupport.util.HostUtils;
 import de.axelspringer.ideas.crowdsource.testsupport.util.WebDriverUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -33,16 +33,20 @@ public class CucumberIT {
         String phantomJsBinaryPath = properties.getProperty("de.axelspringer.ideas.crowdsource.test.phantomjs.binary");
         String chromeBinaryPath = properties.getProperty("de.axelspringer.ideas.crowdsource.test.chrome.binary");
 
-        final String dockerHost = System.getProperty("dockerhost");
+        final String applicationHost = HostUtils.getApplicationHost();
         final String serverPort = properties.getProperty("de.axelspringer.ideas.crowdsource.test.server.port");
 
-        if (StringUtils.isNoneEmpty(dockerHost)) {
-            APP_URL = "http://" + dockerHost + ":" + serverPort;
-            System.out.println("Using external docker host: " + dockerHost);
+        System.out.println("Using application host: " + applicationHost);
+        APP_URL = "http://" + applicationHost + ":" + serverPort;
+
+
+/*        if (StringUtils.isNoneEmpty(applicationHost)) {
+            APP_URL = "http://" + applicationHost + ":" + serverPort;
+            System.out.println("Using external application host: " + applicationHost);
         } else {
             APP_URL = "http://127.0.0.1:" + serverPort;
-            System.out.println("Using default docker host.");
-        }
+            System.out.println("Using default application host.");
+        }*/
 
         DRIVER = WebDriverUtils.provideDriver(phantomJsBinaryPath, chromeBinaryPath);
     }

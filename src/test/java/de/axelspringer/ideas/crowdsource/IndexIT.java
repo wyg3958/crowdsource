@@ -2,6 +2,7 @@ package de.axelspringer.ideas.crowdsource;
 
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.IndexPage;
+import de.axelspringer.ideas.crowdsource.testsupport.util.HostUtils;
 import de.axelspringer.ideas.crowdsource.testsupport.util.WebDriverUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -46,7 +47,9 @@ public class IndexIT {
 
     @Test
     public void testIndexPage() {
-        webDriver.get("http://10.1.42.1:" + serverPort + "/index.html");
+        final String applicationHost = HostUtils.getApplicationHost();
+
+        webDriver.get("http://" + applicationHost + ":" + serverPort + "/index.html");
         final IndexPage indexPage = PageFactory.initElements(webDriver, IndexPage.class);
         assertEquals("AS CrowdSource says hi", indexPage.helloText());
     }

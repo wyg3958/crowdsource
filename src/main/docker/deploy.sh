@@ -7,7 +7,7 @@ fi
 
 
 echo "UPLOADING .service FILE..."
-scp -i $1/coreos_rsa $1/crowdfunding.service core@$2:/home/core;
+scp -i $1/coreos_rsa -vvv $1/crowdfunding.service core@$2:/home/core;
 echo "UPLOAD DONE - ACCESSING AWS..."
 ssh -i $1/coreos_rsa core@$2 "
 

@@ -12,7 +12,7 @@ public class MongoDBConfig extends AbstractMongoConfiguration {
     @Value("${de.axelspringer.ideas.crowdsource.db.host:localhost}")
     private String DB_HOST;
 
-    @Value("${de.axelspringer.ideas.crowdsource.db.port:12345}")
+    @Value("${de.axelspringer.ideas.crowdsource.db.port:27017}")
     private int DB_PORT;
 
     @Value("${de.axelspringer.ideas.crowdsource.db.name:crowdsource}")

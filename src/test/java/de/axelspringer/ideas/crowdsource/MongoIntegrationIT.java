@@ -1,12 +1,15 @@
 package de.axelspringer.ideas.crowdsource;
 
 import de.axelspringer.ideas.crowdsource.model.Hello;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
@@ -24,15 +27,20 @@ public class MongoIntegrationIT {
     private MongoOperations mongoOperations;
 
     @Test
-    public void testHello() {
+    public void shouldConnectToMongoDBAndFindOneTestObject() {
 
         Hello hello = new Hello();
         hello.setMessage("hi from mongo!");
 
-        mongoOperations.save(hello);
+        try {
+            mongoOperations.findAllAndRemove(new Query(), Hello.class);
+            mongoOperations.save(hello);
+        } catch (DataAccessResourceFailureException e) {
+            Assert.fail("MongoDB not available. Did you start and configure a valid Mongo instance?");
+        }
 
         final List<Hello> hellos = mongoOperations.findAll(Hello.class);
 
-        assertEquals(1, hellos.size());
+        assertEquals("Test message not found in given MongoDB.", 1, hellos.size());
     }
 }

@@ -1,5 +1,5 @@
 #!/bin/bash
-docker -H tcp://10.1.42.1:2375 run -p ${it.application.port}:8080 -d --name="crowdsource" "asideas/crowdsource:latest"
+docker run -p ${it.application.port}:8080 -d --name="crowdsource" "asideas/crowdsource:latest"
 # wait a few seconds for app to boot
 
 # get host ip

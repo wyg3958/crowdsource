@@ -1,6 +1,5 @@
 #!/bin/bash
 docker run -p ${it.application.port}:8080 -d --name="crowdsource" "asideas/crowdsource:latest"
-# wait a few seconds for app to boot
 
 # get host ip
 HOST_IP=`netstat -nr | grep '^0\.0\.0\.0' | awk '{print $2}'`

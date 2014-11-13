@@ -23,8 +23,7 @@ Specifiy path to chromedriver/chrom in test.properties to use chrome (untested).
 Firefox is the fallback. Do nothing and use the worst possible browser by default.
 
 
-TeamCity
-
+TEAMCITY
 To make the tests run in your TeamCity build add a configuration parameter to your build (e.g. "DOCKERHOST").
 Set it's value to the name of the server where Crowdsource is reachable.
 Give this parameter in your build's maven step: clean deploy -Pphantomjs,docker -Dapplicationhost=%DOCKERHOST%

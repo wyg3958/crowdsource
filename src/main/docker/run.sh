@@ -1,7 +1,6 @@
 #!/bin/sh
 
 docker run -p ${it.application.port}:8080 -d --name="crowdsource" "asideas/crowdsource:latest"
-# wait a few seconds for app to boot
 
 # curl as health check
 echo "CHECKING AVAILABILITY OF LOCALLY LAUNCHED SERVICE..."

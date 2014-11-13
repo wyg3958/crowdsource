@@ -3,6 +3,9 @@ crowdsource
 
 DEVELOPERS! 
 
+MONGO-DB
+Provide properties: de.axelspringer.ideas.crowdsource.db. host/port/name.
+
 DOCKER
 Enable docker-profile (-Pdocker) to boot the application for integration tests (works only on linux hosts with docker installed)
 => If you want to run the integration tests on windows or mac you need to run CrowdSourceConfig.main() to have the app running

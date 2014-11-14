@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class HelloControllerTest {
 
-    private MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new HelloController()).build();
+    private final MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new HelloController()).build();
 
     @Test
     public void testHello() throws Exception {

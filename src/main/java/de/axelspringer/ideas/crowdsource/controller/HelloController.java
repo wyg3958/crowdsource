@@ -14,7 +14,7 @@ public class HelloController {
     }
 
     public class Hello {
-        String message = "hi";
+        final String message = "hi";
 
         public String getMessage() {
             return message;

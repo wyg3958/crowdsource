@@ -5,13 +5,12 @@ docker run -p ${it.application.port}:8080 -d --name="crowdsource" "asideas/crowd
 HOST_IP=`netstat -nr | grep '^0\.0\.0\.0' | awk '{print $2}'`
 
 # curl as health check
-EXECUTION_STRING="curl -I http://$HOST_IP:${it.application.port} | grep \"200 OK\""
-echo "CHECKING AVAILABILITY OF LAUNCHED SERVICE ($EXECUTION_STRING)..."
+echo "CHECKING AVAILABILITY OF LAUNCHED SERVICE (curl and expect http 200)..."
 
 STATUS=1
 for i in {1..60}
 do
- REQUEST_RESULT=`curl -s -i http://$HOST_IP:9999 | grep "200 OK"`
+ REQUEST_RESULT=`curl -s -i http://$HOST_IP:${it.application.port} | grep "200 OK"`
 
  if [ "$REQUEST_RESULT" != "" ]; then
   echo "REQUEST TO SERVICE SUCCESSFULLY RETURNED WITH CODE 200"

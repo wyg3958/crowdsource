@@ -221,7 +221,7 @@
                                 <configuration>
                                     <executable>${project.build.directory}/scripts/coreos/deploy.sh</executable>
                                     <arguments>
-                                        <argument>${project.build.directory}/coreos</argument>
+                                        <argument>${project.build.directory}/scripts/coreos</argument>
                                         <argument>ec2-54-171-172-74.eu-west-1.compute.amazonaws.com</argument>
                                     </arguments>
                                 </configuration>

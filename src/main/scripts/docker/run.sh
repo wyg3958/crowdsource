@@ -1,4 +1,9 @@
 #!/bin/bash
+
+# run mongodb
+docker run -d -p 27017:27017 --name crowdsourcedb dockerfile/mongodb
+
+# run application
 docker run -p ${it.application.port}:8080 -d --name="crowdsource" "asideas/crowdsource:latest"
 
 # get host ip

@@ -7,7 +7,8 @@ docker run -d -p 27017:27017 --name crowdsourcedb dockerfile/mongodb
 docker run -p ${it.application.port}:8080 -d --name="crowdsource" "asideas/crowdsource:latest"
 
 # get host ip
-HOST_IP=`netstat -nr | grep '^0\.0\.0\.0' | awk '{print $2}'`
+# TODO: FIX THIS (not working on jenkins) HOST_IP=`netstat -nr | grep '^0\.0\.0\.0' | awk '{print $2}'`
+HOST_IP=localhost
 
 # curl as health check
 echo "CHECKING AVAILABILITY OF LAUNCHED SERVICE (curl and expect http 200)..."

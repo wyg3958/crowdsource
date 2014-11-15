@@ -168,7 +168,7 @@
                                     <executable>chmod</executable>
                                     <arguments>
                                         <argument>600</argument>
-                                        <argument>${project.build.directory}/scripts/coreos/coreos_rsa</argument>
+                                        <argument>${project.build.directory}/scripts/deploy/coreos_rsa</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
@@ -179,7 +179,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>${project.build.directory}/scripts/docker/build.sh</executable>
+                                    <executable>${project.build.directory}/scripts/build/build.sh</executable>
                                 </configuration>
                             </execution>
                             <execution>
@@ -189,7 +189,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>${project.build.directory}/scripts/docker/run.sh</executable>
+                                    <executable>${project.build.directory}/scripts/test/run.sh</executable>
                                 </configuration>
                             </execution>
                             <execution>
@@ -199,7 +199,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>${project.build.directory}/scripts/docker/shutdown.sh</executable>
+                                    <executable>${project.build.directory}/scripts/test/shutdown.sh</executable>
                                 </configuration>
                             </execution>
                             <execution>
@@ -209,7 +209,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>${project.build.directory}/scripts/docker/push.sh</executable>
+                                    <executable>${project.build.directory}/scripts/build/push.sh</executable>
                                 </configuration>
                             </execution>
                             <execution>
@@ -219,9 +219,9 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>${project.build.directory}/scripts/coreos/deploy.sh</executable>
+                                    <executable>${project.build.directory}/scripts/deploy/crowdsource/deploy.sh</executable>
                                     <arguments>
-                                        <argument>${project.build.directory}/scripts/coreos</argument>
+                                        <argument>${project.build.directory}/scripts/deploy</argument>
                                         <argument>ec2-54-171-172-74.eu-west-1.compute.amazonaws.com</argument>
                                     </arguments>
                                 </configuration>

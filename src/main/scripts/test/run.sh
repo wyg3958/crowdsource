@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# kill mongodb (if exists)
+docker kill crowdsourcedb
+docker rm crowdsourcedb
 # run mongodb
 docker run -d -p 27017:27017 --name crowdsourcedb dockerfile/mongodb
 

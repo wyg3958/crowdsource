@@ -6,6 +6,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
@@ -17,7 +21,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = MongoDBConfig.class)
+@ContextConfiguration(classes = MongoIntegrationIT.MongoIntegrationITConfig.class)
 public class MongoIntegrationIT {
 
     @Autowired
@@ -39,5 +43,14 @@ public class MongoIntegrationIT {
         final List<Hello> hellos = mongoOperations.findAll(Hello.class);
 
         assertEquals("Test message not found in given MongoDB.", 1, hellos.size());
+    }
+
+    @Configuration
+    @Import(MongoDBConfig.class)
+    static class MongoIntegrationITConfig {
+        @Bean
+        public PropertyPlaceholderConfigurer propertyPlaceholderConfigurer() {
+            return new PropertyPlaceholderConfigurer();
+        }
     }
 }

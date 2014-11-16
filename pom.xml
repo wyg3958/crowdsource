@@ -192,16 +192,16 @@
                                     <executable>${project.build.directory}/scripts/test/run.sh</executable>
                                 </configuration>
                             </execution>
-                            <!--<execution>-->
-                            <!--<id>kill docker container</id>-->
-                            <!--<phase>post-integration-test</phase>-->
-                            <!--<goals>-->
-                            <!--<goal>exec</goal>-->
-                            <!--</goals>-->
-                            <!--<configuration>-->
-                            <!--<executable>${project.build.directory}/scripts/test/shutdown.sh</executable>-->
-                            <!--</configuration>-->
-                            <!--</execution>-->
+                            <execution>
+                                <id>kill docker container</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>${project.build.directory}/scripts/test/shutdown.sh</executable>
+                                </configuration>
+                            </execution>
                             <execution>
                                 <id>push docker container</id>
                                 <phase>deploy</phase>

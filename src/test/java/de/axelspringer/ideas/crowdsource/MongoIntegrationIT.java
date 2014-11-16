@@ -32,7 +32,7 @@ public class MongoIntegrationIT {
         try {
             mongoOperations.findAllAndRemove(null, Hello.class);
         } catch (DataAccessResourceFailureException e) {
-            Assert.fail("MongoDB not available. Did you start and configure a valid Mongo instance?");
+            Assert.fail("MongoDB not available. Did you start and configure a valid Mongo instance? Connection failed with: " + e.getMessage());
         }
     }
 

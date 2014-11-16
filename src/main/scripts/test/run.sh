@@ -4,7 +4,7 @@
 docker kill crowdsourcedb
 docker rm crowdsourcedb
 # run mongodb
-docker run -d -p 27017:27017 --name crowdsourcedb dockerfile/mongodb
+docker run -d -p 27017:27017 --name crowdsourcedb dockerfile/mongodb mongod --smallfiles
 
 # run application
 docker run -p ${it.application.port}:8080 -d --name="crowdsource" "asideas/crowdsource:latest"

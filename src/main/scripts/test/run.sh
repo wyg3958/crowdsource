@@ -14,8 +14,7 @@ docker logs crowdsourcedb
 docker run -p ${it.application.port}:8080 -d --name="crowdsource" "asideas/crowdsource:latest"
 
 # get host ip
-# TODO: FIX THIS (not working on jenkins) HOST_IP=`netstat -nr | grep '^0\.0\.0\.0' | awk '{print $2}'`
-HOST_IP=localhost
+HOST_IP=`netstat -nr | grep '^0\.0\.0\.0' | awk '{print $2}'`
 
 # curl as health check
 echo "CHECKING AVAILABILITY OF LAUNCHED SERVICE (curl and expect http 200)..."

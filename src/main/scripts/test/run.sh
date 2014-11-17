@@ -10,11 +10,11 @@ sleep 2
 echo "outputting logs of mongodb-container"
 docker logs crowdsourcedb
 
-# run application
-docker run -p ${it.application.port}:8080 -d --name="crowdsource" "asideas/crowdsource:latest"
-
 # get host ip
 HOST_IP=`netstat -nr | grep '^0\.0\.0\.0' | awk '{print $2}'`
+
+# run application
+docker run -p ${it.application.port}:8080 -d -e de.axelspringer.ideas.crowdsource.db.host=$HOST_IP --name="crowdsource" "asideas/crowdsource:latest"
 
 # curl as health check
 echo "CHECKING AVAILABILITY OF LAUNCHED SERVICE (curl and expect http 200)..."

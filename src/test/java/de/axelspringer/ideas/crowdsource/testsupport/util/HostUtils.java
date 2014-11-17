@@ -7,6 +7,7 @@ public class HostUtils {
     }
 
     public static String getApplicationHost() {
+
         final String applicationHost = System.getProperty("HOST_IP");
 
         if (StringUtils.isNoneEmpty(applicationHost)) {

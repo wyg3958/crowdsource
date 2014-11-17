@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.crowdsource;
 
+import de.axelspringer.ideas.crowdsource.config.MongoDBConfig;
 import de.axelspringer.ideas.crowdsource.model.Hello;
 import org.junit.Assert;
 import org.junit.Test;
@@ -7,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
@@ -20,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @IntegrationTest
 @WebAppConfiguration
+@Import(MongoDBConfig.class)
 @SpringApplicationConfiguration(classes = CrowdSourceConfig.class)
 public class MongoIntegrationIT {
 

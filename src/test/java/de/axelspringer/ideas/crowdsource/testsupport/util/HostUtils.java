@@ -7,7 +7,7 @@ public class HostUtils {
     }
 
     public static String getApplicationHost() {
-        final String applicationHost = System.getProperty("applicationhost");
+        final String applicationHost = System.getProperty("DOCKER_HOST");
 
         if (StringUtils.isNoneEmpty(applicationHost)) {
             System.out.println("Using external application host: " + applicationHost);

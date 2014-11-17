@@ -9,6 +9,8 @@ import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 @Configuration
 public class MongoDBConfig extends AbstractMongoConfiguration {
 
+    public static final String DB_HOST_PARAMETER_KEY = "dbhost";
+
     @Value("${de.axelspringer.ideas.crowdsource.db.host:localhost}")
     private String DB_HOST;
 
@@ -25,6 +27,13 @@ public class MongoDBConfig extends AbstractMongoConfiguration {
 
     @Override
     public Mongo mongo() throws Exception {
+
+        final String dbhost = System.getProperty(DB_HOST_PARAMETER_KEY);
+
+        if (dbhost != null) {
+            return new MongoClient(dbhost, DB_PORT);
+        }
+
         return new MongoClient(DB_HOST, DB_PORT);
     }
 }

@@ -22,7 +22,7 @@ public class HelloController {
     }
 
     public class Hello {
-        String message = "hi";
+        final String message = "hi";
 
         public String getMessage() {
             final List<Hello> hellos = mongoOperations.find(new Query(), Hello.class);

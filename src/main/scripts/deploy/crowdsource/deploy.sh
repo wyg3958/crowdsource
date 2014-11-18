@@ -64,7 +64,7 @@ STATUS=1
 echo "CHECKING AVAILABILITY OF AWS SERVICE..." 
 for i in {1..30}
 do
- REQUEST_RESULT=`curl -s -I $2:8080 | grep "200 OK"`
+ REQUEST_RESULT=`curl -s -I -vvv $2:8080 | grep "200 OK"`
  
  if [ "$REQUEST_RESULT" != "" ]; then
   echo "REQUEST TO SERVICE ON AWS SUCCESSFULLY RETURNED WITH CODE 200"

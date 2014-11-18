@@ -4,7 +4,7 @@
 docker kill crowdsourcedb
 docker rm crowdsourcedb
 # run mongodb
-docker run -d -p 27017:27017 --name crowdsourcedb dockerfile/mongodb
+docker run -d -p 27017:27017 -p 28017:28017 --name crowdsourcedb dockerfile/mongodb
 # let db get awake
 sleep 2
 echo "outputting logs of mongodb-container"

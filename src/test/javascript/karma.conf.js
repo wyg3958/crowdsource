@@ -50,7 +50,7 @@ module.exports = function (config) {
 
         junitReporter: {
             outputFile: 'target/surefire-reports/karma.xml',
-            suite: ''
+            suite: 'karma'
         }
     });
 };

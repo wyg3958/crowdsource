@@ -221,7 +221,7 @@
                                 <configuration>
                                     <executable>${project.build.directory}/scripts/deploy/crowdsource/deploy.sh</executable>
                                     <arguments>
-                                        <argument>${project.build.directory}/docker</argument>
+                                        <argument>${project.build.directory}/scripts/deploy/</argument>
                                         <argument>ec2-54-171-205-70.eu-west-1.compute.amazonaws.com</argument>
                                     </arguments>
                                 </configuration>

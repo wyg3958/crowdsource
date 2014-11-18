@@ -13,6 +13,7 @@ public class HelloController {
     public Hello hello() {
 
         final Hello hello = new Hello();
+        hello.setId("theId");
         hello.setMessage("hi");
         return hello;
     }

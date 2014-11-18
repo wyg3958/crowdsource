@@ -37,17 +37,8 @@ public class CucumberIT {
         final String serverPort = properties.getProperty("de.axelspringer.ideas.crowdsource.test.server.port");
 
         System.out.println("Using application host: " + applicationHost);
+
         APP_URL = "http://" + applicationHost + ":" + serverPort;
-
-
-/*        if (StringUtils.isNoneEmpty(applicationHost)) {
-            APP_URL = "http://" + applicationHost + ":" + serverPort;
-            System.out.println("Using external application host: " + applicationHost);
-        } else {
-            APP_URL = "http://127.0.0.1:" + serverPort;
-            System.out.println("Using default application host.");
-        }*/
-
         DRIVER = WebDriverUtils.provideDriver(phantomJsBinaryPath, chromeBinaryPath);
     }
 
@@ -55,6 +46,4 @@ public class CucumberIT {
     public static void tearDown() {
         WebDriverUtils.closeWebDriver(DRIVER);
     }
-
-
 }

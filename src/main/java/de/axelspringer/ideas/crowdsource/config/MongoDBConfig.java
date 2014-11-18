@@ -11,8 +11,6 @@ import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 @Configuration
 public class MongoDBConfig extends AbstractMongoConfiguration {
 
-    public static final String DB_HOST_PARAMETER_KEY = "dbhost";
-
     private Logger log = LoggerFactory.getLogger(getClass());
 
     @Value("${de.axelspringer.ideas.crowdsource.db.host:localhost}")
@@ -33,13 +31,6 @@ public class MongoDBConfig extends AbstractMongoConfiguration {
     public Mongo mongo() throws Exception {
 
         log.debug("connecting to db host: {}...", DB_HOST);
-
-        final String dbhost = System.getProperty(DB_HOST_PARAMETER_KEY);
-
-        if (dbhost != null) {
-            return new MongoClient(dbhost, DB_PORT);
-        }
-
         return new MongoClient(DB_HOST, DB_PORT);
     }
 }

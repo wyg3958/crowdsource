@@ -19,16 +19,11 @@ import java.io.File;
 public class WebDriverProvider {
 
     private final static Logger LOG = LoggerFactory.getLogger(WebDriverProvider.class);
-
+    private static RemoteWebDriver driverInstance;
     @Value("${de.axelspringer.ideas.crowdsource.test.phantomjs.binary:unset}")
     private String phantomBinaryPath;
-
     @Value("${de.axelspringer.ideas.crowdsource.test.chrome.binary:unset}")
     private String chromeBinaryPath;
-
-    @Value("${de.axelspringer.ideas.crowdsource.test.chrome.binary:unset}")
-    private String chromeBinaryPath;
-    private static RemoteWebDriver driverInstance;
 
     /**
      * will close driver instance

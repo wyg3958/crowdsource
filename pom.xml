@@ -22,6 +22,7 @@
         <!-- tomcat/docker will expose the application under this port for integration tests -->
         <it.application.port>8080</it.application.port>
         <cucumber.version>1.2.0</cucumber.version>
+        <spring.security.version>3.2.5.RELEASE</spring.security.version>
     </properties>
 
     <build>
@@ -283,6 +284,16 @@
             <artifactId>junit</artifactId>
             <version>4.12-beta-2</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${spring.security.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>${spring.security.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

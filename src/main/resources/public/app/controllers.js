@@ -7,9 +7,6 @@ app.controller('MainController', function ($scope, $route, $routeParams, $locati
     }
 );
 
-/**
- * template routing
- */
 app.config(function ($routeProvider, $locationProvider) {
     $routeProvider
         .when('/login', {
@@ -24,4 +21,3 @@ app.config(function ($routeProvider, $locationProvider) {
     // configure html5 to get links working on jsfiddle
     $locationProvider.html5Mode(true);
 });
-

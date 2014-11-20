@@ -21,7 +21,7 @@
         <tomcat.version>8.0.15</tomcat.version>
         <!-- tomcat/docker will expose the application under this port for integration tests -->
         <it.application.port>8080</it.application.port>
-        <cucumber.version>1.1.8</cucumber.version>
+        <cucumber.version>1.2.0</cucumber.version>
     </properties>
 
     <build>
@@ -312,6 +312,12 @@
         <dependency>
             <groupId>info.cukes</groupId>
             <artifactId>cucumber-junit</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-spring</artifactId>
             <version>${cucumber.version}</version>
             <scope>test</scope>
         </dependency>

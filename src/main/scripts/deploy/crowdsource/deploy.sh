@@ -12,8 +12,7 @@ fi
 
 
 echo "UPLOADING .service FILE..."
-ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa core@$2 scp crowdfunding.service core@$2:/home/core
-#scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa crowdfunding.service core@$2:/home/core
+scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa crowdfunding.service core@$2:/home/core
 echo "UPLOAD DONE - ACCESSING AWS..."
 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa core@$2
 

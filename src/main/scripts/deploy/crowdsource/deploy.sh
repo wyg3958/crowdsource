@@ -18,7 +18,7 @@ scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa
 
 echo "UPLOADS DONE - ACCESSING AWS..."
 
-ssh -o ConnectTimeout=3 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa core@$2 "chmod +x /home/core/instructions.sh && /home/core/instructions.sh"
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa core@$2 "bash /home/core/instructions.sh"
 
 if [ $? -ne	0 ]; then
  echo "!!! AWS ACTION NOT SUCCESSFUL - EXITING !!!"	
@@ -30,7 +30,7 @@ STATUS=1
 echo "CHECKING AVAILABILITY OF AWS SERVICE..." 
 for i in {1..30}
 do
- REQUEST_RESULT=`curl --max-time 1 -I -vvv $2:8080 | grep "200 OK"`
+ REQUEST_RESULT=`curl --max-time 1 -I -vvv $2:8080 | grep --color=never "200 OK"`
  
  if [ "$REQUEST_RESULT" != "" ]; then
   echo "REQUEST TO SERVICE ON AWS SUCCESSFULLY RETURNED WITH CODE 200"

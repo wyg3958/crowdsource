@@ -21,11 +21,11 @@ fleetctl start /etc/systemd/system/crowdfunding.service
 STATUS=1
 
 echo "AWS - CHECKING THAT SERVICE IS RUNNING..."
-for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+for i in {1..15}
 do
- echo "$i mother"
- SERVICE_RESULT=`fleetctl list-units | grep -c crowdfunding.service.*active.*running`
- echo "$i fucker"
+ echo "$i one"
+ SERVICE_RESULT=$(fleetctl list-units | grep -c crowdfunding.service.*active.*running)
+ echo "$i two"
  if [ "$SERVICE_RESULT" == "0" ]; then
   echo "AWS - RUNNING SERVICE NOT DETECTED - WAITING..."
  else

@@ -23,8 +23,9 @@ STATUS=1
 echo "AWS - CHECKING THAT SERVICE IS RUNNING..."
 for i in {1..15}
 do
+ echo "mother"
  SERVICE_RESULT=`fleetctl list-units | grep crowdfunding.service.*active.*running`
-
+ echo "fucker"
  if [ "$SERVICE_RESULT" == "" ]; then
   echo "AWS - RUNNING SERVICE NOT DETECTED - WAITING..."
  else

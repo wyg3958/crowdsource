@@ -13,7 +13,7 @@ echo "AWS - LOGGING IN TO DOCKER HUB..."
 docker login -e crowdsource@asideas.de -p ideas987 -u asjenkins
 
 echo "AWS - PULLING crowdfunding IMAGE..."
-docker pull asideas/crowdsource;
+docker pull asideas/crowdsource
 
 echo "AWS - STARTING crowdfunding SERVICE VIA FLEET..."
 fleetctl start /etc/systemd/system/crowdfunding.service

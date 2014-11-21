@@ -13,7 +13,7 @@ fi
 echo "UPLOADING .service FILE..."
 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa $1/crowdsource/crowdfunding.service core@$2:/home/core
 echo "UPLOAD DONE - ACCESSING AWS..."
-ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa core@$2
+ssh -o ConnectTimeout=3 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa core@$2
 
  echo "AWS - MOVING SERVICE FILE..."
  sudo mv crowdfunding.service /etc/systemd/system

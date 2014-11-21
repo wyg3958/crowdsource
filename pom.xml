@@ -223,7 +223,7 @@
                                     <executable>${project.build.directory}/scripts/deploy/crowdsource/deploy.sh</executable>
                                     <arguments>
                                         <argument>${project.build.directory}/scripts/deploy/</argument>
-                                        <argument>54.171.205.70</argument>
+                                        <argument>54.76.181.100</argument>
                                     </arguments>
                                 </configuration>
                             </execution>

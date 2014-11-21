@@ -4,7 +4,6 @@
 # Via SSH runs the crowdfunding container on that machine.
 # Checks for availability of the crowdfunding app (fleet & HTTP).
 
-
 if [ $# -ne 2 ]; then
 	echo "usage: deploy {path to coreos_rsa} {AWS server URL}"
 	exit
@@ -39,9 +38,9 @@ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa
  echo "AWS - CHECKING THAT SERVICE IS RUNNING..."
  for i in {1..15}
  do
-  SERVICE_RESULT=\`fleetctl list-units | grep crowdfunding\\.service.*active.*running\`
+  SERVICE_RESULT=`fleetctl list-units | grep crowdfunding.service.*active.*running`
  
-  if [ \"\$SERVICE_RESULT\" == \"\" ]; then
+  if [ "$SERVICE_RESULT" == "" ]; then
    echo "AWS - RUNNING SERVICE NOT DETECTED - WAITING..."
   else
    echo "AWS - RUNNING SERVICE FOUND"
@@ -52,7 +51,7 @@ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa
  done
 
  echo "AWS - LEAVING AWS..."
- exit \$STATUS"
+ exit "$STATUS"
 
 if [ $? -ne	0 ]; then
  echo "!!! AWS ACTION NOT SUCCESSFUL - EXITING !!!"	

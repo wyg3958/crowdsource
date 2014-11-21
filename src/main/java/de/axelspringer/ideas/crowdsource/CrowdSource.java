@@ -11,9 +11,9 @@ import org.springframework.context.annotation.Import;
 @Import(MongoDBConfig.class)
 @EnableAutoConfiguration
 @ComponentScan(excludeFilters = @ComponentScan.Filter(Configuration.class))
-public class CrowdSourceConfig {
+public class CrowdSource {
 
     public static void main(String[] args) {
-        SpringApplication.run(CrowdSourceConfig.class, args);
+        SpringApplication.run(CrowdSource.class, args);
     }
 }

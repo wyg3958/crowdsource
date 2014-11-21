@@ -12,46 +12,13 @@ fi
 
 echo "UPLOADING .service FILE..."
 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa $1/crowdsource/crowdfunding.service core@$2:/home/core
-echo "UPLOAD DONE - ACCESSING AWS..."
-ssh -t -t -o ConnectTimeout=3 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa core@$2
 
- echo "AWS - MOVING SERVICE FILE..."
- sudo mv crowdfunding.service /etc/systemd/system
+echo "UPLOADING deploy script..."
+scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa $1/crowdsource/instructions.sh core@$2:/home/core
 
- echo "AWS - STOPPING crowdfunding SERVICE..."
- fleetctl stop crowdfunding
+echo "UPLOADS DONE - ACCESSING AWS..."
 
- echo "AWS - DESTROYING crowdfunding IMAGE..."
- fleetctl destroy crowdfunding
-
- echo "AWS - LOGGING IN TO DOCKER HUB..."
- docker login -e crowdsource@asideas.de -p ideas987 -u asjenkins
-
- echo "AWS - PULLING crowdfunding IMAGE..."
- docker pull asideas/crowdsource;
-
- echo "AWS - STARTING crowdfunding SERVICE VIA FLEET..."
- fleetctl start /etc/systemd/system/crowdfunding.service
-
- STATUS=1
-
- echo "AWS - CHECKING THAT SERVICE IS RUNNING..."
- for i in {1..15}
- do
-  SERVICE_RESULT=`fleetctl list-units | grep crowdfunding.service.*active.*running`
- 
-  if [ "$SERVICE_RESULT" == "" ]; then
-   echo "AWS - RUNNING SERVICE NOT DETECTED - WAITING..."
-  else
-   echo "AWS - RUNNING SERVICE FOUND"
-   STATUS=0
-   break
-  fi
-  sleep 1
- done
-
- echo "AWS - LEAVING AWS..."
- exit "$STATUS"
+ssh -t -t -o ConnectTimeout=3 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa core@$2 "bash /home/core/instructions.sh"
 
 if [ $? -ne	0 ]; then
  echo "!!! AWS ACTION NOT SUCCESSFUL - EXITING !!!"	

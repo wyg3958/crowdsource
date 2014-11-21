@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.crowdsource.testsupport.util;
 
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
@@ -33,11 +34,18 @@ public class WebDriverProvider {
         if (driverInstance == null) {
             return;
         }
+        // get handle of driver
+        WebDriver driverHandle = driverInstance;
+
+        // break class reference
+        driverInstance = null;
+
+        // close old driver
         try {
-            if (driverInstance instanceof PhantomJSDriver) {
-                driverInstance.quit();
+            if (driverHandle instanceof PhantomJSDriver) {
+                driverHandle.quit();
             }
-            driverInstance.close();
+            driverHandle.close();
         } catch (Exception e) {
             LOG.debug("exception closing webdriver", e);
         }

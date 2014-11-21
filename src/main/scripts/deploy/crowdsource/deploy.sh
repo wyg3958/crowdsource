@@ -22,7 +22,7 @@ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa
 
 if [ $? -ne	0 ]; then
  echo "!!! AWS ACTION NOT SUCCESSFUL - EXITING !!!"	
- exit
+ exit 1
 fi
 
 STATUS=1

@@ -18,7 +18,7 @@ scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa
 
 echo "UPLOADS DONE - ACCESSING AWS..."
 
-ssh -t -t -o ConnectTimeout=3 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa core@$2 "bash /home/core/instructions.sh"
+ssh -o ConnectTimeout=3 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa core@$2 "chmod +x /home/core/instructions.sh && /home/core/instructions.sh"
 
 if [ $? -ne	0 ]; then
  echo "!!! AWS ACTION NOT SUCCESSFUL - EXITING !!!"	

@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Via SCP uploads the crowdfunding.service file to the given machine.
-# Via SSH runs the crowdfunding container on that machine.
-# Checks for availability of the crowdfunding app (fleet & HTTP).
+# Via SCP uploads the crowdsource.service file to the given machine.
+# Via SSH runs the crowdsource container on that machine.
+# Checks for availability of the crowdsource app (fleet & HTTP).
 
 if [ $# -ne 2 ]; then
 	echo "usage: deploy {path to coreos_rsa} {AWS server URL}"
@@ -11,7 +11,7 @@ fi
 
 
 echo "UPLOADING .service FILE..."
-scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa $1/crowdsource/crowdfunding.service core@$2:/home/core
+scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa $1/crowdsource/crowdsource.service core@$2:/home/core
 
 echo "UPLOADING deploy script..."
 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa $1/crowdsource/instructions.sh core@$2:/home/core

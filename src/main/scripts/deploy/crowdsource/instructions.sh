@@ -21,11 +21,12 @@ fleetctl start /etc/systemd/system/crowdsource.service
 STATUS=1
 
 echo "AWS - CHECKING THAT SERVICE IS RUNNING..."
-for i in {1..40}
+for i in {1..20}
 do
- SERVICE_RESULT=$(fleetctl list-units | grep -c crowdsource.service.*active.*running)
- if [ "$SERVICE_RESULT" == "0" ]; then
+ SERVICE_RESULT=$(fleetctl list-units | grep crowdsource.service.*active.*running)
+ if [ "$SERVICE_RESULT" == "" ]; then
   echo "AWS - RUNNING SERVICE NOT DETECTED - WAITING..."
+  sleep 2s
  else
   echo "AWS - RUNNING SERVICE FOUND"
   STATUS=0

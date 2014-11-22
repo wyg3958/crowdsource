@@ -30,6 +30,7 @@ STATUS=1
 echo "CHECKING AVAILABILITY OF AWS SERVICE..." 
 for i in {1..15}
 do
+ date
  REQUEST_RESULT=`curl --max-time 30 -I -s $2:8080 | grep "200 OK"`
  
  if [ "$REQUEST_RESULT" != "" ]; then
@@ -38,7 +39,7 @@ do
   break;
  else
   echo "RETURN CODE FROM AWS SERVICE INCORRECT - WAITING..."
-  sleep 1
+  sleep 3s
  fi
 done
 

@@ -28,7 +28,7 @@ fi
 STATUS=1
 
 echo "CHECKING AVAILABILITY OF AWS SERVICE..." 
-for i in {1..30}
+for i in {1..15}
 do
  REQUEST_RESULT=`curl --max-time 10 -I -s $2:8080 | grep "200 OK"`
  

@@ -21,7 +21,7 @@ docker run -p ${it.application.port}:8080 -d -e de.axelspringer.ideas.crowdsourc
 echo "CHECKING AVAILABILITY OF LAUNCHED SERVICE (curl and expect http 200)..."
 
 STATUS=1
-for i in {1..60}
+for i in {1..15}
 do
  REQUEST_RESULT=`curl --max-time 1 -s -i http://$HOST_IP:${it.application.port} | grep "200 OK"`
 
@@ -32,7 +32,7 @@ do
  else
   echo "RETURN CODE FROM SERVICE INCORRECT - WAITING..."
  fi
- sleep 1
+ sleep 2s
 done
 
 exit $STATUS

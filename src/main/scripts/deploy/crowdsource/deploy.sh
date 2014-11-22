@@ -38,8 +38,8 @@ do
   break;
  else
   echo "RETURN CODE FROM AWS SERVICE INCORRECT - WAITING..."
+  sleep 1
  fi
- sleep 1
 done
 
 echo "ALL DONE"

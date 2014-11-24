@@ -1,7 +1,6 @@
 package de.axelspringer.ideas.crowdsource.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -20,7 +19,6 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
-import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 
 /**
  * Configuration for Spring Security
@@ -30,8 +28,6 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 @Import({SecurityConfig.ResourceServer.class, SecurityConfig.OAuth2Config.class })
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    protected static final String RESOURCE_ID = "crowdsource";
 
     @Autowired
     private MongoUserDetailsService userDetailsService;
@@ -60,11 +56,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         public void configure(HttpSecurity http) throws Exception {
             http.authorizeRequests().antMatchers("/hello/**").authenticated();
         }
-
-        @Override
-        public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
-            resources.resourceId(RESOURCE_ID);
-        }
     }
 
     @Configuration
@@ -72,11 +63,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected static class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
         @Autowired
-        @Qualifier("authenticationManagerBean")
         private AuthenticationManager authenticationManager;
 
         @Override
         public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
+            // sets up a filter that listens on /oauth/token to let clients request a token
             oauthServer.allowFormAuthenticationForClients();
         }
 
@@ -88,12 +79,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         @Override
         public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
             clients.inMemory()
-                    .withClient("client")
+                    .withClient("web")
                     .authorizedGrantTypes("password", "refresh_token")
-                    .authorities("ROLE_USER")
-                    .scopes("read")
-                    .resourceIds(RESOURCE_ID)
-                    .secret("secret").accessTokenValiditySeconds(3600);
+                    .accessTokenValiditySeconds(3600)
+
+                    // at least one scope must be configured. A client could request authorization only for certain parts of the app.
+                    // We don't need it, so just define some dummy value
+                    .scopes("default");
         }
 
     }

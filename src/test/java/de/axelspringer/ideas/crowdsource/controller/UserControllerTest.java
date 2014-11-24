@@ -1,15 +1,16 @@
 package de.axelspringer.ideas.crowdsource.controller;
 
+import de.axelspringer.ideas.crowdsource.config.UserRepository;
 import de.axelspringer.ideas.crowdsource.model.MongoResponse;
 import de.axelspringer.ideas.crowdsource.model.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.query.Query;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.isA;
@@ -19,7 +20,7 @@ import static org.mockito.Mockito.when;
 public class UserControllerTest {
 
     @Mock
-    private MongoOperations mongoOperations;
+    private UserRepository userRepository;
 
     @InjectMocks
     private UserController controller;
@@ -40,7 +41,10 @@ public class UserControllerTest {
 
     @Test
     public void shouldReturnErroneouslyWhenUsedEmailIsGivenOnSave() throws Exception {
-        when(mongoOperations.findOne(isA(Query.class), Matchers.any())).thenReturn(new User("test", "test"));
+        List<User> userList = new ArrayList<>();
+        userList.add(new User("test", "test"));
+
+        when(userRepository.findByEmail(isA(String.class))).thenReturn(userList);
 
         final MongoResponse mongoResponse = controller.saveUser("test@test.de");
         assertEquals("Incorrect response text", "User not saved (already exists)", mongoResponse.getMessage());
@@ -63,7 +67,10 @@ public class UserControllerTest {
 
     @Test
     public void shouldReturnErroneouslyWhenEmailIsGivenOnFailingDelete() throws Exception {
-        when(mongoOperations.findOne(isA(Query.class), Matchers.any())).thenReturn(new User("test", "test"));
+        List<User> userList = new ArrayList<>();
+        userList.add(new User("test", "test"));
+
+        when(userRepository.findByEmail(isA(String.class))).thenReturn(userList);
 
         final MongoResponse mongoResponse = controller.deleteUser("test@test.de");
         assertEquals("Incorrect response text", "Deletion failed (user still in DB)", mongoResponse.getMessage());
@@ -72,7 +79,11 @@ public class UserControllerTest {
 
     @Test
     public void shouldReturnSuccessfullyWhenEmailIsGivenOnDelete() throws Exception {
-        when(mongoOperations.findOne(isA(Query.class), Matchers.any())).thenReturn(new User("test", "test")).thenReturn(null);
+        List<User> emptyList = new ArrayList<>();
+        List<User> userList = new ArrayList<>();
+        userList.add(new User("test", "test"));
+
+        when(userRepository.findByEmail(isA(String.class))).thenReturn(userList).thenReturn(emptyList);
 
         final MongoResponse mongoResponse = controller.deleteUser("test@test.de");
         assertEquals("Incorrect response text", "User deleted", mongoResponse.getMessage());

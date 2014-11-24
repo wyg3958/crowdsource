@@ -1,8 +1,7 @@
 <div>
     SIGNUP
-    <input name="email" type="text" size="30" maxlength="40"/>
-    <input name="password" type="password" size="30" maxlength="40"/>
-    <input name="submit" type="button" value="submit">
+    <input ng-model="userEmail" required>
+    <input ng-model="userPassword" type="password" required>
+    <button ng-click="saveUser()">signup</button>
     <a href="login">go to login</a>
-
 </div>

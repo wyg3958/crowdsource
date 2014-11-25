@@ -1,9 +1,11 @@
 angular.module('crowdsource')
 
-    .controller('SignupController', function () {
+    .controller('SignupController', function (User) {
+
+        var ctrl = this;
 
         this.signUp = function () {
-            console.log('signup', this.user);
+            User.register(ctrl.user);
         };
 
     });

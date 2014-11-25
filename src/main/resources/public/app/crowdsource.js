@@ -7,11 +7,11 @@ angular.module('crowdsource', ['ngRoute'])
     $routeProvider
         .when('/login', {
             templateUrl: 'app/user/login.html',
-            controller: 'LoginController'
+            controller: 'LoginController as login'
         })
         .when('/signup', {
             templateUrl: 'app/user/signup.html',
-            controller: 'SignupController'
+            controller: 'SignupController as signup'
         });
 
     // we can only activate this, once you can reload the page with the path not being /

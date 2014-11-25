@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 // TODO: basically we only want to test MongoDBConfig and not the whole app
-@SpringApplicationConfiguration(classes = CrowdSourceConfig.class)
+@SpringApplicationConfiguration(classes = CrowdSource.class)
 public class MongoIntegrationIT {
 
     @Autowired

@@ -1,9 +1,8 @@
 #!/bin/bash
 
-# Via SCP uploads the crowdfunding.service file to the given machine.
-# Via SSH runs the crowdfunding container on that machine.
-# Checks for availability of the crowdfunding app (fleet & HTTP).
-
+# Via SCP uploads the crowdsource.service file to the given machine.
+# Via SSH runs the crowdsource container on that machine.
+# Checks for availability of the crowdsource app (fleet & HTTP).
 
 if [ $# -ne 2 ]; then
 	echo "usage: deploy {path to coreos_rsa} {AWS server URL}"
@@ -12,71 +11,37 @@ fi
 
 
 echo "UPLOADING .service FILE..."
-scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa crowdfunding.service core@$2:/home/core;
-echo "UPLOAD DONE - ACCESSING AWS..."
-ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa core@$2 "
+scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa $1/crowdsource/crowdsource.service core@$2:/home/core
 
- echo "AWS - MOVING SERVICE FILE..."
- sudo mv crowdfunding.service /etc/systemd/system
+echo "UPLOADING deploy script..."
+scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa $1/crowdsource/instructions.sh core@$2:/home/core
 
- echo "AWS - STOPPING crowdfunding SERVICE..."
- fleetctl stop crowdfunding
+echo "UPLOADS DONE - ACCESSING AWS..."
 
- echo "AWS - DESTROYING crowdfunding IMAGE..."
- fleetctl destroy crowdfunding
-
- echo "AWS - LOGGING IN TO DOCKER HUB..."
- docker login -e crowdsource@asideas.de -p ideas987 -u asjenkins
-
- echo "AWS - PULLING crowdfunding IMAGE..."
- docker pull asideas/crowdsource;
-
- echo "AWS - STARTING crowdfunding SERVICE VIA FLEET..."
- fleetctl start /etc/systemd/system/crowdfunding.service
-
- STATUS=1
-
- echo "AWS - CHECKING THAT SERVICE IS RUNNING..."
- for i in {1..15}
- do
-  SERVICE_RESULT=\`fleetctl list-units | grep crowdfunding\\.service.*active.*running\`
- 
-  if [ \"\$SERVICE_RESULT\" == \"\" ]; then
-   echo "AWS - RUNNING SERVICE NOT DETECTED - WAITING..."
-  else
-   echo "AWS - RUNNING SERVICE FOUND"
-   STATUS=0
-   break
-  fi
-  sleep 1
- done
-
- echo "AWS - LEAVING AWS..."
- exit \$STATUS"
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $1/coreos_rsa core@$2 "bash /home/core/instructions.sh"
 
 if [ $? -ne	0 ]; then
  echo "!!! AWS ACTION NOT SUCCESSFUL - EXITING !!!"	
- exit
+ exit 1
 fi
 
 STATUS=1
 
-echo "CHECKING AVAILABILITY OF AWS SERVICE..." 
-for i in {1..30}
+echo "CHECKING AVAILABILITY OF AWS SERVICE..."
+
+for i in {1..15}
 do
- REQUEST_RESULT=`curl -s -I -vvv $2:8080 | grep "200 OK"`
- 
+ REQUEST_RESULT=`curl --max-time 30 -I -s $2:8080 | grep "200 OK"`
+
  if [ "$REQUEST_RESULT" != "" ]; then
-  echo "REQUEST TO SERVICE ON AWS SUCCESSFULLY RETURNED WITH CODE 200"
+  echo "REQUEST TO SERVICE SUCCESSFULLY RETURNED WITH CODE 200"
   STATUS=0
   break;
  else
-  echo "RETURN CODE FROM AWS SERVICE INCORRECT - WAITING..."
+  echo "RETURN CODE FROM SERVICE INCORRECT - WAITING..."
  fi
- sleep 1
+ sleep 2s
 done
-
-echo "ALL DONE"
 
 if [ $STATUS -ne 0 ]; then
  echo "!!! REQUEST TO AWS DID NOT RETURN CORRECTLY !!!"	

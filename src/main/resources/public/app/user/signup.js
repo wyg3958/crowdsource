@@ -5,6 +5,10 @@ angular.module('crowdsource')
         var ctrl = this;
 
         this.signUp = function () {
+            if (!this.form.$valid) {
+                return;
+            }
+
             User.register(ctrl.user);
         };
 

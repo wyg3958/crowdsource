@@ -1,7 +1,7 @@
 /**
  * global application configuration
  */
-angular.module('crowdsource', ['ngRoute'])
+angular.module('crowdsource', ['ngRoute', 'ngResource'])
 
 .config(function ($routeProvider, $locationProvider) {
     $routeProvider

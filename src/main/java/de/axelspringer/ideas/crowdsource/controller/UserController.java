@@ -2,6 +2,7 @@ package de.axelspringer.ideas.crowdsource.controller;
 
 import de.axelspringer.ideas.crowdsource.config.UserRepository;
 import de.axelspringer.ideas.crowdsource.model.User;
+import de.axelspringer.ideas.crowdsource.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,9 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserService userService;
+
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity saveUser(@RequestParam(value = EMAIL, required = true) String email) {
 
@@ -37,6 +41,9 @@ public class UserController {
             log.debug("User not saved (already exists): {}", email);
             return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
         }
+
+        // TODO: This is a blocking call, may last long and throw exceptions if the mail server does not want to talk to us
+        userService.sendActivationMail(email);
 
         User user = new User(email, null);
         userRepository.save(user);
@@ -64,4 +71,5 @@ public class UserController {
         log.debug("User deleted", email);
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
+
 }

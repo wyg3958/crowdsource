@@ -2,6 +2,7 @@ package de.axelspringer.ideas.crowdsource.controller;
 
 import de.axelspringer.ideas.crowdsource.config.UserRepository;
 import de.axelspringer.ideas.crowdsource.model.User;
+import de.axelspringer.ideas.crowdsource.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -21,8 +22,12 @@ import static org.mockito.Mockito.when;
 public class UserControllerTest {
 
     public static final String WRONG_HTTP_STATUS_CODE = "Wrong HTTP status code";
+
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private UserService userService;
 
     @InjectMocks
     private UserController controller;

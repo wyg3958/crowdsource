@@ -1,7 +1,12 @@
-<div>
-    SIGNUP
-    <input ng-model="userEmail" required>
-    <input ng-model="userPassword" type="password" required>
-    <button ng-click="saveUser()">signup</button>
-    <a href="login">go to login</a>
-</div>
+<h1>Signup</h1>
+
+<form>
+    <div class="form-group">
+        <label>Email address</label>
+        <input ng-model="user.email" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+        <button class="btn btn-primary" ng-click="saveUser()">signup</button>
+    </div>
+</form>

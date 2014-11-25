@@ -1,7 +1,17 @@
-<div>
-    LOGIN
-    <input name="email" type="text" size="30" maxlength="40"/>
-    <input name="password" type="password" size="30" maxlength="40"/>
-    <input name="submit" type="button" value="submit">
-    <a href="signup">go to signup</a>
-</div>
+<h1>Login</h1>
+
+<form>
+    <div class="form-group">
+        <label>Email address</label>
+        <input ng-model="user.email" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+        <label>Password</label>
+        <input ng-model="user.password" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+        <button class="btn btn-primary" ng-click="saveUser()">login</button>
+    </div>
+</form>

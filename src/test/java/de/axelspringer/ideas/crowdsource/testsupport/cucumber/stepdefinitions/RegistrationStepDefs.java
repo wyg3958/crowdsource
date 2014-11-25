@@ -5,7 +5,6 @@ import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,9 @@ import org.subethamail.wiser.Wiser;
 
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.util.regex.Pattern;
 
+import static de.axelspringer.ideas.crowdsource.testsupport.util.MatchesPattern.matchesPattern;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContaining;
@@ -77,8 +78,10 @@ public class RegistrationStepDefs {
         registrationLink = content.substring(MAIL_MESSAGE_CONTENT.length()).trim();
     }
 
-    @When("^he clicks on the activation link that was sent in the email$")
-    public void he_clicks_on_the_activation_link_from_the_email() throws Throwable {
-        assertThat(registrationLink, is("http://foo.bar"));
+    @And("^the email contains a valid activation link for the email address '([^']+)'$")
+    public void the_email_contains_a_valid_activation_link_for_the_email_address(String emailAddress) throws Throwable {
+        String uuidPattern = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
+
+        assertThat(registrationLink, matchesPattern("^" + Pattern.quote("http://localhost:8080/user/" + emailAddress + "/activation/") + uuidPattern + "$"));
     }
 }

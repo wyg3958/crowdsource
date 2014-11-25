@@ -1,8 +1,11 @@
 Feature: Registration
 
   @WithMailServerEnabled
-  Scenario: A user registers a new account
+  Scenario Template: A user registers a new account
     Given a user is on the registration page
-    And submits the registration form with the email address 'cucumbertest@crowdsource.com'
-    Then an email is sent to 'cucumbertest@crowdsource.com'
-    When he clicks on the activation link that was sent in the email
+    And submits the registration form with the email address '<emailAddress>'
+    Then an email is sent to '<emailAddress>'
+    And the email contains a valid activation link for the email address '<emailAddress>'
+  Examples:
+    | emailAddress                 |
+    | cucumbertest@crowdsource.com |

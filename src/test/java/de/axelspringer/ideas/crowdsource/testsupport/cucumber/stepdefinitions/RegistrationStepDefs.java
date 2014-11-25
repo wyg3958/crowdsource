@@ -82,6 +82,7 @@ public class RegistrationStepDefs {
     public void the_email_contains_a_valid_activation_link_for_the_email_address(String emailAddress) throws Throwable {
         String uuidPattern = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
 
-        assertThat(registrationLink, matchesPattern("^" + Pattern.quote("http://localhost:8080/user/" + emailAddress + "/activation/") + uuidPattern + "$"));
+        String baseActivationUrl = urlProvider.applicationUrl() + "/user/" + emailAddress + "/activation/";
+        assertThat(registrationLink, matchesPattern("^" + Pattern.quote(baseActivationUrl) + uuidPattern + "$"));
     }
 }

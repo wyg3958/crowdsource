@@ -9,14 +9,8 @@ module.exports = function (config) {
             'src/test/javascript/lib/jquery-1.11.0.min.js',
             'src/test/javascript/lib/angular-1.3.4/angular-mocks.js',
 
-            'src/main/resources/public/app/crowdsource.js',
-
-            'src/main/resources/public/app/services/helloservice.js',
-            'src/test/javascript/app/services/helloservicetest.js',
-
-            'src/main/resources/public/app/directives/hello/hello.js',
-            'src/main/resources/public/app/directives/hello/hello.html',
-            'src/test/javascript/app/directives/hello/hellotest.js'
+            'src/main/resources/public/app/**/*.js',
+            'src/test/javascript/app/**/*.js'
         ],
 
         preprocessors: {

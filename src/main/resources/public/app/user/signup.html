@@ -1,18 +1,29 @@
 <h1>Signup</h1>
 
-<form novalidate>
-    <div class="form-group">
+<form name="signup.form" novalidate>
+    <div class="form-group" ng-class="{ 'has-error': signup.form.$submitted && !signup.form.email.$valid }">
         <label>Email address</label>
-        <input type="email" ng-model="signup.user.email" class="form-control" required>
+
+        <input type="email" name="email" ng-model="signup.user.email" class="form-control" required>
+
+        <div ng-messages="signup.form.email.$error" ng-if="signup.form.$submitted">
+            <div ng-message="required">Dieses Feld ist ein Pflichtfeld</div>
+            <div ng-message="email">Bitte geben Sie eine gültige Email-Adresse ein</div>
+        </div>
+
     </div>
-    <div class="checkbox">
+    <div class="checkbox" ng-class="{ 'has-error': signup.form.$submitted && !signup.form.email.$valid }">
         <label>
-            <input type="checkbox" ng-model="signup.user.termsAndConditionsAccepted" required>
+            <input type="checkbox" name="tac" ng-model="signup.user.termsAndConditionsAccepted" required>
             Ich akzeptiere die AGB
         </label>
+
+        <div ng-messages="signup.form.tac.$error" ng-if="signup.form.$submitted">
+            <div ng-message="required">Bitte akzeptieren Sie die AGBs</div>
+        </div>
     </div>
 
     <div class="form-group">
-        <button class="btn btn-primary" ng-click="signup.signUp()">signup</button>
+        <button type="submit" class="btn btn-primary" ng-click="signup.signUp()">signup</button>
     </div>
 </form>

@@ -59,9 +59,7 @@ public class UserController {
             log.debug("User not found", email);
             return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
         }
-
-        User user = new User(email, null);
-        userRepository.delete(user);
+        userRepository.delete(byEmail);
 
         log.debug("User deleted", email);
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);

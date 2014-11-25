@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class UserControllerTest {
 
+    public static final String WRONG_HTTP_STATUS_CODE = "Wrong HTTP status code";
     @Mock
     private UserRepository userRepository;
 
@@ -29,13 +30,13 @@ public class UserControllerTest {
     @Test
     public void shouldReturnErroneouslyWhenEmailIsEmptyOnSave() throws Exception {
         final ResponseEntity responseEntity = controller.saveUser("");
-        assertEquals("Wrong HTTP status code", HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals(WRONG_HTTP_STATUS_CODE, HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
     @Test
     public void shouldReturnSuccessfullyWhenEmailIsGivenOnSave() throws Exception {
         final ResponseEntity responseEntity = controller.saveUser("test@test.de");
-        assertEquals("Wrong HTTP status code", HttpStatus.CREATED, responseEntity.getStatusCode());
+        assertEquals(WRONG_HTTP_STATUS_CODE, HttpStatus.CREATED, responseEntity.getStatusCode());
     }
 
     @Test
@@ -46,19 +47,19 @@ public class UserControllerTest {
         when(userRepository.findByEmail(isA(String.class))).thenReturn(userList);
 
         final ResponseEntity responseEntity = controller.saveUser("test@test.de");
-        assertEquals("Wrong HTTP status code", HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals(WRONG_HTTP_STATUS_CODE, HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
     @Test
     public void shouldReturnErroneouslyWhenEmailIsEmptyOnDelete() throws Exception {
         final ResponseEntity responseEntity = controller.deleteUser("");
-        assertEquals("Wrong HTTP status code", HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals(WRONG_HTTP_STATUS_CODE, HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
     @Test
     public void shouldReturnErroneouslyWhenUnknownEmailIsGivenOnDelete() throws Exception {
         final ResponseEntity responseEntity = controller.deleteUser("test@test.de");
-        assertEquals("Wrong HTTP status code", HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        assertEquals(WRONG_HTTP_STATUS_CODE, HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
     }
 
     @Test
@@ -70,6 +71,6 @@ public class UserControllerTest {
         when(userRepository.findByEmail(isA(String.class))).thenReturn(userList).thenReturn(emptyList);
 
         final ResponseEntity responseEntity = controller.deleteUser("test@test.de");
-        assertEquals("Wrong HTTP status code", HttpStatus.NO_CONTENT, responseEntity.getStatusCode());
+        assertEquals(WRONG_HTTP_STATUS_CODE, HttpStatus.NO_CONTENT, responseEntity.getStatusCode());
     }
 }

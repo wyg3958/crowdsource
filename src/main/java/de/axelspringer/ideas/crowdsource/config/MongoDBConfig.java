@@ -7,10 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @Configuration
-@EnableMongoRepositories
 public class MongoDBConfig extends AbstractMongoConfiguration {
 
     private Logger log = LoggerFactory.getLogger(getClass());
@@ -34,10 +32,5 @@ public class MongoDBConfig extends AbstractMongoConfiguration {
 
         log.debug("connecting to db host: {}...", DB_HOST);
         return new MongoClient(DB_HOST, DB_PORT);
-    }
-
-    @Override
-    protected String getMappingBasePackage() {
-        return "de.axelspringer.ideas.crowdsource";
     }
 }

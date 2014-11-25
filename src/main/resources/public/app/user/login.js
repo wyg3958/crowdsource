@@ -1,5 +1,5 @@
 angular.module('crowdsource')
 
-.controller('LoginController', function ($scope, $http) {
+.controller('LoginController', function () {
 
 });

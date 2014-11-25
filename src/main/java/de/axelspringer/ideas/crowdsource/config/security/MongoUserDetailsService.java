@@ -45,7 +45,14 @@ public class MongoUserDetailsService implements UserDetailsService {
         log.info("Creating default user {} with password {}", defaultEmailAddress, defaultPassword);
 
         String encodedPassword = passwordEncoder.encode(defaultPassword);
-        userRepository.save(new User(defaultEmailAddress, encodedPassword, Arrays.asList(Roles.ROLE_USER)));
+
+        User user = User.builder()
+                .email(defaultEmailAddress)
+                .password(encodedPassword)
+                .roles(Arrays.asList(Roles.ROLE_USER))
+                .build();
+
+        userRepository.save(user);
     }
 
     @Override

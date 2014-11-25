@@ -43,13 +43,20 @@ public class UserController {
             return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
         }
 
-        // TODO: This is a blocking call, may last long and throw exceptions if the mail server does not want to talk to us
-        userService.sendActivationMail(email);
+        String activationToken = userService.generateActivationToken();
 
-        User user = new User(email, null, Arrays.asList(Roles.ROLE_USER));
+        User user = User.builder()
+                .email(email)
+                .activationToken(activationToken)
+                .roles(Arrays.asList(Roles.ROLE_USER))
+                .build();
+
+        // TODO: This is a blocking call, may last long and throw exceptions if the mail server does not want to talk to us
+        userService.sendActivationMail(user);
+
         userRepository.save(user);
 
-        log.debug("User saved", email);
+        log.debug("User saved: {}", user);
         return new ResponseEntity<Void>(HttpStatus.CREATED);
 
     }

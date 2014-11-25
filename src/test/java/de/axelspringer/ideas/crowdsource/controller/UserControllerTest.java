@@ -11,8 +11,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Arrays;
-
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.when;
@@ -45,7 +43,7 @@ public class UserControllerTest {
 
     @Test
     public void shouldReturnErroneouslyWhenUsedEmailIsGivenOnSave() throws Exception {
-        User user = new User("test@test.test", "test", Arrays.asList());
+        User user = User.builder().email("test@test.de").build();
 
         when(userRepository.findByEmail(isA(String.class))).thenReturn(user);
 
@@ -67,7 +65,7 @@ public class UserControllerTest {
 
     @Test
     public void shouldReturnSuccessfullyWhenEmailIsGivenOnDelete() throws Exception {
-        User user = new User("test@test.test", "test", Arrays.asList());
+        User user = User.builder().email("test@test.de").build();
 
         when(userRepository.findByEmail(isA(String.class))).thenReturn(user).thenReturn(null);
 

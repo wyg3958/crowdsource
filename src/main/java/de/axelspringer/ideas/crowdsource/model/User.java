@@ -1,12 +1,14 @@
 package de.axelspringer.ideas.crowdsource.model;
 
 import lombok.Data;
+import lombok.experimental.Builder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
 @Data
+@Builder
 @Document(collection = "users")
 public class User {
 
@@ -17,11 +19,7 @@ public class User {
 
     private String password;
 
-    private List<String> roles;
+    private String activationToken;
 
-    public User(String email, String password, List<String> roles) {
-        this.email = email;
-        this.password = password;
-        this.roles = roles;
-    }
+    private List<String> roles;
 }

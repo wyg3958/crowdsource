@@ -2,6 +2,7 @@ package de.axelspringer.ideas.crowdsource.controller;
 
 import de.axelspringer.ideas.crowdsource.config.UserRepository;
 import de.axelspringer.ideas.crowdsource.model.User;
+import de.axelspringer.ideas.crowdsource.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,9 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserService userService;
+
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity saveUser(@RequestParam(value = EMAIL, required = true) String email) {
 
@@ -37,6 +41,9 @@ public class UserController {
             log.debug("User not saved (already exists): {}", email);
             return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
         }
+
+        // TODO: This is a blocking call, may last long and throw exceptions if the mail server does not want to talk to us
+        userService.sendActivationMail(email);
 
         User user = new User(email, null);
         userRepository.save(user);
@@ -63,40 +70,6 @@ public class UserController {
 
         log.debug("User deleted", email);
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-    }
-    
-    @Value("${de.axelspringer.ideas.crowdsource.mail.from:crowdsource@asideas.de}")
-    private String fromAddress;
-
-    @Value("${de.axelspringer.ideas.crowdsource.baseUrl}")
-    private String baseUrl;
-
-    @Autowired
-    private JavaMailSender mailSender;
-
-    @RequestMapping
-    public void register(@RequestParam String emailAddress) {
-        String activationLink = buildActivationLink(emailAddress);
-        log.debug("Sending activation link {} to {}", activationLink, emailAddress);
-
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(emailAddress);
-        mailMessage.setFrom(fromAddress);
-        mailMessage.setSubject("CrowdSource Registrierung");
-        mailMessage.setText("Hier du klicken auf link: " + buildActivationLink(emailAddress));
-
-        mailSender.send(mailMessage);
-    }
-
-    private String buildActivationLink(String emailAddress) {
-        // TODO: maybe hash this token with the email address?
-        UUID uuid = UUID.randomUUID();
-        String activationToken = uuid.toString();
-
-        UriComponentsBuilder uriBuilder = ServletUriComponentsBuilder.fromUriString(baseUrl);
-        uriBuilder.path("/user/{emailAddress}/activation/{activationToken}");
-
-        return uriBuilder.buildAndExpand(emailAddress, activationToken).toUriString();
     }
 
 }

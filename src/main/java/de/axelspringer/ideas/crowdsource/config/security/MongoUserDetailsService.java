@@ -11,12 +11,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
-
 import java.util.Arrays;
-import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
 
@@ -24,8 +21,8 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class MongoUserDetailsService implements UserDetailsService {
 
-    @Value("${de.axelspringer.ideas.crowdsource.defaultUser:test}")
-    private String defaultUsername;
+    @Value("${de.axelspringer.ideas.crowdsource.defaultUser:test@crowd.asideas.de}")
+    private String defaultEmailAddress;
 
     @Value("${de.axelspringer.ideas.crowdsource.defaultPassword:test}")
     private String defaultPassword;
@@ -45,22 +42,22 @@ public class MongoUserDetailsService implements UserDetailsService {
             return;
         }
 
-        log.info("Creating default user {} with password {}", defaultUsername, defaultPassword);
+        log.info("Creating default user {} with password {}", defaultEmailAddress, defaultPassword);
 
         String encodedPassword = passwordEncoder.encode(defaultPassword);
-        userRepository.save(new User(defaultUsername, encodedPassword, Arrays.asList(Roles.ROLE_USER)));
+        userRepository.save(new User(defaultEmailAddress, encodedPassword, Arrays.asList(Roles.ROLE_USER)));
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findByEmail(username);
         if (user == null) {
             throw new UsernameNotFoundException("No user with username [" + username + "] found");
         }
 
         return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
+                user.getEmail(),
                 user.getPassword(),
                 user.getRoles().stream().map(SimpleGrantedAuthority::new).collect(toList())
         );

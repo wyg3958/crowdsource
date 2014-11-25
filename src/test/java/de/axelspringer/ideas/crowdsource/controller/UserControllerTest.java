@@ -1,13 +1,14 @@
 package de.axelspringer.ideas.crowdsource.controller;
 
 import de.axelspringer.ideas.crowdsource.config.UserRepository;
-import de.axelspringer.ideas.crowdsource.model.MongoResponse;
 import de.axelspringer.ideas.crowdsource.model.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,16 +28,14 @@ public class UserControllerTest {
 
     @Test
     public void shouldReturnErroneouslyWhenEmailIsEmptyOnSave() throws Exception {
-        final MongoResponse mongoResponse = controller.saveUser("");
-        assertEquals("Incorrect response text", "User email must be given.", mongoResponse.getMessage());
-        assertEquals("Incorrect response code", 1, mongoResponse.getCode());
+        final ResponseEntity responseEntity = controller.saveUser("");
+        assertEquals("Wrong HTTP status code", HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
     @Test
     public void shouldReturnSuccessfullyWhenEmailIsGivenOnSave() throws Exception {
-        final MongoResponse mongoResponse = controller.saveUser("test@test.de");
-        assertEquals("Incorrect response text", "User saved", mongoResponse.getMessage());
-        assertEquals("Incorrect response code", 0, mongoResponse.getCode());
+        final ResponseEntity responseEntity = controller.saveUser("test@test.de");
+        assertEquals("Wrong HTTP status code", HttpStatus.CREATED, responseEntity.getStatusCode());
     }
 
     @Test
@@ -46,35 +45,20 @@ public class UserControllerTest {
 
         when(userRepository.findByEmail(isA(String.class))).thenReturn(userList);
 
-        final MongoResponse mongoResponse = controller.saveUser("test@test.de");
-        assertEquals("Incorrect response text", "User not saved (already exists)", mongoResponse.getMessage());
-        assertEquals("Incorrect response code", 1, mongoResponse.getCode());
+        final ResponseEntity responseEntity = controller.saveUser("test@test.de");
+        assertEquals("Wrong HTTP status code", HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
     @Test
     public void shouldReturnErroneouslyWhenEmailIsEmptyOnDelete() throws Exception {
-        final MongoResponse mongoResponse = controller.deleteUser("");
-        assertEquals("Incorrect response text", "User email must be given.", mongoResponse.getMessage());
-        assertEquals("Incorrect response code", 1, mongoResponse.getCode());
+        final ResponseEntity responseEntity = controller.deleteUser("");
+        assertEquals("Wrong HTTP status code", HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
     @Test
     public void shouldReturnErroneouslyWhenUnknownEmailIsGivenOnDelete() throws Exception {
-        final MongoResponse mongoResponse = controller.deleteUser("test@test.de");
-        assertEquals("Incorrect response text", "User not found", mongoResponse.getMessage());
-        assertEquals("Incorrect response code", 1, mongoResponse.getCode());
-    }
-
-    @Test
-    public void shouldReturnErroneouslyWhenEmailIsGivenOnFailingDelete() throws Exception {
-        List<User> userList = new ArrayList<>();
-        userList.add(new User("test", "test"));
-
-        when(userRepository.findByEmail(isA(String.class))).thenReturn(userList);
-
-        final MongoResponse mongoResponse = controller.deleteUser("test@test.de");
-        assertEquals("Incorrect response text", "Deletion failed (user still in DB)", mongoResponse.getMessage());
-        assertEquals("Incorrect response code", 1, mongoResponse.getCode());
+        final ResponseEntity responseEntity = controller.deleteUser("test@test.de");
+        assertEquals("Wrong HTTP status code", HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
     }
 
     @Test
@@ -85,8 +69,7 @@ public class UserControllerTest {
 
         when(userRepository.findByEmail(isA(String.class))).thenReturn(userList).thenReturn(emptyList);
 
-        final MongoResponse mongoResponse = controller.deleteUser("test@test.de");
-        assertEquals("Incorrect response text", "User deleted", mongoResponse.getMessage());
-        assertEquals("Incorrect response code", 0, mongoResponse.getCode());
+        final ResponseEntity responseEntity = controller.deleteUser("test@test.de");
+        assertEquals("Wrong HTTP status code", HttpStatus.NO_CONTENT, responseEntity.getStatusCode());
     }
 }

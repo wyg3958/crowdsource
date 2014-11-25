@@ -1,11 +1,11 @@
 package de.axelspringer.ideas.crowdsource.controller;
 
 import de.axelspringer.ideas.crowdsource.config.UserRepository;
-import de.axelspringer.ideas.crowdsource.model.MongoResponse;
 import de.axelspringer.ideas.crowdsource.model.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -23,48 +24,46 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private MongoOperations mongoOperations;
-
-    @RequestMapping(method = RequestMethod.POST, value = "/save", produces = MediaType.APPLICATION_JSON_VALUE)
-    public MongoResponse saveUser(@RequestParam(value = EMAIL, required = true) String email) {
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity saveUser(@RequestParam(value = EMAIL, required = true) String email) {
 
         if (StringUtils.isEmpty(email)) {
-            return new MongoResponse(1, "User email must be given.");
+            log.debug("Email is empty", email);
+            return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
         }
 
         final List<User> byEmail = userRepository.findByEmail(email);
         if (byEmail.size() > 0) {
-            return new MongoResponse(1, "User not saved (already exists)");
+            log.debug("User not saved (already exists): {}", email);
+            return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
         }
 
         User user = new User(email, null);
         userRepository.save(user);
 
-        return new MongoResponse(0, "User saved");
+        log.debug("User saved", email);
+        return new ResponseEntity<Void>(HttpStatus.CREATED);
 
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/delete", produces = MediaType.APPLICATION_JSON_VALUE)
-    public MongoResponse deleteUser(@RequestParam(value = EMAIL, required = true) String email) {
+    @RequestMapping(method = RequestMethod.DELETE)
+    public ResponseEntity deleteUser(@RequestParam(value = EMAIL, required = true) String email) {
 
         if (StringUtils.isEmpty(email)) {
-            return new MongoResponse(1, "User email must be given.");
+            log.debug("Email is empty", email);
+            return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
         }
 
         List<User> byEmail = userRepository.findByEmail(email);
         if (byEmail.size() == 0) {
-            return new MongoResponse(1, "User not found");
+            log.debug("User not found", email);
+            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
         }
 
         User user = new User(email, null);
         userRepository.delete(user);
 
-        byEmail = userRepository.findByEmail(email);
-        if (byEmail.size() > 0) {
-            return new MongoResponse(1, "Deletion failed (user still in DB)");
-        }
-
-        return new MongoResponse(0, "User deleted");
+        log.debug("User deleted", email);
+        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 }

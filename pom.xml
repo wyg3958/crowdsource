@@ -330,6 +330,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <!-- Explicitly define this version, or phantomjs will pull in an old version -->
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-remote-driver</artifactId>
+            <version>2.44.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.github.detro</groupId>
             <artifactId>phantomjsdriver</artifactId>
             <version>1.2.0</version>

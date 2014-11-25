@@ -6,6 +6,7 @@ import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
 import de.axelspringer.ideas.crowdsource.testsupport.util.WebDriverProvider;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
@@ -16,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
 
+@Ignore("hello view was removed. Once we have a proper index page, adapt this test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
 public class IndexIT {

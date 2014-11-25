@@ -1,5 +1,5 @@
 angular.module('crowdsource')
 
-.controller('LoginController', function () {
+    .controller('LoginController', function () {
 
-});
+    });

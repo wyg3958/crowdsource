@@ -1,7 +1,8 @@
 package de.axelspringer.ideas.crowdsource.controller;
 
-import de.axelspringer.ideas.crowdsource.config.UserRepository;
+import de.axelspringer.ideas.crowdsource.config.security.Roles;
 import de.axelspringer.ideas.crowdsource.model.User;
+import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import de.axelspringer.ideas.crowdsource.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.Arrays;
 
 @Slf4j
 @RestController
@@ -36,8 +37,8 @@ public class UserController {
             return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
         }
 
-        final List<User> byEmail = userRepository.findByEmail(email);
-        if (byEmail.size() > 0) {
+        final User byEmail = userRepository.findByEmail(email);
+        if (byEmail != null) {
             log.debug("User not saved (already exists): {}", email);
             return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
         }
@@ -45,7 +46,7 @@ public class UserController {
         // TODO: This is a blocking call, may last long and throw exceptions if the mail server does not want to talk to us
         userService.sendActivationMail(email);
 
-        User user = new User(email, null);
+        User user = new User(email, null, Arrays.asList(Roles.ROLE_USER));
         userRepository.save(user);
 
         log.debug("User saved", email);
@@ -61,8 +62,8 @@ public class UserController {
             return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
         }
 
-        List<User> byEmail = userRepository.findByEmail(email);
-        if (byEmail.size() == 0) {
+        User byEmail = userRepository.findByEmail(email);
+        if (byEmail == null) {
             log.debug("User not found", email);
             return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
         }

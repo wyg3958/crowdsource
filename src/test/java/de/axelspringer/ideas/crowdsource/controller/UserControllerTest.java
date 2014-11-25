@@ -1,7 +1,7 @@
 package de.axelspringer.ideas.crowdsource.controller;
 
-import de.axelspringer.ideas.crowdsource.config.UserRepository;
 import de.axelspringer.ideas.crowdsource.model.User;
+import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import de.axelspringer.ideas.crowdsource.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,8 +11,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.isA;
@@ -46,10 +45,9 @@ public class UserControllerTest {
 
     @Test
     public void shouldReturnErroneouslyWhenUsedEmailIsGivenOnSave() throws Exception {
-        List<User> userList = new ArrayList<>();
-        userList.add(new User("test", "test"));
+        User user = new User("test@test.test", "test", Arrays.asList());
 
-        when(userRepository.findByEmail(isA(String.class))).thenReturn(userList);
+        when(userRepository.findByEmail(isA(String.class))).thenReturn(user);
 
         final ResponseEntity responseEntity = controller.saveUser("test@test.de");
         assertEquals(WRONG_HTTP_STATUS_CODE, HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
@@ -69,11 +67,9 @@ public class UserControllerTest {
 
     @Test
     public void shouldReturnSuccessfullyWhenEmailIsGivenOnDelete() throws Exception {
-        List<User> emptyList = new ArrayList<>();
-        List<User> userList = new ArrayList<>();
-        userList.add(new User("test", "test"));
+        User user = new User("test@test.test", "test", Arrays.asList());
 
-        when(userRepository.findByEmail(isA(String.class))).thenReturn(userList).thenReturn(emptyList);
+        when(userRepository.findByEmail(isA(String.class))).thenReturn(user).thenReturn(null);
 
         final ResponseEntity responseEntity = controller.deleteUser("test@test.de");
         assertEquals(WRONG_HTTP_STATUS_CODE, HttpStatus.NO_CONTENT, responseEntity.getStatusCode());

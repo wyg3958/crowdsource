@@ -13,4 +13,7 @@
 
     <logger name="de.axelspringer.ideas.crowdsource" level="DEBUG"/>
 
+    <!-- Activate this to log requests and responses from apache httpclient -->
+    <!--<logger name="org.apache.http.wire" level="DEBUG"/>-->
+
 </configuration>

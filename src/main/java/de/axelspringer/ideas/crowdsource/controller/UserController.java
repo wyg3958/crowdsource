@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.Arrays;
 
 @Slf4j
@@ -29,7 +30,7 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity saveUser(@RequestBody RequestUser requestUser) {
+    public ResponseEntity saveUser(@RequestBody @Valid RequestUser requestUser) {
 
         final String email = requestUser.getEmail();
         if (StringUtils.isEmpty(email)) {
@@ -75,6 +76,8 @@ public class UserController {
             log.debug("User not found", email);
             return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
         }
+
+        // TODO: update?
 
         userRepository.save(byEmail);
 

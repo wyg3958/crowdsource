@@ -9,7 +9,7 @@ ExecStartPre=-/usr/bin/docker kill crowdsource
 ExecStartPre=-/usr/bin/docker rm crowdsource
 ExecStartPre=-/usr/bin/docker login -e crowdsource@asideas.de -p ideas987 -u asjenkins
 ExecStartPre=/usr/bin/docker pull asideas/crowdsource
-ExecStart=/usr/bin/docker run -p 80:8080 --name="crowdsource" "asideas/crowdsource:latest" -Dspring.profiles.active=prod
+ExecStart=/usr/bin/docker run -p 80:8080 --name="crowdsource" -e "SPRING_PROFILES_ACTIVE=prod" spring.profiles.active=prod "asideas/crowdsource:latest"
 ExecStop=/usr/bin/docker stop crowdsource
 
 [Install]

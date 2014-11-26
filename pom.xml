@@ -82,6 +82,10 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <!-- forking might be good for starting the application during integration test phase, but not for local development -->
+                    <fork>false</fork>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

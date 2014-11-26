@@ -1,7 +1,7 @@
 angular.module('crowdsource')
 
-    .controller('SignupSuccessController', function ($routeParams) {
+    .controller('SignupSuccessController', function ($scope, $routeParams) {
 
-        this.email = $routeParams.email;
+        $scope.email = $routeParams.email;
 
     });

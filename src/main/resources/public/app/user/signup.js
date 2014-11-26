@@ -2,32 +2,39 @@ angular.module('crowdsource')
 
     .controller('SignupController', function ($scope, User, FormUtils, $location) {
 
-        var ctrl = this;
-
-        $scope.$watch(function() { return ctrl.user; }, function() {
-            ctrl.form.$setPristine();
-        }, true);
-
-        this.signUp = function () {
-            if (!this.form.$valid) {
+        $scope.signUp = function () {
+            if (!$scope.signupForm.$valid) {
                 return;
             }
 
-            ctrl.generalErrorOcurred = false;
-            ctrl.loading = true;
+            $scope.generalErrorOcurred = false;
+            $scope.loading = true;
 
-            var promise = User.register(ctrl.user);
+            var promise = User.register($scope.user);
             promise.then(function() {
-                $location.path('/signup/' + ctrl.user.email + '/success');
+                $location.path('/signup/' + $scope.user.email + '/success');
             });
             promise.catch(function(response) {
-                if (!FormUtils.applyServerErrorResponse(ctrl.form, response)) {
-                    ctrl.generalErrorOcurred = true;
+                if (!FormUtils.applyServerErrorResponse($scope.signupForm, response)) {
+                    $scope.generalErrorOcurred = true;
                 }
             });
             promise.finally(function() {
-                ctrl.loading = false;
+                $scope.loading = false;
             });
+        };
+
+        $scope.shouldShowValidationError = function(field) {
+            if (!$scope.signupForm[field]) {
+                return false;
+            }
+
+            var userInteracted = $scope.signupForm.$submitted || $scope.signupForm[field].$dirty;
+            return (userInteracted && $scope.signupForm[field].$invalid);
+        };
+
+        $scope.shouldNotShowValidationError = function(field) {
+            return !$scope.shouldShowValidationError(field);
         };
 
     });

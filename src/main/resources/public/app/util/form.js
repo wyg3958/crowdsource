@@ -1,6 +1,8 @@
 angular.module('crowdsource')
 
     .factory('FormUtils', function () {
+        var REMOTE_RULE_PREFIX = 'remote_';
+
         return {
             /**
              * The server response is expected to be
@@ -30,7 +32,7 @@ angular.module('crowdsource')
                 if (response.data && response.data.fieldViolations) {
                     angular.forEach(response.data.fieldViolations, function (rule, field) {
                         if (form[field]) {
-                            form[field].$setValidity(rule, false);
+                            form[field].$setValidity(REMOTE_RULE_PREFIX + rule, false);
 
                             appliedErrors = true;
                         }
@@ -38,6 +40,36 @@ angular.module('crowdsource')
                 }
 
                 return appliedErrors;
+            },
+            isRemoteRule: function(rule) {
+                return rule.indexOf(REMOTE_RULE_PREFIX) === 0;
             }
         };
+    })
+
+    .directive('resetRemoteValidation', function (FormUtils) {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, elem, attrs) {
+                var form = $(elem).closest('form');
+                if (!form) {
+                    return;
+                }
+                var formName = form.attr('name');
+                var elemName = attrs.name;
+
+                scope.$watch(attrs.ngModel, function () {
+                    var elemScope = scope[formName][elemName];
+
+                    // iterate over ever error of the field
+                    angular.forEach(elemScope.$error, function (valid, rule) {
+                        if (FormUtils.isRemoteRule(rule)) {
+                            // set the validity to true if it is a remote validation error when the value changes
+                            elemScope.$setValidity(rule, true);
+                        }
+                    });
+                });
+            }
+        }
     });

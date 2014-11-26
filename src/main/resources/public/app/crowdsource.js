@@ -7,15 +7,15 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages'])
     $routeProvider
         .when('/login', {
             templateUrl: 'app/user/login.html',
-            controller: 'LoginController as login'
+            controller: 'LoginController'
         })
         .when('/signup', {
             templateUrl: 'app/user/signup.html',
-            controller: 'SignupController as signup'
+            controller: 'SignupController'
         })
         .when('/signup/:email/success', {
             templateUrl: 'app/user/signup-success.html',
-            controller: 'SignupSuccessController as signupSuccess'
+            controller: 'SignupSuccessController'
         });
 
     // we can only activate this, once you can reload the page with the path not being /

@@ -24,8 +24,15 @@
     <div class="checkbox" ng-class="{ 'has-error': signup.form.$submitted && !signup.form.termsOfServiceAccepted.$valid }">
         <label>
             <input type="checkbox" name="termsOfServiceAccepted" ng-model="signup.user.termsOfServiceAccepted" required>
-            Ich akzeptiere die AGB
+            Ich akzeptiere die <a ng-click="signup.showTermsOfService = !signup.showTermsOfService">AGB</a>
         </label>
+
+        <div ng-if="signup.showTermsOfService">
+            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+            At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit
+            amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
+            justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+        </div>
 
         <div ng-messages="signup.form.termsOfServiceAccepted.$error" ng-if="signup.form.$submitted">
             <div ng-message="required">Bitte akzeptieren Sie die AGBs</div>

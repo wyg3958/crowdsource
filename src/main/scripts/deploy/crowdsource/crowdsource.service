@@ -14,3 +14,6 @@ ExecStop=/usr/bin/docker stop crowdsource
 
 [Install]
 WantedBy=multi-user.target
+
+[X-Fleet]
+MachineID=7d70b04a731143479c7e883aa7fc1a7c

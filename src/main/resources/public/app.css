@@ -1,0 +1,55 @@
+body {
+    background-color: #e6e6e6;
+    height: 100%;
+}
+
+body, h1, h2, h3, h4, h5, h6, a {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.page-wrapper {
+    min-height:100%;
+    position:relative;
+}
+
+nav.top-bar,
+nav.top-bar .name a,
+.top-bar-section li:not(.has-form) a:not(.button) {
+    background-color: white;
+    color: black;
+}
+
+nav.top-bar .name a {
+    font-weight: bold;
+}
+
+nav.top-bar .right a {
+    text-transform: uppercase;
+}
+
+.teaser {
+    width: 100%;
+    line-height: 200px;
+    background-color: #6455a0;
+    color: white;
+    font-size: 28px;
+}
+
+@media only screen and (max-width: 40em) {
+    .teaser {
+        line-height: 100px;
+        font-size: 4.1vw;
+    }
+}
+
+.content {
+    padding: 40px 40px 240px 40px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    height: 200px;
+    width: 100%;
+    background-color: black;
+}

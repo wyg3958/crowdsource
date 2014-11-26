@@ -29,11 +29,11 @@
                         </span>
                     </label>
 
-                    <div class="row collapse">
-                        <div class="small-6 medium-7 large-8 columns">
+                    <div class="table">
+                        <div class="table-cell full-width">
                             <input type="text" name="email" ng-model="user.email" class="text-right" required ng-pattern="/^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+$/i" reset-remote-validation>
                         </div>
-                        <div class="small-6 medium-5 large-4 columns">
+                        <div class="table-cell">
                             <span class="postfix text-left">{{ ::EMAIL_HOST }}</span>
                         </div>
                     </div>

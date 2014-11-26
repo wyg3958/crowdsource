@@ -125,5 +125,18 @@ nav.top-bar .right a {
 }
 
 .postfix.text-left {
-    padding-left: 5px;
+    padding: 0 5px;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.table {
+    display: table;
+}
+
+.table-cell {
+    display: table-cell;
+    vertical-align: top;
 }

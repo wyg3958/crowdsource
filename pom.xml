@@ -25,12 +25,14 @@
         <spring.security.version>3.2.5.RELEASE</spring.security.version>
         <mockito.version>1.10.8</mockito.version>
         <selenium.version>2.41.0</selenium.version>
+        <prod.application.host>54.194.152.80</prod.application.host>
     </properties>
 
     <build>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
+                <filtering>true</filtering>
             </resource>
             <resource>
                 <directory>src/main/scripts/</directory>
@@ -229,7 +231,7 @@
                                     <executable>${project.build.directory}/scripts/deploy/crowdsource/deploy.sh</executable>
                                     <arguments>
                                         <argument>${project.build.directory}/scripts/deploy/</argument>
-                                        <argument>54.194.152.80</argument>
+                                        <argument>${prod.application.host}</argument>
                                     </arguments>
                                 </configuration>
                             </execution>

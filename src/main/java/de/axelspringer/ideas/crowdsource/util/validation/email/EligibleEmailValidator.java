@@ -3,7 +3,9 @@ package de.axelspringer.ideas.crowdsource.util.validation.email;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-// TODO: test
+/**
+ * Validator for {@link de.axelspringer.ideas.crowdsource.util.validation.email.EligibleEmail}
+ */
 public class EligibleEmailValidator implements ConstraintValidator<EligibleEmail, String> {
 
     @Override

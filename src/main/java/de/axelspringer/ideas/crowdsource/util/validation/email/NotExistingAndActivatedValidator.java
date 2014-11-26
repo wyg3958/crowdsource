@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-// TODO: test
+/**
+ * Validator for {@link de.axelspringer.ideas.crowdsource.util.validation.email.NotExistingAndActivated}
+ */
 @Service
 public class NotExistingAndActivatedValidator implements ConstraintValidator<NotExistingAndActivated, String> {
 
@@ -25,7 +27,7 @@ public class NotExistingAndActivatedValidator implements ConstraintValidator<Not
 
         final UserEntity user = userRepository.findByEmail(email);
 
-        if (user == null) {
+        if (user == null || !user.isActivated()) {
             return true;
         }
 

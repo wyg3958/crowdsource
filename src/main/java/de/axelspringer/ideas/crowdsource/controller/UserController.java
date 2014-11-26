@@ -1,6 +1,7 @@
 package de.axelspringer.ideas.crowdsource.controller;
 
 import de.axelspringer.ideas.crowdsource.config.security.Roles;
+import de.axelspringer.ideas.crowdsource.model.RequestUser;
 import de.axelspringer.ideas.crowdsource.model.User;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import de.axelspringer.ideas.crowdsource.service.UserService;
@@ -9,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
@@ -21,8 +22,6 @@ import java.util.Arrays;
 @RequestMapping("/user")
 public class UserController {
 
-    public static final String EMAIL = "email";
-
     @Autowired
     private UserRepository userRepository;
 
@@ -30,8 +29,9 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity saveUser(@RequestParam(value = EMAIL, required = true) String email) {
+    public ResponseEntity saveUser(@RequestBody RequestUser requestUser) {
 
+        final String email = requestUser.getEmail();
         if (StringUtils.isEmpty(email)) {
             log.debug("Email is empty", email);
             return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
@@ -61,9 +61,31 @@ public class UserController {
 
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
-    public ResponseEntity deleteUser(@RequestParam(value = EMAIL, required = true) String email) {
+    @RequestMapping(method = RequestMethod.PUT)
+    public ResponseEntity updateUser(@RequestBody RequestUser requestUser) {
 
+        final String email = requestUser.getEmail();
+        if (StringUtils.isEmpty(email)) {
+            log.debug("Email is empty", email);
+            return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+        }
+
+        User byEmail = userRepository.findByEmail(email);
+        if (byEmail == null) {
+            log.debug("User not found", email);
+            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+        }
+
+        userRepository.save(byEmail);
+
+        log.debug("User updated: {}", byEmail);
+        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE)
+    public ResponseEntity deleteUser(@RequestBody RequestUser requestUser) {
+
+        final String email = requestUser.getEmail();
         if (StringUtils.isEmpty(email)) {
             log.debug("Email is empty", email);
             return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);

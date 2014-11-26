@@ -5,6 +5,7 @@ import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
+import de.axelspringer.ideas.crowdsource.model.RequestUser;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,10 +63,11 @@ public class RegistrationStepDefs {
     public void submits_the_registration_form_with_a_new_email_address() throws Throwable {
         UriComponentsBuilder uriBuilder = ServletUriComponentsBuilder.fromUriString(urlProvider.applicationUrl());
         uriBuilder.path("/user");
-        uriBuilder.queryParam("email", emailAddress);
 
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.postForObject(uriBuilder.build().toUriString(), null, Void.class);
+        final RequestUser request = new RequestUser();
+        request.setEmail(emailAddress);
+        restTemplate.postForObject(uriBuilder.build().toUriString(), request, Void.class);
     }
 
     @Then("^an email is sent to the given email address$")

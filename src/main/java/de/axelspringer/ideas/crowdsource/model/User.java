@@ -22,4 +22,6 @@ public class User {
     private String activationToken;
 
     private List<String> roles;
+
+    private boolean activated;
 }

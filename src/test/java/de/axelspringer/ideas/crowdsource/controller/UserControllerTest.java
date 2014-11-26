@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.crowdsource.controller;
 
+import de.axelspringer.ideas.crowdsource.model.RequestUser;
 import de.axelspringer.ideas.crowdsource.model.User;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import de.axelspringer.ideas.crowdsource.service.UserService;
@@ -31,45 +32,85 @@ public class UserControllerTest {
 
     @Test
     public void shouldReturnErroneouslyWhenEmailIsEmptyOnSave() throws Exception {
-        final ResponseEntity responseEntity = controller.saveUser("");
+        final ResponseEntity responseEntity = controller.saveUser(new RequestUser());
         assertEquals(WRONG_HTTP_STATUS_CODE, HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
     @Test
     public void shouldReturnSuccessfullyWhenEmailIsGivenOnSave() throws Exception {
-        final ResponseEntity responseEntity = controller.saveUser("test@test.de");
+        RequestUser requestUser = new RequestUser();
+        requestUser.setEmail("test@test.de");
+
+        final ResponseEntity responseEntity = controller.saveUser(requestUser);
         assertEquals(WRONG_HTTP_STATUS_CODE, HttpStatus.CREATED, responseEntity.getStatusCode());
     }
 
     @Test
     public void shouldReturnErroneouslyWhenUsedEmailIsGivenOnSave() throws Exception {
+        RequestUser requestUser = new RequestUser();
+        requestUser.setEmail("test@test.de");
+
         User user = User.builder().email("test@test.de").build();
 
         when(userRepository.findByEmail(isA(String.class))).thenReturn(user);
 
-        final ResponseEntity responseEntity = controller.saveUser("test@test.de");
+        final ResponseEntity responseEntity = controller.saveUser(requestUser);
         assertEquals(WRONG_HTTP_STATUS_CODE, HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
     @Test
     public void shouldReturnErroneouslyWhenEmailIsEmptyOnDelete() throws Exception {
-        final ResponseEntity responseEntity = controller.deleteUser("");
+        RequestUser requestUser = new RequestUser();
+        final ResponseEntity responseEntity = controller.deleteUser(requestUser);
         assertEquals(WRONG_HTTP_STATUS_CODE, HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
     @Test
     public void shouldReturnErroneouslyWhenUnknownEmailIsGivenOnDelete() throws Exception {
-        final ResponseEntity responseEntity = controller.deleteUser("test@test.de");
+        RequestUser requestUser = new RequestUser();
+        requestUser.setEmail("test@test.de");
+
+        final ResponseEntity responseEntity = controller.deleteUser(requestUser);
         assertEquals(WRONG_HTTP_STATUS_CODE, HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
     }
 
     @Test
     public void shouldReturnSuccessfullyWhenEmailIsGivenOnDelete() throws Exception {
+        RequestUser requestUser = new RequestUser();
+        requestUser.setEmail("test@test.de");
         User user = User.builder().email("test@test.de").build();
 
         when(userRepository.findByEmail(isA(String.class))).thenReturn(user).thenReturn(null);
 
-        final ResponseEntity responseEntity = controller.deleteUser("test@test.de");
+        final ResponseEntity responseEntity = controller.deleteUser(requestUser);
+        assertEquals(WRONG_HTTP_STATUS_CODE, HttpStatus.NO_CONTENT, responseEntity.getStatusCode());
+    }
+
+    @Test
+    public void shouldReturnErroneouslyWhenEmailIsEmptyOnUpdate() throws Exception {
+        RequestUser requestUser = new RequestUser();
+        final ResponseEntity responseEntity = controller.updateUser(requestUser);
+        assertEquals(WRONG_HTTP_STATUS_CODE, HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+    }
+
+    @Test
+    public void shouldReturnErroneouslyWhenUnknownEmailIsGivenOnUpdate() throws Exception {
+        RequestUser requestUser = new RequestUser();
+        requestUser.setEmail("test@test.de");
+
+        final ResponseEntity responseEntity = controller.updateUser(requestUser);
+        assertEquals(WRONG_HTTP_STATUS_CODE, HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    }
+
+    @Test
+    public void shouldReturnSuccessfullyWhenEmailIsGivenOnUpdate() throws Exception {
+        RequestUser requestUser = new RequestUser();
+        requestUser.setEmail("test@test.de");
+        User user = User.builder().email("test@test.de").build();
+
+        when(userRepository.findByEmail(isA(String.class))).thenReturn(user).thenReturn(null);
+
+        final ResponseEntity responseEntity = controller.updateUser(requestUser);
         assertEquals(WRONG_HTTP_STATUS_CODE, HttpStatus.NO_CONTENT, responseEntity.getStatusCode());
     }
 }

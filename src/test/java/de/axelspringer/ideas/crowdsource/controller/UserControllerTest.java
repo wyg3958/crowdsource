@@ -59,34 +59,6 @@ public class UserControllerTest {
     }
 
     @Test
-    public void shouldReturnErroneouslyWhenEmailIsEmptyOnDelete() throws Exception {
-        RequestUser requestUser = new RequestUser();
-        final ResponseEntity responseEntity = controller.deleteUser(requestUser);
-        assertEquals(WRONG_HTTP_STATUS_CODE, HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-    }
-
-    @Test
-    public void shouldReturnErroneouslyWhenUnknownEmailIsGivenOnDelete() throws Exception {
-        RequestUser requestUser = new RequestUser();
-        requestUser.setEmail("test@test.de");
-
-        final ResponseEntity responseEntity = controller.deleteUser(requestUser);
-        assertEquals(WRONG_HTTP_STATUS_CODE, HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
-    }
-
-    @Test
-    public void shouldReturnSuccessfullyWhenEmailIsGivenOnDelete() throws Exception {
-        RequestUser requestUser = new RequestUser();
-        requestUser.setEmail("test@test.de");
-        User user = User.builder().email("test@test.de").build();
-
-        when(userRepository.findByEmail(isA(String.class))).thenReturn(user).thenReturn(null);
-
-        final ResponseEntity responseEntity = controller.deleteUser(requestUser);
-        assertEquals(WRONG_HTTP_STATUS_CODE, HttpStatus.NO_CONTENT, responseEntity.getStatusCode());
-    }
-
-    @Test
     public void shouldReturnErroneouslyWhenEmailIsEmptyOnUpdate() throws Exception {
         RequestUser requestUser = new RequestUser();
         final ResponseEntity responseEntity = controller.updateUser(requestUser);

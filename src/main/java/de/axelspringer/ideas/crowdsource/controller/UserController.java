@@ -86,26 +86,4 @@ public class UserController {
         log.debug("User updated: {}", byEmail);
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
-
-    @RequestMapping(method = RequestMethod.DELETE)
-    public ResponseEntity deleteUser(@RequestBody RequestUser requestUser) {
-
-        // TODO: replace with @NotNull + @NotEmpty
-        final String email = requestUser.getEmail();
-        if (StringUtils.isEmpty(email)) {
-            log.debug("Email is empty", email);
-            return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
-        }
-
-        User byEmail = userRepository.findByEmail(email);
-        if (byEmail == null) {
-            log.debug("User not found", email);
-            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
-        }
-        userRepository.delete(byEmail);
-
-        log.debug("User deleted", email);
-        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-    }
-
 }

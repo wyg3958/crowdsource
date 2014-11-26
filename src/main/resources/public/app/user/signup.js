@@ -9,11 +9,15 @@ angular.module('crowdsource')
                 return;
             }
 
+            ctrl.generalErrorOcurred = false;
             ctrl.loading = true;
 
             var promise = User.register(ctrl.user);
             promise.then(function() {
                 $location.path('/signup/' + ctrl.user.email + '/success');
+            });
+            promise.catch(function() {
+                ctrl.generalErrorOcurred = true;
             });
             promise.finally(function() {
                 ctrl.loading = false;

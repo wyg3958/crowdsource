@@ -35,7 +35,7 @@ do
  else
   echo "RETURN CODE FROM SERVICE INCORRECT - WAITING..."
  fi
- sleep 3s
+ sleep 5s
 done
 
 if [ $STATUS != 0 ]; then

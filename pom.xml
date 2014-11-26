@@ -228,7 +228,7 @@
                                     <executable>${project.build.directory}/scripts/deploy/crowdsource/deploy.sh</executable>
                                     <arguments>
                                         <argument>${project.build.directory}/scripts/deploy/</argument>
-                                        <argument>ec2-54-171-205-70.eu-west-1.compute.amazonaws.com</argument>
+                                        <argument>54.194.152.80</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
@@ -321,7 +321,7 @@
             <version>1.14.8</version>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>

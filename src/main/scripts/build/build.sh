@@ -1,8 +1,6 @@
 #!/bin/sh
 
 # clean
-docker kill crowdsource
-docker rm crowdsource
 docker rmi 'asideas/crowdsource'
 
 # build

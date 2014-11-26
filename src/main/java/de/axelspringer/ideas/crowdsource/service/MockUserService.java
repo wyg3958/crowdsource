@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Primary // use this bean if dev profile is active, instead of the RealUserService
 @Profile(AppProfile.DEV)
-public class MockUserService extends RealUserService {
+public class MockUserService extends UserService {
 
     @Override
     public void sendActivationMail(User user) {

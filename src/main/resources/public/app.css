@@ -68,6 +68,12 @@ nav.top-bar .right a {
     color: #6b6b6b;
 }
 
+@media only screen and (max-width: 40em) {
+    .content {
+        padding: 10px 10px 240px 10px;
+    }
+}
+
 .footer {
     position: absolute;
     bottom: 0;

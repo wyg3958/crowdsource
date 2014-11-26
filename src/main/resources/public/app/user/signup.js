@@ -1,8 +1,12 @@
 angular.module('crowdsource')
 
-    .controller('SignupController', function (User, FormUtils, $location) {
+    .controller('SignupController', function ($scope, User, FormUtils, $location) {
 
         var ctrl = this;
+
+        $scope.$watch(function() { return ctrl.user; }, function() {
+            ctrl.form.$setPristine();
+        }, true);
 
         this.signUp = function () {
             if (!this.form.$valid) {

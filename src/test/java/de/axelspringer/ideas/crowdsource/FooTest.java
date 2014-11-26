@@ -6,6 +6,6 @@ public class FooTest {
 
     @Test
     public void fail() {
-        //throw new RuntimeException("bam!");
+        throw new RuntimeException("bam!");
     }
 }

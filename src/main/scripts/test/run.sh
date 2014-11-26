@@ -15,7 +15,7 @@ docker logs crowdsourcetestdb
 HOST_IP=`netstat -nr | grep '^0\.0\.0\.0' | awk '{print $2}'`
 
 # run application
-docker run -p ${it.application.port}:8080 -d -e de.axelspringer.ideas.crowdsource.db.host=$HOST_IP --name="crowdsource" "asideas/crowdsource:latest" -Dspring.profiles.active=ci
+docker run -p ${it.application.port}:8080 -d -e de.axelspringer.ideas.crowdsource.db.host=$HOST_IP --name="crowdsource_test" "asideas/crowdsource:latest" -Dspring.profiles.active=ci
 
 # curl as health check
 echo "CHECKING AVAILABILITY OF LAUNCHED SERVICE (curl and expect http 200)..."

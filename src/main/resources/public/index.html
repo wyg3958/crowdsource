@@ -26,12 +26,13 @@
     <script src="app/user/signup.js"></script>
     <script src="app/user/signup-success.js"></script>
     <script src="app/util/form.js"></script>
+    <script src="app/util/navigation.js"></script>
 </head>
 <body ng-app="crowdsource">
 
 <div class="page-wrapper">
 
-    <nav class="top-bar" data-topbar role="navigation">
+    <nav class="top-bar" data-topbar role="navigation" ng-controller="NavigationController">
         <ul class="title-area">
             <li class="name">
                 <h1><a href="#/">Axel Springer CROWD</a></h1>
@@ -40,9 +41,9 @@
 
         <section class="top-bar-section">
             <ul class="right">
-                <li><a href="#/faq">FAQ</a></li>
-                <li><a href="#/login">Login</a></li>
-                <li><a href="#/signup">Registrieren</a></li>
+                <li ng-class="getClassForMenuItem('/faq')"><a href="#/faq">FAQ</a></li>
+                <li ng-class="getClassForMenuItem('/login')"><a href="#/login">Login</a></li>
+                <li ng-class="getClassForMenuItem('/signup')"><a href="#/signup">Registrieren</a></li>
             </ul>
         </section>
     </nav>

@@ -36,6 +36,21 @@ nav.top-bar .name a,
     color: black;
 }
 
+.top-bar-section li:not(.has-form) a:not(.button):hover {
+    background-color: white;
+    color: #6455a0;
+}
+
+.top-bar-section li.active:not(.has-form) a:not(.button) {
+    background-color: white;
+    color: orange;
+}
+
+.top-bar-section li.active:not(.has-form) a:not(.button):hover {
+    background-color: white;
+    color: orange;
+}
+
 nav.top-bar a {
     text-decoration: none;
 }

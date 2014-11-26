@@ -7,6 +7,23 @@ body, h1, h2, h3, h4, h5, h6, a {
     font-family: 'Open Sans', sans-serif;
 }
 
+a {
+    color: black;
+    text-decoration: underline;
+}
+
+a:hover {
+    color: #6455a0;
+}
+
+button:focus {
+    outline:0;
+}
+
+button {
+    text-transform: uppercase;
+}
+
 .page-wrapper {
     min-height:100%;
     position:relative;
@@ -17,6 +34,10 @@ nav.top-bar .name a,
 .top-bar-section li:not(.has-form) a:not(.button) {
     background-color: white;
     color: black;
+}
+
+nav.top-bar a {
+    text-decoration: none;
 }
 
 nav.top-bar .name a {
@@ -44,6 +65,7 @@ nav.top-bar .right a {
 
 .content {
     padding: 40px 40px 240px 40px;
+    color: #6b6b6b;
 }
 
 .footer {
@@ -51,5 +73,28 @@ nav.top-bar .right a {
     bottom: 0;
     height: 200px;
     width: 100%;
-    background-color: black;
+    background-color: #575757;
+}
+
+/* tools */
+
+.light {
+    background-color: white;
+}
+
+.light h1,
+.light h2,
+.light h3,
+.light h4,
+.light h5,
+.light h6 {
+    color: #786dae;
+}
+
+.margin-top {
+    margin-top: 20px;
+}
+
+.margin-bottom {
+    margin-bottom: 50px !important;
 }

@@ -2,7 +2,7 @@ package de.axelspringer.ideas.crowdsource.testsupport.cucumber.stepdefinitions;
 
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
-import de.axelspringer.ideas.crowdsource.model.RequestUser;
+import de.axelspringer.ideas.crowdsource.model.presentation.User;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class RegistrationStepDefs {
         UriComponentsBuilder uriBuilder = ServletUriComponentsBuilder.fromUriString(urlProvider.applicationUrl());
         uriBuilder.path("/user");
 
-        final RequestUser request = new RequestUser();
+        final User request = new User();
         request.setEmail(emailAddress);
         request.setTermsOfServiceAccepted(true);
 

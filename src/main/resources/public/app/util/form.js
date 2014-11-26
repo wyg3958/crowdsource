@@ -24,11 +24,11 @@ angular.module('crowdsource')
              * @param response The server's response
              * @returns {boolean} if at least one field's validity was set to false
              */
-            applyServerErrorResponse: function(form, response) {
+            applyServerErrorResponse: function (form, response) {
                 var appliedErrors = false;
 
-                if (response && response.fieldViolations) {
-                    angular.forEach(response.fieldViolations, function(rule, field) {
+                if (response.data && response.data.fieldViolations) {
+                    angular.forEach(response.data.fieldViolations, function (rule, field) {
                         if (form[field]) {
                             form[field].$setValidity(rule, false);
 

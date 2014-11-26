@@ -1,4 +1,4 @@
-package de.axelspringer.ideas.crowdsource.model;
+package de.axelspringer.ideas.crowdsource.model.persistence;
 
 import lombok.Data;
 import lombok.experimental.Builder;
@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @Builder
 @Document(collection = "users")
-public class User {
+public class UserEntity {
 
     @Id
     private String id;

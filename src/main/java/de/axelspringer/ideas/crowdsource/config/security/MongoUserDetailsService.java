@@ -1,6 +1,6 @@
 package de.axelspringer.ideas.crowdsource.config.security;
 
-import de.axelspringer.ideas.crowdsource.model.User;
+import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ public class MongoUserDetailsService implements UserDetailsService {
 
         String encodedPassword = passwordEncoder.encode(defaultPassword);
 
-        User user = User.builder()
+        UserEntity user = UserEntity.builder()
                 .email(defaultEmailAddress)
                 .password(encodedPassword)
                 .roles(Arrays.asList(Roles.ROLE_USER))
@@ -58,7 +58,7 @@ public class MongoUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        User user = userRepository.findByEmail(username);
+        UserEntity user = userRepository.findByEmail(username);
         if (user == null) {
             throw new UsernameNotFoundException("No user with username [" + username + "] found");
         }

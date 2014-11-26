@@ -1,10 +1,10 @@
 package de.axelspringer.ideas.crowdsource.repository;
 
-import de.axelspringer.ideas.crowdsource.model.User;
+import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface UserRepository extends MongoRepository<User, String> {
+public interface UserRepository extends MongoRepository<UserEntity, String> {
 
-    User findByEmail(String email);
+    UserEntity findByEmail(String email);
 
 }

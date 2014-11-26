@@ -1,6 +1,6 @@
 package de.axelspringer.ideas.crowdsource.service;
 
-import de.axelspringer.ideas.crowdsource.model.User;
+import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -61,7 +61,7 @@ public class UserServiceIT {
     @Test
     public void testSendActivationMail() throws Exception {
 
-        userService.sendActivationMail(User.builder().email(RECIPIENT_ADRESS).activationToken(ACTIVATION_TOKEN).build());
+        userService.sendActivationMail(UserEntity.builder().email(RECIPIENT_ADRESS).activationToken(ACTIVATION_TOKEN).build());
 
         assertThat(inMemorySMTPServer.getMessages(), hasSize(1));
 
@@ -78,7 +78,7 @@ public class UserServiceIT {
     @Test
     public void testActivationMailContainsActivationLink() throws MessagingException, IOException {
 
-        userService.sendActivationMail(User.builder().email(RECIPIENT_ADRESS).activationToken(ACTIVATION_TOKEN).build());
+        userService.sendActivationMail(UserEntity.builder().email(RECIPIENT_ADRESS).activationToken(ACTIVATION_TOKEN).build());
 
         assertThat(inMemorySMTPServer.getMessages(), hasSize(1));
 

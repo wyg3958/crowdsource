@@ -1,6 +1,6 @@
 package de.axelspringer.ideas.crowdsource.service;
 
-import de.axelspringer.ideas.crowdsource.model.User;
+import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,7 +27,7 @@ public class UserService {
     @Autowired
     private JavaMailSender mailSender;
 
-    public void sendActivationMail(User user) {
+    public void sendActivationMail(UserEntity user) {
 
         String activationLink = buildActivationLink(user.getEmail(), user.getActivationToken());
         log.debug("Sending activation link {} to {}", activationLink, user.getEmail());

@@ -1,7 +1,7 @@
 package de.axelspringer.ideas.crowdsource.service;
 
 import de.axelspringer.ideas.crowdsource.config.AppProfile;
-import de.axelspringer.ideas.crowdsource.model.User;
+import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class MockUserService extends UserService {
 
     @Override
-    public void sendActivationMail(User user) {
+    public void sendActivationMail(UserEntity user) {
         String activationLink = buildActivationLink(user.getEmail(), user.getActivationToken());
         log.info("Activation link for {}: {}", activationLink, user.getEmail());
     }

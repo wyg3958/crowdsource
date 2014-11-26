@@ -9,7 +9,12 @@ angular.module('crowdsource')
                 return;
             }
 
-            User.register(ctrl.user);
+            ctrl.loading = true;
+
+            var promise = User.register(ctrl.user);
+            promise.finally(function() {
+                ctrl.loading = false;
+            });
         };
 
     });

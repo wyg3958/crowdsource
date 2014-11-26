@@ -12,7 +12,7 @@ angular.module('crowdsource')
             ctrl.loading = true;
 
             var promise = User.register(ctrl.user);
-            promise.catch(function() {
+            promise.then(function() {
                 $location.path('/signup/' + ctrl.user.email + '/success');
             });
             promise.finally(function() {

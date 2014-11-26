@@ -4,7 +4,9 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import de.axelspringer.ideas.crowdsource.model.presentation.User;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
+import de.axelspringer.ideas.crowdsource.testsupport.cucumber.page.RegisterPage;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
+import de.axelspringer.ideas.crowdsource.testsupport.util.WebDriverProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.client.RestTemplate;
@@ -19,10 +21,17 @@ public class RegistrationStepDefs {
     @Autowired
     private UrlProvider urlProvider;
 
+    @Autowired
+    private WebDriverProvider webDriverProvider;
+
+    @Autowired
+    private RegisterPage registerPage;
+
     private String emailAddress;
 
     @Given("^a user is on the registration page$")
     public void a_user_visits_the_registration_page() throws Throwable {
+        registerPage.open();
 
         this.emailAddress = generateUniqueEmailAddress();
     }

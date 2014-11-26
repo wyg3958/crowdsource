@@ -5,7 +5,7 @@ angular.module('crowdsource')
 
         return {
             register: function(user) {
-                console.log('Fake registering', user);
+                return userResource.save(user).$promise;
             }
         };
     });

@@ -14,11 +14,11 @@
     </div>
     <div class="checkbox" ng-class="{ 'has-error': signup.form.$submitted && !signup.form.email.$valid }">
         <label>
-            <input type="checkbox" name="tac" ng-model="signup.user.termsAndConditionsAccepted" required>
+            <input type="checkbox" name="tos" ng-model="signup.user.termsOfService" required>
             Ich akzeptiere die AGB
         </label>
 
-        <div ng-messages="signup.form.tac.$error" ng-if="signup.form.$submitted">
+        <div ng-messages="signup.form.tos.$error" ng-if="signup.form.$submitted">
             <div ng-message="required">Bitte akzeptieren Sie die AGBs</div>
         </div>
     </div>

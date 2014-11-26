@@ -120,6 +120,10 @@ nav.top-bar .right a {
     margin-bottom: 50px !important;
 }
 
+.font-small {
+    font-size: 12px;
+}
+
 .postfix.text-left {
     padding-left: 5px;
 }

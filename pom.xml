@@ -24,6 +24,7 @@
         <cucumber.version>1.2.0</cucumber.version>
         <spring.security.version>3.2.5.RELEASE</spring.security.version>
         <mockito.version>1.10.8</mockito.version>
+        <selenium.version>2.41.0</selenium.version>
     </properties>
 
     <build>
@@ -338,14 +339,7 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>2.44.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <!-- Explicitly define this version, or phantomjs will pull in an old version -->
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-remote-driver</artifactId>
-            <version>2.44.0</version>
+            <version>${selenium.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

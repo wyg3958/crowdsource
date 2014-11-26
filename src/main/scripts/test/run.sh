@@ -1,8 +1,11 @@
 #!/bin/bash
 
-# kill mongodb (if exists)
+# kill stuff (if exists)
+docker kill crowdsource_test
+docker rm crowdsource_test
 docker kill crowdsourcetestdb
 docker rm crowdsourcetestdb
+
 # run mongodb (non-default ports [would be 27017, 28017] to avoid problems)
 docker run -d -p 27000:27017 -p 28000:28017 --name crowdsourcetestdb dockerfile/mongodb
 

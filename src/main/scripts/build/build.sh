@@ -1,8 +1,6 @@
 #!/bin/sh
 
 # clean
-docker kill crowdsourcetestdb
-docker rm crowdsourcetestdb
 docker rmi 'asideas/crowdsource'
 
 # build

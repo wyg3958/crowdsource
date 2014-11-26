@@ -2,6 +2,7 @@
 
 # kill application
 docker kill crowdsource_test
+docker rm crowdsource_test
 
 # kill database
 docker kill crowdsourcetestdb

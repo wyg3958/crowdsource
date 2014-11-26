@@ -35,4 +35,8 @@ do
  sleep 2s
 done
 
+if [ $STATUS != 0 ]; then
+ echo "ERROR: SERVICE NOT AVAILABLE AFTER 15 ATTEMPTS!"
+fi
+
 exit $STATUS

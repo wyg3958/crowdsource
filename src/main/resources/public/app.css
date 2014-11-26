@@ -104,3 +104,7 @@ nav.top-bar .right a {
 .margin-bottom {
     margin-bottom: 50px !important;
 }
+
+.postfix.text-left {
+    padding-left: 5px;
+}

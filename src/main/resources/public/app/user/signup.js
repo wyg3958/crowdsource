@@ -2,6 +2,8 @@ angular.module('crowdsource')
 
     .controller('SignupController', function ($scope, User, FormUtils, $location) {
 
+        $scope.EMAIL_HOST = '@axelspringer.de';
+
         $scope.signUp = function () {
             if (!$scope.signupForm.$valid) {
                 return;
@@ -10,9 +12,12 @@ angular.module('crowdsource')
             $scope.generalErrorOcurred = false;
             $scope.loading = true;
 
-            var promise = User.register($scope.user);
+            var userCopy = angular.copy($scope.user);
+            userCopy.email = userCopy.email + $scope.EMAIL_HOST;
+
+            var promise = User.register(userCopy);
             promise.then(function() {
-                $location.path('/signup/' + $scope.user.email + '/success');
+                $location.path('/signup/' + userCopy.email + '/success');
             });
             promise.catch(function(response) {
                 if (!FormUtils.applyServerErrorResponse($scope.signupForm, response)) {

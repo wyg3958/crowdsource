@@ -1,7 +1,7 @@
 <form name="signupForm" novalidate>
 
     <div class="row">
-        <div class="small-12 medium-6 medium-offset-3 columns panel light radius">
+        <div class="small-12 medium-8 medium-offset-2 large-6 large-offset-3 columns panel light radius">
 
             <h3 class="margin-bottom">Registrierung</h3>
 
@@ -18,7 +18,7 @@
                         <span ng-messages="signupForm.email.$error" ng-if="shouldShowValidationError('email')">
                             <!-- required and 'email' are build-in validations of angular.js -->
                             <span ng-message="required">Bitte geben Sie Ihre Email-Adresse ein</span>
-                            <span ng-message="email">Bitte geben Sie eine gültige Email-Adresse ein</span>
+                            <span ng-message="pattern">Bitte geben Sie nur den Teil vor {{ ::EMAIL_HOST }} ein</span>
                             <span ng-message="remote_already_activated">
                                 Ihre Email-Adresse wurde bereits aktiviert. Sie können sich mit Ihrem Passwort bereits einloggen. Falls Sie Ihr Passwort vergessen haben,
                                 dann klicken Sie bitte <a href="#/passwordrecovery">hier</a>.
@@ -29,7 +29,14 @@
                         </span>
                     </label>
 
-                    <input type="email" name="email" ng-model="user.email" required reset-remote-validation>
+                    <div class="row collapse">
+                        <div class="small-6 medium-7 large-8 columns">
+                            <input type="text" name="email" ng-model="user.email" class="text-right" required ng-pattern="/^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+$/i" reset-remote-validation>
+                        </div>
+                        <div class="small-6 medium-5 large-4 columns">
+                            <span class="postfix text-left">{{ ::EMAIL_HOST }}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 

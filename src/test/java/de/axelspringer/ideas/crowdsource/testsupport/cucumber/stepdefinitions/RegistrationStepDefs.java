@@ -45,6 +45,6 @@ public class RegistrationStepDefs {
     private String generateUniqueEmailAddress() {
 
         Date now = new Date();
-        return "cucumbertest+" + now.getTime() + "@crowdsource.com";
+        return "cucumbertest+" + now.getTime() + "@axelspringer.de";
     }
 }

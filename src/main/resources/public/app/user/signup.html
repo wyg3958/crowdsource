@@ -14,6 +14,10 @@
         <div ng-messages="signup.form.email.$error" ng-if="signup.form.$submitted">
             <div ng-message="required">Dieses Feld ist ein Pflichtfeld</div>
             <div ng-message="email">Bitte geben Sie eine gültige Email-Adresse ein</div>
+            <div ng-message="inactivated">
+                Ihre Email-Adresse wurde bereits aktiviert. Sie können sich mit Ihrem Passwort bereits einloggen. Falls Sie Ihr Passwort vergessen haben,
+                dann klicken Sie bitte <a href="#/passwordrecovery">hier</a>.
+            </div>
         </div>
 
     </div>

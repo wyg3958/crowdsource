@@ -39,7 +39,8 @@ do
 done
 
 if [ $STATUS != 0 ]; then
- echo "ERROR: SERVICE NOT AVAILABLE AFTER 15 ATTEMPTS!"
+ echo "ERROR: SERVICE NOT AVAILABLE AFTER 15 ATTEMPTS! OUTPUTTING LOGS:"
+ docker logs crowdsource_test
 fi
 
 exit $STATUS

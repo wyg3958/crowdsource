@@ -19,15 +19,15 @@
                 dann klicken Sie bitte <a href="#/passwordrecovery">hier</a>.
             </div>
         </div>
-
     </div>
-    <div class="checkbox" ng-class="{ 'has-error': signup.form.$submitted && !signup.form.email.$valid }">
+
+    <div class="checkbox" ng-class="{ 'has-error': signup.form.$submitted && !signup.form.termsOfServiceAccepted.$valid }">
         <label>
-            <input type="checkbox" name="tos" ng-model="signup.user.termsOfServiceAccepted" required>
+            <input type="checkbox" name="termsOfServiceAccepted" ng-model="signup.user.termsOfServiceAccepted" required>
             Ich akzeptiere die AGB
         </label>
 
-        <div ng-messages="signup.form.tos.$error" ng-if="signup.form.$submitted">
+        <div ng-messages="signup.form.termsOfServiceAccepted.$error" ng-if="signup.form.$submitted">
             <div ng-message="required">Bitte akzeptieren Sie die AGBs</div>
         </div>
     </div>

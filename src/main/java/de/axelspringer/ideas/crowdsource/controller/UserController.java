@@ -32,6 +32,7 @@ public class UserController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity saveUser(@RequestBody @Valid RequestUser requestUser) {
 
+        // TODO: replace with @NotNull + @NotEmpty
         final String email = requestUser.getEmail();
         if (StringUtils.isEmpty(email)) {
             log.debug("Email is empty", email);
@@ -65,6 +66,7 @@ public class UserController {
     @RequestMapping(method = RequestMethod.PUT)
     public ResponseEntity updateUser(@RequestBody RequestUser requestUser) {
 
+        // TODO: replace with @NotNull + @NotEmpty
         final String email = requestUser.getEmail();
         if (StringUtils.isEmpty(email)) {
             log.debug("Email is empty", email);
@@ -88,6 +90,7 @@ public class UserController {
     @RequestMapping(method = RequestMethod.DELETE)
     public ResponseEntity deleteUser(@RequestBody RequestUser requestUser) {
 
+        // TODO: replace with @NotNull + @NotEmpty
         final String email = requestUser.getEmail();
         if (StringUtils.isEmpty(email)) {
             log.debug("Email is empty", email);

@@ -40,7 +40,7 @@ do
  else
   echo "RETURN CODE FROM SERVICE INCORRECT - WAITING..."
  fi
- sleep 2s
+ sleep 5s
 done
 
 if [ $STATUS -ne 0 ]; then

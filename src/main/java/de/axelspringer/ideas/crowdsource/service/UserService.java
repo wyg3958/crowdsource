@@ -21,7 +21,7 @@ public class UserService {
     @Value("${de.axelspringer.ideas.crowdsource.mail.from:crowdsource@asideas.de}")
     private String fromAddress;
 
-    @Value("${de.axelspringer.ideas.crowdsource.applicationUrl}")
+    @Value("${de.axelspringer.ideas.crowdsource.baseUrl}")
     private String applicationUrl;
 
     @Autowired

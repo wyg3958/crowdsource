@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.Arrays;
 
 @Slf4j
@@ -29,8 +30,9 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity saveUser(@RequestBody RequestUser requestUser) {
+    public ResponseEntity saveUser(@RequestBody @Valid RequestUser requestUser) {
 
+        // TODO: replace with @NotNull + @NotEmpty
         final String email = requestUser.getEmail();
         if (StringUtils.isEmpty(email)) {
             log.debug("Email is empty", email);
@@ -64,6 +66,7 @@ public class UserController {
     @RequestMapping(method = RequestMethod.PUT)
     public ResponseEntity updateUser(@RequestBody RequestUser requestUser) {
 
+        // TODO: replace with @NotNull + @NotEmpty
         final String email = requestUser.getEmail();
         if (StringUtils.isEmpty(email)) {
             log.debug("Email is empty", email);
@@ -75,31 +78,12 @@ public class UserController {
             log.debug("User not found", email);
             return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
         }
+
+        // TODO: update?
 
         userRepository.save(byEmail);
 
         log.debug("User updated: {}", byEmail);
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
-
-    @RequestMapping(method = RequestMethod.DELETE)
-    public ResponseEntity deleteUser(@RequestBody RequestUser requestUser) {
-
-        final String email = requestUser.getEmail();
-        if (StringUtils.isEmpty(email)) {
-            log.debug("Email is empty", email);
-            return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
-        }
-
-        User byEmail = userRepository.findByEmail(email);
-        if (byEmail == null) {
-            log.debug("User not found", email);
-            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
-        }
-        userRepository.delete(byEmail);
-
-        log.debug("User deleted", email);
-        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-    }
-
 }

@@ -72,9 +72,11 @@ public class RegistrationStepDefs {
         UriComponentsBuilder uriBuilder = ServletUriComponentsBuilder.fromUriString(urlProvider.applicationUrl());
         uriBuilder.path("/user");
 
-        RestTemplate restTemplate = new RestTemplate();
         final RequestUser request = new RequestUser();
         request.setEmail(emailAddress);
+        request.setTermsOfServiceAccepted(true);
+
+        RestTemplate restTemplate = new RestTemplate();
         restTemplate.postForObject(uriBuilder.build().toUriString(), request, Void.class);
     }
 

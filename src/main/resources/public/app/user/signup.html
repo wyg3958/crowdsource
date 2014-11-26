@@ -1,0 +1,40 @@
+<h1>Signup</h1>
+
+<form name="signup.form" novalidate>
+
+    <div class="alert alert-danger" ng-if="signup.generalErrorOcurred">
+        Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.
+    </div>
+
+    <div class="form-group" ng-class="{ 'has-error': signup.form.$submitted && !signup.form.email.$valid }">
+        <label>Email address</label>
+
+        <input type="email" name="email" ng-model="signup.user.email" class="form-control" required>
+
+        <div ng-messages="signup.form.email.$error" ng-if="signup.form.$submitted">
+            <div ng-message="required">Dieses Feld ist ein Pflichtfeld</div>
+            <div ng-message="email">Bitte geben Sie eine gültige Email-Adresse ein</div>
+            <div ng-message="inactivated">
+                Ihre Email-Adresse wurde bereits aktiviert. Sie können sich mit Ihrem Passwort bereits einloggen. Falls Sie Ihr Passwort vergessen haben,
+                dann klicken Sie bitte <a href="#/passwordrecovery">hier</a>.
+            </div>
+        </div>
+
+    </div>
+    <div class="checkbox" ng-class="{ 'has-error': signup.form.$submitted && !signup.form.email.$valid }">
+        <label>
+            <input type="checkbox" name="tos" ng-model="signup.user.termsOfServiceAccepted" required>
+            Ich akzeptiere die AGB
+        </label>
+
+        <div ng-messages="signup.form.tos.$error" ng-if="signup.form.$submitted">
+            <div ng-message="required">Bitte akzeptieren Sie die AGBs</div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary" ng-click="signup.signUp()">
+            {{ signup.loading ? 'signing up...' : 'signup' }}
+        </button>
+    </div>
+</form>

@@ -1,22 +1,33 @@
 <!doctype html>
-<html xmlns="http://www.w3.org/1999/html">
+<html lang="de">
 <head>
     <title>AS CrowdSource</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="lib/bootstrap-3.2.0/bootstrap.min.css">
-    <link rel="stylesheet" href="lib/bootstrap-3.2.0/bootstrap-theme.min.css">
-    <script src="lib/angular-1.3.0-rc.4/angular.min.js"></script>
-    <script src="lib/angular-1.3.0-rc.4/angular-resource.min.js"></script>
-    <script src="lib/angular-1.3.0-rc.4/angular-route.min.js"></script>
+    <link rel="stylesheet" href="libs/bootstrap-3.2.0/bootstrap.min.css">
+    <link rel="stylesheet" href="libs/bootstrap-3.2.0/bootstrap-theme.min.css">
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.4/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.4/angular-resource.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.4/angular-route.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.4/angular-messages.min.js"></script>
     <script src="app/crowdsource.js"></script>
-    <script src="app/controllers.js"></script>
+    <script src="app/user/user-service.js"></script>
+    <script src="app/user/login.js"></script>
+    <script src="app/user/signup.js"></script>
+    <script src="app/user/signup-success.js"></script>
+    <script src="app/util/form.js"></script>
 </head>
 <body ng-app="crowdsource">
-<div ng-controller="MainController">
-    <a href="login">login</a>
-    <a href="signup">signup</a>
-    <hr/>
-    <div ng-view></div>
+
+<div class="container">
+
+    <div>
+        <a href="#/login">login</a>
+        <a href="#/signup">signup</a>
+    </div>
+
+    <ng-view />
+
 </div>
+
 </body>
 </html>

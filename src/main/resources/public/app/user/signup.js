@@ -42,4 +42,18 @@ angular.module('crowdsource')
             return !$scope.shouldShowValidationError(field);
         };
 
+    })
+
+    .directive("nonExternalEmail", function() {
+        return {
+            restrict: "A",
+
+            require: "ngModel",
+
+            link: function(scope, element, attributes, ngModel) {
+                ngModel.$validators.non_external_email = function(modelValue) {
+                    return !modelValue || modelValue.indexOf('_extern') < 0;
+                }
+            }
+        };
     });

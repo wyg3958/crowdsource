@@ -19,6 +19,7 @@
                             <!-- required and 'email' are build-in validations of angular.js -->
                             <span ng-message="required">Bitte geben Sie Ihre Email-Adresse ein</span>
                             <span ng-message="pattern">Bitte geben Sie nur den Teil vor {{ ::EMAIL_HOST }} ein</span>
+                            <span ng-message="non_external_email">Dieser Service kann nur von Axel-Springer Mitarbeitern verwendet werden</span>
                             <span ng-message="remote_already_activated">
                                 Ihre Email-Adresse wurde bereits aktiviert. Sie können sich mit Ihrem Passwort bereits einloggen. Falls Sie Ihr Passwort vergessen haben,
                                 dann klicken Sie bitte <a href="#/passwordrecovery">hier</a>.
@@ -31,7 +32,7 @@
 
                     <div class="table">
                         <div class="table-cell full-width">
-                            <input type="text" name="email" ng-model="user.email" class="text-right" required ng-pattern="/^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+$/i" reset-remote-validation>
+                            <input type="text" name="email" ng-model="user.email" class="text-right" required ng-pattern="/^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+$/i" non-external-email reset-remote-validation>
                         </div>
                         <div class="table-cell">
                             <span class="postfix text-left">{{ ::EMAIL_HOST }}</span>

@@ -10,11 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.UUID;
-
 @Slf4j
 @Service
-public class UserService {
+public class UserActivationService {
 
     public static final String MAIL_CONTENT = "Activation link: ";
 
@@ -46,11 +44,5 @@ public class UserService {
         uriBuilder.path("/user/{emailAddress}/activation/{activationToken}");
 
         return uriBuilder.buildAndExpand(emailAddress, activationToken).toUriString();
-    }
-
-    public String generateActivationToken() {
-        // TODO: maybe hash this token with the email address?
-        UUID uuid = UUID.randomUUID();
-        return uuid.toString();
     }
 }

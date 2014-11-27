@@ -13,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.Arrays;
 
 import static java.util.stream.Collectors.toList;
 
@@ -46,11 +45,7 @@ public class MongoUserDetailsService implements UserDetailsService {
 
         String encodedPassword = passwordEncoder.encode(defaultPassword);
 
-        UserEntity user = UserEntity.builder()
-                .email(defaultEmailAddress)
-                .password(encodedPassword)
-                .roles(Arrays.asList(Roles.ROLE_USER))
-                .build();
+        UserEntity user = new UserEntity(defaultEmailAddress, encodedPassword);
 
         userRepository.save(user);
     }

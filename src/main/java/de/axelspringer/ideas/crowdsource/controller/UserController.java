@@ -1,21 +1,23 @@
 package de.axelspringer.ideas.crowdsource.controller;
 
-import de.axelspringer.ideas.crowdsource.config.security.Roles;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.model.presentation.ConstraintViolations;
 import de.axelspringer.ideas.crowdsource.model.presentation.User;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
-import de.axelspringer.ideas.crowdsource.service.UserService;
+import de.axelspringer.ideas.crowdsource.service.UserActivationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.Arrays;
 
 @Slf4j
 @RestController
@@ -26,26 +28,26 @@ public class UserController {
     private UserRepository userRepository;
 
     @Autowired
-    private UserService userService;
+    private UserActivationService userActivationService;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity saveUser(@RequestBody @Valid User user) {
+    public void saveUser(@RequestBody @Valid User user) {
 
-        String activationToken = userService.generateActivationToken();
+        UserEntity userEntity = userRepository.findByEmail(user.getEmail());
+        if (userEntity == null) {
+            userEntity = new UserEntity(user.getEmail());
+        }
+        else {
+            userEntity.generateNewActivationToken();
+        }
 
-        UserEntity newUser = UserEntity.builder()
-                .email(user.getEmail())
-                .activationToken(activationToken)
-                .roles(Arrays.asList(Roles.ROLE_USER))
-                .build();
+        // This is a blocking call, may last long and throw exceptions if the mail server does not want to talk to us
+        // maybe make this asynchronous (+ retry) if this causes problems.
+        userActivationService.sendActivationMail(userEntity);
 
-        // TODO: This is a blocking call, may last long and throw exceptions if the mail server does not want to talk to us
-        userService.sendActivationMail(newUser);
-
-        userRepository.save(newUser);
-
-        log.debug("User saved: {}", newUser);
-        return new ResponseEntity<Void>(HttpStatus.CREATED);
+        userRepository.save(userEntity);
+        log.debug("User saved: {}", userEntity);
     }
 
 

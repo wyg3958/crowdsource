@@ -21,29 +21,28 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 
-public class UserServiceIT {
+public class UserActivationServiceIT {
 
     private static final int SMTP_PORT = 10025;
     private static final String RECIPIENT_ADRESS = "test@test.de";
     private static final String SENDER_ADDRESS = "test@crowdsource.de";
     private static final String APP_URL = "some.adress.de";
-    private static final String ACTIVATION_TOKEN = "123";
 
-    private final UserService userService = new UserService();
+    private final UserActivationService userActivationService = new UserActivationService();
 
     private Wiser inMemorySMTPServer;
 
     @Before
     public void injectDependencies() {
 
-        ReflectionTestUtils.setField(userService, "fromAddress", SENDER_ADDRESS);
-        ReflectionTestUtils.setField(userService, "applicationUrl", APP_URL);
+        ReflectionTestUtils.setField(userActivationService, "fromAddress", SENDER_ADDRESS);
+        ReflectionTestUtils.setField(userActivationService, "applicationUrl", APP_URL);
 
         final JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("localhost");
         mailSender.setPort(SMTP_PORT);
 
-        ReflectionTestUtils.setField(userService, "mailSender", mailSender);
+        ReflectionTestUtils.setField(userActivationService, "mailSender", mailSender);
     }
 
     @Before
@@ -61,7 +60,7 @@ public class UserServiceIT {
     @Test
     public void testSendActivationMail() throws Exception {
 
-        userService.sendActivationMail(UserEntity.builder().email(RECIPIENT_ADRESS).activationToken(ACTIVATION_TOKEN).build());
+        userActivationService.sendActivationMail(new UserEntity(RECIPIENT_ADRESS));
 
         assertThat(inMemorySMTPServer.getMessages(), hasSize(1));
 
@@ -72,22 +71,23 @@ public class UserServiceIT {
         assertThat(message.getFrom(), arrayContaining(new InternetAddress(SENDER_ADDRESS)));
 
         String content = IOUtils.toString(message.getInputStream());
-        assertThat(content, startsWith(UserService.MAIL_CONTENT));
+        assertThat(content, startsWith(UserActivationService.MAIL_CONTENT));
     }
 
     @Test
     public void testActivationMailContainsActivationLink() throws MessagingException, IOException {
 
-        userService.sendActivationMail(UserEntity.builder().email(RECIPIENT_ADRESS).activationToken(ACTIVATION_TOKEN).build());
+        UserEntity user = new UserEntity(RECIPIENT_ADRESS);
+        userActivationService.sendActivationMail(user);
 
         assertThat(inMemorySMTPServer.getMessages(), hasSize(1));
 
 
         MimeMessage message = inMemorySMTPServer.getMessages().get(0).getMimeMessage();
         String content = IOUtils.toString(message.getInputStream());
-        final String registrationLink = content.substring(UserService.MAIL_CONTENT.length()).trim();
+        final String registrationLink = content.substring(UserActivationService.MAIL_CONTENT.length()).trim();
 
         String baseActivationUrl = APP_URL + "/user/" + RECIPIENT_ADRESS + "/activation/";
-        assertEquals(registrationLink, baseActivationUrl + ACTIVATION_TOKEN);
+        assertEquals(registrationLink, baseActivationUrl + user.getActivationToken());
     }
 }

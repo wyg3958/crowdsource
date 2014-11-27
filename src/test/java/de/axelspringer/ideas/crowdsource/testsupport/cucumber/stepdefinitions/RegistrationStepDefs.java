@@ -1,6 +1,5 @@
 package de.axelspringer.ideas.crowdsource.testsupport.cucumber.stepdefinitions;
 
-import cucumber.api.PendingException;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
@@ -20,9 +19,6 @@ import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.Random;
-
-
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
 public class RegistrationStepDefs {
 
@@ -38,13 +34,13 @@ public class RegistrationStepDefs {
     private String emailName;
 
     @Before
-    public void init(){
+    public void init() {
         webDriver = webDriverProvider.provideDriver();
         emailName = "registrationTest" + RandomStringUtils.random(5);
     }
 
     @After
-    public void shutdown(){
+    public void shutdown() {
         webDriver.close();
     }
 
@@ -54,7 +50,6 @@ public class RegistrationStepDefs {
         final NavigationBar navigationBar = PageFactory.initElements(webDriver, NavigationBar.class);
         navigationBar.clickSignup();
     }
-
 
     @When("^the user enters a not registered email address$")
     public void the_user_enters_a_not_registered_email_address() throws Throwable {
@@ -79,28 +74,4 @@ public class RegistrationStepDefs {
         final RegistrationConfirmation confirmation = PageFactory.initElements(webDriver, RegistrationConfirmation.class);
         Assert.assertEquals("User email address not found in confirmation page.", emailName + "@axelspringer.de", confirmation.getConfirmationMessage());
     }
-
-
-//    @And("^submits the registration form with a new email address$")
-//    public void submits_the_registration_form_with_a_new_email_address() throws Throwable {
-//
-//        UriComponentsBuilder uriBuilder = ServletUriComponentsBuilder.fromUriString(urlProvider.applicationUrl());
-//        uriBuilder.path("/user");
-//
-//        final User request = new User();
-//        request.setEmail(emailAddress);
-//        request.setTermsOfServiceAccepted(true);
-//
-//        RestTemplate restTemplate = new RestTemplate();
-//        restTemplate.postForObject(uriBuilder.build().toUriString(), request, Void.class);
-//    }
-//
-//
-//    private String generateUniqueEmailAddress() {
-//
-//        Date now = new Date();
-//        return "cucumbertest+" + now.getTime() + "@axelspringer.de";
-//    }
-//
-
 }

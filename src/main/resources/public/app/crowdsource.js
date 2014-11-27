@@ -16,7 +16,8 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages'])
         .when('/signup/:email/success', {
             templateUrl: 'app/user/signup-success.html',
             controller: 'SignupSuccessController'
-        });
+        })
+        .otherwise({ redirectTo: '/signup' });
 
     // we can only activate this, once you can reload the page with the path not being /
     $locationProvider.html5Mode(false);

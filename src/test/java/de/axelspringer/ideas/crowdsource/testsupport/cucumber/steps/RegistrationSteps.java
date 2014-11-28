@@ -5,6 +5,7 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import de.axelspringer.ideas.crowdsource.model.presentation.User;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.NavigationBar;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.RegistrationConfirmationView;
@@ -17,6 +18,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.web.client.RestTemplate;
+
+import static de.axelspringer.ideas.crowdsource.util.validation.email.EligibleEmailValidator.ELIGIBLE_EMAIL_DOMAIN;
 
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
 public class RegistrationSteps {
@@ -43,7 +47,18 @@ public class RegistrationSteps {
     @Before
     public void init() {
         webDriver = webDriverProvider.provideDriver();
-        emailName = "registrationTest" + RandomStringUtils.randomAlphanumeric(10);
+        emailName = "registrationTest+" + RandomStringUtils.randomAlphanumeric(10);
+    }
+
+    @Given("^the user's email address is already registered but not activated$")
+    public void the_user_s_email_address_is_already_registered_but_not_activated() throws Throwable {
+        // create a user via the REST API
+        User user = new User();
+        user.setEmail(emailName + ELIGIBLE_EMAIL_DOMAIN);
+        user.setTermsOfServiceAccepted(true);
+
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.postForObject(urlProvider.applicationUrl() + "/user", user, Void.class);
     }
 
     @Given("^a user is on the registration page$")
@@ -54,7 +69,7 @@ public class RegistrationSteps {
         navigationBar.clickSignup();
     }
 
-    @When("^the user enters a not registered email address$")
+    @When("^the user enters his email address$")
     public void the_user_enters_a_not_registered_email_address() throws Throwable {
         PageFactory.initElements(webDriver, registrationForm);
         registrationForm.setEmailText(emailName);
@@ -75,6 +90,6 @@ public class RegistrationSteps {
     @Then("^a registration success message is shown that includes the user's email$")
     public void a_registration_success_message_is_shown_that_includes_the_user_s_email() throws Throwable {
         PageFactory.initElements(webDriver, registrationConfirmationView);
-        Assert.assertEquals("User email address not found in confirmation page.", emailName + "@axelspringer.de", registrationConfirmationView.getConfirmedEmailAddress());
+        Assert.assertEquals("User email address not found in confirmation page.", emailName + ELIGIBLE_EMAIL_DOMAIN, registrationConfirmationView.getConfirmedEmailAddress());
     }
 }

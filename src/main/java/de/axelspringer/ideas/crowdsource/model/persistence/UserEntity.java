@@ -39,10 +39,10 @@ public class UserEntity {
         this.email = email;
         this.password = password;
 
-        generateNewActivationToken();
+        assignNewActivationToken();
     }
 
-    public void generateNewActivationToken() {
+    public void assignNewActivationToken() {
         // TODO: maybe hash this token with the email address?
         UUID uuid = UUID.randomUUID();
 

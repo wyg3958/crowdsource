@@ -8,6 +8,8 @@ import javax.validation.ConstraintValidatorContext;
  */
 public class EligibleEmailValidator implements ConstraintValidator<EligibleEmail, String> {
 
+    public static final String ELIGIBLE_EMAIL_DOMAIN = "@axelspringer.de";
+
     @Override
     public void initialize(EligibleEmail constraintAnnotation) {
         // no-op
@@ -16,7 +18,7 @@ public class EligibleEmailValidator implements ConstraintValidator<EligibleEmail
     @Override
     public boolean isValid(String email, ConstraintValidatorContext context) {
 
-        if (email.contains("@axelspringer.de") && !email.contains("_extern")) {
+        if (email.contains(ELIGIBLE_EMAIL_DOMAIN) && !email.contains("_extern")) {
             return true;
         }
 

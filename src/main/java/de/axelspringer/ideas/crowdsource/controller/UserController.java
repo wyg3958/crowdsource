@@ -39,7 +39,8 @@ public class UserController {
             userEntity = new UserEntity(user.getEmail());
         }
         else {
-            userEntity.generateNewActivationToken();
+            log.debug("A user with the address {} already exists, assigning a new activation token", user.getEmail());
+            userEntity.assignNewActivationToken();
         }
 
         // This is a blocking call, may last long and throw exceptions if the mail server does not want to talk to us

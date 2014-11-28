@@ -87,7 +87,7 @@ public class UserActivationServiceIT {
         String content = IOUtils.toString(message.getInputStream());
         final String registrationLink = content.substring(UserActivationService.MAIL_CONTENT.length()).trim();
 
-        String baseActivationUrl = APP_URL + "/user/" + RECIPIENT_ADRESS + "/activation/";
+        String baseActivationUrl = APP_URL + "#/signup/" + RECIPIENT_ADRESS + "/activation/";
         assertEquals(registrationLink, baseActivationUrl + user.getActivationToken());
     }
 }

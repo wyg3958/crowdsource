@@ -36,13 +36,17 @@ public class UserActivationService {
         mailMessage.setSubject("CrowdSource Registrierung");
         mailMessage.setText(MAIL_CONTENT + activationLink);
 
-        mailSender.send(mailMessage);
+        sendMail(mailMessage);
     }
 
-    protected String buildActivationLink(String emailAddress, String activationToken) {
+    private String buildActivationLink(String emailAddress, String activationToken) {
         UriComponentsBuilder uriBuilder = ServletUriComponentsBuilder.fromUriString(applicationUrl);
-        uriBuilder.path("/user/{emailAddress}/activation/{activationToken}");
+        uriBuilder.fragment("/signup/{emailAddress}/activation/{activationToken}");
 
         return uriBuilder.buildAndExpand(emailAddress, activationToken).toUriString();
+    }
+
+    protected void sendMail(SimpleMailMessage mailMessage) {
+        mailSender.send(mailMessage);
     }
 }

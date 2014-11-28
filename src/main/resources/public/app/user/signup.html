@@ -32,7 +32,8 @@
 
                     <div class="table">
                         <div class="table-cell full-width">
-                            <input type="text" name="email" ng-model="user.email" class="text-right" required ng-pattern="/^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+$/i" non-external-email reset-remote-validation>
+                            <input type="text" name="email" ng-model="user.email" placeholder="max.mustermann" class="text-right"
+                                   required ng-pattern="/^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+$/i" non-external-email reset-remote-validation>
                         </div>
                         <div class="table-cell">
                             <span class="postfix text-left">{{ ::EMAIL_HOST }}</span>

@@ -2,8 +2,7 @@ package de.axelspringer.ideas.crowdsource;
 
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
-import de.axelspringer.ideas.crowdsource.testsupport.util.WebDriverProvider;
-import org.junit.After;
+import de.axelspringer.ideas.crowdsource.testsupport.util.selenium.WebDriverProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +30,6 @@ public class IndexIT {
         webDriver = webDriverProvider.provideDriver();
     }
 
-    @After
     public void closeDriver() {
         WebDriverProvider.closeWebDriver();
     }

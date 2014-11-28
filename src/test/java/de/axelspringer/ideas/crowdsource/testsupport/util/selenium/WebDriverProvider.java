@@ -1,9 +1,11 @@
-package de.axelspringer.ideas.crowdsource.testsupport.util;
+package de.axelspringer.ideas.crowdsource.testsupport.util.selenium;
 
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
@@ -62,8 +64,8 @@ public class WebDriverProvider {
 
         if (new File(phantomBinaryPath).exists()) {
             LOG.info("providing phantomjs driver");
-            DesiredCapabilities capabilities = new DesiredCapabilities();
-            capabilities.setCapability("phantomjs.binary.path", phantomBinaryPath);
+            DesiredCapabilities capabilities = DesiredCapabilities.phantomjs();
+            capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, phantomBinaryPath);
             driverInstance = new PhantomJSDriver(capabilities);
         } else if (new File(chromeBinaryPath).exists()) {
             LOG.info("providing chromedriver");
@@ -74,6 +76,12 @@ public class WebDriverProvider {
             driverInstance = new FirefoxDriver();
         }
 
+        driverInstance.manage().window().setSize(new Dimension(1280, 800));
+
         return driverInstance;
+    }
+
+    public boolean hasActiveWebDriver() {
+        return driverInstance != null;
     }
 }

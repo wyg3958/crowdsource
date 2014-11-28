@@ -178,20 +178,6 @@
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>change ssh-key permissions</id>
-                                <phase>prepare-package</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>chmod</executable>
-                                    <arguments>
-                                        <argument>600</argument>
-                                        <argument>${project.build.directory}/scripts/deploy/coreos_rsa</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                            <execution>
                                 <id>build docker container</id>
                                 <phase>package</phase>
                                 <goals>
@@ -229,20 +215,6 @@
                                 </goals>
                                 <configuration>
                                     <executable>${project.build.directory}/scripts/build/push.sh</executable>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>deploy docker container to AWS</id>
-                                <phase>deploy</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>${project.build.directory}/scripts/deploy/crowdsource/deploy.sh</executable>
-                                    <arguments>
-                                        <argument>${project.build.directory}/scripts/deploy/</argument>
-                                        <argument>${prod.application.host}</argument>
-                                    </arguments>
                                 </configuration>
                             </execution>
                         </executions>

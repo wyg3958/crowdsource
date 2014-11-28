@@ -23,7 +23,7 @@
             <plugin>
                 <groupId>de.gaffa.tools.coreos</groupId>
                 <artifactId>coreos-maven-plugin</artifactId>
-                <version>0.1.26-SNAPSHOT</version>
+                <version>0.1.27-SNAPSHOT</version>
                 <configuration>
                     <keyFile>src/main/resources/coreos_rsa</keyFile>
                     <nodeAdress>${aws.host}</nodeAdress>

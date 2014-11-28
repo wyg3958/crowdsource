@@ -31,7 +31,7 @@
                     <dockerHubUser>asjenkins</dockerHubUser>
                     <dockerHubPass>ideas987</dockerHubPass>
                     <dockerImageName>asideas/crowdsource</dockerImageName>
-                    <dockerRunOptions>-p 80:8080</dockerRunOptions>
+                    <dockerRunOptions>-p 80:8080 -e "SPRING_PROFILES_ACTIVE=prod"</dockerRunOptions>
                 </configuration>
                 <executions>
                     <execution>

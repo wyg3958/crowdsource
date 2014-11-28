@@ -55,14 +55,14 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
+    <pluginRepositories>
+        <pluginRepository>
             <id>coreos-maven-plugin</id>
             <url>https://raw.github.com/gaffa/coreos-maven-plugin/mvn-repo/</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
             </snapshots>
-        </repository>
-    </repositories>
+        </pluginRepository>
+    </pluginRepositories>
 </project>

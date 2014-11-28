@@ -19,12 +19,12 @@ public class SeleniumWait {
     private WebDriverProvider webDriverProvider;
 
     public void until(Predicate<WebDriver> isTrue) {
-        log.debug("Waitung until predicate becomes true: {}", isTrue);
+        log.debug("Waiting until predicate becomes true: {}", isTrue);
         new WebDriverWait(webDriverProvider.provideDriver(), TIME_OUT_IN_SECONDS).until(isTrue);
     }
 
     public void until(ExpectedCondition<WebElement> isTrue) {
-        log.debug("Waitung until expected condition becomes true: {}", isTrue);
+        log.debug("Waiting until expected condition becomes true: {}", isTrue);
         new WebDriverWait(webDriverProvider.provideDriver(), TIME_OUT_IN_SECONDS).until(isTrue);
     }
 }

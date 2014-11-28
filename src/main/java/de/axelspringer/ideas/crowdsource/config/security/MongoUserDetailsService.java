@@ -20,7 +20,7 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class MongoUserDetailsService implements UserDetailsService {
 
-    @Value("${de.axelspringer.ideas.crowdsource.defaultUser:test@crowd.asideas.de}")
+    @Value("${de.axelspringer.ideas.crowdsource.defaultUser:crowdsource@axelspringer.de}")
     private String defaultEmailAddress;
 
     @Value("${de.axelspringer.ideas.crowdsource.defaultPassword:test}")
@@ -46,6 +46,7 @@ public class MongoUserDetailsService implements UserDetailsService {
         String encodedPassword = passwordEncoder.encode(defaultPassword);
 
         UserEntity user = new UserEntity(defaultEmailAddress, encodedPassword);
+        user.setActivated(true);
 
         userRepository.save(user);
     }

@@ -18,7 +18,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class NotExistingAndActivatedValidatorTest {
+public class NotActivatedValidatorTest {
 
     private final static String EXISTING_EMAIL_NOT_ACTIVATED = "EXISTING_EMAIL_NOT_ACTIVATED";
 
@@ -30,7 +30,7 @@ public class NotExistingAndActivatedValidatorTest {
     private UserRepository userRepository;
 
     @InjectMocks
-    private NotExistingAndActivatedValidator validator;
+    private NotActivatedValidator validator;
 
     @Mock
     private ConstraintValidatorContext validatorContext;

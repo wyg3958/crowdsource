@@ -11,13 +11,16 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 @Component
 public class RegistrationForm {
 
-    @FindBy(name = "email")
+    @FindBy(css = "form[name='signupForm'] .form-controls-email input[name='email']")
     private WebElement emailInputField;
 
-    @FindBy(name = "termsOfServiceAccepted")
+    @FindBy(css = "form[name='signupForm'] .form-controls-email .error")
+    private WebElement emailFieldError;
+
+    @FindBy(css = "form[name='signupForm'] .form-controls-termsofservice input[name='termsOfServiceAccepted']")
     private WebElement acceptTosCheckbox;
 
-    @FindBy(css = "button[type='submit']")
+    @FindBy(css = "form[name='signupForm'] button[type='submit']")
     private WebElement registerButton;
 
     @Autowired
@@ -45,5 +48,9 @@ public class RegistrationForm {
     public void submit(){
         wait.until(visibilityOf(registerButton));
         registerButton.click();
+    }
+
+    public String getEmailFieldErrorText() {
+        return emailFieldError.getText();
     }
 }

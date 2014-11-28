@@ -22,7 +22,7 @@ public class EligibleEmailValidator implements ConstraintValidator<EligibleEmail
             return true;
         }
 
-        context.buildConstraintViolationWithTemplate("not_eligible").addConstraintViolation();
+        context.buildConstraintViolationWithTemplate("eligible").addConstraintViolation();
 
         return false;
     }

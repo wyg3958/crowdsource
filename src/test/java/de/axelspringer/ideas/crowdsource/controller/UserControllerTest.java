@@ -179,7 +179,7 @@ public class UserControllerTest {
 
         final MvcResult mvcResult = performRequest(status().isBadRequest());
 
-        assertEquals("", "{\"fieldViolations\":{\"email\":\"not_eligible\"}}", mvcResult.getResponse().getContentAsString());
+        assertEquals("", "{\"fieldViolations\":{\"email\":\"eligible\"}}", mvcResult.getResponse().getContentAsString());
     }
 
     @Test
@@ -201,7 +201,7 @@ public class UserControllerTest {
 
         final MvcResult mvcResult = performRequest(status().isBadRequest());
 
-        assertEquals("", "{\"fieldViolations\":{\"email\":\"already_activated\"}}", mvcResult.getResponse().getContentAsString());
+        assertEquals("", "{\"fieldViolations\":{\"email\":\"not_activated\"}}", mvcResult.getResponse().getContentAsString());
     }
 
     private MvcResult performRequest(ResultMatcher expectedResponseStatus) throws Exception {

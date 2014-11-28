@@ -9,16 +9,16 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 /**
- * Validator for {@link de.axelspringer.ideas.crowdsource.util.validation.email.NotExistingAndActivated}
+ * Validator for {@link NotActivated}
  */
 @Service
-public class NotExistingAndActivatedValidator implements ConstraintValidator<NotExistingAndActivated, String> {
+public class NotActivatedValidator implements ConstraintValidator<NotActivated, String> {
 
     @Autowired
     private UserRepository userRepository;
 
     @Override
-    public void initialize(NotExistingAndActivated constraintAnnotation) {
+    public void initialize(NotActivated constraintAnnotation) {
         // no-op
     }
 
@@ -31,7 +31,7 @@ public class NotExistingAndActivatedValidator implements ConstraintValidator<Not
             return true;
         }
 
-        context.buildConstraintViolationWithTemplate("already_activated").addConstraintViolation();
+        context.buildConstraintViolationWithTemplate("not_activated").addConstraintViolation();
 
         return false;
     }

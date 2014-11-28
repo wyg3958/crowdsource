@@ -13,18 +13,18 @@ import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Makes sure that a given email does not BOTH exist and is activated
+ * Makes sure that a given email is not activated yet
  */
 @Documented
-@Constraint(validatedBy = NotExistingAndActivatedValidator.class)
+@Constraint(validatedBy = NotActivatedValidator.class)
 @Target(FIELD)
 @Retention(RUNTIME)
 @ReportAsSingleViolation
 @NotNull
 @Size(min = 1)
-public @interface NotExistingAndActivated {
+public @interface NotActivated {
 
-    String message() default "already_activated";
+    String message() default "not_activated";
 
     Class<?>[] groups() default {};
 

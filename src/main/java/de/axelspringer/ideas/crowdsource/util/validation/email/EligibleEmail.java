@@ -24,7 +24,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Size(min = 1)
 public @interface EligibleEmail {
 
-    String message() default "not_eligible";
+    String message() default "eligible";
 
     Class<?>[] groups() default {};
 

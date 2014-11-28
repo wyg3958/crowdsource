@@ -1,7 +1,7 @@
 package de.axelspringer.ideas.crowdsource.model.presentation;
 
 import de.axelspringer.ideas.crowdsource.util.validation.email.EligibleEmail;
-import de.axelspringer.ideas.crowdsource.util.validation.email.NotExistingAndActivated;
+import de.axelspringer.ideas.crowdsource.util.validation.email.NotActivated;
 import lombok.Data;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -13,7 +13,7 @@ public class User {
 
     @NotEmpty
     @Email
-    @NotExistingAndActivated
+    @NotActivated
     @EligibleEmail
     private String email;
 

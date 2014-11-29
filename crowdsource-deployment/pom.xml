@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <artifactId>crowdsource-parent</artifactId>
+        <groupId>de.axelspringer.ideas.crowdsource</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>crowdsource-deployment</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>de.gaffa.tools.coreos</groupId>
+                <artifactId>coreos-maven-plugin</artifactId>
+                <version>0.1.29-SNAPSHOT</version>
+                <configuration>
+                    <keyFile>src/main/resources/coreos_rsa</keyFile>
+                    <nodeAdress>54.194.152.80</nodeAdress>
+                    <serviceName>crowdsource</serviceName>
+                    <dockerHubUser>asjenkins</dockerHubUser>
+                    <dockerHubPass>ideas987</dockerHubPass>
+                    <dockerImageName>asideas/crowdsource</dockerImageName>
+                    <dockerRunOptions>-p 80:8080 -e "SPRING_PROFILES_ACTIVE=prod"</dockerRunOptions>
+                    <xFleetOptions>MachineID=7d70b04a731143479c7e883aa7fc1a7c</xFleetOptions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>deploy crowdsource to aws</id>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                        <phase>deploy</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+                <!-- do not deploy to any repo -->
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>coreos-maven-plugin</id>
+            <url>https://raw.github.com/gaffa/coreos-maven-plugin/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+</project>

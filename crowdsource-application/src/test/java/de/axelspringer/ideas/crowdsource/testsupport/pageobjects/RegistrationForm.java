@@ -51,6 +51,7 @@ public class RegistrationForm {
     }
 
     public String getEmailFieldErrorText() {
+        wait.until(visibilityOf(emailFieldError));
         return emailFieldError.getText();
     }
 }

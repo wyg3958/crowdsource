@@ -18,7 +18,7 @@ Enable docker-profile (-Pdocker) to boot the application for integration tests (
 FRONTEND
 
 1: install node.js/npm
-2: run 'npm install -g karma-cli bower'
+2: run 'npm install -g karma-cli'
 
 
 PHANTOMJS/CHROME/FIREFOX

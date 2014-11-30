@@ -3,3 +3,5 @@
 target
 .DS_Store
 phantomjsdriver.log
+bower_components
+node_modules

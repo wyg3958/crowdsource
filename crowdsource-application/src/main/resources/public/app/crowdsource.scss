@@ -1,0 +1,68 @@
+@charset "UTF-8";
+
+@import "settings";
+@import "foundation/scss/normalize";
+@import "foundation";
+
+@import "util/navigation";
+@import "util/objects";
+
+button {
+    text-transform: uppercase;
+}
+
+button:focus {
+    outline: 0;
+}
+
+body {
+    background-color: $crowd-color-light-grey;
+}
+
+.page-wrapper {
+    min-height: 100%;
+    position: relative;
+}
+
+.teaser {
+    width: 100%;
+    line-height: 100px;
+    background-color: $crowd-color-purple;
+    color: white;
+    font-size: 4.1vw;
+}
+
+@media #{$medium-up} {
+    .teaser {
+        line-height: 200px;
+        font-size: 28px;
+    }
+}
+
+.content {
+    padding: 10px 10px 240px 10px;
+    color: $crowd-color-dark-grey;
+    background-color: $crowd-color-light-grey;
+}
+
+@media #{$medium-up} {
+    .content {
+        padding: 40px 40px 240px 40px;
+    }
+}
+
+.light {
+    background-color: $white;
+
+    h1, h2, h3, h4, h5, h6 {
+        color: $crowd-color-purple;
+    }
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    height: 200px;
+    width: 100%;
+    background-color: $crowd-color-darker-grey;
+}

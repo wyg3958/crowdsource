@@ -1,0 +1,30 @@
+// a collection of object oriented classes (OOCSS) that can be applied to any element
+
+.margin-top {
+    margin-top: 20px;
+}
+
+.margin-bottom {
+    margin-bottom: 50px !important;
+}
+
+.font-small {
+    font-size: 12px;
+}
+
+.postfix.text-left {
+    padding: 0 5px;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.table {
+    display: table;
+}
+
+.table-cell {
+    display: table-cell;
+    vertical-align: top;
+}

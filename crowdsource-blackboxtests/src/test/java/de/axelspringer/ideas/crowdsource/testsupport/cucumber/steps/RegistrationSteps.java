@@ -14,8 +14,6 @@ import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
 import de.axelspringer.ideas.crowdsource.util.validation.email.EligibleEmailValidator;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.hamcrest.MatcherAssert;
-import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +21,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.client.RestTemplate;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
 public class RegistrationSteps {
@@ -98,12 +98,12 @@ public class RegistrationSteps {
     @Then("^a registration success message is shown that includes the user's email$")
     public void a_registration_success_message_is_shown_that_includes_the_user_s_email() throws Throwable {
         PageFactory.initElements(webDriver, registrationConfirmationView);
-        Assert.assertEquals("User email address not found in confirmation page.", emailName + EligibleEmailValidator.ELIGIBLE_EMAIL_DOMAIN, registrationConfirmationView.getConfirmedEmailAddress());
+        assertEquals("User email address not found in confirmation page.", emailName + EligibleEmailValidator.ELIGIBLE_EMAIL_DOMAIN, registrationConfirmationView.getConfirmedEmailAddress());
     }
 
     @Then("^the validation error '([^']+)' is displayed on the email field$")
     public void the_validation_error_is_displayed_on_the_email_field(String errorText) throws Throwable {
         PageFactory.initElements(webDriver, registrationForm);
-        MatcherAssert.assertThat(registrationForm.getEmailFieldErrorText(), is(errorText));
+        assertThat(registrationForm.getEmailFieldErrorText(), is(errorText));
     }
 }

@@ -67,32 +67,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>phantomjs</id>
-            <build>
-                <plugins>
-                    <!-- downloads phantomjs and exposed variable phantomjs.binary -->
-                    <plugin>
-                        <groupId>com.github.klieber</groupId>
-                        <artifactId>phantomjs-maven-plugin</artifactId>
-                        <version>0.4</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>install</goal>
-                                </goals>
-                                <phase>generate-test-resources</phase>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <!-- phantomjs version -->
-                            <version>1.9.7</version>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

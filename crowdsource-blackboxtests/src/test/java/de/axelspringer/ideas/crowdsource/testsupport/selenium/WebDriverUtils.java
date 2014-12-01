@@ -11,17 +11,17 @@ import org.openqa.selenium.WebDriverException;
 public class WebDriverUtils {
 
     public static void makeScreenshot(WebDriver driver, Scenario scenario) {
-        WebDriverUtils.log.debug("Capturing screenshot for scenario {}", scenario.getName());
+        log.debug("Capturing screenshot for scenario {}", scenario.getName());
         if (driver instanceof TakesScreenshot) {
             TakesScreenshot screenshotableDriver = (TakesScreenshot) driver;
             try {
                 byte[] screenshot = screenshotableDriver.getScreenshotAs(OutputType.BYTES);
                 scenario.embed(screenshot, "image/png");
             } catch (WebDriverException somePlatformsDontSupportScreenshots) {
-                WebDriverUtils.log.error(somePlatformsDontSupportScreenshots.getMessage());
+                log.error(somePlatformsDontSupportScreenshots.getMessage());
             }
         } else {
-            WebDriverUtils.log.warn("This web driver implementation {} cannot create screenshots", driver.getClass().getName());
+            log.warn("This web driver implementation {} cannot create screenshots", driver.getClass().getName());
         }
     }
 

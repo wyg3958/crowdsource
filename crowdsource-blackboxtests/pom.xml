@@ -21,17 +21,6 @@
     </properties>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-            <resource>
-                <directory>src/main/scripts</directory>
-                <targetPath>${project.build.directory}/scripts</targetPath>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
         <testResources>
             <testResource>
                 <directory>${project.basedir}/src/test/cucumber</directory>
@@ -40,6 +29,10 @@
             <testResource>
                 <directory>${project.basedir}/src/test/resources</directory>
                 <filtering>true</filtering>
+            </testResource>
+            <testResource>
+                <directory>src/test/scripts</directory>
+                <targetPath>${project.build.directory}/scripts</targetPath>
             </testResource>
         </testResources>
         <plugins>
@@ -90,7 +83,7 @@
                                     <arguments>
                                         <argument>-R</argument>
                                         <argument>+x</argument>
-                                        <argument>${project.build.directory}/docker/</argument>
+                                        <argument>${project.build.directory}/scripts/</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
@@ -111,7 +104,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>${project.build.directory}/scripts/test/shutdown.sh</executable>
+                                    <executable>${project.build.directory}/scripts/shutdown.sh</executable>
                                 </configuration>
                             </execution>
                         </executions>

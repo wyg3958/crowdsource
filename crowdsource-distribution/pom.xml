@@ -12,12 +12,12 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>crowdsource-distribution</artifactId>
 
-    <!-- ATTENTION: PLUGIN DECLARATION ORDER DOES MATTER. WE NEED TO PUSH BEFORE WE DEPLOY TO AWS!! -->
     <profiles>
         <profile>
             <id>docker</id>
             <build>
                 <plugins>
+                    <!-- ATTENTION: PLUGIN DECLARATION ORDER DOES MATTER. WE NEED TO PUSH BEFORE WE DEPLOY TO AWS!! -->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
@@ -50,6 +50,30 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <plugin>
+                        <groupId>de.gaffa.tools.coreos</groupId>
+                        <artifactId>coreos-maven-plugin</artifactId>
+                        <version>0.1.29-SNAPSHOT</version>
+                        <configuration>
+                            <keyFile>src/main/resources/coreos_rsa</keyFile>
+                            <nodeAdress>54.194.152.80</nodeAdress>
+                            <serviceName>crowdsource</serviceName>
+                            <dockerHubUser>asjenkins</dockerHubUser>
+                            <dockerHubPass>ideas987</dockerHubPass>
+                            <dockerImageName>asideas/crowdsource</dockerImageName>
+                            <dockerRunOptions>-p 80:8080 -e "SPRING_PROFILES_ACTIVE=prod"</dockerRunOptions>
+                            <xFleetOptions>MachineID=7d70b04a731143479c7e883aa7fc1a7c</xFleetOptions>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>deploy crowdsource to aws</id>
+                                <goals>
+                                    <goal>deploy</goal>
+                                </goals>
+                                <phase>deploy</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
@@ -65,32 +89,6 @@
                 <targetPath>${project.build.directory}/docker</targetPath>
             </resource>
         </resources>
-        <plugins>
-            <plugin>
-                <groupId>de.gaffa.tools.coreos</groupId>
-                <artifactId>coreos-maven-plugin</artifactId>
-                <version>0.1.29-SNAPSHOT</version>
-                <configuration>
-                    <keyFile>src/main/resources/coreos_rsa</keyFile>
-                    <nodeAdress>54.194.152.80</nodeAdress>
-                    <serviceName>crowdsource</serviceName>
-                    <dockerHubUser>asjenkins</dockerHubUser>
-                    <dockerHubPass>ideas987</dockerHubPass>
-                    <dockerImageName>asideas/crowdsource</dockerImageName>
-                    <dockerRunOptions>-p 80:8080 -e "SPRING_PROFILES_ACTIVE=prod"</dockerRunOptions>
-                    <xFleetOptions>MachineID=7d70b04a731143479c7e883aa7fc1a7c</xFleetOptions>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>deploy crowdsource to aws</id>
-                        <goals>
-                            <goal>deploy</goal>
-                        </goals>
-                        <phase>deploy</phase>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
     </build>
 
     <pluginRepositories>

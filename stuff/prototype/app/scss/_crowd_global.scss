@@ -1,0 +1,24 @@
+// Variables
+$white       : #FFFFFF;
+$black       : #000000;
+$red         : #d00;
+$green       : #006600;
+$darkGreen   : #005500;
+$lightGrey   : #E6E6E6;
+$darkGrey    : #575757;
+$teaser      : #64579F;
+$lightPurpel : #B1ABCE;
+$purpel      : #64579F;
+$orange      : #D4852F;
+$footerGrey  : #333333;
+
+$panel-padding: rem-calc(10);
+$side-nav-link-color: black;
+
+$inline-list-bottom-margin: rem-calc(0);
+
+$font-family-sans-serif: 'Source Sans Pro', sans-serif;
+$tabbar-bg: $white;
+$tabbar-header-color: $black;
+$tabbar-left-section-border: solid 0px scale-color($tabbar-bg, $lightness: -50%);
+$tabbar-menu-icon-color: $black;

@@ -11,8 +11,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>crowdsource-application</module>
         <module>crowdsource-frontend</module>
+        <module>crowdsource-application</module>
         <module>crowdsource-deployment</module>
     </modules>
 

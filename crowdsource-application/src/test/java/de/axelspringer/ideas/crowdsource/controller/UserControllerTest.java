@@ -51,17 +51,20 @@ public class UserControllerTest {
     private static final String EXISTING_BUT_NOT_YET_ACTIVATED_USER_MAIL_ADDRESS = "existing_not_yet_activated@axelspringer.de";
     private static final String ACTIVATED_USER_MAIL_ADDRESS = "existing_and_activated@axelspringer.de";
     private static final String INVALID_USER_MAIL_ADDRESS = "test@test.de";
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private UserActivationService userActivationService;
+
     @Resource
     private WebApplicationContext webApplicationContext;
+
     private MockMvc mockMvc;
     private User user = new User();
     private ObjectMapper mapper = new ObjectMapper();
     private UserEntity existingButNotYetActivatedUser;
-    private UserEntity activatedUser;
 
     @Before
     public void setup() {
@@ -75,7 +78,7 @@ public class UserControllerTest {
         existingButNotYetActivatedUser.setId("some-database-generated-id");
         when(userRepository.findByEmail(eq(EXISTING_BUT_NOT_YET_ACTIVATED_USER_MAIL_ADDRESS))).thenReturn(existingButNotYetActivatedUser);
 
-        activatedUser = new UserEntity(ACTIVATED_USER_MAIL_ADDRESS);
+        UserEntity activatedUser = new UserEntity(ACTIVATED_USER_MAIL_ADDRESS);
         activatedUser.setActivated(true);
         when(userRepository.findByEmail(eq(ACTIVATED_USER_MAIL_ADDRESS))).thenReturn(activatedUser);
     }

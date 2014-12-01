@@ -21,7 +21,6 @@
         <spring.security.version>3.2.5.RELEASE</spring.security.version>
         <mockito.version>1.10.8</mockito.version>
         <selenium.version>2.41.0</selenium.version>
-        <prod.application.host>54.194.152.80</prod.application.host>
     </properties>
 
     <build>
@@ -171,16 +170,6 @@
                                 </goals>
                                 <configuration>
                                     <executable>${project.build.directory}/scripts/test/shutdown.sh</executable>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>push docker container</id>
-                                <phase>deploy</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>${project.build.directory}/scripts/build/push.sh</executable>
                                 </configuration>
                             </execution>
                         </executions>

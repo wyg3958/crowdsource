@@ -20,7 +20,7 @@
     <modules>
         <module>crowdsource-frontend</module>
         <module>crowdsource-application</module>
-        <module>crowdsource-deployment</module>
+        <module>crowdsource-distribution</module>
     </modules>
 
     <build>

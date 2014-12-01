@@ -34,7 +34,7 @@
                         </goals>
                         <configuration>
                             <executable>npm</executable>
-                            <commandlineArgs>install</commandlineArgs>
+                            <commandlineArgs>install --unsafe-perm</commandlineArgs>
                         </configuration>
                     </execution>
                     <execution>

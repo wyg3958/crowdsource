@@ -3,21 +3,32 @@ crowdsource
 
 DEVELOPERS! 
 
+
 MONGO-DB
 
 Provide properties: de.axelspringer.ideas.crowdsource.db. host/port/name.
+
 
 DOCKER
 
 Enable docker-profile (-Pdocker) to boot the application for integration tests (works only on linux hosts with docker installed)
 => If you want to run the integration tests on windows or mac you need to run CrowdSourceConfig.main() to have the app running
 
-JS-Tests
+
+FRONTEND
 
 1: install node.js/npm
-# TODO: wtf? i am not yet getting the difference here. but when only installing with '-g' some plugins will not be available for karma-cli
-2: run 'npm install -g karma karma-cli karma-phantomjs-launcher karma-jasmine karma-jasmine-jquery karma-junit-reporter karma-ng-html2js-preprocessor'
-3: run 'npm install karma karma-cli karma-phantomjs-launcher karma-jasmine karma-jasmine-jquery karma-junit-reporter karma-ng-html2js-preprocessor'
+2: run 'npm install -g karma-cli'
+
+During maven build, the maven-exec-plugin will execute 'npm install' in the crowdsource-application directory, which also executes 'bower install'
+(see postinstall script in package.json). After this, maven-exec-plugin will execute 'npm run package' (again, a script configured in package.json).
+This builds the frontend code by calling gulp.
+
+For local development, 'npm run package' can be run at any time to recompile the frontend code. 'npm run watch' helps even more (which actually calls 'gulp watch') to
+automatically watch for any changes made to frontend source files and recompile on the fly.
+
+The reason for running 'npm run ...' commands instead of the command directly (e.g. 'gulp') is that gulp must not be installed globally on the developer's machine or on the
+CI server. npm will still find the locally installed executables from node_modules/.bin.
 
 
 PHANTOMJS/CHROME/FIREFOX

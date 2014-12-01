@@ -3,11 +3,11 @@ module.exports = function (config) {
         basePath: '../../../',
 
         files: [
-            'src/test/javascript/lib/angular-1.3.4/angular.js',
-            'src/test/javascript/lib/angular-1.3.4/angular-resource.js',
+            'bower_components/angular/angular.js',
+            'bower_components/angular-resource/angular-resource.js',
 
-            'src/test/javascript/lib/jquery-1.11.0.min.js',
-            'src/test/javascript/lib/angular-1.3.4/angular-mocks.js',
+            'bower_components/jquery/dist/jquery.js',
+            'bower_components/angular-mocks/angular-mocks.js',
 
             'src/main/resources/public/app/**/*.js',
             'src/test/javascript/app/**/*.js'

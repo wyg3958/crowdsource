@@ -1,6 +1,7 @@
 package de.axelspringer.ideas.crowdsource.testsupport.util.selenium;
 
 import com.google.common.base.Predicate;
+import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -19,12 +20,12 @@ public class SeleniumWait {
     private WebDriverProvider webDriverProvider;
 
     public void until(Predicate<WebDriver> isTrue) {
-        log.debug("Waiting until predicate becomes true: {}", isTrue);
+        SeleniumWait.log.debug("Waiting until predicate becomes true: {}", isTrue);
         new WebDriverWait(webDriverProvider.provideDriver(), TIME_OUT_IN_SECONDS).until(isTrue);
     }
 
     public void until(ExpectedCondition<WebElement> isTrue) {
-        log.debug("Waiting until expected condition becomes true: {}", isTrue);
+        SeleniumWait.log.debug("Waiting until expected condition becomes true: {}", isTrue);
         new WebDriverWait(webDriverProvider.provideDriver(), TIME_OUT_IN_SECONDS).until(isTrue);
     }
 }

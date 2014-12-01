@@ -1,8 +1,8 @@
-package de.axelspringer.ideas.crowdsource.testsupport.cucumber.hook;
+package de.axelspringer.ideas.crowdsource.testsupport.cucumber;
 
 import cucumber.api.Scenario;
-import de.axelspringer.ideas.crowdsource.testsupport.util.selenium.WebDriverProvider;
-import de.axelspringer.ideas.crowdsource.testsupport.util.selenium.WebDriverUtils;
+import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
+import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverUtils;
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,5 +21,4 @@ public class ScreenshotHook {
             }
         }
     }
-
 }

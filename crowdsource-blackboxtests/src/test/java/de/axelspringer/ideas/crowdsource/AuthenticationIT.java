@@ -6,6 +6,7 @@ import de.axelspringer.ideas.crowdsource.model.Hello;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
 import lombok.Data;
+import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,7 +56,7 @@ public class AuthenticationIT {
     @Test
     public void authorizedRequest() throws IOException {
         TokenResponse tokenResponse = requestToken("crowdsource@axelspringer.de", "test");
-        assertThat(tokenResponse.getAccessToken(), is(notNullValue()));
+        MatcherAssert.assertThat(tokenResponse.getAccessToken(), is(notNullValue()));
 
         ResponseEntity<Hello> response = getHello(tokenResponse.getAccessToken());
         assertThat(response.getStatusCode(), is(HttpStatus.OK));

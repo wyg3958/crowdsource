@@ -28,7 +28,7 @@
             </resource>
             <resource>
                 <directory>src/main/scripts</directory>
-                <targetPath>${project.build.directory}/docker</targetPath>
+                <targetPath>${project.build.directory}/scripts</targetPath>
                 <filtering>true</filtering>
             </resource>
         </resources>

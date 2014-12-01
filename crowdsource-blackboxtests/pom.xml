@@ -33,6 +33,7 @@
             <testResource>
                 <directory>src/test/scripts</directory>
                 <targetPath>${project.build.directory}/scripts</targetPath>
+                <filtering>true</filtering>
             </testResource>
         </testResources>
         <plugins>

@@ -17,6 +17,10 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages'])
                 templateUrl: 'app/user/signup-success.html',
                 controller: 'SignupSuccessController'
             })
+            .when('/signup/:email/activation/:activationToken', {
+                templateUrl: 'app/user/activation.html',
+                controller: 'UserActivationController'
+            })
             .otherwise({redirectTo: '/signup'});
 
         // we can only activate this, once you can reload the page with the path not being /

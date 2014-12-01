@@ -1,0 +1,9 @@
+.error {
+    input,
+    textarea,
+    select {
+        // foundation sets this to 0, this causes the fields after the one with the error to "bounce" because the margin changes
+        // -> overwrite it back to default setting
+        margin-bottom: $form-spacing;
+    }
+}

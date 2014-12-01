@@ -13,6 +13,7 @@ angular.module('crowdsource')
             $scope.loading = true;
 
             var userCopy = angular.copy($scope.user);
+            // make the email an actual email on a copied user object (to not update the UI)
             userCopy.email = userCopy.email + $scope.EMAIL_HOST;
 
             var promise = User.register(userCopy);
@@ -47,9 +48,7 @@ angular.module('crowdsource')
     .directive("nonExternalEmail", function () {
         return {
             restrict: "A",
-
             require: "ngModel",
-
             link: function (scope, element, attributes, ngModel) {
                 ngModel.$validators.non_external_email = function (modelValue) {
                     return !modelValue || modelValue.indexOf('_extern') < 0;

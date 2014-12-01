@@ -6,6 +6,9 @@ angular.module('crowdsource')
         return {
             register: function (user) {
                 return userResource.save(user).$promise;
+            },
+            activate: function (user, activationToken) {
+                console.log('MOCK! User activation', user, activationToken);
             }
         };
     });

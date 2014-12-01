@@ -12,6 +12,7 @@
 
     <modules>
         <module>crowdsource-application</module>
+        <module>crowdsource-frontend</module>
         <module>crowdsource-deployment</module>
     </modules>
 

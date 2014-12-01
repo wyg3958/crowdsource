@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>crowdsource-frontend</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <parent>
+        <artifactId>crowdsource-parent</artifactId>
+        <groupId>de.axelspringer.ideas.crowdsource</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <build>
+        <testResources>
+            <testResource>
+                <directory>${project.basedir}/src/test/javascript</directory>
+            </testResource>
+        </testResources>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.3.2</version>
+                <executions>
+                    <execution>
+                        <id>download frontend dependencies</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>npm</executable>
+                            <commandlineArgs>install --unsafe-perm</commandlineArgs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>build frontend</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>npm</executable>
+                            <commandlineArgs>run package</commandlineArgs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- javascript-tests -->
+            <plugin>
+                <groupId>com.kelveden</groupId>
+                <artifactId>maven-karma-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <browsers>PhantomJS</browsers>
+                    <configFile>${project.basedir}/src/test/javascript/karma.conf.js</configFile>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>phantomjs</id>
+            <build>
+                <plugins>
+                    <!-- downloads phantomjs and exposed variable phantomjs.binary -->
+                    <plugin>
+                        <groupId>com.github.klieber</groupId>
+                        <artifactId>phantomjs-maven-plugin</artifactId>
+                        <version>0.4</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>install</goal>
+                                </goals>
+                                <phase>generate-test-resources</phase>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <!-- phantomjs version -->
+                            <version>1.9.7</version>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

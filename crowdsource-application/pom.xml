@@ -30,8 +30,8 @@
                 <filtering>true</filtering>
             </resource>
             <resource>
-                <directory>src/main/scripts/</directory>
-                <targetPath>${project.build.directory}/scripts/</targetPath>
+                <directory>src/main/docker/</directory>
+                <targetPath>${project.build.directory}/docker/</targetPath>
                 <filtering>true</filtering>
             </resource>
         </resources>

@@ -20,6 +20,7 @@
     <modules>
         <module>crowdsource-frontend</module>
         <module>crowdsource-application</module>
+        <module>crowdsource-blackboxtests</module>
         <module>crowdsource-distribution</module>
     </modules>
 

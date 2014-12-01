@@ -138,7 +138,7 @@
                                     <arguments>
                                         <argument>-R</argument>
                                         <argument>+x</argument>
-                                        <argument>${project.build.directory}/scripts/</argument>
+                                        <argument>${project.build.directory}/docker/</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
@@ -149,55 +149,10 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>${project.build.directory}/scripts/build/build.sh</executable>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>run docker container</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>${project.build.directory}/scripts/test/run.sh</executable>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>kill docker container</id>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>${project.build.directory}/scripts/test/shutdown.sh</executable>
+                                    <executable>${project.build.directory}/docker/build.sh</executable>
                                 </configuration>
                             </execution>
                         </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>phantomjs</id>
-            <build>
-                <plugins>
-                    <!-- downloads phantomjs and exposed variable phantomjs.binary -->
-                    <plugin>
-                        <groupId>com.github.klieber</groupId>
-                        <artifactId>phantomjs-maven-plugin</artifactId>
-                        <version>0.4</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>install</goal>
-                                </goals>
-                                <phase>generate-test-resources</phase>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <!-- phantomjs version -->
-                            <version>1.9.7</version>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>

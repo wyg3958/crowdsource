@@ -5,7 +5,7 @@
 
             <h3 class="margin-bottom">Registrierung</h3>
 
-            <div class="alert-box alert" ng-if="generalErrorOcurred">
+            <div class="general-error alert-box alert" ng-if="generalErrorOcurred">
                 Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.
             </div>
 
@@ -13,10 +13,10 @@
                 <div class="small-12 columns form-controls-email">
                     <label ng-class="{ 'error': shouldShowValidationError('email') }">
 
-                        <span ng-if="shouldNotShowValidationError('email')">Email-Adresse</span>
+                        <span class="valid-label" ng-show="shouldNotShowValidationError('email')">Email-Adresse</span>
 
-                        <span ng-messages="signupForm.email.$error" ng-if="shouldShowValidationError('email')">
-                            <!-- required and 'email' are build-in validations of angular.js -->
+                        <span class="invalid-label" ng-messages="signupForm.email.$error" ng-show="shouldShowValidationError('email')">
+                            <!-- required and 'pattern' are build-in validations of angular.js -->
                             <span ng-message="required">Bitte geben Sie Ihre Email-Adresse ein</span>
                             <span ng-message="pattern">Bitte geben Sie nur den Teil vor {{ ::EMAIL_HOST }} ein</span>
                             <span ng-message="non_external_email">Dieser Service kann nur von Axel-Springer Mitarbeitern verwendet werden</span>
@@ -45,11 +45,11 @@
 
                         <input type="checkbox" name="termsOfServiceAccepted" ng-model="user.termsOfServiceAccepted" required>
 
-                        <span ng-show="shouldNotShowValidationError('termsOfServiceAccepted')">
+                        <span class="valid-label" ng-show="shouldNotShowValidationError('termsOfServiceAccepted')">
                             Ich akzeptiere die <a ng-click="showTermsOfService = !showTermsOfService">AGBs</a>
                         </span>
 
-                        <span ng-messages="signupForm.termsOfServiceAccepted.$error" ng-show="shouldShowValidationError('termsOfServiceAccepted')">
+                        <span class="invalid-label" ng-messages="signupForm.termsOfServiceAccepted.$error" ng-show="shouldShowValidationError('termsOfServiceAccepted')">
                             <span ng-message="required">Bitte akzeptieren Sie die <a ng-click="showTermsOfService = !showTermsOfService">AGBs</a></span>
                         </span>
                     </label>

@@ -22,7 +22,7 @@ angular.module('crowdsource')
             User.activate(copiedUser, $routeParams.activationToken);
         };
 
-        // TODO: same code as in signup.js. A directive would be better
+        // TODO: same code as in user-signup.js. A directive would be better
         $scope.shouldShowValidationError = function (field) {
             if (!$scope.activationForm[field]) {
                 return false;
@@ -32,7 +32,7 @@ angular.module('crowdsource')
             return (userInteracted && $scope.activationForm[field].$invalid);
         };
 
-        // TODO: same code as in signup.js. A directive would be better
+        // TODO: same code as in user-signup.js. A directive would be better
         $scope.shouldNotShowValidationError = function (field) {
             return !$scope.shouldShowValidationError(field);
         };

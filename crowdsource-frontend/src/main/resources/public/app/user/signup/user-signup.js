@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .controller('SignupController', function ($scope, $location, User, FormUtils) {
+    .controller('UserSignupController', function ($scope, $location, User, FormUtils) {
 
         $scope.EMAIL_HOST = '@axelspringer.de';
 

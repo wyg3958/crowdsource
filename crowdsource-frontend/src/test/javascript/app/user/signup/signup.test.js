@@ -11,14 +11,14 @@ describe('signup view', function () {
             $httpBackend = _$httpBackend_;
             $location = _$location_;
 
-            $controller('SignupController', {
+            $controller('UserSignupController', {
                 $scope: $scope,
                 $location: $location,
                 User: User,
                 FormUtils: FormUtils
             });
 
-            var template = $templateCache.get('app/user/signup.html');
+            var template = $templateCache.get('app/user/signup/user-signup.html');
             signupForm = new SignupForm($compile(template)($scope));
             $scope.$digest();
         });

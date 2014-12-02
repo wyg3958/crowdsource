@@ -6,19 +6,19 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages'])
     .config(function ($routeProvider, $locationProvider) {
         $routeProvider
             .when('/login', {
-                templateUrl: 'app/user/login.html',
-                controller: 'LoginController'
+                templateUrl: 'app/user/login/user-login.html',
+                controller: 'UserLoginController'
             })
             .when('/signup', {
-                templateUrl: 'app/user/signup.html',
-                controller: 'SignupController'
+                templateUrl: 'app/user/signup/user-signup.html',
+                controller: 'UserSignupController'
             })
             .when('/signup/:email/success', {
-                templateUrl: 'app/user/signup-success.html',
-                controller: 'SignupSuccessController'
+                templateUrl: 'app/user/signup/user-signup-success.html',
+                controller: 'UserSignupSuccessController'
             })
             .when('/signup/:email/activation/:activationToken', {
-                templateUrl: 'app/user/activation.html',
+                templateUrl: 'app/user/activation/user-activation.html',
                 controller: 'UserActivationController'
             })
             .otherwise({redirectTo: '/signup'});

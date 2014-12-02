@@ -87,7 +87,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             // We don't need it, so just define some dummy value
                     .scopes("default");
         }
-
     }
-
 }

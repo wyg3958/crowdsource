@@ -58,15 +58,17 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/{email}/activate", method = RequestMethod.PUT)
-    public void activateUser(@PathVariable("email") String email, @Valid Activate activate) {
+    public void activateUser(@PathVariable("email") String email, @RequestBody @Valid Activate activate) {
 
         UserEntity userEntity = userRepository.findByEmail(email);
         if (userEntity == null) {
+            log.debug("userentity with id {} does not exist and can therefore not be activated.", email);
             throw new ResourceNotFoundException();
         }
 
         if (StringUtils.isBlank(userEntity.getActivationToken())
                 || !userEntity.getActivationToken().equals(activate.getActivationToken())) {
+            log.debug("token mismatch on activation request for user with email: {}", email);
             throw new InvalidRequestException();
         }
 

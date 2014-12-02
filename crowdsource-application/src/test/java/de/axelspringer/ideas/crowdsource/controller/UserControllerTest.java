@@ -34,7 +34,6 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -81,7 +80,6 @@ public class UserControllerTest {
 
         existingButNotYetActivatedUser = new UserEntity(EXISTING_BUT_NOT_YET_ACTIVATED_USER_MAIL_ADDRESS);
         existingButNotYetActivatedUser.setId("some-database-generated-id");
-        existingButNotYetActivatedUser.setActivationToken(UUID.randomUUID().toString());
         when(userRepository.findByEmail(eq(EXISTING_BUT_NOT_YET_ACTIVATED_USER_MAIL_ADDRESS))).thenReturn(existingButNotYetActivatedUser);
 
         UserEntity activatedUser = new UserEntity(ACTIVATED_USER_MAIL_ADDRESS);
@@ -182,10 +180,17 @@ public class UserControllerTest {
         assertEquals("", "{\"fieldViolations\":{\"email\":\"not_activated\"}}", mvcResult.getResponse().getContentAsString());
     }
 
+    private MvcResult registerUserAndExpect(ResultMatcher expectedResponseStatus) throws Exception {
+        return mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(register)))
+                .andExpect(expectedResponseStatus)
+                .andReturn();
+    }
+
     @Test
     public void testActivateUser() throws Exception {
 
-        // TODO: right now this fails
         final Activate activate = new Activate();
         activate.setActivationToken(existingButNotYetActivatedUser.getActivationToken());
         activate.setPassword("some_passw0rd");
@@ -193,6 +198,7 @@ public class UserControllerTest {
         final String email = existingButNotYetActivatedUser.getEmail();
 
         mockMvc.perform(put("/user/" + email + "/activate")
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(activate)))
                 .andExpect(status().isOk());
     }
@@ -200,30 +206,66 @@ public class UserControllerTest {
     @Test
     public void testActivateTwice() throws Exception {
 
-        // TODO
-        fail("not implemented");
+        final Activate activate = new Activate();
+        activate.setActivationToken(existingButNotYetActivatedUser.getActivationToken());
+        activate.setPassword("some_passw0rd");
+
+        final String email = existingButNotYetActivatedUser.getEmail();
+
+        mockMvc.perform(put("/user/" + email + "/activate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(activate)))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(put("/user/" + email + "/activate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(activate)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     public void testActivateWrongActivationToken() throws Exception {
 
-        // TODO
-        fail("not implemented");
+        final Activate activate = new Activate();
+        activate.setActivationToken(UUID.randomUUID().toString());
+        activate.setPassword("some_passw0rd");
+
+        final String email = existingButNotYetActivatedUser.getEmail();
+
+        mockMvc.perform(put("/user/" + email + "/activate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(activate)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     public void testActivateInvalidPassword() throws Exception {
 
-        // TODO
-        fail("not implemented");
+        final Activate activate = new Activate();
+        activate.setActivationToken(UUID.randomUUID().toString());
+        activate.setPassword("");
+
+        final String email = existingButNotYetActivatedUser.getEmail();
+
+        mockMvc.perform(put("/user/" + email + "/activate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(activate)))
+                .andExpect(status().isBadRequest());
     }
 
-    private MvcResult registerUserAndExpect(ResultMatcher expectedResponseStatus) throws Exception {
-        return mockMvc.perform(post("/user")
+    @Test
+    public void testActivateNonExistantUser() throws Exception {
+
+        final Activate activate = new Activate();
+        activate.setActivationToken(UUID.randomUUID().toString());
+        activate.setPassword("some_passw0rd");
+
+        final String email = UUID.randomUUID().toString();
+
+        mockMvc.perform(put("/user/" + email + "/activate")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(register)))
-                .andExpect(expectedResponseStatus)
-                .andReturn();
+                .content(mapper.writeValueAsString(activate)))
+                .andExpect(status().isNotFound());
     }
 
     @Configuration

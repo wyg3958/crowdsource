@@ -1,4 +1,4 @@
-package de.axelspringer.ideas.crowdsource.model.presentation;
+package de.axelspringer.ideas.crowdsource.model.presentation.user;
 
 import de.axelspringer.ideas.crowdsource.util.validation.email.EligibleEmail;
 import de.axelspringer.ideas.crowdsource.util.validation.email.NotActivated;
@@ -9,7 +9,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import javax.validation.constraints.AssertTrue;
 
 @Data
-public class User {
+public class Register {
 
     @NotEmpty
     @Email

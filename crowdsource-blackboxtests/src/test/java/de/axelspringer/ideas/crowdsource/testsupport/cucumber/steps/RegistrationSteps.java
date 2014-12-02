@@ -5,7 +5,7 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import de.axelspringer.ideas.crowdsource.model.presentation.User;
+import de.axelspringer.ideas.crowdsource.model.presentation.user.Register;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.NavigationBar;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.RegistrationConfirmationView;
@@ -55,12 +55,12 @@ public class RegistrationSteps {
     @Given("^the user's email address is already registered but not activated$")
     public void the_user_s_email_address_is_already_registered_but_not_activated() throws Throwable {
         // create a user via the REST API
-        User user = new User();
-        user.setEmail(emailName + EligibleEmailValidator.ELIGIBLE_EMAIL_DOMAIN);
-        user.setTermsOfServiceAccepted(true);
+        Register register = new Register();
+        register.setEmail(emailName + EligibleEmailValidator.ELIGIBLE_EMAIL_DOMAIN);
+        register.setTermsOfServiceAccepted(true);
 
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.postForObject(urlProvider.applicationUrl() + "/user", user, Void.class);
+        restTemplate.postForObject(urlProvider.applicationUrl() + "/user", register, Void.class);
     }
 
     @Given("^the user's email address is already registered and activated$")

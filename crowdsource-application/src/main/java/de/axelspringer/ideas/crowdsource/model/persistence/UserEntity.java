@@ -25,7 +25,7 @@ public class UserEntity {
 
     private String password;
 
-    private String activationToken;
+    private String activationToken = UUID.randomUUID().toString();
 
     private List<String> roles = Arrays.asList(Roles.ROLE_USER);
 
@@ -38,14 +38,5 @@ public class UserEntity {
     public UserEntity(String email, String password) {
         this.email = email;
         this.password = password;
-
-        assignNewActivationToken();
-    }
-
-    public void assignNewActivationToken() {
-        // TODO: maybe hash this token with the email address?
-        UUID uuid = UUID.randomUUID();
-
-        this.activationToken = uuid.toString();
     }
 }

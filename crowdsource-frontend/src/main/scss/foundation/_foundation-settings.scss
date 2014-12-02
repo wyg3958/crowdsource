@@ -1,9 +1,7 @@
 // Foundation by ZURB
 // foundation.zurb.com
 // Licensed under MIT Open Source
-
 //
-
 // Table of Contents
 // Foundation Settings
 //
@@ -47,13 +45,10 @@
 // 33. Tooltips
 // 34. Top Bar
 // 36. Visibility Classes
-
 // a. Base
 // - - - - - - - - - - - - - - - - - - - - - - - - -
-
 // This is the default html and body font-size for the base rem value.
 // $rem-base: 16px;
-
 // Allows the use of rem-calc() or lower-bound() in your settings
 @import "foundation/scss/foundation/functions";
 
@@ -95,7 +90,7 @@ $font-family-sans-serif: $crowd-font-family;
 // $font-weight-normal: normal !default;
 $font-weight-bold: bold !default;
 
-$white       : #FFFFFF;
+$white: #FFFFFF;
 // $ghost       : #FAFAFA;
 // $snow        : #F9F9F9;
 // $vapor       : #F6F6F6;
@@ -113,7 +108,7 @@ $white       : #FFFFFF;
 // $tuatara     : #444444;
 // $oil         : #333333;
 // $jet         : #222222;
-$black       : #000000;
+$black: #000000;
 
 // We use these as default colors throughout
 // $primary-color: #008CBA;
@@ -553,7 +548,6 @@ $anchor-font-color-hover: $crowd-color-purple;
 
 // Default radius for dropdown.
 // $f-dropdown-radius: $global-radius;
-
 
 // 09. Dropdown Buttons
 // - - - - - - - - - - - - - - - - - - - - - - - - -

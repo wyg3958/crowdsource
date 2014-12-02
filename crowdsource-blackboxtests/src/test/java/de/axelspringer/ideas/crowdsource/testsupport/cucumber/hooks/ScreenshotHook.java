@@ -1,4 +1,4 @@
-package de.axelspringer.ideas.crowdsource.testsupport.cucumber;
+package de.axelspringer.ideas.crowdsource.testsupport.cucumber.hooks;
 
 import cucumber.api.Scenario;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;

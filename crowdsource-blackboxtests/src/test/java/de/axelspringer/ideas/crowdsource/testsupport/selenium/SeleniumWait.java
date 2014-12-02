@@ -1,6 +1,5 @@
-package de.axelspringer.ideas.crowdsource.testsupport.util.selenium;
+package de.axelspringer.ideas.crowdsource.testsupport.selenium;
 
-import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;

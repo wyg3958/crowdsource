@@ -1,4 +1,4 @@
-package de.axelspringer.ideas.crowdsource.testsupport.util.selenium;
+package de.axelspringer.ideas.crowdsource.testsupport.selenium;
 
 import com.google.common.base.Predicate;
 import org.openqa.selenium.WebDriver;

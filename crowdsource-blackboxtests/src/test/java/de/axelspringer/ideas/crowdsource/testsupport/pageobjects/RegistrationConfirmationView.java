@@ -1,6 +1,6 @@
 package de.axelspringer.ideas.crowdsource.testsupport.pageobjects;
 
-import de.axelspringer.ideas.crowdsource.testsupport.util.selenium.SeleniumWait;
+import de.axelspringer.ideas.crowdsource.testsupport.selenium.SeleniumWait;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.springframework.beans.factory.annotation.Autowired;

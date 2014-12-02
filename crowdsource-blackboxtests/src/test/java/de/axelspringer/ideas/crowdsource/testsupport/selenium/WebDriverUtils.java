@@ -24,5 +24,4 @@ public class WebDriverUtils {
             log.warn("This web driver implementation {} cannot create screenshots", driver.getClass().getName());
         }
     }
-
 }

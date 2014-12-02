@@ -1,8 +1,8 @@
 package de.axelspringer.ideas.crowdsource;
 
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
+import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
-import de.axelspringer.ideas.crowdsource.testsupport.util.selenium.WebDriverProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -2,7 +2,7 @@ package de.axelspringer.ideas.crowdsource;
 
 import cucumber.api.CucumberOptions;
 import cucumber.api.junit.Cucumber;
-import de.axelspringer.ideas.crowdsource.testsupport.util.selenium.WebDriverProvider;
+import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import org.junit.After;
 import org.junit.runner.RunWith;
 

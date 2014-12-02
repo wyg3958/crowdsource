@@ -1,4 +1,4 @@
-package de.axelspringer.ideas.crowdsource.testsupport.util.selenium;
+package de.axelspringer.ideas.crowdsource.testsupport.selenium;
 
 import cucumber.api.Scenario;
 import lombok.extern.slf4j.Slf4j;

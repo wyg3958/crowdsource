@@ -1,4 +1,4 @@
-package de.axelspringer.ideas.crowdsource.testsupport.util.selenium;
+package de.axelspringer.ideas.crowdsource.testsupport.selenium;
 
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;

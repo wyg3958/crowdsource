@@ -7,7 +7,7 @@
 
             <div class="margin-bottom-small">Bitte geben Sie Ihr Passwort ein, um Ihr Konto abschließend zu aktivieren.</div>
 
-            <div class="alert-box alert" ng-if="generalErrorOcurred">
+            <div class="general-error alert-box alert" ng-if="generalErrorOcurred">
                 Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.
             </div>
 
@@ -15,9 +15,9 @@
                 <div class="small-12 columns form-controls-password">
                     <label ng-class="{ 'error': shouldShowValidationError('password') }">
 
-                        <span ng-if="shouldNotShowValidationError('password')">Passwort</span>
+                        <span class="valid-label" ng-show="shouldNotShowValidationError('password')">Passwort</span>
 
-                        <span ng-messages="activationForm.password.$error" ng-if="shouldShowValidationError('password')">
+                        <span class="invalid-label" ng-messages="activationForm.password.$error" ng-show="shouldShowValidationError('password')">
                             <span ng-message="required">Bitte geben Sie Ihr Passwort ein</span>
                         </span>
 
@@ -31,9 +31,9 @@
                 <div class="small-12 columns form-controls-repeated-password">
                     <label ng-class="{ 'error': shouldShowValidationError('repeatedPassword') }">
 
-                        <span ng-if="shouldNotShowValidationError('repeatedPassword')">Passwort wiederholen</span>
+                        <span class="valid-label" ng-show="shouldNotShowValidationError('repeatedPassword')">Passwort wiederholen</span>
 
-                        <span ng-messages="activationForm.repeatedPassword.$error" ng-if="shouldShowValidationError('repeatedPassword')">
+                        <span class="invalid-label" ng-messages="activationForm.repeatedPassword.$error" ng-show="shouldShowValidationError('repeatedPassword')">
                             <span ng-message="required">Bitte geben Sie Ihr Passwort erneut ein</span>
                             <span ng-message="remote_equal">Die beiden Passwörter stimmen nicht überein</span>
                         </span>

@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .controller('UserActivationController', function ($scope, $routeParams, User) {
+    .controller('UserActivationController', function ($scope, $routeParams, User, FormUtils) {
 
         $scope.user = {
             email: $routeParams.email
@@ -15,11 +15,22 @@ angular.module('crowdsource')
                 return;
             }
 
-            var copiedUser = angular.copy($scope.user);
-            // remove this helper property from the copied object to not send this to the server
-            delete copiedUser['repeatedPassword'];
+            $scope.loading = true;
 
-            User.activate(copiedUser, $routeParams.activationToken);
+            var userCopy = angular.copy($scope.user);
+            // remove this helper property from the copied object to not send this to the server
+            delete userCopy['repeatedPassword'];
+
+            var promise = User.activate(userCopy, $routeParams.activationToken).$promise;
+            promise.then(function () {
+                // TODO: implement me
+            });
+            promise.catch(function () {
+                $scope.generalErrorOcurred = true;
+            });
+            promise.finally(function () {
+                $scope.loading = false;
+            });
         };
 
         // TODO: same code as in user-signup.js. A directive would be better

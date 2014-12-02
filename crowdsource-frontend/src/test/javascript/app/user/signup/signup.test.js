@@ -1,4 +1,4 @@
-describe('signup view', function () {
+describe('user signup view', function () {
 
     var $scope, $httpBackend, $location, signupForm;
 
@@ -69,16 +69,20 @@ describe('signup view', function () {
         expect($location.path()).toBe('/signup/test@axelspringer.de/success');
     });
 
-    it('should change the submit button\'s text while loading', function() {
+    it('should disable the submit button and change it\'s text while loading', function() {
         expectBackendCallAndRespond(201);
         expect(signupForm.getSubmitButton()).toHaveText('Registrieren');
+        expect(signupForm.getSubmitButton()).not.toBeDisabled();
 
         fillAndSubmitForm();
 
         expect(signupForm.getSubmitButton()).toHaveText('Registrieren...');
+        expect(signupForm.getSubmitButton()).toBeDisabled();
+
         $httpBackend.flush();
 
-        expect($location.path()).toBe('/signup/test@axelspringer.de/success');
+        expect(signupForm.getSubmitButton()).toHaveText('Registrieren');
+        expect(signupForm.getSubmitButton()).not.toBeDisabled();
     });
 
     it('should show a general error when the server responds with 500', function() {

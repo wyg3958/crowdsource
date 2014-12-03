@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .controller('UserSignupController', function ($scope, $location, User, FormUtils) {
+    .controller('UserSignupController', function ($scope, $location, User, RemoteFormValidation) {
 
         $scope.EMAIL_HOST = '@axelspringer.de';
 
@@ -21,7 +21,7 @@ angular.module('crowdsource')
                 $location.path('/signup/' + userCopy.email + '/success');
             });
             promise.catch(function (response) {
-                if (!FormUtils.applyServerErrorResponse($scope.signupForm, response)) {
+                if (!RemoteFormValidation.applyServerErrorResponse($scope.signupForm, response)) {
                     $scope.generalErrorOcurred = true;
                 }
             });
@@ -29,20 +29,6 @@ angular.module('crowdsource')
                 $scope.loading = false;
             });
         };
-
-        $scope.shouldShowValidationError = function (field) {
-            if (!$scope.signupForm[field]) {
-                return false;
-            }
-
-            var userInteracted = $scope.signupForm.$submitted || $scope.signupForm[field].$dirty;
-            return (userInteracted && $scope.signupForm[field].$invalid);
-        };
-
-        $scope.shouldNotShowValidationError = function (field) {
-            return !$scope.shouldShowValidationError(field);
-        };
-
     })
 
     .directive("nonExternalEmail", function () {

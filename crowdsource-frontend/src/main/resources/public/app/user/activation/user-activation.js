@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .controller('UserActivationController', function ($scope, $routeParams, User, FormUtils) {
+    .controller('UserActivationController', function ($scope, $routeParams, User) {
 
         $scope.user = {
             email: $routeParams.email
@@ -31,20 +31,5 @@ angular.module('crowdsource')
             promise.finally(function () {
                 $scope.loading = false;
             });
-        };
-
-        // TODO: same code as in user-signup.js. A directive would be better
-        $scope.shouldShowValidationError = function (field) {
-            if (!$scope.activationForm[field]) {
-                return false;
-            }
-
-            var userInteracted = $scope.activationForm.$submitted || $scope.activationForm[field].$dirty;
-            return (userInteracted && $scope.activationForm[field].$invalid);
-        };
-
-        // TODO: same code as in user-signup.js. A directive would be better
-        $scope.shouldNotShowValidationError = function (field) {
-            return !$scope.shouldShowValidationError(field);
         };
     });

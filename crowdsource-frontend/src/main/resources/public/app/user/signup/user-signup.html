@@ -11,11 +11,11 @@
 
             <div class="row">
                 <div class="small-12 columns form-controls-email">
-                    <label ng-class="{ 'error': shouldShowValidationError('email') }">
+                    <label form-group="email">
 
-                        <span class="valid-label" ng-show="shouldNotShowValidationError('email')">Email-Adresse</span>
+                        <span form-label-valid="email">Email-Adresse</span>
 
-                        <span class="invalid-label" ng-messages="signupForm.email.$error" ng-show="shouldShowValidationError('email')">
+                        <span form-label-invalid="email" ng-messages="signupForm.email.$error">
                             <!-- required and 'pattern' are build-in validations of angular.js -->
                             <span ng-message="required">Bitte geben Sie Ihre Email-Adresse ein</span>
                             <span ng-message="pattern">Bitte geben Sie nur den Teil vor {{ ::EMAIL_HOST }} ein</span>
@@ -41,15 +41,15 @@
 
             <div class="row">
                 <div class="small-12 columns form-controls-termsofservice">
-                    <label ng-class="{ 'error': shouldShowValidationError('termsOfServiceAccepted') }">
+                    <label form-group="termsOfServiceAccepted">
 
                         <input type="checkbox" name="termsOfServiceAccepted" ng-model="user.termsOfServiceAccepted" required>
 
-                        <span class="valid-label" ng-show="shouldNotShowValidationError('termsOfServiceAccepted')">
+                        <span form-label-valid="termsOfServiceAccepted">
                             Ich akzeptiere die <a ng-click="showTermsOfService = !showTermsOfService">AGBs</a>
                         </span>
 
-                        <span class="invalid-label" ng-messages="signupForm.termsOfServiceAccepted.$error" ng-show="shouldShowValidationError('termsOfServiceAccepted')">
+                        <span form-label-invalid="termsOfServiceAccepted" ng-messages="signupForm.termsOfServiceAccepted.$error">
                             <span ng-message="required">Bitte akzeptieren Sie die <a ng-click="showTermsOfService = !showTermsOfService">AGBs</a></span>
                         </span>
                     </label>

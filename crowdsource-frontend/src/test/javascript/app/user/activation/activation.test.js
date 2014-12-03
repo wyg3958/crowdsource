@@ -6,7 +6,7 @@ describe('user activation view', function () {
         module('crowdsource');
         module('crowdsource.templates');
 
-        inject(function($compile, $rootScope, $templateCache, $controller, _$httpBackend_, User, FormUtils) {
+        inject(function($compile, $rootScope, $templateCache, $controller, _$httpBackend_, User, RemoteFormValidation) {
             $scope = $rootScope.$new();
             $httpBackend = _$httpBackend_;
 
@@ -17,7 +17,7 @@ describe('user activation view', function () {
                     activationToken: "12345"
                 },
                 User: User,
-                FormUtils: FormUtils
+                RemoteFormValidation: RemoteFormValidation
             });
 
             var template = $templateCache.get('app/user/activation/user-activation.html');

@@ -13,11 +13,11 @@
 
             <div class="row">
                 <div class="small-12 columns form-controls-password">
-                    <label ng-class="{ 'error': shouldShowValidationError('password') }">
+                    <label form-group="password">
 
-                        <span class="valid-label" ng-show="shouldNotShowValidationError('password')">Passwort</span>
+                        <span form-label-valid="password">Passwort</span>
 
-                        <span class="invalid-label" ng-messages="activationForm.password.$error" ng-show="shouldShowValidationError('password')">
+                        <span form-label-invalid="password" ng-messages="activationForm.password.$error">
                             <span ng-message="required">Bitte geben Sie Ihr Passwort ein</span>
                         </span>
 
@@ -29,11 +29,11 @@
 
             <div class="row">
                 <div class="small-12 columns form-controls-repeated-password">
-                    <label ng-class="{ 'error': shouldShowValidationError('repeatedPassword') }">
+                    <label form-group="repeatedPassword">
 
-                        <span class="valid-label" ng-show="shouldNotShowValidationError('repeatedPassword')">Passwort wiederholen</span>
+                        <span form-label-valid="repeatedPassword">Passwort wiederholen</span>
 
-                        <span class="invalid-label" ng-messages="activationForm.repeatedPassword.$error" ng-show="shouldShowValidationError('repeatedPassword')">
+                        <span form-label-invalid="repeatedPassword" ng-messages="activationForm.repeatedPassword.$error">
                             <span ng-message="required">Bitte geben Sie Ihr Passwort erneut ein</span>
                             <span ng-message="remote_equal">Die beiden Passwörter stimmen nicht überein</span>
                         </span>

@@ -5,9 +5,9 @@ function ActivationForm(formEl) {
         return formEl.find('.general-error');
     };
 
-    this.password = new FormControls(formEl.find('.form-controls-password'));
+    this.password = new FormGroup(formEl.find('.form-controls-password'));
 
-    this.repeatedPassword = new FormControls(formEl.find('.form-controls-repeated-password'));
+    this.repeatedPassword = new FormGroup(formEl.find('.form-controls-repeated-password'));
 
     this.getSubmitButton = function() {
         return formEl.find('button[type="submit"]');

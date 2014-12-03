@@ -1,5 +1,5 @@
 
-function FormControls(controlsEl) {
+function FormGroup(controlsEl) {
 
     this.getInputField = function() {
         return controlsEl.find('input');

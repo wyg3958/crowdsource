@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .factory('FormUtils', function () {
+    .factory('RemoteFormValidation', function () {
         var REMOTE_RULE_PREFIX = 'remote_';
 
         return {
@@ -47,7 +47,7 @@ angular.module('crowdsource')
         };
     })
 
-    .directive('resetRemoteValidation', function (FormUtils) {
+    .directive('resetRemoteValidation', function (RemoteFormValidation) {
         return {
             restrict: 'A',
             require: 'ngModel',
@@ -64,7 +64,7 @@ angular.module('crowdsource')
 
                     // iterate over ever error of the field
                     angular.forEach(elemScope.$error, function (valid, rule) {
-                        if (FormUtils.isRemoteRule(rule)) {
+                        if (RemoteFormValidation.isRemoteRule(rule)) {
                             // set the validity to true if it is a remote validation error when the value changes
                             elemScope.$setValidity(rule, true);
                         }

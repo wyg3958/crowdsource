@@ -6,7 +6,7 @@ describe('user signup view', function () {
         module('crowdsource');
         module('crowdsource.templates');
 
-        inject(function($compile, $rootScope, $templateCache, $controller, _$httpBackend_, _$location_, User, FormUtils) {
+        inject(function($compile, $rootScope, $templateCache, $controller, _$httpBackend_, _$location_, User, RemoteFormValidation) {
             $scope = $rootScope.$new();
             $httpBackend = _$httpBackend_;
             $location = _$location_;
@@ -15,7 +15,7 @@ describe('user signup view', function () {
                 $scope: $scope,
                 $location: $location,
                 User: User,
-                FormUtils: FormUtils
+                RemoteFormValidation: RemoteFormValidation
             });
 
             var template = $templateCache.get('app/user/signup/user-signup.html');

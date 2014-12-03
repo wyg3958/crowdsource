@@ -12,7 +12,7 @@ module.exports = function (config) {
             'bower_components/angular-mocks/angular-mocks.js',
 
             'src/main/resources/public/app/**/*.js',
-            'src/test/javascript/**/*.test.js',
+            'src/test/javascript/**/*.js',
 
             'src/main/resources/public/app/**/*.html'
         ],

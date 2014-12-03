@@ -9,7 +9,7 @@ docker kill crowdsourcetestmailserver
 docker rm crowdsourcetestmailserver
 
 # run mailserver
-docker run -d -p 10025:10025 -p 18080:8080 --name crowdsourcetestmailserver gaffa/restmail
+docker run -d -p 1025:1025 -p 18080:8080 --name crowdsourcetestmailserver gaffa/restmail
 
 # run mongodb (non-default ports [would be 27017, 28017] to avoid problems)
 docker run -d -p 27000:27017 -p 28000:28017 --name crowdsourcetestdb dockerfile/mongodb
@@ -27,7 +27,7 @@ docker run -p ${it.application.port}:8080 -d \
  -e de.axelspringer.ideas.crowdsource.db.host=$HOST_IP \
  -e de.axelspringer.ideas.crowdsource.db.port=27000 \
  -e de.axelspringer.ideas.crowdsource.mail.host=$HOST_IP\
- -e de.axelspringer.ideas.crowdsource.mail.port=10025 \
+ -e de.axelspringer.ideas.crowdsource.mail.port=1025 \
  -e de.axelspringer.ideas.crowdsource.mail.starttls=false \
  --name="crowdsource_test" "asideas/crowdsource:latest"
 

@@ -3,7 +3,7 @@ package de.axelspringer.ideas.crowdsource.service;
 public class UserActivationServiceIT {
 
     //TODO: cucumberize
-//    private static final int SMTP_PORT = 10025;
+//    private static final int SMTP_PORT = 1025;
 //    private static final String RECIPIENT_ADRESS = "test@test.de";
 //    private static final String SENDER_ADDRESS = "test@crowdsource.de";
 //    private static final String APP_URL = "some.adress.de";

@@ -28,6 +28,7 @@ docker run -p ${it.application.port}:8080 -d \
  -e de.axelspringer.ideas.crowdsource.db.port=27000 \
  -e de.axelspringer.ideas.crowdsource.mail.host=$HOST_IP\
  -e de.axelspringer.ideas.crowdsource.mail.port=10025 \
+ -e de.axelspringer.ideas.crowdsource.mail.starttls=false \
  --name="crowdsource_test" "asideas/crowdsource:latest"
 
 # curl as health check
@@ -51,8 +52,10 @@ do
 done
 
 if [ $STATUS != 0 ]; then
- echo "ERROR: SERVICE NOT AVAILABLE AFTER 15 ATTEMPTS! OUTPUTTING LOGS:"
- docker logs crowdsource_test
+ echo "ERROR: SERVICE NOT AVAILABLE AFTER 15 ATTEMPTS!"
 fi
+
+echo "outputting application logs for debug purposes..."
+docker logs crowdsource_test
 
 exit $STATUS

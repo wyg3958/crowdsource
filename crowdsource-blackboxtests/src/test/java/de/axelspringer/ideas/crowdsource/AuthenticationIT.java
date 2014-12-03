@@ -54,7 +54,7 @@ public class AuthenticationIT {
 
     @Test
     public void authorizedRequest() throws IOException {
-        TokenResponse tokenResponse = requestToken("crowdsource@axelspringer.de", "test");
+        TokenResponse tokenResponse = requestToken("crowdsource@axelspringer.de", "einEselGehtZumBaecker!");
         assertThat(tokenResponse.getAccessToken(), is(notNullValue()));
 
         ResponseEntity<Hello> response = getHello(tokenResponse.getAccessToken());

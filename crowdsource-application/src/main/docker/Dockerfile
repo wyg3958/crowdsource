@@ -5,4 +5,4 @@ EXPOSE 8080
 
 ADD ${project.build.finalName}.jar /srv/
 
-ENTRYPOINT ["java", "-jar", "/srv/${project.build.finalName}.jar"]
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/srv/${project.build.finalName}.jar"]

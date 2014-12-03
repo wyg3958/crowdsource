@@ -34,9 +34,11 @@ docker run -p ${it.application.port}:8080 -d \
 echo "CHECKING AVAILABILITY OF LAUNCHED SERVICE (curl and expect http 200)..."
 
 STATUS=1
+APP_URL=http://$HOST_IP:${it.application.port}
+echo "connecting to: $APP_URL..."
 for i in {1..15}
 do
- REQUEST_RESULT=`curl --max-time 1 -s -i http://$HOST_IP:${it.application.port} | grep "200 OK"`
+ REQUEST_RESULT=`curl --max-time 1 -s -i $APP_URL | grep "200 OK"`
 
  if [ "$REQUEST_RESULT" != "" ]; then
   echo "REQUEST TO SERVICE SUCCESSFULLY RETURNED WITH CODE 200"

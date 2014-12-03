@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE) // required for serialization
@@ -25,7 +24,7 @@ public class UserEntity {
 
     private String password;
 
-    private String activationToken = UUID.randomUUID().toString();
+    private String activationToken;
 
     private List<String> roles = Arrays.asList(Roles.ROLE_USER);
 

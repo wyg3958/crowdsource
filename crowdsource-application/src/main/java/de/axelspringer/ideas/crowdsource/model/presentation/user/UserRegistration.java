@@ -9,7 +9,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import javax.validation.constraints.AssertTrue;
 
 @Data
-public class Register {
+public class UserRegistration {
 
     @NotEmpty
     @Email

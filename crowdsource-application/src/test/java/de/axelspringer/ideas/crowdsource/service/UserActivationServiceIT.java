@@ -78,6 +78,7 @@ public class UserActivationServiceIT {
     public void testActivationMailContainsActivationLink() throws MessagingException, IOException {
 
         UserEntity user = new UserEntity(RECIPIENT_ADRESS);
+        user.setActivationToken("activationToken");
         userActivationService.sendActivationMail(user);
 
         assertThat(inMemorySMTPServer.getMessages(), hasSize(1));

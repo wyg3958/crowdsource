@@ -6,7 +6,7 @@ describe('user activation view', function () {
         module('crowdsource');
         module('crowdsource.templates');
 
-        inject(function($compile, $rootScope, $templateCache, $controller, _$httpBackend_, User, RemoteFormValidation) {
+        inject(function($compile, $rootScope, $templateCache, $controller, _$httpBackend_, User, Authentication) {
             var $scope = $rootScope.$new();
             $httpBackend = _$httpBackend_;
 
@@ -17,7 +17,7 @@ describe('user activation view', function () {
                     activationToken: "12345"
                 },
                 User: User,
-                RemoteFormValidation: RemoteFormValidation
+                Authentication: Authentication
             });
 
             var template = $templateCache.get('app/user/activation/user-activation.html');
@@ -40,8 +40,8 @@ describe('user activation view', function () {
     }
 
     function fillAndSubmitForm() {
-        activationForm.password.getInputField().val('secret').trigger('input');
-        activationForm.repeatedPassword.getInputField().val('secret').trigger('input');
+        activationForm.password.getInputField().val('secret!!!').trigger('input');
+        activationForm.repeatedPassword.getInputField().val('secret!!!').trigger('input');
 
         activationForm.getSubmitButton().click();
     }
@@ -49,19 +49,30 @@ describe('user activation view', function () {
     function expectBackendActivationCallAndRespond(statusCode, responseBody) {
         $httpBackend.expectPOST('/user/test@axelspringer.de/activation', {
             "email": "test@axelspringer.de", // actually not needed, but will be ignored by the backend
-            "password": "secret",
-            "repeatedPassword": "secret", // actually not needed for the backend, but will be ignored by the backend
+            "password": "secret!!!",
+            "repeatedPassword": "secret!!!", // actually not needed for the backend, but will be ignored by the backend
             "activationToken": "12345"
         })
         .respond(statusCode, responseBody);
     }
 
     function expectBackendLoginCallAndRespond(statusCode, responseBody) {
-        $httpBackend.expectPOST('/oauth/token', 'username=test%40axelspringer.de&password=secret&client_id=web&grant_type=password').respond(statusCode, responseBody);
+        $httpBackend.expectPOST('/oauth/token', 'username=test%40axelspringer.de&password=secret!!!&client_id=web&grant_type=password')
+            .respond(statusCode, responseBody);
     }
 
 
     it('should show no validation errors when the form is untouched', function () {
+        expect(activationForm.getGeneralError()).not.toExist();
+
+        expectNoValidationError('password');
+        expectNoValidationError('repeatedPassword');
+    });
+
+    it('should show no validation errors when the form is filled correctly', function () {
+        activationForm.password.getInputField().val('secret!!!').trigger('input');
+        activationForm.repeatedPassword.getInputField().val('secret!!!').trigger('input');
+
         expect(activationForm.getGeneralError()).not.toExist();
 
         expectNoValidationError('password');
@@ -112,17 +123,42 @@ describe('user activation view', function () {
     });
 
     it('should show a validation error if the password is changed to blank', function () {
-        activationForm.password.getInputField().val('secure').trigger('input');
+        activationForm.password.getInputField().val('secret!!!').trigger('input');
         activationForm.password.getInputField().val('').trigger('input');
 
         expectValidationError('password', 'required');
     });
 
     it('should show a validation error if the repeated password is changed to blank', function () {
-        activationForm.repeatedPassword.getInputField().val('secure').trigger('input');
+        activationForm.repeatedPassword.getInputField().val('secret!!!').trigger('input');
         activationForm.repeatedPassword.getInputField().val('').trigger('input');
 
         expectValidationError('repeatedPassword', 'required');
+    });
+
+    it('should show a validation error if the password is too short', function () {
+        activationForm.password.getInputField().val('123456').trigger('input');
+        expectValidationError('password', 'pattern');
+    });
+
+    it('should show a validation error if the password has no special characters', function () {
+        activationForm.password.getInputField().val('12345678').trigger('input');
+        expectValidationError('password', 'pattern');
+    });
+
+    it('should show a validation error if the password contains whitespaces', function () {
+        activationForm.password.getInputField().val('12345 67!').trigger('input');
+        expectValidationError('password', 'pattern');
+    });
+
+    it('should show a validation error if the password contains whitespaces at the beginning', function () {
+        activationForm.password.getInputField().val(' 1234567!').trigger('input');
+        expectValidationError('password', 'pattern');
+    });
+
+    it('should show a validation error if the password contains whitespaces at the end', function () {
+        activationForm.password.getInputField().val('1234567! ').trigger('input');
+        expectValidationError('password', 'pattern');
     });
 
     it('should show a validation error if different passwords are entered once the form is submitted', function () {
@@ -137,12 +173,12 @@ describe('user activation view', function () {
     });
 
     it('should clear the remote_equal validation error once the user starts typing again', function() {
-        activationForm.password.getInputField().val('secure').trigger('input');
-        activationForm.repeatedPassword.getInputField().val('something else').trigger('input');
+        activationForm.password.getInputField().val('secret!!!').trigger('input');
+        activationForm.repeatedPassword.getInputField().val('something else!').trigger('input');
 
         activationForm.getSubmitButton().click();
 
-        activationForm.repeatedPassword.getInputField().val('secure').trigger('input');
+        activationForm.repeatedPassword.getInputField().val('secret!!!').trigger('input');
 
         expectNoValidationError('repeatedPassword');
     });

@@ -19,10 +19,11 @@
 
                         <span form-label-invalid="password" ng-messages="activationForm.password.$error">
                             <span ng-message="required">Bitte geben Sie Ihr Passwort ein</span>
+                            <span ng-message="pattern">Das Passwort muss aus mindestens 8 Zeichen und einem Sonderzeichen bestehen</span>
                         </span>
 
                         <input type="password" name="password" ng-model="user.password"
-                               required reset-remote-validation>
+                               required pattern="^(?=.*\W)(?=\S+$).{8,}$" reset-remote-validation>
                     </label>
                 </div>
             </div>

@@ -23,7 +23,7 @@ public class MongoUserDetailsService implements UserDetailsService {
     @Value("${de.axelspringer.ideas.crowdsource.defaultUser:crowdsource@axelspringer.de}")
     private String defaultEmailAddress;
 
-    @Value("${de.axelspringer.ideas.crowdsource.defaultPassword:test}")
+    @Value("${de.axelspringer.ideas.crowdsource.defaultPassword:einEselGehtZumBaecker!}")
     private String defaultPassword;
 
     @Autowired

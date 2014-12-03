@@ -203,7 +203,7 @@ public class UserControllerTest {
 
         final UserActivation userActivation = new UserActivation();
         userActivation.setActivationToken(existingButNotYetActivatedUser.getActivationToken());
-        userActivation.setPassword("some_passw0rd");
+        userActivation.setPassword("1234567!");
 
         final String email = existingButNotYetActivatedUser.getEmail();
 
@@ -226,7 +226,7 @@ public class UserControllerTest {
 
         final UserActivation userActivation = new UserActivation();
         userActivation.setActivationToken(existingButNotYetActivatedUser.getActivationToken());
-        userActivation.setPassword("some_passw0rd");
+        userActivation.setPassword("1234567!");
 
         final String email = existingButNotYetActivatedUser.getEmail();
 
@@ -246,7 +246,7 @@ public class UserControllerTest {
 
         final UserActivation userActivation = new UserActivation();
         userActivation.setActivationToken(UUID.randomUUID().toString());
-        userActivation.setPassword("some_passw0rd");
+        userActivation.setPassword("1234567!");
 
         final String email = existingButNotYetActivatedUser.getEmail();
 
@@ -261,7 +261,7 @@ public class UserControllerTest {
 
         final UserActivation userActivation = new UserActivation();
         userActivation.setActivationToken(UUID.randomUUID().toString());
-        userActivation.setPassword("");
+        userActivation.setPassword("invalid");
 
         final String email = existingButNotYetActivatedUser.getEmail();
 
@@ -276,7 +276,7 @@ public class UserControllerTest {
 
         final UserActivation userActivation = new UserActivation();
         userActivation.setActivationToken(UUID.randomUUID().toString());
-        userActivation.setPassword("some_passw0rd");
+        userActivation.setPassword("1234567!");
 
         final String email = UUID.randomUUID().toString();
 

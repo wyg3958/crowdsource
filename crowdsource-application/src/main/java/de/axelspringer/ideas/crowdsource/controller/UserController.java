@@ -62,7 +62,7 @@ public class UserController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/{email}/activation", method = RequestMethod.POST)
+    @RequestMapping(value = "/{email}/activation", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public void activateUser(@PathVariable("email") String email, @RequestBody @Valid UserActivation userActivation) {
 
         UserEntity userEntity = userRepository.findByEmail(email);
@@ -82,6 +82,7 @@ public class UserController {
         userEntity.setPassword(passwordEncoder.encode(userActivation.getPassword()));
 
         userRepository.save(userEntity);
+        log.debug("User activated: {}", userEntity);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

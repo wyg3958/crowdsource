@@ -2,14 +2,14 @@ angular.module('crowdsource')
 
     .factory('User', function ($resource) {
         var userResource = $resource('/user');
-        var userActivationResource = $resource('/user/:email/activation/:token', { email: '@email' });
+        var userActivationResource = $resource('/user/:email/activation', { email: '@email' });
 
         return {
             register: function (user) {
                 return userResource.save(user).$promise;
             },
-            activate: function (user, activationToken) {
-                return userActivationResource.save({ token: activationToken }, user);
+            activate: function (user) {
+                return userActivationResource.save(user);
             }
         };
     });

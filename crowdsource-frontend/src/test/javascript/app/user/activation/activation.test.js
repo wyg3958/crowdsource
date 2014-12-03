@@ -47,7 +47,13 @@ describe('user activation view', function () {
     }
 
     function expectBackendCallAndRespond(statusCode, responseBody) {
-        $httpBackend.expectPOST('/user/test@axelspringer.de/activation/12345', {"email":"test@axelspringer.de","password":"secret"}).respond(statusCode, responseBody);
+        $httpBackend.expectPOST('/user/test@axelspringer.de/activation', {
+            "email": "test@axelspringer.de", // actually not needed, but will be ignored by the backend
+            "password": "secret",
+            "repeatedPassword": "secret", // actually not needed for the backend, but will be ignored by the backend
+            "activationToken": "12345"
+        })
+        .respond(statusCode, responseBody);
     }
 
 

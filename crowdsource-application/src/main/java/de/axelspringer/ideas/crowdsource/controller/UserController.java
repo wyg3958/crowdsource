@@ -28,7 +28,7 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@RequestMapping("/user")
+@RequestMapping(value = "/user", consumes = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 
     @Autowired
@@ -41,7 +41,7 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.POST)
     public void registerUser(@RequestBody @Valid UserRegistration userRegistration) {
 
         UserEntity userEntity = userRepository.findByEmail(userRegistration.getEmail());
@@ -62,7 +62,7 @@ public class UserController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/{email}/activation", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{email}/activation", method = RequestMethod.POST)
     public void activateUser(@PathVariable("email") String email, @RequestBody @Valid UserActivation userActivation) {
 
         UserEntity userEntity = userRepository.findByEmail(email);

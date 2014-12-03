@@ -16,10 +16,10 @@ public class UserActivationService {
 
     public static final String MAIL_CONTENT = "Activation link: ";
 
-    @Value("${de.axelspringer.ideas.crowdsource.mail.from:crowdsource@asideas.de}")
+    @Value("${de.axelspringer.ideas.crowdsource.mail.from:ascrowdsource@gmail.com}")
     private String fromAddress;
 
-    @Value("${de.axelspringer.ideas.crowdsource.baseUrl}")
+    @Value("${de.axelspringer.ideas.crowdsource.baseUrl:http://54.194.152.80}")
     private String applicationUrl;
 
     @Autowired

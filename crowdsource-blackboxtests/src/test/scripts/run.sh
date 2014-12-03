@@ -5,11 +5,16 @@ docker kill crowdsource_test
 docker rm crowdsource_test
 docker kill crowdsourcetestdb
 docker rm crowdsourcetestdb
+docker kill rowdsourcetestmailserver
+docker rm rowdsourcetestmailserver
+
+# run mailserver
+docker run -d -p 10025:25 -p 10110:110 --name crowdsourcetestmailserver esminis/mail-server-postfix-vm-pop3d
 
 # run mongodb (non-default ports [would be 27017, 28017] to avoid problems)
 docker run -d -p 27000:27017 -p 28000:28017 --name crowdsourcetestdb dockerfile/mongodb
 
-# let db get awake
+# let db and mailserver get awake
 sleep 2
 echo "outputting logs of mongodb-container"
 docker logs crowdsourcetestdb
@@ -18,7 +23,12 @@ docker logs crowdsourcetestdb
 HOST_IP=`netstat -nr | grep '^0\.0\.0\.0' | awk '{print $2}'`
 
 # run application
-docker run -p ${it.application.port}:8080 -d -e de.axelspringer.ideas.crowdsource.db.host=$HOST_IP -e de.axelspringer.ideas.crowdsource.db.port=27000 --name="crowdsource_test" "asideas/crowdsource:latest"
+docker run -p ${it.application.port}:8080 -d \
+ -e de.axelspringer.ideas.crowdsource.db.host=$HOST_IP \
+ -e de.axelspringer.ideas.crowdsource.db.port=27000 \
+ -e de.axelspringer.ideas.crowdsource.mail.host=$HOST_IP\
+ -e de.axelspringer.ideas.crowdsource.mail.port=10025 \
+ --name="crowdsource_test" "asideas/crowdsource:latest"
 
 # curl as health check
 echo "CHECKING AVAILABILITY OF LAUNCHED SERVICE (curl and expect http 200)..."

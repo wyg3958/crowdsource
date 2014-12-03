@@ -3,6 +3,7 @@ crowdsource
 
 DEVELOPERS! 
 
+Enable dev-profile providing "spring.profiles.active=dev" in your run configuration to use a mocked mail server and a local mongodb.
 
 MONGO-DB
 

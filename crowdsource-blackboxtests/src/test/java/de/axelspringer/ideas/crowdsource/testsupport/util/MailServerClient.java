@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.crowdsource.testsupport.util;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -9,11 +10,13 @@ import java.util.List;
 @Service
 public class MailServerClient {
 
-    private final String MAILSERVER_URL = "http://localhost:18080/mails";
+    @Autowired
+    private UrlProvider urlProvider;
+
     private RestTemplate restTemplate = new RestTemplate();
 
     public void clearMails() {
-        restTemplate.delete(MAILSERVER_URL);
+        restTemplate.delete(urlProvider.mailserverUrl());
     }
 
     public void waitForMails(int mailCount, long wait) {
@@ -29,7 +32,7 @@ public class MailServerClient {
     }
 
     public List<Message> messages() {
-        final Message[] messages = restTemplate.getForObject(MAILSERVER_URL, Message[].class);
+        final Message[] messages = restTemplate.getForObject(urlProvider.mailserverUrl(), Message[].class);
         return Arrays.asList(messages);
     }
 

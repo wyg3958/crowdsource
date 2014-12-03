@@ -16,6 +16,13 @@ public class UrlProvider {
     @Value("${de.axelspringer.ideas.crowdsource.test.server.port:8080}")
     private Integer applicationPort;
 
+    public String mailserverUrl() {
+
+        final String mailserverUrl = "http://" + applicationHost + ":18080/mails";
+        log.debug("providing mailserver url ({})", mailserverUrl);
+        return mailserverUrl;
+    }
+
     public String applicationUrl() {
 
         final String applicationUrl = "http://" + applicationHost + ":" + applicationPort;

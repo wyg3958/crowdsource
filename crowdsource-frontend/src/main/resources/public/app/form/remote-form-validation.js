@@ -1,6 +1,7 @@
 angular.module('crowdsource')
 
     .factory('RemoteFormValidation', function () {
+        // server error reason prefix
         var REMOTE_RULE_PREFIX = 'remote_';
 
         return {

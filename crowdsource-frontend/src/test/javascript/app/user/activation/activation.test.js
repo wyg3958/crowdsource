@@ -1,13 +1,13 @@
 describe('user activation view', function () {
 
-    var $scope, $httpBackend, $location, activationForm;
+    var $httpBackend, activationForm;
 
     beforeEach(function() {
         module('crowdsource');
         module('crowdsource.templates');
 
         inject(function($compile, $rootScope, $templateCache, $controller, _$httpBackend_, User, RemoteFormValidation) {
-            $scope = $rootScope.$new();
+            var $scope = $rootScope.$new();
             $httpBackend = _$httpBackend_;
 
             $controller('UserActivationController', {
@@ -46,11 +46,6 @@ describe('user activation view', function () {
         activationForm.getSubmitButton().click();
     }
 
-    function fillAndSubmitFormAndFlush() {
-        fillAndSubmitForm();
-        $httpBackend.flush();
-    }
-
     function expectBackendCallAndRespond(statusCode, responseBody) {
         $httpBackend.expectPOST('/user/test@axelspringer.de/activation/12345', {"email":"test@axelspringer.de","password":"secret"}).respond(statusCode, responseBody);
     }
@@ -66,9 +61,9 @@ describe('user activation view', function () {
     it('should POST the data to the server and TODO...', function() {
         expectBackendCallAndRespond(201);
 
-        fillAndSubmitFormAndFlush();
-
-        // TODO: once implemented, test whatever happens after successfull server response
+        fillAndSubmitForm();
+        $httpBackend.flush();
+        // TODO: once implemented, test whatever happens after successful server response
     });
 
     it('should disable the submit button and change it\'s text while loading', function() {
@@ -90,8 +85,8 @@ describe('user activation view', function () {
     it('should show a general error when the server responds with 500', function() {
         expectBackendCallAndRespond(500);
 
-        fillAndSubmitFormAndFlush();
-
+        fillAndSubmitForm();
+        $httpBackend.flush();
         expect(activationForm.getGeneralError()).toExist();
         // TODO: once implemented, test that the user login is not attempted
     });

@@ -1,15 +1,17 @@
-
-function SignupForm(formEl) {
+/**
+ * "page-object" for Signup-View
+ */
+function SignupForm(element) {
 
     this.getGeneralError = function() {
-        return formEl.find('.general-error');
+        return element.find('.general-error');
     };
 
-    this.email = new FormGroup(formEl.find('.form-controls-email'));
+    this.email = new FormGroup(element.find('.form-controls-email'));
 
-    this.termsOfServiceAccepted = new FormGroup(formEl.find('.form-controls-termsofservice'));
+    this.termsOfServiceAccepted = new FormGroup(element.find('.form-controls-termsofservice'));
 
     this.getSubmitButton = function() {
-        return formEl.find('button[type="submit"]');
+        return element.find('button[type="submit"]');
     };
 }

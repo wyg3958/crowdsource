@@ -1,20 +1,22 @@
-
-function FormGroup(controlsEl) {
+/**
+ * A FormGroup represents an input field along with its label and error messages
+ */
+function FormGroup(element) {
 
     this.getInputField = function() {
-        return controlsEl.find('input');
+        return element.find('input');
     };
 
     this.getLabelContainer = function() {
-        return controlsEl.find('> label');
+        return element.find('> label');
     };
 
     this.getLabel = function() {
-        return controlsEl.find('.valid-label');
+        return element.find('.valid-label');
     };
 
     this.getErrorLabelsContainer = function() {
-        return controlsEl.find('.invalid-label');
+        return element.find('.invalid-label');
     };
 
     this.getErrorLabelForRule = function(violatedRule) {

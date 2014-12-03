@@ -1,13 +1,13 @@
 describe('user signup view', function () {
 
-    var $scope, $httpBackend, $location, signupForm;
+    var $httpBackend, $location, signupForm;
 
     beforeEach(function() {
         module('crowdsource');
         module('crowdsource.templates');
 
         inject(function($compile, $rootScope, $templateCache, $controller, _$httpBackend_, _$location_, User, RemoteFormValidation) {
-            $scope = $rootScope.$new();
+            var $scope = $rootScope.$new();
             $httpBackend = _$httpBackend_;
             $location = _$location_;
 
@@ -44,11 +44,6 @@ describe('user signup view', function () {
         signupForm.getSubmitButton().click();
     }
 
-    function fillAndSubmitFormAndFlush() {
-        fillAndSubmitForm();
-        $httpBackend.flush();
-    }
-
     function expectBackendCallAndRespond(statusCode, responseBody) {
         $httpBackend.expectPOST('/user', {"email":"test@axelspringer.de","termsOfServiceAccepted":true}).respond(statusCode, responseBody);
     }
@@ -62,10 +57,16 @@ describe('user signup view', function () {
     });
 
     it('should POST the data to the server and redirect to success page', function() {
+
+        // expect a valid call and return "created"
         expectBackendCallAndRespond(201);
 
-        fillAndSubmitFormAndFlush();
+        fillAndSubmitForm();
 
+        // flush backend (assertion will be evaluated)
+        $httpBackend.flush();
+
+        // make sure location was changed
         expect($location.path()).toBe('/signup/test@axelspringer.de/success');
     });
 
@@ -86,11 +87,13 @@ describe('user signup view', function () {
     });
 
     it('should show a general error when the server responds with 500', function() {
+
+        // spy on path-method
         spyOn($location, 'path');
         expectBackendCallAndRespond(500);
 
-        fillAndSubmitFormAndFlush();
-
+        fillAndSubmitForm();
+        $httpBackend.flush();
         expect($location.path).not.toHaveBeenCalled();
         expect(signupForm.getGeneralError()).toExist();
     });
@@ -131,8 +134,8 @@ describe('user signup view', function () {
     it('should show a validation error if the server responds with the field violation {"email": "not_activated"}', function() {
         expectBackendCallAndRespond(400, { "fieldViolations": { "email": "not_activated" } });
 
-        fillAndSubmitFormAndFlush();
-
+        fillAndSubmitForm();
+        $httpBackend.flush();
         expect(signupForm.getGeneralError()).not.toExist();
         expectValidationError('email', 'remote_not_activated');
     });
@@ -140,8 +143,8 @@ describe('user signup view', function () {
     it('should clear the remote validation errors once the user starts typing again', function() {
         expectBackendCallAndRespond(400, { "fieldViolations": { "email": "not_activated" } });
 
-        fillAndSubmitFormAndFlush();
-
+        fillAndSubmitForm();
+        $httpBackend.flush();
         signupForm.email.getInputField().val('something-different').trigger('input');
         expectNoValidationError('email');
     });
@@ -149,8 +152,8 @@ describe('user signup view', function () {
     it('should show a general error when the server responds with a field violation for an unknown field', function() {
         expectBackendCallAndRespond(400, { "fieldViolations": { "unknownField": "foo" } });
 
-        fillAndSubmitFormAndFlush();
-
+        fillAndSubmitForm();
+        $httpBackend.flush();
         expect(signupForm.getGeneralError()).toExist();
     });
 });

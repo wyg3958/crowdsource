@@ -6,11 +6,13 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.UserRegistration;
+import de.axelspringer.ideas.crowdsource.service.UserActivationService;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.NavigationBar;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.RegistrationConfirmationView;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.RegistrationForm;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
+import de.axelspringer.ideas.crowdsource.testsupport.util.MailServerClient;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
 import de.axelspringer.ideas.crowdsource.util.validation.email.EligibleEmailValidator;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -21,7 +23,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.client.RestTemplate;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
@@ -42,6 +46,9 @@ public class RegistrationSteps {
     @Autowired
     private RegistrationConfirmationView registrationConfirmationView;
 
+    @Autowired
+    private MailServerClient mailServerClient;
+
     private WebDriver webDriver;
 
     private String emailName;
@@ -50,6 +57,11 @@ public class RegistrationSteps {
     public void init() {
         webDriver = webDriverProvider.provideDriver();
         emailName = "registrationTest+" + RandomStringUtils.randomAlphanumeric(10);
+    }
+
+    @Before("@ClearMailServer")
+    public void initMailServer() {
+        mailServerClient.clearMails();
     }
 
     @Given("^the user's email address is already registered but not activated$")
@@ -105,5 +117,20 @@ public class RegistrationSteps {
     public void the_validation_error_is_displayed_on_the_email_field(String errorText) throws Throwable {
         PageFactory.initElements(webDriver, registrationForm);
         assertThat(registrationForm.getEmailFieldErrorText(), is(errorText));
+    }
+
+    @Then("^the user receives (\\d+) activation mails$")
+    public void the_user_receives_activation_mail_s(int mailCount) throws Throwable {
+
+        // wait for mails to be available in mail server
+        mailServerClient.waitForMails(mailCount, 5000);
+
+        assertThat(mailServerClient.messages(), hasSize(mailCount));
+        // check last received mail
+        final MailServerClient.Message message = mailServerClient.messages().get(mailCount - 1);
+        assertThat(message.from, is(UserActivationService.FROM_ADDRESS));
+        assertThat(message.to, is(emailName + EligibleEmailValidator.ELIGIBLE_EMAIL_DOMAIN));
+        assertThat(message.subject, is(UserActivationService.REGISTRATION_SUBJECT));
+        assertThat(message.message, startsWith(UserActivationService.MAIL_CONTENT));
     }
 }

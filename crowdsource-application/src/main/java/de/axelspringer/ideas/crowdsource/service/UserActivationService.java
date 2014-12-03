@@ -16,8 +16,8 @@ public class UserActivationService {
 
     public static final String MAIL_CONTENT = "Activation link: ";
 
-    @Value("${de.axelspringer.ideas.crowdsource.mail.from:ascrowdsource@gmail.com}")
-    private String fromAddress;
+    public static final String FROM_ADDRESS = "ascrowdsource@gmail.com";
+    public static final String REGISTRATION_SUBJECT = "CrowdSource Registrierung";
 
     @Value("${de.axelspringer.ideas.crowdsource.baseUrl:http://54.194.152.80}")
     private String applicationUrl;
@@ -32,8 +32,8 @@ public class UserActivationService {
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(user.getEmail());
-        mailMessage.setFrom(fromAddress);
-        mailMessage.setSubject("CrowdSource Registrierung");
+        mailMessage.setFrom(FROM_ADDRESS);
+        mailMessage.setSubject(REGISTRATION_SUBJECT);
         mailMessage.setText(MAIL_CONTENT + activationLink);
 
         sendMail(mailMessage);

@@ -37,7 +37,7 @@ echo "CHECKING AVAILABILITY OF LAUNCHED SERVICE (curl and expect http 200)..."
 STATUS=1
 APP_URL=http://$HOST_IP:${it.application.port}
 echo "connecting to: $APP_URL..."
-for i in {1..15}
+for i in {1..30}
 do
  REQUEST_RESULT=`curl --max-time 1 -s -i $APP_URL | grep "200 OK"`
 
@@ -52,7 +52,7 @@ do
 done
 
 if [ $STATUS != 0 ]; then
- echo "ERROR: SERVICE NOT AVAILABLE AFTER 15 ATTEMPTS! LOGS:"
+ echo "ERROR: SERVICE NOT AVAILABLE AFTER 30 ATTEMPTS! LOGS:"
  docker logs crowdsource_test
 fi
 

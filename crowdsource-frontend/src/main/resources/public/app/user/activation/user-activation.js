@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .controller('UserActivationController', function ($scope, $routeParams, User) {
+    .controller('UserActivationController', function ($scope, $routeParams, User, Authentication) {
 
         $scope.user = {
             email: $routeParams.email,
@@ -18,14 +18,14 @@ angular.module('crowdsource')
 
             $scope.loading = true;
 
-            var promise = User.activate($scope.user).$promise;
-            promise.then(function () {
-                // TODO: implement me
+            var activationPromise = User.activate($scope.user).$promise;
+            activationPromise.then(function () {
+                return Authentication.login($scope.user.email, $scope.user.password);
             });
-            promise.catch(function () {
+            activationPromise.catch(function () {
                 $scope.generalErrorOcurred = true;
             });
-            promise.finally(function () {
+            activationPromise.finally(function () {
                 $scope.loading = false;
             });
         };

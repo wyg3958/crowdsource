@@ -46,7 +46,7 @@ describe('user activation view', function () {
         activationForm.getSubmitButton().click();
     }
 
-    function expectBackendCallAndRespond(statusCode, responseBody) {
+    function expectBackendActivationCallAndRespond(statusCode, responseBody) {
         $httpBackend.expectPOST('/user/test@axelspringer.de/activation', {
             "email": "test@axelspringer.de", // actually not needed, but will be ignored by the backend
             "password": "secret",
@@ -54,6 +54,10 @@ describe('user activation view', function () {
             "activationToken": "12345"
         })
         .respond(statusCode, responseBody);
+    }
+
+    function expectBackendLoginCallAndRespond(statusCode, responseBody) {
+        $httpBackend.expectPOST('/oauth/token', 'username=test%40axelspringer.de&password=secret&client_id=web&grant_type=password').respond(statusCode, responseBody);
     }
 
 
@@ -64,8 +68,9 @@ describe('user activation view', function () {
         expectNoValidationError('repeatedPassword');
     });
 
-    it('should POST the data to the server and TODO...', function() {
-        expectBackendCallAndRespond(201);
+    it('should POST the data to the server, request an access token and TODO...', function() {
+        expectBackendActivationCallAndRespond(201);
+        expectBackendLoginCallAndRespond(200);
 
         fillAndSubmitForm();
         $httpBackend.flush();
@@ -73,7 +78,9 @@ describe('user activation view', function () {
     });
 
     it('should disable the submit button and change it\'s text while loading', function() {
-        expectBackendCallAndRespond(201);
+        expectBackendActivationCallAndRespond(201);
+        expectBackendLoginCallAndRespond(200);
+
         expect(activationForm.getSubmitButton()).toHaveText('Speichern');
         expect(activationForm.getSubmitButton()).not.toBeDisabled();
 
@@ -89,7 +96,7 @@ describe('user activation view', function () {
     });
 
     it('should show a general error when the server responds with 500', function() {
-        expectBackendCallAndRespond(500);
+        expectBackendActivationCallAndRespond(500);
 
         fillAndSubmitForm();
         $httpBackend.flush();

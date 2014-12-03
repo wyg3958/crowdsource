@@ -1,7 +1,9 @@
 angular.module('crowdsource')
 
     .factory('User', function ($resource) {
+
         var userResource = $resource('/user');
+
         var userActivationResource = $resource('/user/:email/activation', { email: '@email' });
 
         return {

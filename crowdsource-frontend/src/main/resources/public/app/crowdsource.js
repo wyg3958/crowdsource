@@ -3,7 +3,7 @@
  */
 angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages'])
 
-    .config(function ($routeProvider, $locationProvider) {
+    .config(function ($routeProvider, $locationProvider, $httpProvider) {
         $routeProvider
             .when('/login', {
                 templateUrl: 'app/user/login/user-login.html',
@@ -25,4 +25,16 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages'])
 
         // we can only activate this, once you can reload the page with the path not being /
         $locationProvider.html5Mode(false);
+
+        $httpProvider.interceptors.push(function($q, $location) {
+            return {
+                responseError: function(response) {
+                    if (response.status == 403) {
+                        $location.path('/login');
+                    }
+
+                    return $q.reject(response);
+                }
+            }
+        });
     });

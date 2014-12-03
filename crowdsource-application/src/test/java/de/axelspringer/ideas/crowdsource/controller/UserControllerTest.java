@@ -2,7 +2,8 @@ package de.axelspringer.ideas.crowdsource.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
-import de.axelspringer.ideas.crowdsource.model.presentation.User;
+import de.axelspringer.ideas.crowdsource.model.presentation.user.Activate;
+import de.axelspringer.ideas.crowdsource.model.presentation.user.Register;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import de.axelspringer.ideas.crowdsource.service.UserActivationService;
 import org.junit.Before;
@@ -25,6 +26,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.annotation.Resource;
+import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -40,6 +42,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -62,12 +65,13 @@ public class UserControllerTest {
     private WebApplicationContext webApplicationContext;
 
     private MockMvc mockMvc;
-    private User user = new User();
+    private Register register = new Register();
     private ObjectMapper mapper = new ObjectMapper();
     private UserEntity existingButNotYetActivatedUser;
 
     @Before
     public void setup() {
+
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
         reset(userRepository);
@@ -86,19 +90,19 @@ public class UserControllerTest {
     @Test
     public void shouldReturnSuccessfullyWhenEmailAndTosOkOnSave() throws Exception {
 
-        user.setEmail(NEW_USER_MAIL_ADDRESS);
-        user.setTermsOfServiceAccepted(true);
+        register.setEmail(NEW_USER_MAIL_ADDRESS);
+        register.setTermsOfServiceAccepted(true);
 
-        performRequest(status().isCreated());
+        registerUserAndExpect(status().isCreated());
     }
 
     @Test
     public void shouldCallAllRelevantMethodsOnSave() throws Exception {
 
-        user.setEmail(NEW_USER_MAIL_ADDRESS);
-        user.setTermsOfServiceAccepted(true);
+        register.setEmail(NEW_USER_MAIL_ADDRESS);
+        register.setTermsOfServiceAccepted(true);
 
-        performRequest(status().isCreated());
+        registerUserAndExpect(status().isCreated());
 
         // once in NotExistingAndActivatedValidator and once in the UserController
         verify(userRepository, times(2)).findByEmail(any());
@@ -109,10 +113,10 @@ public class UserControllerTest {
     @Test
     public void shouldAddNewUserIntoDatabase() throws Exception {
 
-        user.setEmail(NEW_USER_MAIL_ADDRESS);
-        user.setTermsOfServiceAccepted(true);
+        register.setEmail(NEW_USER_MAIL_ADDRESS);
+        register.setTermsOfServiceAccepted(true);
 
-        performRequest(status().isCreated());
+        registerUserAndExpect(status().isCreated());
 
         ArgumentCaptor<UserEntity> userEntityCaptor = ArgumentCaptor.forClass(UserEntity.class);
         verify(userRepository).save(userEntityCaptor.capture());
@@ -127,10 +131,10 @@ public class UserControllerTest {
 
         String originalActivationToken = existingButNotYetActivatedUser.getActivationToken();
 
-        user.setEmail(EXISTING_BUT_NOT_YET_ACTIVATED_USER_MAIL_ADDRESS);
-        user.setTermsOfServiceAccepted(true);
+        register.setEmail(EXISTING_BUT_NOT_YET_ACTIVATED_USER_MAIL_ADDRESS);
+        register.setTermsOfServiceAccepted(true);
 
-        performRequest(status().isCreated());
+        registerUserAndExpect(status().isCreated());
 
         ArgumentCaptor<UserEntity> userEntityCaptor = ArgumentCaptor.forClass(UserEntity.class);
         verify(userRepository).save(userEntityCaptor.capture());
@@ -146,10 +150,10 @@ public class UserControllerTest {
     @Test
     public void shouldReturnErroneouslyWhenEmailNotAxelspringerOnSave() throws Exception {
 
-        user.setEmail(INVALID_USER_MAIL_ADDRESS);
-        user.setTermsOfServiceAccepted(true);
+        register.setEmail(INVALID_USER_MAIL_ADDRESS);
+        register.setTermsOfServiceAccepted(true);
 
-        final MvcResult mvcResult = performRequest(status().isBadRequest());
+        final MvcResult mvcResult = registerUserAndExpect(status().isBadRequest());
 
         assertEquals("", "{\"fieldViolations\":{\"email\":\"eligible\"}}", mvcResult.getResponse().getContentAsString());
     }
@@ -157,10 +161,10 @@ public class UserControllerTest {
     @Test
     public void shouldReturnErroneouslyWhenTocNotAcceptedOnSave() throws Exception {
 
-        user.setEmail(NEW_USER_MAIL_ADDRESS);
-        user.setTermsOfServiceAccepted(false);
+        register.setEmail(NEW_USER_MAIL_ADDRESS);
+        register.setTermsOfServiceAccepted(false);
 
-        final MvcResult mvcResult = performRequest(status().isBadRequest());
+        final MvcResult mvcResult = registerUserAndExpect(status().isBadRequest());
 
         assertEquals("", "{\"fieldViolations\":{\"termsOfServiceAccepted\":\"must be true\"}}", mvcResult.getResponse().getContentAsString());
     }
@@ -168,20 +172,100 @@ public class UserControllerTest {
     @Test
     public void shouldReturnErroneouslyWhenUserAlreadyActivated() throws Exception {
 
-        user.setEmail(ACTIVATED_USER_MAIL_ADDRESS);
-        user.setTermsOfServiceAccepted(true);
+        register.setEmail(ACTIVATED_USER_MAIL_ADDRESS);
+        register.setTermsOfServiceAccepted(true);
 
-        final MvcResult mvcResult = performRequest(status().isBadRequest());
+        final MvcResult mvcResult = registerUserAndExpect(status().isBadRequest());
 
         assertEquals("", "{\"fieldViolations\":{\"email\":\"not_activated\"}}", mvcResult.getResponse().getContentAsString());
     }
 
-    private MvcResult performRequest(ResultMatcher expectedResponseStatus) throws Exception {
+    private MvcResult registerUserAndExpect(ResultMatcher expectedResponseStatus) throws Exception {
         return mockMvc.perform(post("/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(user)))
+                .content(mapper.writeValueAsString(register)))
                 .andExpect(expectedResponseStatus)
                 .andReturn();
+    }
+
+    @Test
+    public void testActivateUser() throws Exception {
+
+        final Activate activate = new Activate();
+        activate.setActivationToken(existingButNotYetActivatedUser.getActivationToken());
+        activate.setPassword("some_passw0rd");
+
+        final String email = existingButNotYetActivatedUser.getEmail();
+
+        mockMvc.perform(put("/user/" + email + "/activate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(activate)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testActivateTwice() throws Exception {
+
+        final Activate activate = new Activate();
+        activate.setActivationToken(existingButNotYetActivatedUser.getActivationToken());
+        activate.setPassword("some_passw0rd");
+
+        final String email = existingButNotYetActivatedUser.getEmail();
+
+        mockMvc.perform(put("/user/" + email + "/activate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(activate)))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(put("/user/" + email + "/activate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(activate)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testActivateWrongActivationToken() throws Exception {
+
+        final Activate activate = new Activate();
+        activate.setActivationToken(UUID.randomUUID().toString());
+        activate.setPassword("some_passw0rd");
+
+        final String email = existingButNotYetActivatedUser.getEmail();
+
+        mockMvc.perform(put("/user/" + email + "/activate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(activate)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testActivateInvalidPassword() throws Exception {
+
+        final Activate activate = new Activate();
+        activate.setActivationToken(UUID.randomUUID().toString());
+        activate.setPassword("");
+
+        final String email = existingButNotYetActivatedUser.getEmail();
+
+        mockMvc.perform(put("/user/" + email + "/activate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(activate)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testActivateNonExistantUser() throws Exception {
+
+        final Activate activate = new Activate();
+        activate.setActivationToken(UUID.randomUUID().toString());
+        activate.setPassword("some_passw0rd");
+
+        final String email = UUID.randomUUID().toString();
+
+        mockMvc.perform(put("/user/" + email + "/activate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(activate)))
+                .andExpect(status().isNotFound());
     }
 
     @Configuration
@@ -189,13 +273,13 @@ public class UserControllerTest {
     static class Config {
 
         @Bean
-        public UserActivationService userService() {
-            return mock(UserActivationService.class);
+        public UserController userController() {
+            return new UserController();
         }
 
         @Bean
-        public UserController userController() {
-            return new UserController();
+        public UserActivationService userService() {
+            return mock(UserActivationService.class);
         }
 
         @Bean

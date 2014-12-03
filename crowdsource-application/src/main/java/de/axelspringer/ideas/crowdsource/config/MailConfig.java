@@ -12,19 +12,19 @@ import java.util.Properties;
 @Configuration
 public class MailConfig {
 
-    @Value("${de.axelspringer.ideas.crowdsource.mail.host:localhost}")
+    @Value("${de.axelspringer.ideas.crowdsource.mail.host:smtp.googlemail.com}")
     private String host;
 
-    @Value("${de.axelspringer.ideas.crowdsource.mail.port:25}")
+    @Value("${de.axelspringer.ideas.crowdsource.mail.port:587}")
     private Integer port;
 
-    @Value("${de.axelspringer.ideas.crowdsource.mail.username:}")
+    @Value("${de.axelspringer.ideas.crowdsource.mail.username:ascrowdsource@gmail.com}")
     private String username;
 
-    @Value("${de.axelspringer.ideas.crowdsource.mail.password:}")
+    @Value("${de.axelspringer.ideas.crowdsource.mail.password:test123test}")
     private String password;
 
-    @Value("${de.axelspringer.ideas.crowdsource.mail.starttls:false}")
+    @Value("${de.axelspringer.ideas.crowdsource.mail.starttls:true}")
     private boolean useStartTls;
 
     @Bean

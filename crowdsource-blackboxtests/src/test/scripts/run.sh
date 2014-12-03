@@ -5,8 +5,8 @@ docker kill crowdsource_test
 docker rm crowdsource_test
 docker kill crowdsourcetestdb
 docker rm crowdsourcetestdb
-docker kill rowdsourcetestmailserver
-docker rm rowdsourcetestmailserver
+docker kill crowdsourcetestmailserver
+docker rm crowdsourcetestmailserver
 
 # run mailserver
 docker run -d -p 10025:25 -p 10110:110 --name crowdsourcetestmailserver esminis/mail-server-postfix-vm-pop3d

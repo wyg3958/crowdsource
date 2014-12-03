@@ -11,8 +11,8 @@ docker kill crowdsourcetestdb
 docker rm crowdsourcetestdb
 
 # kill mailserver
-docker kill rowdsourcetestmailserver
-docker rm rowdsourcetestmailserver
+docker kill crowdsourcetestmailserver
+docker rm crowdsourcetestmailserver
 
 # always return 0 to not break the jenkins build
 exit 0

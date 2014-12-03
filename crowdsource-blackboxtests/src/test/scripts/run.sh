@@ -9,7 +9,7 @@ docker kill crowdsourcetestmailserver
 docker rm crowdsourcetestmailserver
 
 # run mailserver
-docker run -d -p 10025:25 -p 10110:110 --name crowdsourcetestmailserver esminis/mail-server-postfix-vm-pop3d
+docker run -d -p 10025:10025 -p 18080:8080 --name crowdsourcetestmailserver gaffa/restmail
 
 # run mongodb (non-default ports [would be 27017, 28017] to avoid problems)
 docker run -d -p 27000:27017 -p 28000:28017 --name crowdsourcetestdb dockerfile/mongodb

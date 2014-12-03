@@ -14,13 +14,28 @@ docker run -d -p 1025:1025 -p 18080:8080 --name crowdsourcetestmailserver gaffa/
 # run mongodb (non-default ports [would be 27017, 28017] to avoid problems)
 docker run -d -p 27000:27017 -p 28000:28017 --name crowdsourcetestdb dockerfile/mongodb
 
-# let db and mailserver get awake
-sleep 2
-echo "outputting logs of mongodb-container"
-docker logs crowdsourcetestdb
-
 # get host ip
 HOST_IP=`netstat -nr | grep '^0\.0\.0\.0' | awk '{print $2}'`
+
+# let db and mailserver get awake
+echo "waiting for mailserver to deliver http 200"
+for i in {1..30}
+do
+ REQUEST_RESULT=`curl --max-time 1 -s -i http://$HOST_IP:18080/mails | grep "200 OK"`
+
+ if [ "$REQUEST_RESULT" != "" ]; then
+  echo "REQUEST TO SERVICE SUCCESSFULLY RETURNED WITH CODE 200"
+  STATUS=0
+  break;
+ else
+  echo "RETURN CODE FROM SERVICE INCORRECT - WAITING..."
+ fi
+ sleep 1s
+done
+
+
+echo "outputting logs of mongodb-container"
+docker logs crowdsourcetestdb
 
 # run application
 docker run -p ${it.application.port}:8080 -d \

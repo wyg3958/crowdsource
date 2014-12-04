@@ -8,7 +8,11 @@ import cucumber.api.java.en.When;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.UserRegistration;
 import de.axelspringer.ideas.crowdsource.service.UserActivationService;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
-import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.*;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.ActivationForm;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.IndexForm;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.NavigationBar;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.RegistrationConfirmationView;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.RegistrationForm;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.axelspringer.ideas.crowdsource.testsupport.util.MailServerClient;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
@@ -77,6 +81,7 @@ public class RegistrationSteps {
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.postForObject(urlProvider.applicationUrl() + "/user", userRegistration, Void.class);
+        mailServerClient.waitForMails(1, 5000);
     }
 
     @Given("^the user's email address is already registered and activated$")

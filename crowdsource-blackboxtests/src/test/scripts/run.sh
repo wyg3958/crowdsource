@@ -45,6 +45,7 @@ docker run -p ${it.application.port}:8080 -d \
  -e de.axelspringer.ideas.crowdsource.mail.host=$HOST_IP\
  -e de.axelspringer.ideas.crowdsource.mail.port=1025 \
  -e de.axelspringer.ideas.crowdsource.mail.starttls=false \
+ -e de.axelspringer.ideas.crowdsource.baseUrl=http://$HOST_IP:${it.application.port} \
  --name="crowdsource_test" "asideas/crowdsource:latest"
 
 # curl as health check

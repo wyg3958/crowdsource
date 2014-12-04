@@ -81,7 +81,6 @@ public class RegistrationSteps {
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.postForObject(urlProvider.applicationUrl() + "/user", userRegistration, Void.class);
-        mailServerClient.waitForMails(1, 5000);
     }
 
     @Given("^the user's email address is already registered and activated$")
@@ -145,6 +144,7 @@ public class RegistrationSteps {
 
     @When("^the user clicks the email's activation link$")
     public void the_user_clicks_the_email_s_activation_link() throws Throwable {
+
         mailServerClient.waitForMails(1, 5000);
 
         final MailServerClient.Message message = mailServerClient.messages().get(0);

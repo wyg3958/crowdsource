@@ -26,3 +26,12 @@ Feature: Registration
     And the user accepts the terms of service
     And submits the registration form
     Then the validation error 'Ihre Email-Adresse wurde bereits aktiviert. Sie können sich mit Ihrem Passwort bereits einloggen. Falls Sie Ihr Passwort vergessen haben, dann klicken Sie bitte hier.' is displayed on the email field
+
+  @ClearMailServer
+  Scenario: A user activates a freshly registered account
+    Given the user's email address is already registered but not activated
+    When the user clicks the email's activation link
+    And the user enters a valid password twice on activation page
+    And the user submits the activation form
+    Then the secured index page is accessible
+

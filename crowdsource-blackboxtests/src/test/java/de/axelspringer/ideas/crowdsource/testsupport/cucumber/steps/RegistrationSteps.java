@@ -8,9 +8,7 @@ import cucumber.api.java.en.When;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.UserRegistration;
 import de.axelspringer.ideas.crowdsource.service.UserActivationService;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
-import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.NavigationBar;
-import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.RegistrationConfirmationView;
-import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.RegistrationForm;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.*;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.axelspringer.ideas.crowdsource.testsupport.util.MailServerClient;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
@@ -42,6 +40,12 @@ public class RegistrationSteps {
 
     @Autowired
     private RegistrationForm registrationForm;
+
+    @Autowired
+    private ActivationForm activationForm;
+
+    @Autowired
+    private IndexForm indexForm;
 
     @Autowired
     private RegistrationConfirmationView registrationConfirmationView;
@@ -132,5 +136,34 @@ public class RegistrationSteps {
         assertThat(message.to, is(emailName + EligibleEmailValidator.ELIGIBLE_EMAIL_DOMAIN));
         assertThat(message.subject, is(UserActivationService.REGISTRATION_SUBJECT));
         assertThat(message.message, startsWith(UserActivationService.MAIL_CONTENT));
+    }
+
+    @When("^the user clicks the email's activation link$")
+    public void the_user_clicks_the_email_s_activation_link() throws Throwable {
+        mailServerClient.waitForMails(1, 5000);
+
+        final MailServerClient.Message message = mailServerClient.messages().get(0);
+        String link = message.message.replaceAll("^.*?(?=http)", "");
+        webDriver.get(link);
+    }
+
+    @And("^the user enters a valid password twice on activation page$")
+    public void the_user_enters_a_valid_password_twice_on_activation_page() throws Throwable {
+        PageFactory.initElements(webDriver, activationForm);
+        final String mySecretPassword = "1234567!";
+        activationForm.setPasswordText(mySecretPassword);
+        activationForm.setRepeatPasswordText(mySecretPassword);
+    }
+
+    @And("^the user submits the activation form$")
+    public void the_user_submits_the_activation_form() throws Throwable {
+        PageFactory.initElements(webDriver, activationForm);
+        activationForm.submit();
+    }
+
+    @Then("^the secured index page is accessible$")
+    public void the_secured_index_page_is_accessible() throws Throwable {
+        PageFactory.initElements(webDriver, indexForm);
+        assertThat(indexForm.getContentHeadingText(), is("Crowdsource says hi"));
     }
 }

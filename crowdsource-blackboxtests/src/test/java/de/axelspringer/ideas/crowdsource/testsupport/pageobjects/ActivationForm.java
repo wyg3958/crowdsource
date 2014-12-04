@@ -20,6 +20,9 @@ public class ActivationForm {
     @FindBy(css = "form[name='activationForm'] button[type='submit']")
     private WebElement saveButton;
 
+    @FindBy(css = "form[name='activationForm'] .general-error span")
+    private WebElement errorText;
+
     @Autowired
     private SeleniumWait wait;
 
@@ -36,5 +39,10 @@ public class ActivationForm {
     public void submit() {
         wait.until(visibilityOf(saveButton));
         saveButton.click();
+    }
+
+    public String getErrorText(){
+        wait.until(visibilityOf(errorText));
+        return errorText.getText();
     }
 }

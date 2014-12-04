@@ -35,3 +35,11 @@ Feature: Registration
     And the user submits the activation form
     Then the secured index page is accessible
 
+  @ClearMailServer
+  Scenario: A user tries to active an already activated account
+    Given the user's email address is already activated
+    When the user clicks the email's activation link for the second time
+    And the user enters a valid password twice on activation page
+    And the user submits the activation form
+    Then the validation error 'Ihr Konto wurde bereits aktiviert.' is displayed
+

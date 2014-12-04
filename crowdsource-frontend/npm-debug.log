@@ -1,0 +1,96 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'install', '--unsafe-perm' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.33
+4 verbose readDependencies using package.json deps
+5 verbose install where, deps [ '/Users/sweller/workspaces/workspace_intellij/crowdsource/crowdsource-frontend',
+5 verbose install   [ 'bower',
+5 verbose install     'gulp',
+5 verbose install     'gulp-ng-annotate',
+5 verbose install     'gulp-uglify',
+5 verbose install     'gulp-concat',
+5 verbose install     'gulp-sourcemaps',
+5 verbose install     'gulp-sass',
+5 verbose install     'karma',
+5 verbose install     'karma-cli',
+5 verbose install     'karma-ng-html2js-preprocessor',
+5 verbose install     'karma-jasmine',
+5 verbose install     'karma-jasmine-jquery',
+5 verbose install     'karma-junit-reporter',
+5 verbose install     'karma-phantomjs-launcher' ] ]
+6 info preinstall @
+7 verbose readDependencies using package.json deps
+8 verbose already installed skipping bower@~1.3.12 /Users/sweller/workspaces/workspace_intellij/crowdsource/crowdsource-frontend
+9 verbose already installed skipping gulp@3.8.10 /Users/sweller/workspaces/workspace_intellij/crowdsource/crowdsource-frontend
+10 verbose already installed skipping gulp-ng-annotate@0.3.5 /Users/sweller/workspaces/workspace_intellij/crowdsource/crowdsource-frontend
+11 verbose already installed skipping gulp-uglify@1.0.1 /Users/sweller/workspaces/workspace_intellij/crowdsource/crowdsource-frontend
+12 verbose already installed skipping gulp-concat@2.4.2 /Users/sweller/workspaces/workspace_intellij/crowdsource/crowdsource-frontend
+13 verbose already installed skipping gulp-sourcemaps@1.2.8 /Users/sweller/workspaces/workspace_intellij/crowdsource/crowdsource-frontend
+14 verbose already installed skipping gulp-sass@1.1.0 /Users/sweller/workspaces/workspace_intellij/crowdsource/crowdsource-frontend
+15 verbose already installed skipping karma@0.12.28 /Users/sweller/workspaces/workspace_intellij/crowdsource/crowdsource-frontend
+16 verbose already installed skipping karma-cli@0.0.4 /Users/sweller/workspaces/workspace_intellij/crowdsource/crowdsource-frontend
+17 verbose already installed skipping karma-ng-html2js-preprocessor@0.1.2 /Users/sweller/workspaces/workspace_intellij/crowdsource/crowdsource-frontend
+18 verbose already installed skipping karma-jasmine@0.3.0 /Users/sweller/workspaces/workspace_intellij/crowdsource/crowdsource-frontend
+19 verbose already installed skipping karma-jasmine-jquery@0.1.1 /Users/sweller/workspaces/workspace_intellij/crowdsource/crowdsource-frontend
+20 verbose already installed skipping karma-junit-reporter@0.2.2 /Users/sweller/workspaces/workspace_intellij/crowdsource/crowdsource-frontend
+21 verbose already installed skipping karma-phantomjs-launcher@0.1.4 /Users/sweller/workspaces/workspace_intellij/crowdsource/crowdsource-frontend
+22 silly resolved []
+23 info build /Users/sweller/workspaces/workspace_intellij/crowdsource/crowdsource-frontend
+24 verbose linkStuff [ false,
+24 verbose linkStuff   false,
+24 verbose linkStuff   false,
+24 verbose linkStuff   '/Users/sweller/workspaces/workspace_intellij/crowdsource' ]
+25 info linkStuff @
+26 verbose linkBins @
+27 verbose linkMans @
+28 verbose rebuildBundles @
+29 verbose rebuildBundles [ '.bin',
+29 verbose rebuildBundles   'bower',
+29 verbose rebuildBundles   'gulp',
+29 verbose rebuildBundles   'gulp-concat',
+29 verbose rebuildBundles   'gulp-ng-annotate',
+29 verbose rebuildBundles   'gulp-sass',
+29 verbose rebuildBundles   'gulp-sourcemaps',
+29 verbose rebuildBundles   'gulp-uglify',
+29 verbose rebuildBundles   'jasmine-core',
+29 verbose rebuildBundles   'karma',
+29 verbose rebuildBundles   'karma-cli',
+29 verbose rebuildBundles   'karma-jasmine',
+29 verbose rebuildBundles   'karma-jasmine-jquery',
+29 verbose rebuildBundles   'karma-junit-reporter',
+29 verbose rebuildBundles   'karma-ng-html2js-preprocessor',
+29 verbose rebuildBundles   'karma-phantomjs-launcher' ]
+30 verbose rebuild bundle /Users/sweller/workspaces/workspace_intellij/crowdsource/crowdsource-frontend/node_modules/jasmine-core
+31 info build /Users/sweller/workspaces/workspace_intellij/crowdsource/crowdsource-frontend/node_modules/jasmine-core
+32 info preinstall jasmine-core@2.1.3
+33 verbose linkStuff [ false,
+33 verbose linkStuff   false,
+33 verbose linkStuff   false,
+33 verbose linkStuff   '/Users/sweller/workspaces/workspace_intellij/crowdsource/crowdsource-frontend/node_modules' ]
+34 info linkStuff jasmine-core@2.1.3
+35 verbose linkBins jasmine-core@2.1.3
+36 verbose linkMans jasmine-core@2.1.3
+37 verbose rebuildBundles jasmine-core@2.1.3
+38 info install jasmine-core@2.1.3
+39 info postinstall jasmine-core@2.1.3
+40 info install @
+41 info postinstall @
+42 verbose unsafe-perm in lifecycle true
+43 info @ Failed to exec postinstall script
+44 error @ postinstall: `bower install --allow-root --config.interactive=false`
+44 error Exit status 8
+45 error Failed at the @ postinstall script.
+45 error This is most likely a problem with the  package,
+45 error not with npm itself.
+45 error Tell the author that this fails on your system:
+45 error     bower install --allow-root --config.interactive=false
+45 error You can get their info via:
+45 error     npm owner ls
+45 error There is likely additional logging output above.
+46 error System Darwin 14.0.0
+47 error command "node" "/usr/local/bin/npm" "install" "--unsafe-perm"
+48 error cwd /Users/sweller/workspaces/workspace_intellij/crowdsource/crowdsource-frontend
+49 error node -v v0.10.33
+50 error npm -v 1.4.28
+51 error code ELIFECYCLE
+52 verbose exit [ 1, true ]

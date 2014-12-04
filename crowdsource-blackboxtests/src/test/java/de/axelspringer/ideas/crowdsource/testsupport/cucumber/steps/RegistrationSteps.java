@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.crowdsource.testsupport.cucumber.steps;
 
+import cucumber.api.PendingException;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
@@ -20,9 +21,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.client.RestTemplate;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 
@@ -56,6 +59,8 @@ public class RegistrationSteps {
     private WebDriver webDriver;
 
     private String emailName;
+
+    private ThreadLocal<String> activationLink = new ThreadLocal<String>();
 
     @Before
     public void init() {
@@ -144,6 +149,7 @@ public class RegistrationSteps {
 
         final MailServerClient.Message message = mailServerClient.messages().get(0);
         String link = message.message.replaceAll("^.*?(?=http)", "");
+        activationLink.set(link);
         webDriver.get(link);
     }
 
@@ -165,5 +171,24 @@ public class RegistrationSteps {
     public void the_secured_index_page_is_accessible() throws Throwable {
         PageFactory.initElements(webDriver, indexForm);
         assertThat(indexForm.getContentHeadingText(), is("Crowdsource says hi"));
+    }
+
+    @Given("^the user's email address is already activated$")
+    public void the_user_s_email_address_is_already_activated() throws Throwable {
+        the_user_s_email_address_is_already_registered_but_not_activated();
+        the_user_clicks_the_email_s_activation_link();
+        the_user_enters_a_valid_password_twice_on_activation_page();
+        the_user_submits_the_activation_form();
+    }
+
+    @When("^the user clicks the email's activation link for the second time$")
+    public void the_user_clicks_the_email_s_activation_link_for_the_second_time() throws Throwable {
+        webDriver.get(activationLink.get());
+    }
+
+    @Then("^the validation error '([^']+)' is displayed$")
+    public void the_validation_error_is_displayed(String errorText) throws Throwable {
+        PageFactory.initElements(webDriver, activationForm);
+        assertThat(activationForm.getErrorText(), containsString(errorText));
     }
 }

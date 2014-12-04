@@ -3,8 +3,12 @@
  */
 function SignupForm(element) {
 
-    this.getGeneralError = function() {
+    this.getGeneralErrorsContainer = function() {
         return element.find('.general-error');
+    };
+
+    this.getGeneralError = function(violatedRule) {
+        return this.getGeneralErrorsContainer().find('[ng-message="' + violatedRule + '"]');
     };
 
     this.email = new FormGroup(element.find('.form-controls-email'));

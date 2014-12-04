@@ -50,7 +50,7 @@ describe('user signup view', function () {
 
 
     it('should show no validation errors when the form is untouched', function () {
-        expect(signupForm.getGeneralError()).not.toExist();
+        expect(signupForm.getGeneralErrorsContainer()).not.toExist();
 
         expectNoValidationError('email');
         expectNoValidationError('termsOfServiceAccepted');
@@ -86,7 +86,7 @@ describe('user signup view', function () {
         expect(signupForm.getSubmitButton()).not.toBeDisabled();
     });
 
-    it('should show a general error when the server responds with 500', function() {
+    it('should show an unknown error when the server responds with 500', function() {
 
         // spy on path-method
         spyOn($location, 'path');
@@ -95,7 +95,8 @@ describe('user signup view', function () {
         fillAndSubmitForm();
         $httpBackend.flush();
         expect($location.path).not.toHaveBeenCalled();
-        expect(signupForm.getGeneralError()).toExist();
+        expect(signupForm.getGeneralErrorsContainer()).toExist();
+        expect(signupForm.getGeneralError('remote_unknown')).toExist();
     });
 
     it('should show "required" validation errors when the form is submitted without touching the input fields', function () {
@@ -136,7 +137,7 @@ describe('user signup view', function () {
 
         fillAndSubmitForm();
         $httpBackend.flush();
-        expect(signupForm.getGeneralError()).not.toExist();
+        expect(signupForm.getGeneralErrorsContainer()).not.toExist();
         expectValidationError('email', 'remote_not_activated');
     });
 
@@ -149,11 +150,12 @@ describe('user signup view', function () {
         expectNoValidationError('email');
     });
 
-    it('should show a general error when the server responds with a field violation for an unknown field', function() {
+    it('should show an unknown error when the server responds with a field violation for an unknown field', function() {
         expectBackendCallAndRespond(400, { "fieldViolations": { "unknownField": "foo" } });
 
         fillAndSubmitForm();
         $httpBackend.flush();
-        expect(signupForm.getGeneralError()).toExist();
+        expect(signupForm.getGeneralErrorsContainer()).toExist();
+        expect(signupForm.getGeneralError('remote_unknown')).toExist();
     });
 });

@@ -1,15 +1,19 @@
 
-function ActivationForm(formEl) {
+function ActivationForm(element) {
 
-    this.getGeneralError = function() {
-        return formEl.find('.general-error');
+    this.getGeneralErrorsContainer = function() {
+        return element.find('.general-error');
     };
 
-    this.password = new FormGroup(formEl.find('.form-controls-password'));
+    this.getGeneralError = function(violatedRule) {
+        return this.getGeneralErrorsContainer().find('[ng-message="' + violatedRule + '"]');
+    };
 
-    this.repeatedPassword = new FormGroup(formEl.find('.form-controls-repeated-password'));
+    this.password = new FormGroup(element.find('.form-controls-password'));
+
+    this.repeatedPassword = new FormGroup(element.find('.form-controls-repeated-password'));
 
     this.getSubmitButton = function() {
-        return formEl.find('button[type="submit"]');
+        return element.find('button[type="submit"]');
     };
 }

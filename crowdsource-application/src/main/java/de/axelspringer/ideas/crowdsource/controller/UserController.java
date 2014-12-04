@@ -1,7 +1,7 @@
 package de.axelspringer.ideas.crowdsource.controller;
 
-import de.axelspringer.ideas.crowdsource.exceptions.InvalidRequestException;
 import de.axelspringer.ideas.crowdsource.exceptions.ResourceNotFoundException;
+import de.axelspringer.ideas.crowdsource.exceptions.UserAlreadyActivatedException;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.model.presentation.ConstraintViolations;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.UserActivation;
@@ -9,6 +9,7 @@ import de.axelspringer.ideas.crowdsource.model.presentation.user.UserRegistratio
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import de.axelspringer.ideas.crowdsource.service.UserActivationService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -51,7 +51,7 @@ public class UserController {
             log.debug("A user with the address {} already exists, assigning a new activation token", userRegistration.getEmail());
         }
 
-        userEntity.setActivationToken(UUID.randomUUID().toString());
+        userEntity.setActivationToken(RandomStringUtils.randomAlphanumeric(32));
 
         // This is a blocking call, may last long and throw exceptions if the mail server does not want to talk to us
         // maybe make this asynchronous (+ retry) if this causes problems.
@@ -74,7 +74,7 @@ public class UserController {
         if (StringUtils.isBlank(userEntity.getActivationToken())
                 || !userEntity.getActivationToken().equals(userActivation.getActivationToken())) {
             log.debug("token mismatch on activation request for user with email: {}", email);
-            throw new InvalidRequestException();
+            throw new UserAlreadyActivatedException();
         }
 
         userEntity.setActivated(true);

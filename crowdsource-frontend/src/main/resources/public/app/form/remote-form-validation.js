@@ -4,6 +4,26 @@ angular.module('crowdsource')
         // server error reason prefix
         var REMOTE_RULE_PREFIX = 'remote_';
 
+        var applyGeneralError = function($scope, errorCode) {
+            $scope.generalErrors = {};
+            $scope.generalErrors[REMOTE_RULE_PREFIX + errorCode] = true;
+            return true;
+        };
+
+        var applyFieldErrors = function(form, fieldViolations) {
+            var appliedErrors = false;
+
+            angular.forEach(fieldViolations, function (rule, field) {
+                if (form[field]) {
+                    form[field].$setValidity(REMOTE_RULE_PREFIX + rule, false);
+
+                    appliedErrors = true;
+                }
+            });
+
+            return appliedErrors;
+        };
+
         return {
             /**
              * The server response is expected to be
@@ -22,25 +42,44 @@ angular.module('crowdsource')
              *   form.email.$setValidity("inactivated", false);
              *   form.name.$setValidity("unique", false);
              *
+             * Alternatively, the server response can be
+             * {
+             *   "message": "already_activated"
+             * }
              *
+             * In this case, the generalErrors is filled like so:
+             * {
+             *   "generalErrors": { already_activated: true }
+             * }
+             *
+             * @param $scope The scope to apply the generalErrors to
              * @param form The form to apply the field validities to
              * @param response The server's response
-             * @returns {boolean} if at least one field's validity was set to false
              */
-            applyServerErrorResponse: function (form, response) {
+            applyServerErrorResponse: function ($scope, form, response) {
                 var appliedErrors = false;
 
-                if (response.data && response.data.fieldViolations) {
-                    angular.forEach(response.data.fieldViolations, function (rule, field) {
-                        if (form[field]) {
-                            form[field].$setValidity(REMOTE_RULE_PREFIX + rule, false);
+                $scope.generalErrors = null;
 
-                            appliedErrors = true;
-                        }
-                    });
+                if (response.status == 404) {
+                    appliedErrors = applyGeneralError($scope, 'not_found');
+                }
+                else if (response.status == 400 && response.data) {
+                    if (response.data.fieldViolations) {
+                        appliedErrors = applyFieldErrors(form, response.data.fieldViolations);
+                    }
+                    if (response.data.message) {
+                        appliedErrors = applyGeneralError($scope, response.data.message);
+                    }
                 }
 
-                return appliedErrors;
+                if (!appliedErrors) {
+                    applyGeneralError($scope, 'unknown');
+                }
+            },
+            clearRemoteErrors: function($scope) {
+                // fieldViolations will be cleared from the resetRemoteValidation directive
+                $scope.generalErrors = null;
             },
             isRemoteRule: function (rule) {
                 return rule.indexOf(REMOTE_RULE_PREFIX) === 0;

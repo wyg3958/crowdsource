@@ -9,7 +9,7 @@ angular.module('crowdsource')
                 return;
             }
 
-            $scope.generalErrorOcurred = false;
+            RemoteFormValidation.clearRemoteErrors($scope);
             $scope.loading = true;
 
             var userCopy = angular.copy($scope.user);
@@ -21,9 +21,7 @@ angular.module('crowdsource')
                 $location.path('/signup/' + userCopy.email + '/success');
             });
             promise.catch(function (response) {
-                if (!RemoteFormValidation.applyServerErrorResponse($scope.signupForm, response)) {
-                    $scope.generalErrorOcurred = true;
-                }
+                RemoteFormValidation.applyServerErrorResponse($scope, $scope.signupForm, response);
             });
             promise.finally(function () {
                 $scope.loading = false;

@@ -9,7 +9,7 @@ import de.axelspringer.ideas.crowdsource.model.presentation.user.UserRegistratio
 import de.axelspringer.ideas.crowdsource.service.UserActivationService;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.ActivationForm;
-import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.IndexForm;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.IndexPage;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.NavigationBar;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.RegistrationConfirmationView;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.RegistrationForm;

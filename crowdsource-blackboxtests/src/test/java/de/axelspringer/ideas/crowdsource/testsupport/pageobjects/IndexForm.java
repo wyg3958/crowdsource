@@ -21,7 +21,7 @@ public class IndexForm {
     public String getContentHeadingText() {
         final WebDriver webDriver = webDriverProvider.provideDriver();
 
-        final By locator = By.cssSelector("div .content h1");
+        final By locator = By.xpath("//h1[contains(.,'Crowdsource says hi')]");
         wait.until(presenceOfElementLocated(locator));
         return webDriver.findElement(locator).getText();
     }

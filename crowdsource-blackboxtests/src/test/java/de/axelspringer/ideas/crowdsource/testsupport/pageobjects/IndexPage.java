@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
 @Component
-public class IndexForm {
+public class IndexPage {
+
+    private final static By HEADLINE_LOCATOR = By.cssSelector("div .content h1");
 
     @Autowired
     private SeleniumWait wait;
@@ -18,11 +20,13 @@ public class IndexForm {
     @Autowired
     private WebDriverProvider webDriverProvider;
 
-    public String getContentHeadingText() {
-        final WebDriver webDriver = webDriverProvider.provideDriver();
+    public void waitForPageLoad() {
+        wait.until(presenceOfElementLocated(HEADLINE_LOCATOR));
+    }
 
-        final By locator = By.xpath("//h1[contains(.,'Crowdsource says hi')]");
-        wait.until(presenceOfElementLocated(locator));
-        return webDriver.findElement(locator).getText();
+    public String getHeadlineText() {
+        waitForPageLoad();
+        final WebDriver webDriver = webDriverProvider.provideDriver();
+        return webDriver.findElement(HEADLINE_LOCATOR).getText();
     }
 }

@@ -1,3 +1,67 @@
-<h1>Login</h1>
+<form name="loginForm" novalidate>
 
-hmm.... there is still work to do here
+    <div class="row">
+        <div class="small-12 medium-8 medium-offset-2 large-6 large-offset-3 columns panel light radius">
+
+            <h3 class="margin-bottom">Login</h3>
+
+            <div class="general-error alert-box alert" ng-messages="generalErrors" ng-if="generalErrors">
+                <span ng-message="remote_bad_credentials">Ihre Anmeldeinformationen sind nicht korrekt.</span>
+                <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.</span>
+            </div>
+
+            <div class="row">
+                <div class="small-12 columns form-controls-email">
+                    <label form-group="email">
+
+                        <span form-label-valid="email">Email-Adresse</span>
+
+                        <span form-label-invalid="email" ng-messages="signupForm.email.$error">
+                            <!-- required and 'pattern' are build-in validations of angular.js -->
+                            <span ng-message="required">Bitte geben Sie Ihre Email-Adresse ein</span>
+                            <span ng-message="pattern">Bitte geben Sie nur den Teil vor {{ ::EMAIL_HOST }} ein</span>
+                            <span ng-message="non_external_email">Dieser Service kann nur von Axel-Springer Mitarbeitern verwendet werden</span>
+                        </span>
+                    </label>
+
+                    <div class="table">
+                        <div class="table-cell full-width">
+                            <input type="text" name="email" ng-model="user.email" placeholder="max.mustermann" class="text-right"
+                                   required ng-pattern="/^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+$/i" non-external-email reset-remote-validation>
+                        </div>
+                        <div class="table-cell">
+                            <span class="postfix text-left">{{ ::EMAIL_HOST }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="small-12 columns form-controls-password">
+                    <label form-group="password">
+
+                        <span form-label-valid="password">Passwort</span>
+
+                        <span form-label-invalid="password" ng-messages="loginForm.password.$error">
+                            <span ng-message="required">Bitte geben Sie Ihr Passwort ein</span>
+                        </span>
+
+                        <input type="password" name="password" ng-model="user.password"
+                               required reset-remote-validation>
+                    </label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="small-12 columns text-center">
+                    <div>
+                        <button type="submit" class="success margin-top" ng-click="login()" ng-disabled="loading">
+                            {{ loading ? 'Login...' : 'Login' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>

@@ -1,6 +1,5 @@
 package de.axelspringer.ideas.crowdsource.testsupport.cucumber.steps;
 
-import cucumber.api.PendingException;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
@@ -21,11 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.client.RestTemplate;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 
@@ -60,7 +56,7 @@ public class RegistrationSteps {
 
     private String emailName;
 
-    private ThreadLocal<String> activationLink = new ThreadLocal<String>();
+    private String activationLink;
 
     @Before
     public void init() {
@@ -149,7 +145,7 @@ public class RegistrationSteps {
 
         final MailServerClient.Message message = mailServerClient.messages().get(0);
         String link = message.message.replaceAll("^.*?(?=http)", "");
-        activationLink.set(link);
+        activationLink = link;
         webDriver.get(link);
     }
 
@@ -183,7 +179,7 @@ public class RegistrationSteps {
 
     @When("^the user clicks the email's activation link for the second time$")
     public void the_user_clicks_the_email_s_activation_link_for_the_second_time() throws Throwable {
-        webDriver.get(activationLink.get());
+        webDriver.get(activationLink);
     }
 
     @Then("^the validation error '([^']+)' is displayed$")

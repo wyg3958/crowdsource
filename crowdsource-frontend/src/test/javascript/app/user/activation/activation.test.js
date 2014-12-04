@@ -169,7 +169,7 @@ describe('user activation view', function () {
     });
 
     it('should show a validation error if different passwords are entered once the form is submitted', function () {
-        activationForm.password.getInputField().val('secure').trigger('input');
+        activationForm.password.getInputField().val('secure!!!').trigger('input');
         activationForm.repeatedPassword.getInputField().val('something else').trigger('input');
 
         expectNoValidationError('repeatedPassword');

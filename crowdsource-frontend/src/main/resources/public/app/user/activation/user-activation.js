@@ -8,11 +8,12 @@ angular.module('crowdsource')
         };
 
         $scope.activate = function() {
-            if ($scope.user.password != $scope.user.repeatedPassword) {
-                $scope.activationForm.repeatedPassword.$setValidity('remote_equal', false);
+            if (!$scope.activationForm.$valid) {
+                return;
             }
 
-            if (!$scope.activationForm.$valid) {
+            if ($scope.user.password != $scope.user.repeatedPassword) {
+                $scope.activationForm.repeatedPassword.$setValidity('remote_equal', false);
                 return;
             }
 

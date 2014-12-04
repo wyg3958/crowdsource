@@ -8,7 +8,11 @@ import cucumber.api.java.en.When;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.UserRegistration;
 import de.axelspringer.ideas.crowdsource.service.UserActivationService;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
-import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.*;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.ActivationForm;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.IndexPage;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.NavigationBar;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.RegistrationConfirmationView;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.RegistrationForm;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.axelspringer.ideas.crowdsource.testsupport.util.MailServerClient;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
@@ -45,7 +49,7 @@ public class RegistrationSteps {
     private ActivationForm activationForm;
 
     @Autowired
-    private IndexForm indexForm;
+    private IndexPage indexPage;
 
     @Autowired
     private RegistrationConfirmationView registrationConfirmationView;
@@ -163,7 +167,7 @@ public class RegistrationSteps {
 
     @Then("^the secured index page is accessible$")
     public void the_secured_index_page_is_accessible() throws Throwable {
-        PageFactory.initElements(webDriver, indexForm);
-        assertThat(indexForm.getContentHeadingText(), is("Crowdsource says hi"));
+        PageFactory.initElements(webDriver, indexPage);
+        assertThat(indexPage.getHeadlineText(), is("Crowdsource says hi"));
     }
 }

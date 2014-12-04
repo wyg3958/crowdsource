@@ -20,10 +20,13 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class MongoUserDetailsService implements UserDetailsService {
 
-    @Value("${de.axelspringer.ideas.crowdsource.defaultUser:crowdsource@axelspringer.de}")
+    public final static String DEFAULT_EMAIL = "crowdsource@axelspringer.de";
+    public final static String DEFAULT_PASS = "einEselGehtZumBaecker!";
+
+    @Value("${de.axelspringer.ideas.crowdsource.defaultUser:" + DEFAULT_EMAIL + "}")
     private String defaultEmailAddress;
 
-    @Value("${de.axelspringer.ideas.crowdsource.defaultPassword:einEselGehtZumBaecker!}")
+    @Value("${de.axelspringer.ideas.crowdsource.defaultPassword:" + DEFAULT_PASS + "}")
     private String defaultPassword;
 
     @Autowired

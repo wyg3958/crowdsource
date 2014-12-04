@@ -28,9 +28,8 @@ angular.module('crowdsource')
                     grant_type: 'password'
                 });
 
-                var result = tokenResource.save(requestBody);
-                result.$promise.then(useAuthTokens);
-                return result;
+                var promise = tokenResource.save(requestBody).$promise;
+                return promise.then(useAuthTokens);
             }
         };
     });

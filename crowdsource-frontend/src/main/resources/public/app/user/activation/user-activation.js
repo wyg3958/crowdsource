@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .controller('UserActivationController', function ($scope, $routeParams, User, Authentication, RemoteFormValidation) {
+    .controller('UserActivationController', function ($scope, $routeParams, $location, User, Authentication, RemoteFormValidation) {
 
         $scope.user = {
             email: $routeParams.email,
@@ -20,7 +20,7 @@ angular.module('crowdsource')
             $scope.loading = true;
 
             var activationPromise = User.activate($scope.user).$promise;
-            activationPromise.then(function () {
+            var loginPromise = activationPromise.then(function () {
                 return Authentication.login($scope.user.email, $scope.user.password);
             });
             activationPromise.catch(function (response) {
@@ -28,6 +28,10 @@ angular.module('crowdsource')
             });
             activationPromise.finally(function () {
                 $scope.loading = false;
+            });
+
+            loginPromise.then(function() {
+                 $location.path('/');
             });
         };
     });

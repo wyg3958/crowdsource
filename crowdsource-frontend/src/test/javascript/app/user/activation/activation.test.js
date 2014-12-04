@@ -1,14 +1,15 @@
 describe('user activation view', function () {
 
-    var $httpBackend, activationForm;
+    var $httpBackend, $location, activationForm;
 
     beforeEach(function() {
         module('crowdsource');
         module('crowdsource.templates');
 
-        inject(function($compile, $rootScope, $templateCache, $controller, _$httpBackend_, User, Authentication, RemoteFormValidation) {
+        inject(function($compile, $rootScope, $templateCache, $controller, _$httpBackend_, _$location_, User, Authentication, RemoteFormValidation) {
             var $scope = $rootScope.$new();
             $httpBackend = _$httpBackend_;
+            $location = _$location_;
 
             $controller('UserActivationController', {
                 $scope: $scope,
@@ -16,6 +17,7 @@ describe('user activation view', function () {
                     email: "test@axelspringer.de",
                     activationToken: "12345"
                 },
+                $location: _$location_,
                 User: User,
                 Authentication: Authentication,
                 RemoteFormValidation: RemoteFormValidation
@@ -80,13 +82,14 @@ describe('user activation view', function () {
         expectNoValidationError('repeatedPassword');
     });
 
-    it('should POST the data to the server, request an access token and TODO...', function() {
+    it('should POST the data to the server, request an access token and redirect to index page', function() {
         expectBackendActivationCallAndRespond(201);
         expectBackendLoginCallAndRespond(200);
 
         fillAndSubmitForm();
         $httpBackend.flush();
-        // TODO: once implemented, test whatever happens after successful server response
+
+        expect($location.path()).toBe('/');
     });
 
     it('should disable the submit button and change it\'s text while loading', function() {
@@ -109,12 +112,14 @@ describe('user activation view', function () {
 
     it('should show an unknown error when the server responds with 500', function() {
         expectBackendActivationCallAndRespond(500);
+        spyOn($location, 'path');
 
         fillAndSubmitForm();
         $httpBackend.flush();
         expect(activationForm.getGeneralErrorsContainer()).toExist();
         expect(activationForm.getGeneralError('remote_unknown')).toExist();
-        // TODO: once implemented, test that the user login is not attempted
+
+        expect($location.path).not.toHaveBeenCalled();
     });
 
     it('should show "required" validation errors when the form is submitted without touching the input fields', function () {

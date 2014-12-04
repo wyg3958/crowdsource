@@ -140,6 +140,7 @@ public class RegistrationSteps {
 
     @When("^the user clicks the email's activation link$")
     public void the_user_clicks_the_email_s_activation_link() throws Throwable {
+
         mailServerClient.waitForMails(1, 5000);
 
         final MailServerClient.Message message = mailServerClient.messages().get(0);

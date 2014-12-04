@@ -27,18 +27,19 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages'])
             })
             .otherwise({redirectTo: '/'});
 
-        // we can only activate this, once you can reload the page with the path not being /
-        $locationProvider.html5Mode(false);
-
-        $httpProvider.interceptors.push(function($q, $location) {
+        $httpProvider.interceptors.push(function ($q, $location) {
             return {
-                responseError: function(response) {
+                responseError: function (response) {
                     if (response.status == 401) {
-                        $location.path('/signup');
+
+                        // redirect to login
+                        $location.path('/login');
                     }
 
                     return $q.reject(response);
                 }
             }
         });
+    }).run(function (Authentication) {
+        Authentication.init();
     });

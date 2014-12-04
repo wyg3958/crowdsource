@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.crowdsource.config.security;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +20,10 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+
+import java.io.IOException;
 
 /**
  * Configuration for Spring Security
@@ -65,6 +70,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         @Autowired
         private AuthenticationManager authenticationManager;
 
+        @Bean
+        public AccessTokenConverter accessTokenConverter() throws IOException {
+            final JwtAccessTokenConverter jwtTokenEnhancer = new JwtAccessTokenConverter();
+            jwtTokenEnhancer.setSigningKey(IOUtils.toString(getClass().getResourceAsStream("/security/tokensigningkey")));
+            jwtTokenEnhancer.setVerifierKey(IOUtils.toString(getClass().getResourceAsStream("/security/tokensigningkey.pub")));
+            return jwtTokenEnhancer;
+        }
+
         @Override
         public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
             // sets up a filter that listens on /oauth/token to let clients request a token
@@ -73,7 +86,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         @Override
         public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-            endpoints.authenticationManager(authenticationManager);
+            endpoints
+                    .authenticationManager(authenticationManager)
+                    .accessTokenConverter(accessTokenConverter());
         }
 
         @Override

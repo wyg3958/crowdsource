@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SeleniumWait {
 
-    private static final int TIME_OUT_IN_SECONDS = 15;
+    private static final int TIME_OUT_IN_SECONDS = 30;
 
     @Autowired
     private WebDriverProvider webDriverProvider;

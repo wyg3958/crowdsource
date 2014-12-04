@@ -40,53 +40,38 @@ public class LoginSteps {
         webDriver = webDriverProvider.provideDriver();
     }
 
+    @Given("^an anonymous user visits the index page$")
+    public void an_anonymous_user_visits_the_index_page() throws Throwable {
+        throw new PendingException();
+    }
+
     @Then("^he is redirected to the login page$")
     public void he_is_redirected_to_the_login_page() throws Throwable {
-
-        PageFactory.initElements(webDriver, loginForm);
-        loginForm.waitForPageLoad();
+        throw new PendingException();
     }
 
     @When("^he enters valid credentials$")
     public void he_enters_valid_credentials() throws Throwable {
-
-        PageFactory.initElements(webDriver, loginForm);
-        final String email = MongoUserDetailsService.DEFAULT_EMAIL.substring(0, MongoUserDetailsService.DEFAULT_EMAIL.indexOf("@"));
-        loginForm.login(email, MongoUserDetailsService.DEFAULT_PASS);
+        throw new PendingException();
     }
 
     @Then("^he is redirected to the index page$")
     public void he_is_redirected_to_the_index_page() throws Throwable {
-
-        PageFactory.initElements(webDriver, indexPage);
-        indexPage.waitForPageLoad();
+        throw new PendingException();
     }
 
     @And("^the text \"([^\"]*)\" is displayed$")
-    public void the_text_is_displayed(String text) throws Throwable {
-
-        PageFactory.initElements(webDriver, indexPage);
-        assertEquals(text, indexPage.getHeadlineText());
+    public void the_text_is_displayed(String arg1) throws Throwable {
+        throw new PendingException();
     }
 
-    @When("^he reloads the page$")
-    public void he_reloads_the_page() throws Throwable {
-
-        webDriver.get(webDriver.getCurrentUrl());
+    @When("^he closes his browser$")
+    public void he_closes_his_browser() throws Throwable {
+        throw new PendingException();
     }
 
-    @Given("he visits the index page$")
+    @And("^he visits the index page$")
     public void he_visits_the_index_page() throws Throwable {
-
-        webDriver.get(urlProvider.applicationUrl());
-    }
-
-    @Given("^an anonymous user visits the index page$")
-    public void an_anonymous_user_visits_the_index_page() throws Throwable {
-
-        WebDriverProvider.closeWebDriver();
-        webDriver = webDriverProvider.provideDriver();
-
-        webDriver.get(urlProvider.applicationUrl());
+        throw new PendingException();
     }
 }

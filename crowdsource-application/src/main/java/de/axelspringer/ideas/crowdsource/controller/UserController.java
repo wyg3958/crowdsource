@@ -1,7 +1,7 @@
 package de.axelspringer.ideas.crowdsource.controller;
 
+import de.axelspringer.ideas.crowdsource.exceptions.InvalidRequestException;
 import de.axelspringer.ideas.crowdsource.exceptions.ResourceNotFoundException;
-import de.axelspringer.ideas.crowdsource.exceptions.UserAlreadyActivatedException;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.model.presentation.ConstraintViolations;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.UserActivation;
@@ -74,7 +74,7 @@ public class UserController {
         if (StringUtils.isBlank(userEntity.getActivationToken())
                 || !userEntity.getActivationToken().equals(userActivation.getActivationToken())) {
             log.debug("token mismatch on activation request for user with email: {}", email);
-            throw new UserAlreadyActivatedException();
+            throw InvalidRequestException.userAlreadyActivated();
         }
 
         userEntity.setActivated(true);

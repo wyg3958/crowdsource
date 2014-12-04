@@ -6,6 +6,8 @@ import org.openqa.selenium.support.FindBy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
+
 @Component
 public class LoginForm {
 
@@ -22,10 +24,9 @@ public class LoginForm {
     private SeleniumWait wait;
 
     public void waitForPageLoad() {
-        // TODO: remove if not really needed
-        //wait.until(visibilityOf(emailInputField));
-        //wait.until(visibilityOf(passwordInputField));
-        //wait.until(visibilityOf(saveButton));
+        wait.until(visibilityOf(emailInputField));
+        wait.until(visibilityOf(passwordInputField));
+        wait.until(visibilityOf(saveButton));
     }
 
     public void login(String email, String password) {

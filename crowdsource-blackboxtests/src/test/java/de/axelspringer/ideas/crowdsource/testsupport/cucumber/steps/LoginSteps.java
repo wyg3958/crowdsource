@@ -51,7 +51,8 @@ public class LoginSteps {
     public void he_enters_valid_credentials() throws Throwable {
 
         PageFactory.initElements(webDriver, loginForm);
-        loginForm.login(MongoUserDetailsService.DEFAULT_EMAIL, MongoUserDetailsService.DEFAULT_PASS);
+        final String email = MongoUserDetailsService.DEFAULT_EMAIL.substring(0, MongoUserDetailsService.DEFAULT_EMAIL.indexOf("@"));
+        loginForm.login(email, MongoUserDetailsService.DEFAULT_PASS);
     }
 
     @Then("^he is redirected to the index page$")
@@ -68,15 +69,23 @@ public class LoginSteps {
         assertEquals(text, indexPage.getHeadlineText());
     }
 
-    @When("^he closes his browser$")
-    public void he_closes_his_browser() throws Throwable {
+    @When("^he reloads the page$")
+    public void he_reloads_the_page() throws Throwable {
 
-        webDriver.quit();
-        webDriver = webDriverProvider.provideDriver();
+        webDriver.get(webDriver.getCurrentUrl());
     }
 
-    @Given("(?:he|an anonymous user) visits the index page$")
+    @Given("he visits the index page$")
     public void he_visits_the_index_page() throws Throwable {
+
+        webDriver.get(urlProvider.applicationUrl());
+    }
+
+    @Given("^an anonymous user visits the index page$")
+    public void an_anonymous_user_visits_the_index_page() throws Throwable {
+
+        WebDriverProvider.closeWebDriver();
+        webDriver = webDriverProvider.provideDriver();
 
         webDriver.get(urlProvider.applicationUrl());
     }

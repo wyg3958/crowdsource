@@ -16,6 +16,8 @@ import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
@@ -57,6 +59,13 @@ public class LoginSteps {
         loginForm.login(email, MongoUserDetailsService.DEFAULT_PASS);
     }
 
+    @When("^he enters invalid credentials$")
+    public void he_enters_invalid_credentials() throws Throwable {
+
+        PageFactory.initElements(webDriver, loginForm);
+        loginForm.login("foooooooaaaahhhh", MongoUserDetailsService.DEFAULT_PASS);
+    }
+
     @Then("^he is redirected to the index page$")
     public void he_is_redirected_to_the_index_page() throws Throwable {
 
@@ -81,5 +90,10 @@ public class LoginSteps {
     public void the_index_page_is_visited() throws Throwable {
 
         webDriver.get(urlProvider.applicationUrl());
+    }
+
+    @Then("^the error \"([^\"]*)\" is displayed$")
+    public void the_error_is_displayed(String errorText) throws Throwable {
+        assertThat(loginForm.getErrorText(), is(errorText));
     }
 }

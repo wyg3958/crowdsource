@@ -110,8 +110,21 @@ describe('user activation view', function () {
         expect(activationForm.getSubmitButton()).not.toBeDisabled();
     });
 
-    it('should show an unknown error when the server responds with 500', function() {
+    it('should show an unknown error when the activation call results in 500', function() {
         expectBackendActivationCallAndRespond(500);
+        spyOn($location, 'path');
+
+        fillAndSubmitForm();
+        $httpBackend.flush();
+        expect(activationForm.getGeneralErrorsContainer()).toExist();
+        expect(activationForm.getGeneralError('remote_unknown')).toExist();
+
+        expect($location.path).not.toHaveBeenCalled();
+    });
+
+    it('should show an unknown error when the token call results in 500', function() {
+        expectBackendActivationCallAndRespond(201);
+        expectBackendLoginCallAndRespond(500);
         spyOn($location, 'path');
 
         fillAndSubmitForm();

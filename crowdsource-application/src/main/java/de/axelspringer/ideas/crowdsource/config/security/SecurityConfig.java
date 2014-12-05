@@ -106,7 +106,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             clients.inMemory()
                     .withClient("web")
                     .authorizedGrantTypes("password", "refresh_token")
-                    .accessTokenValiditySeconds(3600)
+                            // token valid one year (we do not use the refresh token yet)
+                    .accessTokenValiditySeconds(60 * 60 * 24 * 365)
 
                             // at least one scope must be configured. A client could request authorization only for certain parts of the app.
                             // We don't need it, so just define some dummy value

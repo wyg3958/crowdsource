@@ -2,6 +2,7 @@ package de.axelspringer.ideas.crowdsource.model.persistence;
 
 import de.axelspringer.ideas.crowdsource.config.security.Roles;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -10,6 +11,8 @@ import java.util.Arrays;
 import java.util.List;
 
 @Data
+// needed for serialization
+@NoArgsConstructor
 @Document(collection = "users")
 public class UserEntity {
 
@@ -26,9 +29,6 @@ public class UserEntity {
     private List<String> roles = Arrays.asList(Roles.ROLE_USER);
 
     private boolean activated = false;
-
-    public UserEntity() {
-    }
 
     public UserEntity(String email) {
         this(email, null);

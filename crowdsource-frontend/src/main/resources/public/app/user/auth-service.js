@@ -19,6 +19,10 @@ angular.module('crowdsource')
             $http.defaults.headers.common['Authorization'] = tokens.token_type + ' ' + tokens.access_token;
             window.localStorage[TOKENS_LOCAL_STORAGE_KEY] = JSON.stringify(tokens);
         }
+        function clearAuthTokens() {
+            $http.defaults.headers.common['Authorization'] = undefined;
+            window.localStorage.removeItem(TOKENS_LOCAL_STORAGE_KEY);
+        }
 
         return {
             init: function () {
@@ -50,8 +54,6 @@ angular.module('crowdsource')
                 return promise.then(useAuthTokens);
             },
 
-            logout: function() {
-                window.localStorage.removeItem(TOKENS_LOCAL_STORAGE_KEY);
-            }
+            logout: clearAuthTokens
         };
     });

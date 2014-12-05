@@ -26,7 +26,7 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages'])
                 controller: 'UserActivationController'
             })
             .when('/logout', {
-                templateUrl: 'app/user/user-logout.html',
+                templateUrl: 'app/user/logout/user-logout.html',
                 controller: 'UserLogoutController'
             })
             .otherwise({redirectTo: '/'});

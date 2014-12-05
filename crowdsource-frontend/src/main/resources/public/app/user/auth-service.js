@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .factory('Authentication', function ($resource, $http) {
+    .factory('Authentication', function ($resource, $http, $q) {
 
         var TOKENS_LOCAL_STORAGE_KEY = 'tokens';
 
@@ -50,8 +50,22 @@ angular.module('crowdsource')
                     grant_type: 'password'
                 });
 
-                var promise = tokenResource.requestTokens(requestBody).$promise;
-                return promise.then(useAuthTokens);
+                return $q(function(resolve, reject) {
+                    tokenResource.requestTokens(requestBody).$promise
+                        .then(function(response) {
+                            useAuthTokens(response);
+                            resolve();
+                        })
+                        .catch(function(response) {
+                            if (response.status == 400 && response.data && response.data.error && response.data.error == 'invalid_grant') {
+                                reject('bad_credentials');
+                                return;
+                            }
+                            else {
+                                reject('unknown');
+                            }
+                        });
+                });
             },
 
             logout: clearAuthTokens

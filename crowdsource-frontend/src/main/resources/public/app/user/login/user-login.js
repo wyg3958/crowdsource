@@ -16,17 +16,16 @@ angular.module('crowdsource')
             // make the email an actual email on a copied user object (to not update the UI)
             userCopy.email = userCopy.email + $scope.EMAIL_HOST;
 
-            var promise = Authentication.login(userCopy.email, userCopy.password);
-            promise.then(function () {
-                $location.path('/');
-            });
-            promise.catch(function (response) {
-                RemoteFormValidation.setGeneralError($scope, 'bad_credentials');
-                //RemoteFormValidation.applyServerErrorResponse($scope, $scope.loginForm, response);
-            });
-            promise.finally(function () {
-                $scope.loading = false;
-            });
+            Authentication.login(userCopy.email, userCopy.password)
+                .then(function () {
+                    $location.path('/');
+                })
+                .catch(function (errorCode) {
+                    RemoteFormValidation.setGeneralError($scope, errorCode);
+                })
+                .finally(function () {
+                    $scope.loading = false;
+                });
         };
     })
 

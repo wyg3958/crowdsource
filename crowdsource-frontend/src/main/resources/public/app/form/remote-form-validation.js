@@ -77,9 +77,7 @@ angular.module('crowdsource')
                     applyGeneralError($scope, 'unknown');
                 }
             },
-            setGeneralError: function($scope, errorCode) {
-                applyGeneralError($scope, errorCode);
-            },
+            setGeneralError: applyGeneralError,
             clearRemoteErrors: function($scope) {
                 // fieldViolations will be cleared from the resetRemoteValidation directive
                 $scope.generalErrors = null;

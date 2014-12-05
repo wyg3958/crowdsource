@@ -20,6 +20,9 @@ public class LoginForm {
     @FindBy(css = "form[name='loginForm'] button[type='submit']")
     private WebElement saveButton;
 
+    @FindBy(css = "form[name='loginForm'] .general-error span")
+    private WebElement errorText;
+
     @Autowired
     private SeleniumWait wait;
 
@@ -34,5 +37,10 @@ public class LoginForm {
         emailInputField.sendKeys(email);
         passwordInputField.sendKeys(password);
         saveButton.click();
+    }
+
+    public String getErrorText(){
+        wait.until(visibilityOf(errorText));
+        return errorText.getText();
     }
 }

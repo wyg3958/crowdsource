@@ -20,19 +20,18 @@ angular.module('crowdsource')
             RemoteFormValidation.clearRemoteErrors($scope);
             $scope.loading = true;
 
-            var activationPromise = User.activate($scope.user).$promise;
-            var loginPromise = activationPromise.then(function () {
-                return Authentication.login($scope.user.email, $scope.user.password);
-            });
-            activationPromise.catch(function (response) {
-                RemoteFormValidation.applyServerErrorResponse($scope, $scope.activationForm, response);
-            });
-            activationPromise.finally(function () {
-                $scope.loading = false;
-            });
-
-            loginPromise.then(function() {
-                 $location.path('/');
-            });
+            User.activate($scope.user).$promise
+                .then(function () {
+                    return Authentication.login($scope.user.email, $scope.user.password);
+                })
+                .then(function() {
+                    $location.path('/');
+                })
+                .catch(function (response) {
+                    RemoteFormValidation.applyServerErrorResponse($scope, $scope.activationForm, response);
+                })
+                .finally(function() {
+                    $scope.loading = false;
+                });
         };
     });

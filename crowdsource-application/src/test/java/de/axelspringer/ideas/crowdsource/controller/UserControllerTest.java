@@ -74,6 +74,7 @@ public class UserControllerTest {
     private UserRegistration userRegistration = new UserRegistration();
     private ObjectMapper mapper = new ObjectMapper();
     private UserEntity existingButNotYetActivatedUser;
+    private UserEntity activatedUser;
 
     @Before
     public void setup() {
@@ -89,8 +90,9 @@ public class UserControllerTest {
         existingButNotYetActivatedUser.setActivationToken("activationToken");
         when(userRepository.findByEmail(eq(EXISTING_BUT_NOT_YET_ACTIVATED_USER_MAIL_ADDRESS))).thenReturn(existingButNotYetActivatedUser);
 
-        UserEntity activatedUser = new UserEntity(ACTIVATED_USER_MAIL_ADDRESS);
+        activatedUser = new UserEntity(ACTIVATED_USER_MAIL_ADDRESS);
         activatedUser.setActivated(true);
+        activatedUser.setActivationToken("activationToken2");
         when(userRepository.findByEmail(eq(ACTIVATED_USER_MAIL_ADDRESS))).thenReturn(activatedUser);
 
         reset(passwordEncoder);
@@ -165,7 +167,7 @@ public class UserControllerTest {
 
         final MvcResult mvcResult = registerUserAndExpect(status().isBadRequest());
 
-        assertEquals("", "{\"fieldViolations\":{\"email\":\"eligible\"}}", mvcResult.getResponse().getContentAsString());
+        assertEquals("{\"errorCode\":\"field_errors\",\"fieldViolations\":{\"email\":\"eligible\"}}", mvcResult.getResponse().getContentAsString());
     }
 
     @Test
@@ -176,7 +178,7 @@ public class UserControllerTest {
 
         final MvcResult mvcResult = registerUserAndExpect(status().isBadRequest());
 
-        assertEquals("", "{\"fieldViolations\":{\"termsOfServiceAccepted\":\"must be true\"}}", mvcResult.getResponse().getContentAsString());
+        assertEquals("{\"errorCode\":\"field_errors\",\"fieldViolations\":{\"termsOfServiceAccepted\":\"must be true\"}}", mvcResult.getResponse().getContentAsString());
     }
 
     @Test
@@ -187,7 +189,7 @@ public class UserControllerTest {
 
         final MvcResult mvcResult = registerUserAndExpect(status().isBadRequest());
 
-        assertEquals("", "{\"fieldViolations\":{\"email\":\"not_activated\"}}", mvcResult.getResponse().getContentAsString());
+        assertEquals("", "{\"errorCode\":\"field_errors\",\"fieldViolations\":{\"email\":\"not_activated\"}}", mvcResult.getResponse().getContentAsString());
     }
 
     private MvcResult registerUserAndExpect(ResultMatcher expectedResponseStatus) throws Exception {
@@ -250,10 +252,13 @@ public class UserControllerTest {
 
         final String email = existingButNotYetActivatedUser.getEmail();
 
-        mockMvc.perform(post("/user/" + email + "/activation")
+        MvcResult mvcResult = mockMvc.perform(post("/user/" + email + "/activation")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(userActivation)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        assertEquals("{\"errorCode\":\"activation_token_invalid\",\"fieldViolations\":{}}", mvcResult.getResponse().getContentAsString());
     }
 
     @Test
@@ -265,10 +270,13 @@ public class UserControllerTest {
 
         final String email = existingButNotYetActivatedUser.getEmail();
 
-        mockMvc.perform(post("/user/" + email + "/activation")
+        MvcResult mvcResult = mockMvc.perform(post("/user/" + email + "/activation")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(userActivation)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        assertEquals("{\"errorCode\":\"field_errors\",\"fieldViolations\":{\"password\":\"insecure_password\"}}", mvcResult.getResponse().getContentAsString());
     }
 
     @Test
@@ -284,6 +292,24 @@ public class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(userActivation)))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testActivateAlreadyActivateUser() throws Exception {
+
+        final UserActivation userActivation = new UserActivation();
+        userActivation.setActivationToken(activatedUser.getActivationToken());
+        userActivation.setPassword("1234567!");
+
+        final String email = activatedUser.getEmail();
+
+        MvcResult mvcResult = mockMvc.perform(post("/user/" + email + "/activation")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(userActivation)))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        assertEquals("{\"errorCode\":\"already_activated\",\"fieldViolations\":{}}", mvcResult.getResponse().getContentAsString());
     }
 
     @Configuration

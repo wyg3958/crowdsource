@@ -24,7 +24,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.client.RestTemplate;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
@@ -151,9 +153,16 @@ public class RegistrationSteps {
         mailServerClient.waitForMails(1, 5000);
 
         final MailServerClient.Message message = mailServerClient.messages().get(0);
-        String link = message.message.replaceAll("^.*?(?=http)", "");
+        String messageContent = message.message;
+        String link = messageContent.substring(messageContent.indexOf("http")).trim();
         activationLink = link;
         webDriver.get(link);
+    }
+
+    @When("^the user changes the activation token in the URL$")
+    public void the_user_changes_the_activation_token_in_the_URL() throws Throwable {
+        activationLink = activationLink + "somethingToMakeTheActivationTokenInvalid";
+        webDriver.get(activationLink);
     }
 
     @And("^the user enters a valid password twice on activation page$")

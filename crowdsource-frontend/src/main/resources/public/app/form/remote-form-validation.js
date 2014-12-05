@@ -64,12 +64,12 @@ angular.module('crowdsource')
                 if (response.status == 404) {
                     appliedErrors = applyGeneralError($scope, 'not_found');
                 }
-                else if (response.status == 400 && response.data) {
-                    if (response.data.fieldViolations) {
+                else if (response.status == 400 && response.data && response.data.errorCode) {
+                    if (response.data.errorCode == "field_errors" && response.data.fieldViolations) {
                         appliedErrors = applyFieldErrors(form, response.data.fieldViolations);
                     }
-                    if (response.data.message) {
-                        appliedErrors = applyGeneralError($scope, response.data.message);
+                    else {
+                        appliedErrors = applyGeneralError($scope, response.data.errorCode);
                     }
                 }
 

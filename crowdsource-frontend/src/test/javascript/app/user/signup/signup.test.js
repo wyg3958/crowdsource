@@ -133,7 +133,7 @@ describe('user signup view', function () {
     });
 
     it('should show a validation error if the server responds with the field violation {"email": "not_activated"}', function() {
-        expectBackendCallAndRespond(400, { "fieldViolations": { "email": "not_activated" } });
+        expectBackendCallAndRespond(400, { "errorCode": "field_errors", "fieldViolations": { "email": "not_activated" } });
 
         fillAndSubmitForm();
         $httpBackend.flush();
@@ -142,7 +142,7 @@ describe('user signup view', function () {
     });
 
     it('should clear the remote validation errors once the user starts typing again', function() {
-        expectBackendCallAndRespond(400, { "fieldViolations": { "email": "not_activated" } });
+        expectBackendCallAndRespond(400, { "errrorCode": "field_errors", "fieldViolations": { "email": "not_activated" } });
 
         fillAndSubmitForm();
         $httpBackend.flush();
@@ -151,7 +151,7 @@ describe('user signup view', function () {
     });
 
     it('should show an unknown error when the server responds with a field violation for an unknown field', function() {
-        expectBackendCallAndRespond(400, { "fieldViolations": { "unknownField": "foo" } });
+        expectBackendCallAndRespond(400, { "errrorCode": "field_errors", "fieldViolations": { "unknownField": "foo" } });
 
         fillAndSubmitForm();
         $httpBackend.flush();

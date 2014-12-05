@@ -43,3 +43,11 @@ Feature: Registration
     And the user submits the activation form
     Then the validation error 'Ihr Konto wurde bereits aktiviert.' is displayed
 
+  @ClearMailServer
+  Scenario: A user tries to activate a freshly registered account with a wrong activation token
+    Given the user's email address is already registered but not activated
+    When the user clicks the email's activation link
+    When the user changes the activation token in the URL
+    And the user enters a valid password twice on activation page
+    And the user submits the activation form
+    Then the validation error 'Der Aktivierungslink ist ungültig. Bitte registrieren Sie sich erneut um einen neuen Aktivierungslink zugesendet zu bekommen.' is displayed

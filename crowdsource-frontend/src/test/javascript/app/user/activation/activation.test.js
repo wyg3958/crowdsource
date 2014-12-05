@@ -180,13 +180,23 @@ describe('user activation view', function () {
     });
 
     it('should show an appropriate error message if the server responds with "already_activated"', function() {
-        expectBackendActivationCallAndRespond(400, { "message": "already_activated" });
+        expectBackendActivationCallAndRespond(400, { "errorCode": "already_activated" });
 
         fillAndSubmitForm();
         $httpBackend.flush();
 
         expect(activationForm.getGeneralErrorsContainer()).toExist();
         expect(activationForm.getGeneralError('remote_already_activated')).toExist();
+    });
+
+    it('should show an appropriate error message if the server responds with "activation_token_invalid"', function() {
+        expectBackendActivationCallAndRespond(400, { "errorCode": "activation_token_invalid" });
+
+        fillAndSubmitForm();
+        $httpBackend.flush();
+
+        expect(activationForm.getGeneralErrorsContainer()).toExist();
+        expect(activationForm.getGeneralError('remote_activation_token_invalid')).toExist();
     });
 
     it('should show an appropriate error message if the server responds with 404', function() {

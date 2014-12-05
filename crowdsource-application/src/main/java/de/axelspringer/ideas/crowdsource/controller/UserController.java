@@ -3,7 +3,7 @@ package de.axelspringer.ideas.crowdsource.controller;
 import de.axelspringer.ideas.crowdsource.exceptions.InvalidRequestException;
 import de.axelspringer.ideas.crowdsource.exceptions.ResourceNotFoundException;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
-import de.axelspringer.ideas.crowdsource.model.presentation.ConstraintViolations;
+import de.axelspringer.ideas.crowdsource.model.presentation.ErrorResponse;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.UserActivation;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.UserRegistration;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
@@ -71,10 +71,17 @@ public class UserController {
             throw new ResourceNotFoundException();
         }
 
-        if (StringUtils.isBlank(userEntity.getActivationToken())
-                || !userEntity.getActivationToken().equals(userActivation.getActivationToken())) {
-            log.debug("token mismatch on activation request for user with email: {}", email);
+        if (userEntity.isActivated()) {
+            log.debug("user {} is already activated", userEntity);
             throw InvalidRequestException.userAlreadyActivated();
+        }
+
+        if (StringUtils.isBlank(userEntity.getActivationToken())
+            ||!userEntity.getActivationToken().equals(userActivation.getActivationToken())) {
+            log.debug("token mismatch on activation request for user with email: {} (was {}, expected: {})",
+                    email, userActivation.getActivationToken(), userEntity.getActivationToken());
+
+            throw InvalidRequestException.activationTokenInvalid();
         }
 
         userEntity.setActivated(true);
@@ -85,14 +92,21 @@ public class UserController {
         log.debug("User activated: {}", userEntity);
     }
 
+    @ExceptionHandler(InvalidRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleInvalidRequest(InvalidRequestException e) {
+
+        return new ErrorResponse(e.getMessage());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ConstraintViolations handleConstraintViolations(MethodArgumentNotValidException e) {
+    public ErrorResponse handleConstraintViolations(MethodArgumentNotValidException e) {
 
-        ConstraintViolations constraintViolations = new ConstraintViolations();
+        ErrorResponse errorResponse = new ErrorResponse("field_errors");
         e.getBindingResult().getFieldErrors().stream()
-                .forEach(fieldError -> constraintViolations
+                .forEach(fieldError -> errorResponse
                         .addConstraintViolation(fieldError.getField(), fieldError.getDefaultMessage()));
-        return constraintViolations;
+        return errorResponse;
     }
 }

@@ -17,6 +17,6 @@ public class UserActivation {
 
     @NotEmpty
     // (at least one non-word-character in password)(no whitespaces anywhere in password).{between 8 and 20 chars long}
-    @Pattern(regexp = "(?=.*\\W)(?=\\S+$).{8,20}")
+    @Pattern(regexp = "(?=.*\\W)(?=\\S+$).{8,20}", message = "insecure_password")
     private String password;
 }

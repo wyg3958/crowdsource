@@ -22,9 +22,12 @@ import java.io.File;
 public class WebDriverProvider {
 
     private final static Logger LOG = LoggerFactory.getLogger(WebDriverProvider.class);
-    private static RemoteWebDriver driverInstance;
+
+    private static RemoteWebDriver DRIVER_INSTANCE;
+
     @Value("${de.axelspringer.ideas.crowdsource.test.phantomjs.binary:unset}")
     private String phantomBinaryPath;
+
     @Value("${de.axelspringer.ideas.crowdsource.test.chrome.binary:unset}")
     private String chromeBinaryPath;
 
@@ -33,23 +36,24 @@ public class WebDriverProvider {
      */
     public static void closeWebDriver() {
 
-        if (driverInstance == null) {
+        if (DRIVER_INSTANCE == null) {
             return;
         }
         // get handle of driver
-        WebDriver driverHandle = driverInstance;
+        WebDriver driverHandle = DRIVER_INSTANCE;
 
         // break class reference
-        driverInstance = null;
+        DRIVER_INSTANCE = null;
 
         // close old driver
         try {
             if (driverHandle instanceof PhantomJSDriver) {
+                //((PhantomJSDriver) driverHandle).executeScript("window.localStorage.clear()");
                 driverHandle.quit();
             }
             driverHandle.close();
         } catch (Exception e) {
-            LOG.debug("exception closing webdriver", e);
+            LOG.debug("exception closing webdriver: {}", e.getMessage());
         }
     }
 
@@ -58,30 +62,37 @@ public class WebDriverProvider {
      */
     public RemoteWebDriver provideDriver() {
 
-        if (driverInstance != null) {
-            return driverInstance;
+        if (DRIVER_INSTANCE != null) {
+            return DRIVER_INSTANCE;
         }
 
         if (new File(phantomBinaryPath).exists()) {
             LOG.info("providing phantomjs driver");
             DesiredCapabilities capabilities = DesiredCapabilities.phantomjs();
             capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, phantomBinaryPath);
-            driverInstance = new PhantomJSDriver(capabilities);
+//            final File phantomJsLocalStorage;
+//            try {
+//                phantomJsLocalStorage = Files.createTempDirectory("phantomJsLocalStorage").toFile();
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//            capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[]{"--local-storage-path=" + phantomJsLocalStorage.getAbsolutePath()});
+            DRIVER_INSTANCE = new PhantomJSDriver(capabilities);
         } else if (new File(chromeBinaryPath).exists()) {
             LOG.info("providing chromedriver");
             System.setProperty("webdriver.chrome.driver", chromeBinaryPath);
-            driverInstance = new ChromeDriver();
+            DRIVER_INSTANCE = new ChromeDriver();
         } else {
             LOG.info("providing firefox driver as phantomjs-binary was not specified or does not resolve in file system.");
-            driverInstance = new FirefoxDriver();
+            DRIVER_INSTANCE = new FirefoxDriver();
         }
 
-        driverInstance.manage().window().setSize(new Dimension(1280, 800));
+        DRIVER_INSTANCE.manage().window().setSize(new Dimension(1280, 800));
 
-        return driverInstance;
+        return DRIVER_INSTANCE;
     }
 
     public boolean hasActiveWebDriver() {
-        return driverInstance != null;
+        return DRIVER_INSTANCE != null;
     }
 }

@@ -1,7 +1,6 @@
 package de.axelspringer.ideas.crowdsource.testsupport.selenium;
 
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
@@ -40,20 +39,20 @@ public class WebDriverProvider {
             return;
         }
         // get handle of driver
-        WebDriver driverHandle = DRIVER_INSTANCE;
+        RemoteWebDriver driverHandle = DRIVER_INSTANCE;
 
         // break class reference
         DRIVER_INSTANCE = null;
 
         // close old driver
         try {
-            if (driverHandle instanceof PhantomJSDriver) {
-                //((PhantomJSDriver) driverHandle).executeScript("window.localStorage.clear()");
+            if (driverHandle instanceof FirefoxDriver) {
+                driverHandle.close();
+            } else {
                 driverHandle.quit();
             }
-            driverHandle.close();
         } catch (Exception e) {
-            LOG.debug("exception closing webdriver: {}", e.getMessage());
+            LOG.warn("exception closing webdriver: {}", e.getMessage());
         }
     }
 
@@ -70,13 +69,6 @@ public class WebDriverProvider {
             LOG.info("providing phantomjs driver");
             DesiredCapabilities capabilities = DesiredCapabilities.phantomjs();
             capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, phantomBinaryPath);
-//            final File phantomJsLocalStorage;
-//            try {
-//                phantomJsLocalStorage = Files.createTempDirectory("phantomJsLocalStorage").toFile();
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//            capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[]{"--local-storage-path=" + phantomJsLocalStorage.getAbsolutePath()});
             DRIVER_INSTANCE = new PhantomJSDriver(capabilities);
         } else if (new File(chromeBinaryPath).exists()) {
             LOG.info("providing chromedriver");
@@ -88,7 +80,6 @@ public class WebDriverProvider {
         }
 
         DRIVER_INSTANCE.manage().window().setSize(new Dimension(1280, 800));
-
         return DRIVER_INSTANCE;
     }
 

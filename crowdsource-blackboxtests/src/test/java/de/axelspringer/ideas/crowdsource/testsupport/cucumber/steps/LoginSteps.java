@@ -38,6 +38,8 @@ public class LoginSteps {
     @Before
     public void init() {
         webDriver = webDriverProvider.provideDriver();
+        // logout
+        webDriver.get(urlProvider.applicationUrl() + "/#/logout");
     }
 
     @Then("^he is redirected to the login page$")
@@ -75,17 +77,8 @@ public class LoginSteps {
         webDriver.get(webDriver.getCurrentUrl());
     }
 
-    @Given("he visits the index page$")
-    public void he_visits_the_index_page() throws Throwable {
-
-        webDriver.get(urlProvider.applicationUrl());
-    }
-
-    @Given("^an anonymous user visits the index page$")
-    public void an_anonymous_user_visits_the_index_page() throws Throwable {
-
-        WebDriverProvider.closeWebDriver();
-        webDriver = webDriverProvider.provideDriver();
+    @Given("^the index page is visited$")
+    public void the_index_page_is_visited() throws Throwable {
 
         webDriver.get(urlProvider.applicationUrl());
     }

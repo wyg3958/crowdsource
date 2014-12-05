@@ -22,7 +22,8 @@ public class MailServerClient {
     public void waitForMails(int mailCount, long wait) {
 
         long start = System.currentTimeMillis();
-        while (messages().size() < mailCount && System.currentTimeMillis() < start + wait) {
+        String url = urlProvider.mailserverUrl();
+        while (messages(url).size() < mailCount && System.currentTimeMillis() < start + wait) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
@@ -31,9 +32,13 @@ public class MailServerClient {
         }
     }
 
-    public List<Message> messages() {
-        final Message[] messages = restTemplate.getForObject(urlProvider.mailserverUrl(), Message[].class);
+    private List<Message> messages(String url) {
+        final Message[] messages = restTemplate.getForObject(url, Message[].class);
         return Arrays.asList(messages);
+    }
+
+    public List<Message> messages() {
+        return messages(urlProvider.mailserverUrl());
     }
 
     public static class Message {

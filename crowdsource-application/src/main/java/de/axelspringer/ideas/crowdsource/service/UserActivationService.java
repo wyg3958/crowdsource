@@ -36,17 +36,14 @@ public class UserActivationService {
         mailMessage.setSubject(REGISTRATION_SUBJECT);
         mailMessage.setText(MAIL_CONTENT + activationLink);
 
-        sendMail(mailMessage);
+        mailSender.send(mailMessage);
     }
 
     private String buildActivationLink(String emailAddress, String activationToken) {
+
         UriComponentsBuilder uriBuilder = ServletUriComponentsBuilder.fromUriString(applicationUrl);
         uriBuilder.fragment("/signup/{emailAddress}/activation/{activationToken}");
 
         return uriBuilder.buildAndExpand(emailAddress, activationToken).toUriString();
-    }
-
-    protected void sendMail(SimpleMailMessage mailMessage) {
-        mailSender.send(mailMessage);
     }
 }

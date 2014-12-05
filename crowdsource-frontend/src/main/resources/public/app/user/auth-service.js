@@ -2,6 +2,8 @@ angular.module('crowdsource')
 
     .factory('Authentication', function ($resource, $http) {
 
+        var TOKENS_LOCAL_STORAGE_KEY = 'tokens';
+
         // token resource requires a http form post
         var tokenResource = $resource('/oauth/token', {}, {
             requestTokens: {
@@ -15,7 +17,7 @@ angular.module('crowdsource')
          */
         function useAuthTokens(tokens) {
             $http.defaults.headers.common['Authorization'] = tokens.token_type + ' ' + tokens.access_token;
-            window.localStorage['tokens'] = JSON.stringify(tokens);
+            window.localStorage[TOKENS_LOCAL_STORAGE_KEY] = JSON.stringify(tokens);
         }
 
         return {
@@ -25,7 +27,7 @@ angular.module('crowdsource')
                 if (!storage) {
                     throw "only browsers with local storage are supported";
                 }
-                var tokensAsString = storage['tokens'];
+                var tokensAsString = storage[TOKENS_LOCAL_STORAGE_KEY];
                 if (tokensAsString) {
 
                     var tokens = JSON.parse(tokensAsString);
@@ -46,6 +48,10 @@ angular.module('crowdsource')
 
                 var promise = tokenResource.requestTokens(requestBody).$promise;
                 return promise.then(useAuthTokens);
+            },
+
+            logout: function() {
+                window.localStorage.removeItem(TOKENS_LOCAL_STORAGE_KEY);
             }
         };
     });

@@ -25,6 +25,10 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages'])
                 templateUrl: 'app/user/activation/user-activation.html',
                 controller: 'UserActivationController'
             })
+            .when('/logout', {
+                templateUrl: 'app/user/user-logout.html',
+                controller: 'UserLogoutController'
+            })
             .otherwise({redirectTo: '/'});
 
         $httpProvider.interceptors.push(function ($q, $location) {

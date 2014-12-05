@@ -158,4 +158,18 @@ describe('user signup view', function () {
         expect(signupForm.getGeneralErrorsContainer()).toExist();
         expect(signupForm.getGeneralError('remote_unknown')).toExist();
     });
+
+    it('should show terms of service text when the tos link is clicked', function () {
+        expect(signupForm.getTosPanel()).not.toExist();
+        signupForm.getTosLinkForValidLabel().click();
+        expect(signupForm.getTosPanel()).toExist();
+    });
+
+    it('should show terms of service text when the invalid form submit tos link is clicked', function () {
+        expect(signupForm.getTosPanel()).not.toExist();
+        signupForm.getTosLinkForInvalidLabel().click();
+        expect(signupForm.getTosPanel()).toExist();
+    });
 });
+
+

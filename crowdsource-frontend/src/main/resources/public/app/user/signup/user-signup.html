@@ -46,11 +46,13 @@
                         <input type="checkbox" name="termsOfServiceAccepted" ng-model="user.termsOfServiceAccepted" required>
 
                         <span form-label-valid="termsOfServiceAccepted">
-                            Ich akzeptiere die <a ng-click="showTermsOfService = !showTermsOfService">AGBs</a>
+                            Ich akzeptiere die <a class="crowd-tos-link"
+                                                  ng-click="showTermsOfService = !showTermsOfService">AGBs</a>
                         </span>
 
                         <span form-label-invalid="termsOfServiceAccepted" ng-messages="signupForm.termsOfServiceAccepted.$error">
-                            <span ng-message="required">Bitte akzeptieren Sie die <a ng-click="showTermsOfService = !showTermsOfService">AGBs</a></span>
+                            <span ng-message="required">Bitte akzeptieren Sie die <a class="crowd-tos-link"
+                                                                                     ng-click="showTermsOfService = !showTermsOfService">AGBs</a></span>
                         </span>
                     </label>
                 </div>
@@ -58,8 +60,8 @@
 
             <div class="row" ng-if="showTermsOfService">
                 <div class="small-12 columns">
-                    <div class="panel callout radius font-small">
-                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+                    <div class="crowd-tos-panel panel callout radius font-small">
+                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
                         At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit
                         amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
                         justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.

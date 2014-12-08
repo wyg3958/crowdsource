@@ -30,10 +30,8 @@ body {
     background-color: $crowd-color-purple;
     color: white;
     font-size: 4.1vw;
-}
 
-@media #{$medium-up} {
-    .teaser {
+    @media #{$medium-up} {
         line-height: 200px;
         font-size: 28px;
     }
@@ -43,10 +41,8 @@ body {
     padding: 10px 10px 240px 10px;
     color: $crowd-color-dark-grey;
     background-color: $crowd-color-light-grey;
-}
 
-@media #{$medium-up} {
-    .content {
+    @media #{$medium-up} {
         padding: 40px 40px 240px 40px;
     }
 }

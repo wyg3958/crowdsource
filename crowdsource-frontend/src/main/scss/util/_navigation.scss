@@ -3,7 +3,20 @@ nav.top-bar {
         text-decoration: none;
     }
 
-    .right a {
-        text-transform: uppercase;
+    .top-bar-section {
+        ul {
+            // "center" the li's vertically instead of setting the line-height
+            // to be able to apply a border to an anchor
+            padding-top: $topbar-height / 2 - $crowd-line-height;
+        }
+
+        // this selector must be so specific to overwrite the styles from foundation
+        li:not(.has-form) a:not(.button) {
+            line-height: inherit; // foundation default: 45px
+        }
+
+        li.border a {
+            border: 1px solid black;
+        }
     }
 }

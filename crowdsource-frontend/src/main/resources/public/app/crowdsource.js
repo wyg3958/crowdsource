@@ -35,7 +35,7 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages'])
             return {
                 responseError: function (response) {
                     if (response.status == 401) {
-
+                        // clear token
                         // redirect to login
                         $location.path('/login');
                     }

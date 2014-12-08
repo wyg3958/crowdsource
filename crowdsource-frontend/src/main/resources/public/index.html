@@ -8,8 +8,10 @@
 
     <link rel="stylesheet" href="css/crowdsource.css">
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/foundation/5.4.7/js/vendor/modernizr.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/foundation/5.4.7/js/vendor/modernizr.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/foundation/5.4.7/js/foundation/foundation.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/foundation/5.4.7/js/foundation/foundation.topbar.js"></script>
 
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular-resource.min.js"></script>
@@ -33,21 +35,24 @@
 
 <div class="page-wrapper">
 
-    <nav class="top-bar" data-topbar role="navigation" ng-controller="NavigationController">
-        <ul class="title-area">
-            <li class="name">
-                <h1><a href="#/">Axel Springer CROWD</a></h1>
-            </li>
-        </ul>
-
-        <section class="top-bar-section">
-            <ul class="right">
-                <li ng-class="getClassForMenuItem('/project/new')" class="border"><a href="#/project/new">Neues Projekt</a></li>
-                <li ng-class="getClassForMenuItem('/login')"><a href="#/login">Login</a></li>
-                <li ng-class="getClassForMenuItem('/signup')"><a href="#/signup">Registrieren</a></li>
+    <div class="contain-to-grid">
+        <nav class="top-bar" data-topbar role="navigation" ng-controller="NavigationController">
+            <ul class="title-area">
+                <li class="name">
+                    <h1><a href="#/">Axel Springer CROWD</a></h1>
+                </li>
+                <li class="toggle-topbar menu-icon"><a><span></span></a></li>
             </ul>
-        </section>
-    </nav>
+
+            <section class="top-bar-section">
+                <ul class="right">
+                    <li ng-class="getClassForMenuItem('/project/new')" class="border"><a href="#/project/new">Neues Projekt</a></li>
+                    <li ng-class="getClassForMenuItem('/login')"><a href="#/login">Login</a></li>
+                    <li ng-class="getClassForMenuItem('/signup')"><a href="#/signup">Registrieren</a></li>
+                </ul>
+            </section>
+        </nav>
+    </div>
 
     <div class="teaser text-center">
         Kickstart your next innovation at Axel Springer.

@@ -46,4 +46,7 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages'])
         });
     }).run(function (Authentication) {
         Authentication.init();
+
+        // initialize foundation widgets
+        $(document).foundation();
     });

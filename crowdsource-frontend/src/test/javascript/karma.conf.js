@@ -3,6 +3,7 @@ module.exports = function (config) {
         basePath: '../../../',
 
         files: [
+            // foundation library is mocked via testsupport/foundation.testsupport.js
             'bower_components/jquery/dist/jquery.js',
             'bower_components/jasmine-jquery/lib/jasmine-jquery.js',
             'bower_components/angular/angular.js',

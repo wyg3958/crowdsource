@@ -43,16 +43,10 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages'])
 
         $httpProvider.interceptors.push('UnauthorizedInterceptor');
     })
-    .run(function ($rootScope, $location, Authentication) {
-        Authentication.init();
 
-        $rootScope.$on('$routeChangeStart', function (event, next) {
-            // if the route was configured with requireLogin: true and the user is not logged in, redirect to login
-            if (next.requireLogin && !Authentication.isLoggedIn()) {
-                event.preventDefault(); // cancel the requested route change
-                $location.path('/login');
-            }
-        });
+    .run(function (Authentication, Route) {
+        Authentication.init();
+        Route.init();
 
         // initialize foundation widgets
         $(document).foundation();

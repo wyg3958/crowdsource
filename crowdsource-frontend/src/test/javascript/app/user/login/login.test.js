@@ -6,16 +6,16 @@ describe('user login view', function () {
         module('crowdsource');
         module('crowdsource.templates');
 
-        inject(function($compile, $rootScope, $templateCache, $controller, _$httpBackend_, _$location_, Authentication, RemoteFormValidation) {
+        inject(function($compile, $rootScope, $templateCache, $controller, _$httpBackend_, _$location_, Authentication, RemoteFormValidation, Route) {
             var $scope = $rootScope.$new();
             $httpBackend = _$httpBackend_;
             $location = _$location_;
 
             $controller('UserLoginController', {
                 $scope: $scope,
-                $location: $location,
                 Authentication: Authentication,
-                RemoteFormValidation: RemoteFormValidation
+                RemoteFormValidation: RemoteFormValidation,
+                Route: Route
             });
 
             var template = $templateCache.get('app/user/login/user-login.html');

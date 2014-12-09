@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .controller('UserLoginController', function ($scope, $location, Authentication, RemoteFormValidation) {
+    .controller('UserLoginController', function ($scope, Authentication, RemoteFormValidation, Route) {
 
         $scope.EMAIL_HOST = '@axelspringer.de';
 
@@ -18,7 +18,7 @@ angular.module('crowdsource')
 
             Authentication.login(userCopy.email, userCopy.password)
                 .then(function () {
-                    $location.path('/');
+                    Route.redirectToOriginallyRequestedPageOr('/');
                 })
                 .catch(function (errorCode) {
                     RemoteFormValidation.setGeneralError($scope, errorCode);

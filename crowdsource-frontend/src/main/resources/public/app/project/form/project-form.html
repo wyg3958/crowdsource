@@ -17,7 +17,7 @@
                     <span ng-message="maxlength">Der Titel darf nur maximal 60 Zeichen lang sein</span>
                 </span>
 
-                <input type="text" name="title" ng-model="project.title" placeholder="Ein kurzer und prägnanter Titel (max. 60 Zeichen)"
+                <input type="text" name="title" ng-model="project.title" placeholder="Ein kurzer und prägnanter Titel (max. 60 Zeichen, kein HTML)"
                        required ng-maxlength="60" reset-remote-validation>
             </label>
         </div>
@@ -34,7 +34,7 @@
                     <span ng-message="maxlength">Die Kurzbeschreibung darf nur maximal 140 Zeichen lang sein</span>
                 </span>
 
-                <textarea name="shortDescription" ng-model="project.shortDescription" placeholder="Die Kurzbeschreibung wird auf der Hauptseite von Crowdsource angezeigt (max. 140 Zeichen)"
+                <textarea name="shortDescription" ng-model="project.shortDescription" placeholder="Die Kurzbeschreibung wird auf der Hauptseite von Crowdsource angezeigt (max. 140 Zeichen, kein HTML)"
                        required ng-maxlength="140" reset-remote-validation></textarea>
             </label>
         </div>
@@ -74,7 +74,7 @@
                     <span ng-message="required">Bitte geben Sie eine ausführliche Beschreibung an</span>
                 </span>
 
-                <textarea name="description" ng-model="project.description" placeholder="Beschreiben Sie Ihre Idee ausführlich. Diese Information ist in der Detailansicht sichtbar (keine Zeichenbeschränkung)"
+                <textarea name="description" ng-model="project.description" placeholder="Beschreiben Sie Ihre Idee ausführlich. Diese Information ist in der Detailansicht sichtbar (keine Zeichenbeschränkung, kein HTML)"
                           required reset-remote-validation></textarea>
             </label>
         </div>

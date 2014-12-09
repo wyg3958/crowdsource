@@ -1,4 +1,4 @@
-package de.axelspringer.ideas.crowdsource.testsupport.cucumber.steps;
+package de.axelspringer.ideas.crowdsource.testsupport.cucumber;
 
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
@@ -67,8 +67,6 @@ public class RegistrationSteps {
     @Before
     public void init() {
         webDriver = webDriverProvider.provideDriver();
-        // logout
-        webDriver.get(urlProvider.applicationUrl() + "/#/logout");
         emailName = "registrationTest+" + RandomStringUtils.randomAlphanumeric(10);
     }
 

@@ -1,4 +1,4 @@
-package de.axelspringer.ideas.crowdsource.testsupport.cucumber.steps;
+package de.axelspringer.ideas.crowdsource.testsupport.cucumber;
 
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
@@ -40,8 +40,14 @@ public class LoginSteps {
     @Before
     public void init() {
         webDriver = webDriverProvider.provideDriver();
-        // logout
-        webDriver.get(urlProvider.applicationUrl() + "/#/logout");
+    }
+
+    @Given("^a user is logged in")
+    public void a_user_is_logged_in() throws Throwable {
+        the_index_page_is_visited();
+        he_is_redirected_to_the_login_page();
+        he_enters_valid_credentials();
+        he_is_redirected_to_the_index_page();
     }
 
     @Then("^he is redirected to the login page$")

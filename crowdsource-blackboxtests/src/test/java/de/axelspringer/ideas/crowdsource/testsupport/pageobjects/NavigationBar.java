@@ -14,11 +14,19 @@ public class NavigationBar {
     @FindBy(css = "nav.top-bar a[href='#/signup']")
     private WebElement signupLink;
 
+    @FindBy(css = "nav.top-bar a[href='#/project/new']")
+    private WebElement newProjectLink;
+
     @Autowired
     private SeleniumWait wait;
 
     public void clickSignup() {
         wait.until(visibilityOf(signupLink));
         signupLink.click();
+    }
+
+    public void clickNewProject() {
+        wait.until(visibilityOf(newProjectLink));
+        newProjectLink.click();
     }
 }

@@ -83,7 +83,6 @@ describe('project form', function () {
         expectBackendCallAndRespond(200);
 
         fillAndSubmitForm();
-        expectNoValidationError('shortDescription');
         $httpBackend.flush();
 
         expect($location.path()).toBe('/project/new/success');

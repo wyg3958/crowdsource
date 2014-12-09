@@ -7,7 +7,7 @@ nav.top-bar {
         ul {
             // "center" the li's vertically instead of setting the line-height
             // to be able to apply a border to an anchor
-            padding-top: $topbar-height / 2 - $crowd-line-height;
+            padding-top: $topbar-height / 2 - $crowd-line-height / 2;
         }
 
         @media #{$small-only} {

@@ -89,6 +89,7 @@ $font-family-sans-serif: $crowd-font-family;
 // We use these to define default font weights
 // $font-weight-normal: normal !default;
 $font-weight-bold: bold !default;
+$font-weight-semibold: 600 !default;
 
 $white: #FFFFFF;
 // $ghost       : #FAFAFA;
@@ -1363,7 +1364,7 @@ $topbar-height: 45px;
 // $topbar-margin-bottom: 0;
 
 // Controlling the styles for the title in the top bar
-$topbar-title-weight: $font-weight-bold;
+$topbar-title-weight: $font-weight-semibold;
 // $topbar-title-font-size: rem-calc(17);
 
 // Style the top bar dropdown elements

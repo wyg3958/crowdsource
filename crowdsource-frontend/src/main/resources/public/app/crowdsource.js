@@ -7,14 +7,17 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages'])
         $routeProvider
             .when('/', {
                 templateUrl: 'app/overview/overview.html',
-                controller: 'OverviewController'
+                controller: 'OverviewController',
+                requireLogin: true
             })
             .when('/project/new', {
                 templateUrl: 'app/project/form/project-form.html',
-                controller: 'ProjectFormController'
+                controller: 'ProjectFormController',
+                requireLogin: true
             })
             .when('/project/new/success', {
-                templateUrl: 'app/project/form/project-form-success.html'
+                templateUrl: 'app/project/form/project-form-success.html',
+                requireLogin: true
             })
             .when('/login', {
                 templateUrl: 'app/user/login/user-login.html',
@@ -40,8 +43,16 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages'])
 
         $httpProvider.interceptors.push('UnauthorizedInterceptor');
     })
-    .run(function (Authentication) {
+    .run(function ($rootScope, $location, Authentication) {
         Authentication.init();
+
+        $rootScope.$on('$routeChangeStart', function (event, next) {
+            // if the route was configured with requireLogin: true and the user is not logged in, redirect to login
+            if (next.requireLogin && !Authentication.isLoggedIn()) {
+                event.preventDefault(); // cancel the requested route change
+                $location.path('/login');
+            }
+        });
 
         // initialize foundation widgets
         $(document).foundation();

@@ -19,6 +19,9 @@ angular.module('crowdsource')
                 // set as header
                 service.use(tokens);
             }
+            else {
+                service.clear();
+            }
         };
 
         /**
@@ -32,6 +35,13 @@ angular.module('crowdsource')
         service.clear = function() {
             $http.defaults.headers.common['Authorization'] = undefined;
             window.localStorage.removeItem(TOKENS_LOCAL_STORAGE_KEY);
+        };
+
+        /**
+         * Checks if a token was set into the default http headers
+         */
+        service.hasTokenSet = function() {
+            return $http.defaults.headers.common['Authorization'] != undefined;
         };
 
         return service;
@@ -77,6 +87,8 @@ angular.module('crowdsource')
             });
         };
 
+        service.isLoggedIn = AuthenticationToken.hasTokenSet;
+        
         service.logout = AuthenticationToken.clear;
 
         return service;

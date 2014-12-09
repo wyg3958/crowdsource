@@ -38,20 +38,9 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages'])
             })
             .otherwise({redirectTo: '/'});
 
-        $httpProvider.interceptors.push(function ($q, $location) {
-            return {
-                responseError: function (response) {
-                    if (response.status == 401) {
-                        // clear token
-                        // redirect to login
-                        $location.path('/login');
-                    }
-
-                    return $q.reject(response);
-                }
-            }
-        });
-    }).run(function (Authentication) {
+        $httpProvider.interceptors.push('UnauthorizedInterceptor');
+    })
+    .run(function (Authentication) {
         Authentication.init();
 
         // initialize foundation widgets

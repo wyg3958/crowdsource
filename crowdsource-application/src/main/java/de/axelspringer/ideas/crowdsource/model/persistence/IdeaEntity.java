@@ -14,6 +14,8 @@ public class IdeaEntity {
     @Id
     private String id;
 
+    private String userId;
+
     private String title;
 
     private String shortDescription;

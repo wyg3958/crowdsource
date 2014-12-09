@@ -20,6 +20,10 @@
 
     <script src="app/crowdsource.js"></script>
     <script src="app/overview/overview.js"></script>
+
+    <script src="app/project/project-service.js"></script>
+    <script src="app/project/form/project-form.js"></script>
+
     <script src="app/user/user-service.js"></script>
     <script src="app/user/auth-service.js"></script>
     <script src="app/user/login/user-login.js"></script>
@@ -27,6 +31,7 @@
     <script src="app/user/signup/user-signup-success.js"></script>
     <script src="app/user/activation/user-activation.js"></script>
     <script src="app/user/logout/user-logout.js"></script>
+
     <script src="app/form/remote-form-validation.js"></script>
     <script src="app/form/form-directives.js"></script>
     <script src="app/navigation/navbar.js"></script>
@@ -58,7 +63,9 @@
         Kickstart your next innovation at Axel Springer.
     </div>
 
-    <div class="content" ng-view></div>
+    <div class="row">
+        <div class="small-12 columns content" ng-view></div>
+    </div>
     <div class="footer"></div>
 </div>
 </body>

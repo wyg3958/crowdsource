@@ -1,10 +1,12 @@
 /**
  * A FormGroup represents an input field along with its label and error messages
  */
-function FormGroup(element) {
+function FormGroup(element, inputFieldType) {
+
+    inputFieldType = inputFieldType || 'input';
 
     this.getInputField = function() {
-        return element.find('input');
+        return element.find(inputFieldType);
     };
 
     this.getLabelContainer = function() {

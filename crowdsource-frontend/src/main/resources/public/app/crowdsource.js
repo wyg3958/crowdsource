@@ -9,6 +9,13 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages'])
                 templateUrl: 'app/overview/overview.html',
                 controller: 'OverviewController'
             })
+            .when('/project/new', {
+                templateUrl: 'app/project/form/project-form.html',
+                controller: 'ProjectFormController'
+            })
+            .when('/project/new/success', {
+                templateUrl: 'app/project/form/project-form-success.html'
+            })
             .when('/login', {
                 templateUrl: 'app/user/login/user-login.html',
                 controller: 'UserLoginController'

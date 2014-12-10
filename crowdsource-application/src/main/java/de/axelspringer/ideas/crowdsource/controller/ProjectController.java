@@ -48,6 +48,7 @@ public class ProjectController {
         projectEntity.setShortDescription(project.getShortDescription());
         projectEntity.setTitle(project.getTitle());
         projectEntity.setUser(userEntity);
+        projectEntity.setPledgeGoal(project.getPledgeGoal());
         projectRepository.save(projectEntity);
 
         log.debug("Project saved: {}", projectEntity);

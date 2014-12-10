@@ -7,6 +7,9 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class IdeaStorage {
 
     @NotEmpty
+    private String userId;
+
+    @NotEmpty
     private String title;
 
     @NotEmpty

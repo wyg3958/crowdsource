@@ -26,6 +26,7 @@ public class IdeaController {
         ideaEntity.setFullDescription(ideaStorage.getFullDescription());
         ideaEntity.setShortDescription(ideaStorage.getShortDescription());
         ideaEntity.setTitle(ideaStorage.getTitle());
+        ideaEntity.setUserId(ideaStorage.getUserId());
         ideaRepository.save(ideaEntity);
 
         log.debug("Idea saved: {}", ideaEntity);

@@ -1,6 +1,6 @@
 package de.axelspringer.ideas.crowdsource.resource;
 
-import de.axelspringer.ideas.crowdsource.model.presentation.idea.ProjectStorage;
+import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
 import org.junit.Assert;
@@ -28,14 +28,14 @@ public class ProjectIT {
     public void testAccessDenied() {
         RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
 
-        ProjectStorage projectStorage = new ProjectStorage();
-        projectStorage.setTitle("title");
-        projectStorage.setShortDescription("short description");
-        projectStorage.setPledgeGoal(1);
-        projectStorage.setDescription("description");
+        Project project = new Project();
+        project.setTitle("title");
+        project.setShortDescription("short description");
+        project.setPledgeGoal(1);
+        project.setDescription("description");
 
         try {
-            restTemplate.postForObject(urlProvider.applicationUrl() + "/project", projectStorage, Void.class);
+            restTemplate.postForObject(urlProvider.applicationUrl() + "/project", project, Void.class);
             Assert.fail("Accessing a protected resource should fail");
         }
         catch (HttpClientErrorException e) {

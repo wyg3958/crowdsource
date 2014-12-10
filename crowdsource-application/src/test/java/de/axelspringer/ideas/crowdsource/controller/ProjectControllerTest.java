@@ -3,7 +3,7 @@ package de.axelspringer.ideas.crowdsource.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
-import de.axelspringer.ideas.crowdsource.model.presentation.idea.ProjectStorage;
+import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
 import de.axelspringer.ideas.crowdsource.repository.ProjectRepository;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import org.junit.Before;
@@ -27,7 +27,10 @@ import javax.annotation.Resource;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -65,7 +68,7 @@ public class ProjectControllerTest {
 
     @Test
     public void shouldReturnSuccessfullyOnSave() throws Exception {
-        final ProjectStorage projectStorage = new ProjectStorage();
+        final Project projectStorage = new Project();
         projectStorage.setTitle("myTitle");
         projectStorage.setDescription("theFullDescription");
         projectStorage.setShortDescription("theShortDescription");
@@ -89,7 +92,7 @@ public class ProjectControllerTest {
 
     @Test
     public void shouldRespondWith401IfUserWasNotFound() throws Exception {
-        final ProjectStorage projectStorage = new ProjectStorage();
+        final Project projectStorage = new Project();
         projectStorage.setTitle("myTitle");
         projectStorage.setDescription("theFullDescription");
         projectStorage.setShortDescription("theShortDescription");
@@ -104,7 +107,7 @@ public class ProjectControllerTest {
 
     @Test
     public void shouldRespondWith400IfRequestWasInvalid() throws Exception {
-        final ProjectStorage projectStorage = new ProjectStorage();
+        final Project projectStorage = new Project();
 
         mockMvc.perform(post("/project")
                 .principal(new UsernamePasswordAuthenticationToken(EXISTING_USER_MAIL, "somepassword"))

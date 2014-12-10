@@ -1,4 +1,4 @@
-package de.axelspringer.ideas.crowdsource.model.presentation.idea;
+package de.axelspringer.ideas.crowdsource.model.presentation.project;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -6,7 +6,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import javax.validation.constraints.Min;
 
 @Data
-public class ProjectStorage {
+public class Project {
 
     @NotEmpty
     private String title;

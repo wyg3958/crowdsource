@@ -37,11 +37,11 @@ describe('project form', function () {
         expect(projectForm[inputName].getErrorLabelsContainer()).toHaveClass('ng-hide');
     }
 
-    function fillAndSubmitForm() {
-        projectForm.title.getInputField().val('Title').trigger('input');
-        projectForm.shortDescription.getInputField().val('Short description').trigger('input');
-        projectForm.pledgeGoal.getInputField().val('12500').trigger('input');
-        projectForm.description.getInputField().val('Looong description').trigger('input');
+    function fillAndSubmitForm(title, shortDescription, pledgeGoal, description) {
+        projectForm.title.getInputField().val(title).trigger('input');
+        projectForm.shortDescription.getInputField().val(shortDescription).trigger('input');
+        projectForm.pledgeGoal.getInputField().val(pledgeGoal).trigger('input');
+        projectForm.description.getInputField().val(description).trigger('input');
 
         projectForm.getSubmitButton().click();
     }
@@ -50,7 +50,7 @@ describe('project form', function () {
         $httpBackend.expectPOST('/project', {
             "title":"Title",
             "shortDescription":"Short description",
-            "pledgeGoal":"12500",
+            "pledgeGoal":12500,
             "description":"Looong description"
         })
         .respond(statusCode, responseBody);
@@ -82,7 +82,7 @@ describe('project form', function () {
     it('should POST the data to the server and redirect to success page', function() {
         expectBackendCallAndRespond(200);
 
-        fillAndSubmitForm();
+        fillAndSubmitForm('Title', 'Short description', '12500', 'Looong description');
         $httpBackend.flush();
 
         expect($location.path()).toBe('/project/new/success');
@@ -94,7 +94,7 @@ describe('project form', function () {
         expect(projectForm.getSubmitButton()).toHaveText('Absenden');
         expect(projectForm.getSubmitButton()).not.toBeDisabled();
 
-        fillAndSubmitForm();
+        fillAndSubmitForm('Title', 'Short description', '12500', 'Looong description');
 
         expect(projectForm.getSubmitButton()).toHaveText('Absenden...');
         expect(projectForm.getSubmitButton()).toBeDisabled();
@@ -109,7 +109,7 @@ describe('project form', function () {
         expectBackendCallAndRespond(500);
         spyOn($location, 'path');
 
-        fillAndSubmitForm();
+        fillAndSubmitForm('Title', 'Short description', '12500', 'Looong description');
         $httpBackend.flush();
         expect(projectForm.getGeneralErrorsContainer()).toExist();
         expect(projectForm.getGeneralError('remote_unknown')).toExist();
@@ -156,6 +156,17 @@ describe('project form', function () {
         projectForm.pledgeGoal.getInputField().val('12.01').trigger('input');
 
         expectValidationError('pledgeGoal', 'pattern');
+    });
+
+    it('should cut off a trailing dot in pledge goal before sending it to the server', function () {
+        // this is some implicit logic of the input type="number" field and angular
+        // that the trailing dot is removed automatically. This test is here to make sure this functionality
+        // does not change unexpectedly
+
+        expectBackendCallAndRespond(200);
+
+        fillAndSubmitForm('Title', 'Short description', '12500.', 'Looong description');
+        $httpBackend.flush();
     });
 
     it('should show a validation error if the description is changed to blank', function () {

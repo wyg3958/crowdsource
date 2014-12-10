@@ -1,10 +1,10 @@
 package de.axelspringer.ideas.crowdsource.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.axelspringer.ideas.crowdsource.model.persistence.IdeaEntity;
+import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
-import de.axelspringer.ideas.crowdsource.model.presentation.idea.IdeaStorage;
-import de.axelspringer.ideas.crowdsource.repository.IdeaRepository;
+import de.axelspringer.ideas.crowdsource.model.presentation.idea.ProjectStorage;
+import de.axelspringer.ideas.crowdsource.repository.ProjectRepository;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,23 +27,20 @@ import javax.annotation.Resource;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = IdeaControllerTest.Config.class)
-public class IdeaControllerTest {
+@ContextConfiguration(classes = ProjectControllerTest.Config.class)
+public class ProjectControllerTest {
 
     private static final String EXISTING_USER_MAIL = "existing@mail.com";
     private static final String NON_EXISTING_USER_MAIL = "nonexisting@mail.com";
 
     @Autowired
-    private IdeaRepository ideaRepository;
+    private ProjectRepository projectRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -58,7 +55,7 @@ public class IdeaControllerTest {
     @Before
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        reset(ideaRepository);
+        reset(projectRepository);
         reset(userRepository);
 
         existingUserEntity = new UserEntity(EXISTING_USER_MAIL);
@@ -68,51 +65,51 @@ public class IdeaControllerTest {
 
     @Test
     public void shouldReturnSuccessfullyOnSave() throws Exception {
-        final IdeaStorage ideaStorage = new IdeaStorage();
-        ideaStorage.setTitle("myTitle");
-        ideaStorage.setFullDescription("theFullDescription");
-        ideaStorage.setShortDescription("theShortDescription");
-        ideaStorage.setCurrentFunding(50);
+        final ProjectStorage projectStorage = new ProjectStorage();
+        projectStorage.setTitle("myTitle");
+        projectStorage.setDescription("theFullDescription");
+        projectStorage.setShortDescription("theShortDescription");
+        projectStorage.setPledgeGoal(50);
 
-        mockMvc.perform(post("/idea")
+        mockMvc.perform(post("/project")
                 .principal(new UsernamePasswordAuthenticationToken(EXISTING_USER_MAIL, "somepassword"))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(ideaStorage)))
+                .content(mapper.writeValueAsString(projectStorage)))
                 .andExpect(status().isCreated());
 
-        ArgumentCaptor<IdeaEntity> ideaEntityCaptor = ArgumentCaptor.forClass(IdeaEntity.class);
-        verify(ideaRepository).save(ideaEntityCaptor.capture());
+        ArgumentCaptor<ProjectEntity> ideaEntityCaptor = ArgumentCaptor.forClass(ProjectEntity.class);
+        verify(projectRepository).save(ideaEntityCaptor.capture());
 
-        IdeaEntity ideaEntity = ideaEntityCaptor.getValue();
-        assertThat(ideaEntity.getTitle(), is("myTitle"));
-        assertThat(ideaEntity.getShortDescription(), is("theShortDescription"));
-        assertThat(ideaEntity.getFullDescription(), is("theFullDescription"));
-        assertThat(ideaEntity.getUser(), is(existingUserEntity));
+        ProjectEntity projectEntity = ideaEntityCaptor.getValue();
+        assertThat(projectEntity.getTitle(), is("myTitle"));
+        assertThat(projectEntity.getShortDescription(), is("theShortDescription"));
+        assertThat(projectEntity.getDescription(), is("theFullDescription"));
+        assertThat(projectEntity.getUser(), is(existingUserEntity));
     }
 
     @Test
     public void shouldRespondWith401IfUserWasNotFound() throws Exception {
-        final IdeaStorage ideaStorage = new IdeaStorage();
-        ideaStorage.setTitle("myTitle");
-        ideaStorage.setFullDescription("theFullDescription");
-        ideaStorage.setShortDescription("theShortDescription");
-        ideaStorage.setCurrentFunding(50);
+        final ProjectStorage projectStorage = new ProjectStorage();
+        projectStorage.setTitle("myTitle");
+        projectStorage.setDescription("theFullDescription");
+        projectStorage.setShortDescription("theShortDescription");
+        projectStorage.setPledgeGoal(50);
 
-        mockMvc.perform(post("/idea")
+        mockMvc.perform(post("/project")
                 .principal(new UsernamePasswordAuthenticationToken(NON_EXISTING_USER_MAIL, "somepassword"))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(ideaStorage)))
+                .content(mapper.writeValueAsString(projectStorage)))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     public void shouldRespondWith400IfRequestWasInvalid() throws Exception {
-        final IdeaStorage ideaStorage = new IdeaStorage();
+        final ProjectStorage projectStorage = new ProjectStorage();
 
-        mockMvc.perform(post("/idea")
+        mockMvc.perform(post("/project")
                 .principal(new UsernamePasswordAuthenticationToken(EXISTING_USER_MAIL, "somepassword"))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(ideaStorage)))
+                .content(mapper.writeValueAsString(projectStorage)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -121,13 +118,13 @@ public class IdeaControllerTest {
     static class Config {
 
         @Bean
-        public IdeaController ideaController() {
-            return new IdeaController();
+        public ProjectController ideaController() {
+            return new ProjectController();
         }
 
         @Bean
-        public IdeaRepository ideaRepository() {
-            return mock(IdeaRepository.class);
+        public ProjectRepository ideaRepository() {
+            return mock(ProjectRepository.class);
         }
 
         @Bean

@@ -1,6 +1,6 @@
 package de.axelspringer.ideas.crowdsource.resource;
 
-import de.axelspringer.ideas.crowdsource.model.presentation.idea.IdeaStorage;
+import de.axelspringer.ideas.crowdsource.model.presentation.idea.ProjectStorage;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
 import org.junit.Assert;
@@ -18,7 +18,7 @@ import static org.hamcrest.core.Is.is;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
-public class IdeaIT {
+public class ProjectIT {
 
     @Autowired
     private UrlProvider urlProvider;
@@ -27,9 +27,9 @@ public class IdeaIT {
     public void testAccessDenied() {
         RestTemplate restTemplate = new RestTemplate();
 
-        IdeaStorage ideaStorage = new IdeaStorage();
+        ProjectStorage projectStorage = new ProjectStorage();
         try {
-            restTemplate.postForObject(urlProvider.applicationUrl() + "/idea", ideaStorage, Void.class);
+            restTemplate.postForObject(urlProvider.applicationUrl() + "/project", projectStorage, Void.class);
             Assert.fail("Accessing a protected resource should fail");
         }
         catch (HttpClientErrorException e) {

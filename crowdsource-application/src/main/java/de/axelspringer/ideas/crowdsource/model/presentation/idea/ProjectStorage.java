@@ -6,7 +6,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import javax.validation.constraints.Min;
 
 @Data
-public class IdeaStorage {
+public class ProjectStorage {
 
     @NotEmpty
     private String title;
@@ -15,8 +15,8 @@ public class IdeaStorage {
     private String shortDescription;
 
     @NotEmpty
-    private String fullDescription;
+    private String description;
 
     @Min(1)
-    private int currentFunding;
+    private int pledgeGoal;
 }

@@ -10,8 +10,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 // needed for serialization
 @NoArgsConstructor
-@Document(collection = "ideas")
-public class IdeaEntity {
+@Document(collection = "projects")
+public class ProjectEntity {
     @Id
     private String id;
 
@@ -22,9 +22,9 @@ public class IdeaEntity {
 
     private String shortDescription;
 
-    private String fullDescription;
+    private String description;
 
     private PublicationStatus publicationStatus;
 
-    private int funding;
+    private int pledgeGoal;
 }

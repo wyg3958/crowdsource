@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.HttpClientErrorException;
@@ -25,9 +26,14 @@ public class ProjectIT {
 
     @Test
     public void testAccessDenied() {
-        RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
 
         ProjectStorage projectStorage = new ProjectStorage();
+        projectStorage.setTitle("title");
+        projectStorage.setShortDescription("short description");
+        projectStorage.setPledgeGoal(1);
+        projectStorage.setDescription("description");
+
         try {
             restTemplate.postForObject(urlProvider.applicationUrl() + "/project", projectStorage, Void.class);
             Assert.fail("Accessing a protected resource should fail");

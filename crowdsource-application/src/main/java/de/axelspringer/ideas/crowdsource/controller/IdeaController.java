@@ -24,7 +24,7 @@ public class IdeaController {
 
         IdeaEntity ideaEntity = new IdeaEntity();
         ideaEntity.setFullDescription(ideaStorage.getFullDescription());
-        ideaEntity.setShortDescription(ideaEntity.getShortDescription());
+        ideaEntity.setShortDescription(ideaStorage.getShortDescription());
         ideaEntity.setTitle(ideaStorage.getTitle());
         ideaRepository.save(ideaEntity);
 

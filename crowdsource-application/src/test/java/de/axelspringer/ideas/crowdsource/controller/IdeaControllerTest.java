@@ -1,17 +1,17 @@
 package de.axelspringer.ideas.crowdsource.controller;
 
-import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.axelspringer.ideas.crowdsource.model.persistence.IdeaEntity;
+import de.axelspringer.ideas.crowdsource.model.presentation.idea.IdeaStorage;
 import de.axelspringer.ideas.crowdsource.repository.IdeaRepository;
-import de.axelspringer.ideas.crowdsource.repository.UserRepository;
-import de.axelspringer.ideas.crowdsource.service.UserActivationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -22,11 +22,9 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.annotation.Resource;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -43,6 +41,7 @@ public class IdeaControllerTest {
     private WebApplicationContext webApplicationContext;
 
     private MockMvc mockMvc;
+    private ObjectMapper mapper = new ObjectMapper();
 
     @Before
     public void setup() {
@@ -51,11 +50,20 @@ public class IdeaControllerTest {
     }
 
     @Test
-    public void shouldReturnSuccessfullyOnSave(){
+    public void shouldReturnSuccessfullyOnSave() throws Exception {
+        final IdeaStorage ideaStorage = new IdeaStorage();
+        ideaStorage.setTitle("myTitle");
+        ideaStorage.setFullDescription("theFullDescription");
+        ideaStorage.setShortDescription("theShortDescription");
 
+        mockMvc.perform(post("/idea")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(ideaStorage)))
+                .andExpect(status().isCreated());
+
+        ArgumentCaptor<IdeaEntity> ideaEntityCaptor = ArgumentCaptor.forClass(IdeaEntity.class);
+        verify(ideaRepository).save(ideaEntityCaptor.capture());
     }
-
-
 
     @Configuration
     @EnableWebMvc

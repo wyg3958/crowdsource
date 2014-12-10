@@ -12,16 +12,9 @@ angular.module('crowdsource')
         };
 
         return {
-            onShowError: function(elem, scope, fieldName, action) {
-                // find the form where this elem belongs to
-                var form = $(elem).closest('form');
-                if (!form) {
-                    return null;
-                }
-                var formName = form.attr('name');
-
+            onShowError: function(elem, scope, form, fieldName, action) {
                 scope.$watch(function () {
-                    var showError = shouldShowValidationError(scope[formName], fieldName);
+                    var showError = shouldShowValidationError(form, fieldName);
                     action(showError);
                 });
             }
@@ -30,10 +23,11 @@ angular.module('crowdsource')
 
     .directive('formGroup', function (ValidationUtils) {
         return {
+            require: '^form',
             restrict: 'A',
-            link: function(scope, elem, attrs) {
+            link: function(scope, elem, attrs, form) {
 
-                ValidationUtils.onShowError(elem, scope, attrs.formGroup, function(showError) {
+                ValidationUtils.onShowError(elem, scope, form, attrs.formGroup, function(showError) {
                     elem.toggleClass('error', showError);
                 });
             }
@@ -42,11 +36,12 @@ angular.module('crowdsource')
 
     .directive('formLabelValid', function(ValidationUtils) {
         return {
+            require: '^form',
             restrict: 'A',
-            link: function(scope, elem, attrs) {
+            link: function(scope, elem, attrs, form) {
 
                 elem.addClass('valid-label');
-                ValidationUtils.onShowError(elem, scope, attrs.formLabelValid, function(showError) {
+                ValidationUtils.onShowError(elem, scope, form, attrs.formLabelValid, function(showError) {
                     elem.toggleClass('ng-hide', showError);
                 });
             }
@@ -55,11 +50,12 @@ angular.module('crowdsource')
 
     .directive('formLabelInvalid', function(ValidationUtils) {
         return {
+            require: '^form',
             restrict: 'A',
-            link: function(scope, elem, attrs) {
+            link: function(scope, elem, attrs, form) {
 
                 elem.addClass('invalid-label');
-                ValidationUtils.onShowError(elem, scope, attrs.formLabelInvalid, function(showError) {
+                ValidationUtils.onShowError(elem, scope, form, attrs.formLabelInvalid, function(showError) {
                     elem.toggleClass('ng-hide', !showError);
                 });
             }

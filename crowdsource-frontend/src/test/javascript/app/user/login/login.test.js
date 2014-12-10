@@ -138,7 +138,7 @@ describe('user login view', function () {
     it('should show a validation error if an invalid email address is entered', function () {
         loginForm.email.getInputField().val('inval@id.mail').trigger('input'); // only the part before the @<domain> is supposed to be entered
 
-        expectValidationError('email', 'pattern');
+        expectValidationError('email', 'email');
     });
 
     it('should show a validation error if an email address containting "_extern" is entered', function () {

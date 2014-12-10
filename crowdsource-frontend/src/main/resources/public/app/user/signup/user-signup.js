@@ -12,13 +12,9 @@ angular.module('crowdsource')
             RemoteFormValidation.clearRemoteErrors($scope);
             $scope.loading = true;
 
-            var userCopy = angular.copy($scope.user);
-            // make the email an actual email on a copied user object (to not update the UI)
-            userCopy.email = userCopy.email + $scope.EMAIL_HOST;
-
-            var promise = User.register(userCopy);
+            var promise = User.register($scope.user);
             promise.then(function () {
-                $location.path('/signup/' + userCopy.email + '/success');
+                $location.path('/signup/' + $scope.user.email + '/success');
             });
             promise.catch(function (response) {
                 RemoteFormValidation.applyServerErrorResponse($scope, $scope.signupForm, response);
@@ -26,17 +22,5 @@ angular.module('crowdsource')
             promise.finally(function () {
                 $scope.loading = false;
             });
-        };
-    })
-
-    .directive("nonExternalEmail", function () {
-        return {
-            restrict: "A",
-            require: "ngModel",
-            link: function (scope, element, attributes, ngModel) {
-                ngModel.$validators.non_external_email = function (modelValue) {
-                    return !modelValue || modelValue.indexOf('_extern') < 0;
-                }
-            }
         };
     });

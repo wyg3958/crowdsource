@@ -1,6 +1,7 @@
 package de.axelspringer.ideas.crowdsource.controller;
 
 import de.axelspringer.ideas.crowdsource.config.security.Roles;
+import de.axelspringer.ideas.crowdsource.enums.PublicationStatus;
 import de.axelspringer.ideas.crowdsource.exceptions.NotAuthorizedException;
 import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
@@ -44,11 +45,12 @@ public class ProjectController {
         }
 
         ProjectEntity projectEntity = new ProjectEntity();
-        projectEntity.setDescription(project.getDescription());
-        projectEntity.setShortDescription(project.getShortDescription());
-        projectEntity.setTitle(project.getTitle());
         projectEntity.setUser(userEntity);
+        projectEntity.setTitle(project.getTitle());
+        projectEntity.setShortDescription(project.getShortDescription());
+        projectEntity.setDescription(project.getDescription());
         projectEntity.setPledgeGoal(project.getPledgeGoal());
+        projectEntity.setPublicationStatus(PublicationStatus.PUBLISHED);
         projectRepository.save(projectEntity);
 
         log.debug("Project saved: {}", projectEntity);

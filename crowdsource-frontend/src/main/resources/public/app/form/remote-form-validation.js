@@ -92,22 +92,14 @@ angular.module('crowdsource')
         return {
             restrict: 'A',
             require: 'ngModel',
-            link: function (scope, elem, attrs) {
-                var form = $(elem).closest('form');
-                if (!form) {
-                    return;
-                }
-                var formName = form.attr('name');
-                var elemName = attrs.name;
+            link: function (scope, elem, attrs, ngModel) {
 
                 scope.$watch(attrs.ngModel, function () {
-                    var elemScope = scope[formName][elemName];
-
                     // iterate over ever error of the field
-                    angular.forEach(elemScope.$error, function (valid, rule) {
+                    angular.forEach(ngModel.$error, function (valid, rule) {
                         if (RemoteFormValidation.isRemoteRule(rule)) {
                             // set the validity to true if it is a remote validation error when the value changes
-                            elemScope.$setValidity(rule, true);
+                            ngModel.$setValidity(rule, true);
                         }
                     });
                 });

@@ -2,11 +2,12 @@
 
 @import "settings";
 @import "foundation/scss/normalize";
-@import "foundation/_foundation";
-@import "util/_form";
-@import "util/_navigation";
-@import "util/_objects";
+@import "foundation/foundation";
+@import "util/form";
+@import "util/navigation";
+@import "util/objects";
 @import "components/project";
+@import "components/inline-modal";
 
 button {
     text-transform: uppercase;

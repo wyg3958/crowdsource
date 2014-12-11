@@ -1,87 +1,60 @@
 <form name="signupForm" novalidate>
 
-    <div class="row">
-        <div class="small-12 medium-8 medium-offset-2 large-6 large-offset-3 columns panel light radius">
+    <div class="inline-modal">
 
-            <h3 class="margin-bottom">Registrierung</h3>
+        <h3 class="margin-bottom">Registrierung</h3>
 
-            <div class="general-error alert-box alert" ng-messages="generalErrors" ng-if="generalErrors">
-                <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.</span>
-            </div>
-
-            <div class="row">
-                <div class="small-12 columns form-controls-email">
-                    <label form-group="email">
-
-                        <span form-label-valid="email">Email-Adresse</span>
-
-                        <span form-label-invalid="email" ng-messages="signupForm.email.$error">
-                            <!-- required and 'pattern' are build-in validations of angular.js -->
-                            <span ng-message="required">Bitte geben Sie Ihre Email-Adresse ein</span>
-                            <span ng-message="pattern">Bitte geben Sie nur den Teil vor {{ ::EMAIL_HOST }} ein</span>
-                            <span ng-message="non_external_email">Dieser Service kann nur von Axel-Springer Mitarbeitern verwendet werden</span>
-                            <span ng-message="remote_not_activated">
-                                Ihre Email-Adresse wurde bereits aktiviert. Sie können sich mit Ihrem Passwort bereits einloggen. Falls Sie Ihr Passwort vergessen haben,
-                                dann klicken Sie bitte <a href="#/passwordrecovery">hier</a>.
-                            </span>
-                        </span>
-                    </label>
-
-                    <div class="table">
-                        <div class="table-cell full-width">
-                            <input type="text" name="email" ng-model="user.email" placeholder="max.mustermann" class="text-right"
-                                   required ng-pattern="/^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+$/i" non-external-email reset-remote-validation>
-                        </div>
-                        <div class="table-cell">
-                            <span class="postfix text-left">{{ ::EMAIL_HOST }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="small-12 columns form-controls-termsofservice">
-                    <label form-group="termsOfServiceAccepted">
-
-                        <input type="checkbox" name="termsOfServiceAccepted" ng-model="user.termsOfServiceAccepted" required>
-
-                        <span form-label-valid="termsOfServiceAccepted">
-                            Ich akzeptiere die <a class="crowd-tos-link"
-                                                  ng-click="showTermsOfService = !showTermsOfService">AGBs</a>
-                        </span>
-
-                        <span form-label-invalid="termsOfServiceAccepted" ng-messages="signupForm.termsOfServiceAccepted.$error">
-                            <span ng-message="required">Bitte akzeptieren Sie die <a class="crowd-tos-link"
-                                                                                     ng-click="showTermsOfService = !showTermsOfService">AGBs</a></span>
-                        </span>
-                    </label>
-                </div>
-            </div>
-
-            <div class="row" ng-if="showTermsOfService">
-                <div class="small-12 columns">
-                    <div class="crowd-tos-panel panel callout radius font-small">
-                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-                        At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit
-                        amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
-                        justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="small-12 columns text-center">
-                    <div>
-                        <button type="submit" class="success margin-top" ng-click="signUp()" ng-disabled="loading">
-                            {{ loading ? 'Registrieren...' : 'Registrieren' }}
-                        </button>
-                    </div>
-                    <div>
-                        oder <a href="#/login">hier geht's zum Login</a>
-                    </div>
-                </div>
-            </div>
-
+        <div class="general-error alert-box alert" ng-messages="generalErrors" ng-if="generalErrors">
+            <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.</span>
         </div>
+
+        <div class="row">
+            <email-form-group model="user.email" field-name="email"
+                              class="small-12 columns form-controls-email" />
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns form-controls-termsofservice">
+                <label form-group="termsOfServiceAccepted">
+
+                    <input type="checkbox" name="termsOfServiceAccepted" ng-model="user.termsOfServiceAccepted" required>
+
+                    <span form-label-valid="termsOfServiceAccepted">
+                        Ich akzeptiere die <a class="crowd-tos-link"
+                                              ng-click="showTermsOfService = !showTermsOfService">AGBs</a>
+                    </span>
+
+                    <span form-label-invalid="termsOfServiceAccepted" ng-messages="signupForm.termsOfServiceAccepted.$error">
+                        <span ng-message="required">Bitte akzeptieren Sie die <a class="crowd-tos-link"
+                                                                                 ng-click="showTermsOfService = !showTermsOfService">AGBs</a></span>
+                    </span>
+                </label>
+            </div>
+        </div>
+
+        <div class="row" ng-if="showTermsOfService">
+            <div class="small-12 columns">
+                <div class="crowd-tos-panel panel callout radius font-small">
+                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+                    At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit
+                    amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
+                    justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns text-center">
+                <div>
+                    <button type="submit" class="success margin-top" ng-click="signUp()" ng-disabled="loading">
+                        {{ loading ? 'Registrieren...' : 'Registrieren' }}
+                    </button>
+                </div>
+                <div>
+                    oder <a href="#/login">hier geht's zum Login</a>
+                </div>
+            </div>
+        </div>
+
     </div>
 </form>

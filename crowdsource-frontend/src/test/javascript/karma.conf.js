@@ -12,6 +12,10 @@ module.exports = function (config) {
             'bower_components/angular-messages/angular-messages.js',
             'bower_components/angular-mocks/angular-mocks.js',
 
+            // actually, this file would have been picked up by the wildcard pattern app/**/*.js
+            // but maybe in a wrong order. crowdsource.js defines the single crowdsource angular module and
+            // must come first.
+            'src/main/resources/public/app/crowdsource.js',
             'src/main/resources/public/app/**/*.js',
             'src/test/javascript/**/*.js',
 

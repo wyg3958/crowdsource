@@ -1,0 +1,25 @@
+<label form-group="{{ fieldName }}">
+
+    <span form-label-valid="{{ fieldName }}">Email-Adresse</span>
+
+    <span form-label-invalid="{{ fieldName }}" ng-messages="form[fieldName].$error">
+        <!-- required and 'pattern' are build-in validations of angular.js -->
+        <span ng-message="required">Bitte geben Sie Ihre Email-Adresse ein</span>
+        <span ng-message="email">Bitte geben Sie nur den Teil vor {{ ::EMAIL_DOMAIN }} ein</span>
+        <span ng-message="non_external_email">Dieser Service kann nur von Axel-Springer Mitarbeitern verwendet werden</span>
+        <span ng-message="remote_not_activated">
+            Ihre Email-Adresse wurde bereits aktiviert. Sie können sich mit Ihrem Passwort bereits einloggen. Falls Sie Ihr Passwort vergessen haben,
+            dann klicken Sie bitte <a href="#/passwordrecovery">hier</a>.
+        </span>
+    </span>
+</label>
+
+<div class="table">
+    <div class="table-cell full-width">
+        <input type="email" name="{{ fieldName }}" ng-model="model" placeholder="max.mustermann" class="text-right"
+               required local-email-part-input non-external-email reset-remote-validation>
+    </div>
+    <div class="table-cell">
+        <span class="postfix text-left">{{ ::EMAIL_DOMAIN }}</span>
+    </div>
+</div>

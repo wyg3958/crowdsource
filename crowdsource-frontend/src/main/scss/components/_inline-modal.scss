@@ -1,0 +1,7 @@
+.inline-modal {
+    max-width: rem-calc(500);
+    margin: 0 auto;
+    @extend .panel;
+    @extend .light;
+    @extend .radius;
+}

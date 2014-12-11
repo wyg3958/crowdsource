@@ -8,6 +8,7 @@ import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.NavigationBar;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.AddProjectConfirmationView;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.AddProjectForm;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
+import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +29,17 @@ public class AddProjectSteps {
     @Autowired
     private WebDriverProvider webDriverProvider;
 
+    @Autowired
+    private UrlProvider urlProvider;
+
     private WebDriver webDriver;
 
     @Before
     public void init() {
         webDriver = webDriverProvider.provideDriver();
+
+        // logout
+        webDriver.get(urlProvider.applicationUrl() + "/#/logout");
     }
 
     @When("^he clicks on the New Project link in the navigation bar$")

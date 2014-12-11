@@ -67,6 +67,10 @@ public class RegistrationSteps {
     @Before
     public void init() {
         webDriver = webDriverProvider.provideDriver();
+
+        // logout
+        webDriver.get(urlProvider.applicationUrl() + "/#/logout");
+
         emailName = "registrationTest+" + RandomStringUtils.randomAlphanumeric(10);
     }
 

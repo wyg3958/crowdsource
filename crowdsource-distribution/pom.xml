@@ -63,7 +63,6 @@
                             <dockerHubPass>ideas987</dockerHubPass>
                             <dockerImageName>asideas/crowdsource</dockerImageName>
                             <dockerRunOptions>-p 80:8080 -e "SPRING_PROFILES_ACTIVE=prod"</dockerRunOptions>
-                            <xFleetOptions>MachineID=7d70b04a731143479c7e883aa7fc1a7c</xFleetOptions>
                         </configuration>
                         <executions>
                             <execution>

@@ -53,11 +53,12 @@
                     <plugin>
                         <groupId>de.gaffa.tools.coreos</groupId>
                         <artifactId>coreos-maven-plugin</artifactId>
-                        <version>0.1.29-SNAPSHOT</version>
+                        <version>0.1.30-SNAPSHOT</version>
                         <configuration>
                             <keyFile>src/main/resources/coreos_rsa</keyFile>
                             <nodeAdress>54.194.152.80</nodeAdress>
                             <serviceName>crowdsource</serviceName>
+                            <instances>3</instances>
                             <dockerHubUser>asjenkins</dockerHubUser>
                             <dockerHubPass>ideas987</dockerHubPass>
                             <dockerImageName>asideas/crowdsource</dockerImageName>

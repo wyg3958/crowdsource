@@ -5,13 +5,14 @@ angular.module('crowdsource')
     .directive('emailFormGroup', function(emailDomain) {
         return {
             restrict: 'E',
+            require: '^form',
             scope: {
-                form: '=',
                 model: '=',
                 fieldName: '@'
             },
             templateUrl: 'app/components/form-group/email/email-form-group.html',
-            link: function(scope) {
+            link: function(scope, element, attributes, form) {
+                scope.form = form;
                 scope.EMAIL_DOMAIN = emailDomain;
             }
         };

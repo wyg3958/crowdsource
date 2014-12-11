@@ -2,8 +2,6 @@ angular.module('crowdsource')
 
     .controller('UserSignupController', function ($scope, $location, User, RemoteFormValidation) {
 
-        $scope.EMAIL_HOST = '@axelspringer.de';
-
         $scope.signUp = function () {
             if (!$scope.signupForm.$valid) {
                 return;

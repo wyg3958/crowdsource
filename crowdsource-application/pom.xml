@@ -106,6 +106,16 @@
                                     <executable>${project.build.directory}/docker/build.sh</executable>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>push docker container</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>${project.build.directory}/docker/push.sh</executable>
+                                </configuration>
+                            </execution>
                         </executions>
                     </plugin>
                 </plugins>

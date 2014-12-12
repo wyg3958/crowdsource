@@ -5,3 +5,8 @@
     @extend .light;
     @extend .radius;
 }
+
+.inline-modal-fullwidth {
+    @extend .inline-modal;
+    max-width: 100%;
+}

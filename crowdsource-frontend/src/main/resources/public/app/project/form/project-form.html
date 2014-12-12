@@ -1,4 +1,4 @@
-<form name="projectForm" class="project-form" novalidate>
+<form name="projectForm" class="project-form inline-modal-fullwidth" novalidate>
 
     <h3 class="margin-bottom">Ihre neue Projektidee</h3>
 
@@ -55,7 +55,7 @@
 
             <div class="table">
                 <div class="table-cell full-width">
-                    <input type="number" name="pledgeGoal" ng-model="project.pledgeGoal" class="text-right" placeholder="12500"
+                    <input type="number" name="pledgeGoal" ng-model="project.pledgeGoal" class="text-right" placeholder="0"
                            required ng-pattern="/^[0-9]+$/i" reset-remote-validation>
                 </div>
                 <div class="table-cell">

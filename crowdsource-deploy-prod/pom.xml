@@ -19,23 +19,39 @@
                 <groupId>de.gaffa.tools.coreos</groupId>
                 <artifactId>coreos-maven-plugin</artifactId>
                 <version>0.1.30-SNAPSHOT</version>
-                <configuration>
-                    <keyFile>src/main/resources/coreos_rsa</keyFile>
-                    <nodeAdress>54.194.152.80</nodeAdress>
-                    <serviceName>crowdsource</serviceName>
-                    <instances>3</instances>
-                    <dockerHubUser>asjenkins</dockerHubUser>
-                    <dockerHubPass>ideas987</dockerHubPass>
-                    <dockerImageName>asideas/crowdsource</dockerImageName>
-                    <dockerRunOptions>-p 80:8080 -e "SPRING_PROFILES_ACTIVE=prod"</dockerRunOptions>
-                </configuration>
                 <executions>
                     <execution>
-                        <id>deploy crowdsource to commit-stage on aws</id>
+                        <id>deploy crowdsource to prod-stage</id>
                         <goals>
                             <goal>deploy</goal>
                         </goals>
                         <phase>deploy</phase>
+                        <configuration>
+                            <keyFile>src/main/resources/coreos_rsa</keyFile>
+                            <nodeAdress>54.194.152.80</nodeAdress>
+                            <serviceName>crowdsource</serviceName>
+                            <instances>3</instances>
+                            <dockerHubUser>asjenkins</dockerHubUser>
+                            <dockerHubPass>ideas987</dockerHubPass>
+                            <dockerImageName>asideas/crowdsource</dockerImageName>
+                            <dockerRunOptions>-p 80:8080 -e "SPRING_PROFILES_ACTIVE=prod"</dockerRunOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>mongodb for prod-stage</id>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                        <phase>deploy</phase>
+                        <configuration>
+                            <keyFile>src/main/resources/coreos_rsa</keyFile>
+                            <nodeAdress>54.194.152.80</nodeAdress>
+                            <serviceName>crowdsource-mongodb</serviceName>
+                            <ensure>running</ensure>
+                            <instances>3</instances>
+                            <dockerImageName>dockerfile/mongodb</dockerImageName>
+                            <dockerRunOptions>-p 27000:27017 -p 28000:28017</dockerRunOptions>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

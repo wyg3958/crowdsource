@@ -57,6 +57,11 @@
                         </delimiters>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>de.gaffa.tools.coreos</groupId>
+                    <artifactId>coreos-maven-plugin</artifactId>
+                    <version>0.1.39-SNAPSHOT</version>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
@@ -83,6 +88,13 @@
         <pluginRepository>
             <id>spring-milestones</id>
             <url>http://repo.spring.io/milestone</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>coreos-maven-plugin</id>
+            <url>https://raw.github.com/gaffa/coreos-maven-plugin/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </pluginRepository>
     </pluginRepositories>
 </project>

@@ -17,7 +17,6 @@
             <plugin>
                 <groupId>de.gaffa.tools.coreos</groupId>
                 <artifactId>coreos-maven-plugin</artifactId>
-                <version>0.1.38-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <id>mongodb for commit-stage</id>
@@ -81,14 +80,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>coreos-maven-plugin</id>
-            <url>https://raw.github.com/gaffa/coreos-maven-plugin/mvn-repo/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
 </project>

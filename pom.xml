@@ -20,8 +20,9 @@
     <modules>
         <module>crowdsource-frontend</module>
         <module>crowdsource-application</module>
+        <module>crowdsource-deploy-cons</module>
         <module>crowdsource-blackboxtests</module>
-        <module>crowdsource-distribution</module>
+        <module>crowdsource-deploy-prod</module>
     </modules>
 
     <build>

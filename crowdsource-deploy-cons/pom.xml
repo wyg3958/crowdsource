@@ -17,6 +17,7 @@
             <plugin>
                 <groupId>de.gaffa.tools.coreos</groupId>
                 <artifactId>coreos-maven-plugin</artifactId>
+                <version>${coreos-maven-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>mongodb for commit-stage</id>

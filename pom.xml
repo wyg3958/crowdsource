@@ -15,7 +15,12 @@
     <groupId>de.axelspringer.ideas.crowdsource</groupId>
     <artifactId>crowdsource-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
+
     <packaging>pom</packaging>
+
+    <properties>
+        <coreos-maven-plugin.version>0.1.40</coreos-maven-plugin.version>
+    </properties>
 
     <modules>
         <module>crowdsource-frontend</module>
@@ -56,11 +61,6 @@
                             <delimiter>@</delimiter>
                         </delimiters>
                     </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>de.gaffa.tools.coreos</groupId>
-                    <artifactId>coreos-maven-plugin</artifactId>
-                    <version>0.1.40</version>
                 </plugin>
             </plugins>
         </pluginManagement>

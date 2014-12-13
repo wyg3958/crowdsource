@@ -60,7 +60,7 @@
                 <plugin>
                     <groupId>de.gaffa.tools.coreos</groupId>
                     <artifactId>coreos-maven-plugin</artifactId>
-                    <version>0.1.39-SNAPSHOT</version>
+                    <version>0.1.40</version>
                 </plugin>
             </plugins>
         </pluginManagement>

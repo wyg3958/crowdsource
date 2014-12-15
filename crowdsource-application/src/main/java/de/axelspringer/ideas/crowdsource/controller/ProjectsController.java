@@ -13,11 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -25,7 +21,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/project", consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/projects", consumes = MediaType.APPLICATION_JSON_VALUE)
 public class ProjectsController {
 
     @Autowired
@@ -33,29 +29,6 @@ public class ProjectsController {
 
     @Autowired
     private UserRepository userRepository;
-
-
-    @Secured(Roles.ROLE_USER)
-    @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(method = RequestMethod.POST)
-    public void saveProject(@RequestBody @Valid Project project, Principal principal) {
-
-        UserEntity userEntity = userRepository.findByEmail(principal.getName());
-        if (userEntity == null) {
-            throw new NotAuthorizedException("No user found with username " + principal.getName());
-        }
-
-        ProjectEntity projectEntity = new ProjectEntity();
-        projectEntity.setUser(userEntity);
-        projectEntity.setTitle(project.getTitle());
-        projectEntity.setShortDescription(project.getShortDescription());
-        projectEntity.setDescription(project.getDescription());
-        projectEntity.setPledgeGoal(project.getPledgeGoal());
-        projectEntity.setPublicationStatus(PublicationStatus.PUBLISHED);
-        projectRepository.save(projectEntity);
-
-        log.debug("Project saved: {}", projectEntity);
-    }
 
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET)

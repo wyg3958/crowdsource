@@ -10,6 +10,10 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages'])
                 controller: 'OverviewController',
                 requireLogin: true
             })
+            .when('/projects', {
+                templateUrl: 'app/project/list/project-list.html',
+                controller: 'ProjectListController'
+            })
             .when('/project/new', {
                 templateUrl: 'app/project/form/project-form.html',
                 controller: 'ProjectFormController',

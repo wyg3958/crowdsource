@@ -13,3 +13,21 @@
     }
 
 }
+
+.project-list {
+    @media #{$small-up} {
+        @include block-grid(1);
+    }
+    @media #{$medium-up} {
+        @include block-grid(2);
+    }
+    @media #{$large-up} {
+        @include block-grid(3);
+    }
+
+    li {
+        @extend .panel;
+        @extend .light;
+        @extend .radius;
+    }
+}

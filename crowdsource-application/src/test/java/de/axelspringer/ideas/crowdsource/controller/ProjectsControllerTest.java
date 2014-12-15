@@ -2,6 +2,7 @@ package de.axelspringer.ideas.crowdsource.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.axelspringer.ideas.crowdsource.enums.PublicationStatus;
 import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import de.axelspringer.ideas.crowdsource.repository.ProjectRepository;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
@@ -81,7 +82,7 @@ public class ProjectsControllerTest {
         entities.add(entity2);
         entities.add(entity3);
 
-        when(projectRepository.findAll()).thenReturn(entities);
+        when(projectRepository.findByPublicationStatus(any())).thenReturn(entities);
 
         final MvcResult mvcResult = mockMvc.perform(get("/projects"))
                 .andExpect(status().isOk())
@@ -90,7 +91,7 @@ public class ProjectsControllerTest {
         final List<ProjectEntity> projects = mapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<List<ProjectEntity>>() {
         });
 
-        verify(projectRepository).findAll();
+        verify(projectRepository).findByPublicationStatus(PublicationStatus.PUBLISHED);
 
         assertThat(projects.get(0).getTitle(), is(myTitle1));
         assertThat(projects.get(1).getTitle(), is(myTitle2));

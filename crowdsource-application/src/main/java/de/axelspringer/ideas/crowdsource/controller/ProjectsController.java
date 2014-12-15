@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.crowdsource.controller;
 
+import de.axelspringer.ideas.crowdsource.enums.PublicationStatus;
 import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import de.axelspringer.ideas.crowdsource.repository.ProjectRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,6 @@ public class ProjectsController {
 
     @RequestMapping(method = RequestMethod.GET)
     public List<ProjectEntity> getProjects(){
-        return projectRepository.findAll();
+        return projectRepository.findByPublicationStatus(PublicationStatus.PUBLISHED);
     }
 }

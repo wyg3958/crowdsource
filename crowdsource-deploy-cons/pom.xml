@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <artifactId>crowdsource-parent</artifactId>
+        <groupId>de.axelspringer.ideas.crowdsource</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>crowdsource-deploy-cons</artifactId>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>de.gaffa.tools.coreos</groupId>
+                <artifactId>coreos-maven-plugin</artifactId>
+                <version>${coreos-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>mongodb for commit-stage</id>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                        <phase>deploy</phase>
+                        <configuration>
+                            <keyFile>src/main/resources/coreos_rsa</keyFile>
+                            <nodeAdress>54.194.152.80</nodeAdress>
+
+                            <serviceName>crowdsource-cons-mongodb</serviceName>
+                            <ensure>RUNNING</ensure>
+                            <instances>1</instances>
+                            <dockerImageName>dockerfile/mongodb</dockerImageName>
+                            <dockerRunOptions>-p 27001:27017 -p 28001:28017</dockerRunOptions>
+                            <!-- pin to exactly one machine -->
+                            <xFleetOptions>MachineID=2f5479ff9b7847a5a3e790ab63cfa62e</xFleetOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>mailserver for commit-stage</id>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                        <phase>deploy</phase>
+                        <configuration>
+                            <keyFile>src/main/resources/coreos_rsa</keyFile>
+                            <nodeAdress>54.194.152.80</nodeAdress>
+
+                            <serviceName>crowdsource-cons-smtp</serviceName>
+                            <ensure>RUNNING</ensure>
+                            <instances>1</instances>
+                            <dockerImageName>gaffa/restmail</dockerImageName>
+                            <dockerRunOptions>-p 1025:1025 -p 18080:8080</dockerRunOptions>
+                            <!-- pin to exactly one machine -->
+                            <xFleetOptions>MachineID=2f5479ff9b7847a5a3e790ab63cfa62e</xFleetOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>deploy crowdsource to commit-stage on aws</id>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                        <phase>deploy</phase>
+                        <configuration>
+                            <keyFile>src/main/resources/coreos_rsa</keyFile>
+                            <nodeAdress>54.194.152.80</nodeAdress>
+                            <dockerHubUser>asjenkins</dockerHubUser>
+                            <dockerHubPass>ideas987</dockerHubPass>
+
+                            <serviceName>crowdsource-cons</serviceName>
+                            <instances>1</instances>
+                            <dockerImageName>asideas/crowdsource</dockerImageName>
+                            <dockerRunOptions>-p 8080:8080 -e "SPRING_PROFILES_ACTIVE=cons"</dockerRunOptions>
+                            <!-- pin to exactly one machine -->
+                            <xFleetOptions>MachineID=2f5479ff9b7847a5a3e790ab63cfa62e</xFleetOptions>
+                            <availabilityCheck>
+                                <port>8080</port>
+                                <contextPath>/</contextPath>
+                            </availabilityCheck>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

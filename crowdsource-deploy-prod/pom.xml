@@ -35,6 +35,7 @@
                             <dockerHubPass>ideas987</dockerHubPass>
                             <dockerImageName>asideas/crowdsource</dockerImageName>
                             <dockerRunOptions>-p 80:8080 -e "SPRING_PROFILES_ACTIVE=prod"</dockerRunOptions>
+                            <checkAvailability>true</checkAvailability>
                         </configuration>
                     </execution>
                     <execution>

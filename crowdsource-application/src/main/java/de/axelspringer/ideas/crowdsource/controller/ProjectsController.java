@@ -13,7 +13,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/projects", consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/projects", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProjectsController {
 
     @Autowired

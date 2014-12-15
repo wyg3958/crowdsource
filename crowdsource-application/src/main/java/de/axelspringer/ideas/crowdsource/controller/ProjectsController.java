@@ -22,6 +22,10 @@ public class ProjectsController {
 
     @RequestMapping(method = RequestMethod.GET)
     public List<ProjectEntity> getProjects(){
-        return projectRepository.findByPublicationStatus(PublicationStatus.PUBLISHED);
+        final List<ProjectEntity> projects = projectRepository.findByPublicationStatus(PublicationStatus.PUBLISHED);
+        for (ProjectEntity project : projects) {
+            project.setUser(null);
+        }
+        return projects;
     }
 }

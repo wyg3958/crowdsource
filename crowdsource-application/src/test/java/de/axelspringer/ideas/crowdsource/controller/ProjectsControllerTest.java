@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.axelspringer.ideas.crowdsource.enums.PublicationStatus;
 import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
+import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.repository.ProjectRepository;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import org.junit.Before;
@@ -27,6 +28,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -56,7 +58,7 @@ public class ProjectsControllerTest {
     }
 
     @Test
-    public void shouldReturnAllProjectsOnGet() throws Exception {
+    public void shouldReturnAllPublishedProjectsWithEmptyUserOnGet() throws Exception {
 
         ProjectEntity entity1 = new ProjectEntity();
         final String myTitle1 = "myTitle1";
@@ -67,14 +69,17 @@ public class ProjectsControllerTest {
         final String myShortDescription3 = "myShortDescription3";
 
         entity1.setTitle(myTitle1);
+        entity1.setUser(new UserEntity());
         entity1.setShortDescription(myShortDescription1);
 
         ProjectEntity entity2 = new ProjectEntity();
         entity2.setTitle(myTitle2);
+        entity2.setUser(new UserEntity());
         entity2.setShortDescription(myShortDescription2);
 
         ProjectEntity entity3 = new ProjectEntity();
         entity3.setTitle(myTitle3);
+        entity3.setUser(new UserEntity());
         entity3.setShortDescription(myShortDescription3);
 
         List<ProjectEntity> entities = new ArrayList<>();
@@ -92,6 +97,10 @@ public class ProjectsControllerTest {
         });
 
         verify(projectRepository).findByPublicationStatus(PublicationStatus.PUBLISHED);
+
+        assertThat(projects.get(0).getUser(), nullValue());
+        assertThat(projects.get(1).getUser(), nullValue());
+        assertThat(projects.get(2).getUser(), nullValue());
 
         assertThat(projects.get(0).getTitle(), is(myTitle1));
         assertThat(projects.get(1).getTitle(), is(myTitle2));

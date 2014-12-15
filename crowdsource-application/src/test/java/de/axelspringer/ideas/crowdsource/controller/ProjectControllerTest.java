@@ -27,10 +27,7 @@ import javax.annotation.Resource;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -121,12 +118,12 @@ public class ProjectControllerTest {
     static class Config {
 
         @Bean
-        public ProjectController ideaController() {
+        public ProjectController projectController() {
             return new ProjectController();
         }
 
         @Bean
-        public ProjectRepository ideaRepository() {
+        public ProjectRepository projectRepository() {
             return mock(ProjectRepository.class);
         }
 

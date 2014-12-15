@@ -54,7 +54,7 @@
                             <ensure>RUNNING</ensure>
                             <instances>3</instances>
                             <dockerImageName>dockerfile/mongodb</dockerImageName>
-                            <dockerRunOptions>-p 27000:27017 -p 28000:28017</dockerRunOptions>
+                            <dockerRunOptions>-p 27017:27017</dockerRunOptions>
                         </configuration>
                     </execution>
                 </executions>

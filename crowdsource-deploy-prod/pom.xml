@@ -21,6 +21,22 @@
                 <version>${coreos-maven-plugin.version}</version>
                 <executions>
                     <execution>
+                        <id>mongodb for prod-stage</id>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                        <phase>deploy</phase>
+                        <configuration>
+                            <keyFile>src/main/resources/coreos_rsa</keyFile>
+                            <nodeAdress>54.194.152.80</nodeAdress>
+                            <serviceName>crowdsource-mongodb</serviceName>
+                            <ensure>RUNNING</ensure>
+                            <instances>3</instances>
+                            <dockerImageName>dockerfile/mongodb</dockerImageName>
+                            <dockerRunOptions>-p 27017:27017</dockerRunOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>deploy crowdsource to prod-stage</id>
                         <goals>
                             <goal>deploy</goal>
@@ -39,22 +55,6 @@
                                 <port>80</port>
                                 <contextPath>/</contextPath>
                             </availabilityCheck>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>mongodb for prod-stage</id>
-                        <goals>
-                            <goal>deploy</goal>
-                        </goals>
-                        <phase>deploy</phase>
-                        <configuration>
-                            <keyFile>src/main/resources/coreos_rsa</keyFile>
-                            <nodeAdress>54.194.152.80</nodeAdress>
-                            <serviceName>crowdsource-mongodb</serviceName>
-                            <ensure>RUNNING</ensure>
-                            <instances>3</instances>
-                            <dockerImageName>dockerfile/mongodb</dockerImageName>
-                            <dockerRunOptions>-p 27017:27017</dockerRunOptions>
                         </configuration>
                     </execution>
                 </executions>

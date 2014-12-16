@@ -1,7 +1,9 @@
 <ul class="project-list">
     <li ng-repeat="project in projects">
-        <h2>{{ project.title }}</h2>
+        <div class="project-tile">
+            <h1>{{ project.title }}</h1>
 
-        <div>{{ project.shortDescription }}</div>
+            <p>{{ project.shortDescription }}</p>
+        </div>
     </li>
 </ul>

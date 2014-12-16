@@ -53,5 +53,10 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages'])
         Route.init();
 
         // initialize foundation widgets
-        $(document).foundation();
+        $(document).foundation({
+            equalizer: {
+                // required to work with block grids
+                equalize_on_stack: true
+            }
+        });
     });

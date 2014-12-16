@@ -1,6 +1,6 @@
-<ul class="project-list">
-    <li ng-repeat="project in projects">
-        <div class="project-tile">
+<ul class="project-list" data-equalizer>
+    <li ng-repeat="project in projects" foundation-reflow>
+        <div class="project-tile" data-equalizer-watch>
             <h1>{{ project.title }}</h1>
 
             <p>{{ project.shortDescription }}</p>

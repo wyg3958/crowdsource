@@ -43,4 +43,17 @@ public class ProjectIT {
         }
     }
 
+    @Test
+    public void testNotFound() {
+        RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
+
+        try {
+            restTemplate.getForObject(urlProvider.applicationUrl() + "/project/{projectId}", Project.class, "non-existant-project-id");
+            Assert.fail("Accessing a protected resource should fail");
+        }
+        catch (HttpClientErrorException e) {
+            assertThat(e.getStatusCode(), is(HttpStatus.NOT_FOUND));
+        }
+    }
+
 }

@@ -1,8 +1,8 @@
 package de.axelspringer.ideas.crowdsource.controller;
 
 import de.axelspringer.ideas.crowdsource.config.security.Roles;
-import de.axelspringer.ideas.crowdsource.enums.PublicationStatus;
 import de.axelspringer.ideas.crowdsource.exceptions.NotAuthorizedException;
+import de.axelspringer.ideas.crowdsource.exceptions.ResourceNotFoundException;
 import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
@@ -13,14 +13,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.security.Principal;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/project", consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/project")
 public class ProjectController {
 
     @Autowired
@@ -32,7 +37,7 @@ public class ProjectController {
 
     @Secured(Roles.ROLE_USER)
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public void saveProject(@RequestBody @Valid Project project, Principal principal) {
 
         UserEntity userEntity = userRepository.findByEmail(principal.getName());
@@ -40,15 +45,20 @@ public class ProjectController {
             throw new NotAuthorizedException("No user found with username " + principal.getName());
         }
 
-        ProjectEntity projectEntity = new ProjectEntity();
-        projectEntity.setUser(userEntity);
-        projectEntity.setTitle(project.getTitle());
-        projectEntity.setShortDescription(project.getShortDescription());
-        projectEntity.setDescription(project.getDescription());
-        projectEntity.setPledgeGoal(project.getPledgeGoal());
-        projectEntity.setPublicationStatus(PublicationStatus.PUBLISHED);
+        ProjectEntity projectEntity = new ProjectEntity(userEntity, project);
         projectRepository.save(projectEntity);
 
         log.debug("Project saved: {}", projectEntity);
+    }
+
+    @RequestMapping("/{projectId}")
+    public Project getProject(@PathVariable String projectId) {
+
+        ProjectEntity projectEntity = projectRepository.findOne(projectId);
+        if (projectEntity == null) {
+            throw new ResourceNotFoundException();
+        }
+
+        return new Project(projectEntity);
     }
 }

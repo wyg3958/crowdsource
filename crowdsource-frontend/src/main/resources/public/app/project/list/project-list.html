@@ -1,6 +1,6 @@
 <ul class="project-list" data-equalizer>
     <li ng-repeat="project in projects" foundation-reflow>
-        <div class="project-tile" data-equalizer-watch>
+        <div class="project-tile" data-equalizer-watch ng-click="showProjectDetails(project)">
             <h1>{{ project.title }}</h1>
 
             <p>{{ project.shortDescription }}</p>

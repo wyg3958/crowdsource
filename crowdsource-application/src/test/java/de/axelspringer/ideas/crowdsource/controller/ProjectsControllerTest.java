@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.axelspringer.ideas.crowdsource.enums.PublicationStatus;
 import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
-import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
+import de.axelspringer.ideas.crowdsource.model.presentation.project.ProjectListItem;
 import de.axelspringer.ideas.crowdsource.repository.ProjectRepository;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import org.junit.Before;
@@ -28,7 +28,6 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -58,7 +57,7 @@ public class ProjectsControllerTest {
     }
 
     @Test
-    public void shouldReturnAllPublishedProjectsWithEmptyUserOnGet() throws Exception {
+    public void shouldReturnAllPublishedProjectsOnGet() throws Exception {
 
         ProjectEntity entity1 = new ProjectEntity();
         final String myTitle1 = "myTitle1";
@@ -67,19 +66,23 @@ public class ProjectsControllerTest {
         final String myShortDescription2 = "myShortDescription2";
         final String myTitle3 = "myTitle3";
         final String myShortDescription3 = "myShortDescription3";
+        final int myPledgeGoal1 = 123;
+        final int myPledgeGoal2 = 456;
+        final int myPledgeGoal3 = 789;
+
 
         entity1.setTitle(myTitle1);
-        entity1.setUser(new UserEntity());
+        entity1.setPledgeGoal(myPledgeGoal1);
         entity1.setShortDescription(myShortDescription1);
 
         ProjectEntity entity2 = new ProjectEntity();
         entity2.setTitle(myTitle2);
-        entity2.setUser(new UserEntity());
+        entity2.setPledgeGoal(myPledgeGoal2);
         entity2.setShortDescription(myShortDescription2);
 
         ProjectEntity entity3 = new ProjectEntity();
         entity3.setTitle(myTitle3);
-        entity3.setUser(new UserEntity());
+        entity3.setPledgeGoal(myPledgeGoal3);
         entity3.setShortDescription(myShortDescription3);
 
         List<ProjectEntity> entities = new ArrayList<>();
@@ -93,18 +96,18 @@ public class ProjectsControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        final List<ProjectEntity> projects = mapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<List<ProjectEntity>>() {
+        final List<ProjectListItem> projects = mapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<List<ProjectListItem>>() {
         });
 
         verify(projectRepository).findByPublicationStatus(PublicationStatus.PUBLISHED);
 
-        assertThat(projects.get(0).getUser(), nullValue());
-        assertThat(projects.get(1).getUser(), nullValue());
-        assertThat(projects.get(2).getUser(), nullValue());
-
         assertThat(projects.get(0).getTitle(), is(myTitle1));
         assertThat(projects.get(1).getTitle(), is(myTitle2));
         assertThat(projects.get(2).getTitle(), is(myTitle3));
+
+        assertThat(projects.get(0).getPledgeGoal(), is(myPledgeGoal1));
+        assertThat(projects.get(1).getPledgeGoal(), is(myPledgeGoal2));
+        assertThat(projects.get(2).getPledgeGoal(), is(myPledgeGoal3));
 
         assertThat(projects.get(0).getShortDescription(), is(myShortDescription1));
         assertThat(projects.get(1).getShortDescription(), is(myShortDescription2));

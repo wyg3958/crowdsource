@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.crowdsource.model.presentation.project;
 
+import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import lombok.Data;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -10,6 +11,15 @@ import javax.validation.constraints.Min;
  */
 @Data
 public class ProjectListItem {
+
+    public ProjectListItem() {
+    }
+
+    public ProjectListItem(ProjectEntity entity) {
+        this.title = entity.getTitle();
+        this.shortDescription = entity.getShortDescription();
+        this.pledgeGoal = entity.getPledgeGoal();
+    }
 
     @NotEmpty
     private String title;

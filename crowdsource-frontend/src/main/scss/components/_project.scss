@@ -14,6 +14,13 @@
 
 }
 
+@mixin limit-lines ($lines, $font-size, $line-height) {
+    font-size: $font-size;
+    line-height: $line-height;
+    max-height: ($lines * $font-size * $line-height);
+    overflow: hidden;
+}
+
 .project-list {
     @media #{$small-up} {
         @include block-grid(1);
@@ -33,9 +40,12 @@
         cursor: pointer;
 
         h1 {
-            font-size: 20px;
-            line-height: 1.5;
+            @include limit-lines(2, 20px, 1.5);
             margin-bottom: 10px;
+        }
+
+        p {
+            @include limit-lines(4, 16px, 1.5);
         }
     }
 }

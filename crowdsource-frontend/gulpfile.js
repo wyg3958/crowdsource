@@ -9,10 +9,15 @@ var BASE_DIR = 'src/main';
 var SCSS_DIR = BASE_DIR + '/scss';
 var APP_DIR = BASE_DIR + '/resources/public';
 
-// all files except javascript files
-var RESOURCE_FILES = [APP_DIR + '/**/*', '!' + APP_DIR];
 var JS_FILES = APP_DIR + '/**/*.js';
 var SCSS_FILES = SCSS_DIR + '/**/*.scss';
+
+// all files except javascript files
+var RESOURCE_FILES = [APP_DIR + '/**/*', '!' + JS_FILES];
+
+var JS_LIB_FILES = [
+    'bower_components/angular-ellipsis/src/angular-ellipsis.min.js'
+];
 
 var BASE_DEST_DIR = 'target/classes/public';
 
@@ -42,6 +47,13 @@ gulp.task('js', function() {
         .pipe(gulp.dest(BASE_DEST_DIR + '/app'));
 });
 
+// concat javascript libraries
+gulp.task('js-libs', function() {
+    return gulp.src(JS_LIB_FILES)
+        .pipe(concat('libs.min.js'))
+        .pipe(gulp.dest(BASE_DEST_DIR + '/app'));
+});
+
 // exec "node_modules/.bin/gulp watch" or "npn run watch" for local development. will compile sass on changes.
 gulp.task('watch', function () {
     gulp.watch(JS_FILES, ['js']);
@@ -50,4 +62,4 @@ gulp.task('watch', function () {
 });
 
 // sass is the default gulp task
-gulp.task('default', ['js', 'resources', 'sass']);
+gulp.task('default', ['js-libs', 'js', 'resources', 'sass']);

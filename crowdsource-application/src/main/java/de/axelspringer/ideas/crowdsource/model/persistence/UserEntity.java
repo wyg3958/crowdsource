@@ -3,7 +3,10 @@ package de.axelspringer.ideas.crowdsource.model.persistence;
 import de.axelspringer.ideas.crowdsource.config.security.Roles;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.joda.time.DateTime;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -29,6 +32,12 @@ public class UserEntity {
     private List<String> roles = Arrays.asList(Roles.ROLE_USER);
 
     private boolean activated = false;
+
+    @CreatedDate
+    private DateTime createdDate;
+
+    @LastModifiedDate
+    private DateTime lastModifiedDate;
 
     public UserEntity(String email) {
         this(email, null);

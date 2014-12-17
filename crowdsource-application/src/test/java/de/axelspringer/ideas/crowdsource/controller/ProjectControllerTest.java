@@ -68,6 +68,7 @@ public class ProjectControllerTest {
         reset(userRepository);
 
         existingUserEntity = new UserEntity(EXISTING_USER_MAIL);
+        existingUserEntity.setId("existingUserId");
         when(userRepository.findByEmail(EXISTING_USER_MAIL)).thenReturn(existingUserEntity);
         when(userRepository.findByEmail(NON_EXISTING_USER_MAIL)).thenReturn(null);
 
@@ -138,7 +139,12 @@ public class ProjectControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"title\":\"title\",\"shortDescription\":\"short description\",\"description\":\"description\",\"pledgeGoal\":44}"));
+        assertThat(mvcResult.getResponse().getContentAsString(), is("{" +
+                "\"title\":\"title\"," +
+                "\"shortDescription\":\"short description\"," +
+                "\"description\":\"description\"," +
+                "\"pledgeGoal\":44," +
+                "\"creator\":{\"id\":\"existingUserId\",\"name\":\"Existing\"}}"));
     }
 
     @Test

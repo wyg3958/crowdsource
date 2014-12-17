@@ -21,8 +21,9 @@ import org.springframework.test.context.ContextConfiguration;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.startsWith;
 
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
 public class AddProjectSteps {
@@ -101,8 +102,10 @@ public class AddProjectSteps {
         projectsPage.waitForPageLoad();
 
         List<Project> projects = projectsPage.getProjects();
-        assertThat(projects, hasItem(Matchers.<Project>hasProperty("title", is(randomProjectTitlePrefix + " Lorem ipsum dolor sit\u2026"))));
-        assertThat(projects, hasItem(Matchers.<Project>hasProperty("shortDescription", is(randomProjectShortDescriptionPrefix + " Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt\u2026"))));
+        assertThat(projects, hasItem(Matchers.<Project>hasProperty("title", startsWith(randomProjectTitlePrefix))));
+        assertThat(projects, hasItem(Matchers.<Project>hasProperty("title", endsWith("\u2026")))); // u2026 is the ellipsis unicode character '...'
+        assertThat(projects, hasItem(Matchers.<Project>hasProperty("shortDescription", startsWith(randomProjectShortDescriptionPrefix))));
+        assertThat(projects, hasItem(Matchers.<Project>hasProperty("shortDescription", endsWith("\u2026"))));
     }
 
     @When("^he moves through the project creation process$")

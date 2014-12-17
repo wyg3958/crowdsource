@@ -4,6 +4,8 @@ angular.module('crowdsource')
         var service = {};
 
         service.reflow = function() {
+            // angular may not have fully completed it's digest cycle
+            // -> delay the reflow for the next javascript cycle
             $timeout(function() {
                 $(document).foundation('reflow');
             });

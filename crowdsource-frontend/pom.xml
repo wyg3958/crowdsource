@@ -13,6 +13,15 @@
     <artifactId>crowdsource-frontend</artifactId>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <!-- Exclude javascript files as they are minified and copied to target/classes by gulp -->
+                    <exclude>**/*.js</exclude>
+                </excludes>
+            </resource>
+        </resources>
         <testResources>
             <testResource>
                 <directory>${project.basedir}/src/test/javascript</directory>

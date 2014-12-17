@@ -1,7 +1,7 @@
 /**
  * global application configuration
  */
-angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages'])
+angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.angular-ellipsis'])
 
     .config(function ($routeProvider, $locationProvider, $httpProvider) {
         $routeProvider
@@ -9,6 +9,10 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages'])
                 templateUrl: 'app/overview/overview.html',
                 controller: 'OverviewController',
                 requireLogin: true
+            })
+            .when('/projects', {
+                templateUrl: 'app/project/list/project-list.html',
+                controller: 'ProjectListController'
             })
             .when('/project/new', {
                 templateUrl: 'app/project/form/project-form.html',
@@ -49,5 +53,10 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages'])
         Route.init();
 
         // initialize foundation widgets
-        $(document).foundation();
+        $(document).foundation({
+            equalizer: {
+                // required to work with block grids
+                equalize_on_stack: true
+            }
+        });
     });

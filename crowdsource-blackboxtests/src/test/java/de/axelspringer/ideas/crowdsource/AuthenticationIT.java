@@ -2,7 +2,7 @@ package de.axelspringer.ideas.crowdsource;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import de.axelspringer.ideas.crowdsource.model.Hello;
+import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
 import lombok.Data;
@@ -45,7 +45,7 @@ public class AuthenticationIT {
         RestTemplate restTemplate = createRestTemplate();
 
         try {
-            restTemplate.getForObject(urlProvider.applicationUrl() + "/hello", Hello.class);
+            restTemplate.postForObject(urlProvider.applicationUrl() + "/project", getPreparedProject(), Project.class);
             Assert.fail("Accessing a protected resource without access token should fail");
         } catch (HttpClientErrorException e) {
             assertThat(e.getStatusCode(), is(UNAUTHORIZED));
@@ -57,8 +57,8 @@ public class AuthenticationIT {
         TokenResponse tokenResponse = requestToken("crowdsource@axelspringer.de", "einEselGehtZumBaecker!");
         assertThat(tokenResponse.getAccessToken(), is(notNullValue()));
 
-        ResponseEntity<Hello> response = getHello(tokenResponse.getAccessToken());
-        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+        ResponseEntity<Project> response = postProject(tokenResponse.getAccessToken());
+        assertThat(response.getStatusCode(), is(HttpStatus.CREATED));
     }
 
     @Test
@@ -74,7 +74,7 @@ public class AuthenticationIT {
     @Test
     public void invalidAccessToken() throws IOException {
         try {
-            getHello("some-invalid-access-token");
+            postProject("some-invalid-access-token");
             Assert.fail("Accessing a protected resource with an invalid token should fail");
         } catch (HttpClientErrorException e) {
             assertThat(e.getStatusCode(), is(UNAUTHORIZED));
@@ -93,14 +93,25 @@ public class AuthenticationIT {
         return restTemplate.postForObject(urlProvider.applicationUrl() + "/oauth/token", tokenRequest, TokenResponse.class);
     }
 
-    private ResponseEntity<Hello> getHello(String accessToken) {
+    private ResponseEntity<Project> postProject(String accessToken) {
         MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<>();
         requestHeaders.put("Authorization", Arrays.asList("Bearer " + accessToken));
 
-        HttpEntity<?> request = new HttpEntity<>(requestHeaders);
+        final Project project = getPreparedProject();
+
+        HttpEntity<Project> request = new HttpEntity<Project>(project, requestHeaders);
 
         RestTemplate restTemplate = createRestTemplate();
-        return restTemplate.exchange(urlProvider.applicationUrl() + "/hello", HttpMethod.GET, request, Hello.class);
+        return restTemplate.exchange(urlProvider.applicationUrl() + "/project", HttpMethod.POST, request, Project.class);
+    }
+
+    private Project getPreparedProject() {
+        final Project project = new Project();
+        project.setPledgeGoal(1000);
+        project.setTitle("myTitle");
+        project.setShortDescription("shortDescription");
+        project.setDescription("myDescription");
+        return project;
     }
 
     private RestTemplate createRestTemplate() {

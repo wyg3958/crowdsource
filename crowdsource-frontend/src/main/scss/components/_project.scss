@@ -13,3 +13,39 @@
     }
 
 }
+
+@mixin limit-lines ($lines, $font-size, $line-height) {
+    font-size: $font-size;
+    line-height: $line-height;
+    max-height: ($lines * $font-size * $line-height);
+    overflow: hidden;
+}
+
+.project-list {
+    @media #{$small-up} {
+        @include block-grid(1);
+    }
+    @media #{$medium-up} {
+        @include block-grid(2);
+    }
+    @media #{$large-up} {
+        @include block-grid(3);
+    }
+
+    .project-tile {
+        @extend .panel;
+        @extend .light;
+        @extend .radius;
+        margin-bottom: 0;
+        cursor: pointer;
+
+        h1 {
+            @include limit-lines(2, 20px, 1.5);
+            margin-bottom: 10px;
+        }
+
+        p {
+            @include limit-lines(4, 16px, 1.5);
+        }
+    }
+}

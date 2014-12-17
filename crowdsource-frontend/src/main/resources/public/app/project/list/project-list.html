@@ -1,0 +1,10 @@
+<ul class="project-list" data-equalizer>
+    <li ng-repeat="project in projects" foundation-reflow>
+        <div class="project-tile" data-equalizer-watch ng-click="showProjectDetails(project)">
+
+            <!-- when using ellipsis directive, the value must come from ng-bind -->
+            <h1 ellipsis ng-bind="project.title"></h1>
+            <p ellipsis ng-bind="project.shortDescription"></p>
+        </div>
+    </li>
+</ul>

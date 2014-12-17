@@ -77,8 +77,14 @@ public class AddProjectSteps {
         randomProjectTitlePrefix = "Title " + RandomStringUtils.randomAlphanumeric(16);
         randomProjectShortDescriptionPrefix = "Short description " + RandomStringUtils.randomAlphanumeric(16);
 
-        addProjectForm.setTitle(randomProjectTitlePrefix + " Lorem ipsum dolor sit amet, consetetu");
-        addProjectForm.setShortDescription(randomProjectShortDescriptionPrefix + " Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore");
+        // makes exactly 60 characters, to cause the text to be abbreviated on purpose
+        addProjectForm.setTitle(randomProjectTitlePrefix +
+                " Mmmmm mmmmm mmmmm mmm mmmm, mmmmmmmmm");
+
+        // makes exactly 140 characters, to cause the text to be abbreviated on purpose
+        addProjectForm.setShortDescription(randomProjectShortDescriptionPrefix +
+                " Mmmmm mmmmm mmmmm mmm mmmm, mmmmmmmmmm mmmmmmmmmm mmmmm, mmm mmmm mmmmmm mmmmmm mmmmmm mmmmmmmm mm mmmmmm");
+
         addProjectForm.setPledgeGoal("25000");
         addProjectForm.setDescription("Loooong description\nwith newlines");
         addProjectForm.submit();

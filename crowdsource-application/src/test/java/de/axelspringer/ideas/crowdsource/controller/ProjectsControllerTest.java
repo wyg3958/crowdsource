@@ -1,10 +1,8 @@
 package de.axelspringer.ideas.crowdsource.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.axelspringer.ideas.crowdsource.enums.PublicationStatus;
 import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
-import de.axelspringer.ideas.crowdsource.model.presentation.project.ProjectListItem;
+import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.repository.ProjectRepository;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import org.junit.Before;
@@ -23,12 +21,16 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -47,71 +49,49 @@ public class ProjectsControllerTest {
     private WebApplicationContext webApplicationContext;
 
     private MockMvc mockMvc;
-    private ObjectMapper mapper = new ObjectMapper();
 
     @Before
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         reset(projectRepository);
         reset(userRepository);
+
+        ProjectEntity entity1 = new ProjectEntity();
+        entity1.setTitle("myTitle1");
+        entity1.setPledgeGoal(123);
+        entity1.setShortDescription("myShortDescription1");
+        entity1.setUser(new UserEntity("user1@domain.com"));
+
+        ProjectEntity entity2 = new ProjectEntity();
+        entity2.setTitle("myTitle2");
+        entity2.setPledgeGoal(456);
+        entity2.setShortDescription("myShortDescription2");
+        entity2.setUser(new UserEntity("user2@domain.com"));
+
+        ProjectEntity entity3 = new ProjectEntity();
+        entity3.setTitle("myTitle3");
+        entity3.setPledgeGoal(789);
+        entity3.setShortDescription("myShortDescription3");
+        entity3.setUser(new UserEntity("user3@domain.com"));
+
+        List<ProjectEntity> entities = Arrays.asList(entity1, entity2, entity3);
+
+        when(projectRepository.findByPublicationStatus(any())).thenReturn(entities);
     }
 
     @Test
     public void shouldReturnAllPublishedProjectsOnGet() throws Exception {
 
-        ProjectEntity entity1 = new ProjectEntity();
-        final String myTitle1 = "myTitle1";
-        final String myShortDescription1 = "myShortDescription1";
-        final String myTitle2 = "myTitle2";
-        final String myShortDescription2 = "myShortDescription2";
-        final String myTitle3 = "myTitle3";
-        final String myShortDescription3 = "myShortDescription3";
-        final int myPledgeGoal1 = 123;
-        final int myPledgeGoal2 = 456;
-        final int myPledgeGoal3 = 789;
-
-
-        entity1.setTitle(myTitle1);
-        entity1.setPledgeGoal(myPledgeGoal1);
-        entity1.setShortDescription(myShortDescription1);
-
-        ProjectEntity entity2 = new ProjectEntity();
-        entity2.setTitle(myTitle2);
-        entity2.setPledgeGoal(myPledgeGoal2);
-        entity2.setShortDescription(myShortDescription2);
-
-        ProjectEntity entity3 = new ProjectEntity();
-        entity3.setTitle(myTitle3);
-        entity3.setPledgeGoal(myPledgeGoal3);
-        entity3.setShortDescription(myShortDescription3);
-
-        List<ProjectEntity> entities = new ArrayList<>();
-        entities.add(entity1);
-        entities.add(entity2);
-        entities.add(entity3);
-
-        when(projectRepository.findByPublicationStatus(any())).thenReturn(entities);
-
         final MvcResult mvcResult = mockMvc.perform(get("/projects"))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        final List<ProjectListItem> projects = mapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<List<ProjectListItem>>() {
-        });
+        assertThat(mvcResult.getResponse().getContentAsString(), is("[" +
+                "{\"title\":\"myTitle1\",\"shortDescription\":\"myShortDescription1\",\"pledgeGoal\":123}," +
+                "{\"title\":\"myTitle2\",\"shortDescription\":\"myShortDescription2\",\"pledgeGoal\":456}," +
+                "{\"title\":\"myTitle3\",\"shortDescription\":\"myShortDescription3\",\"pledgeGoal\":789}]"));
 
         verify(projectRepository).findByPublicationStatus(PublicationStatus.PUBLISHED);
-
-        assertThat(projects.get(0).getTitle(), is(myTitle1));
-        assertThat(projects.get(1).getTitle(), is(myTitle2));
-        assertThat(projects.get(2).getTitle(), is(myTitle3));
-
-        assertThat(projects.get(0).getPledgeGoal(), is(myPledgeGoal1));
-        assertThat(projects.get(1).getPledgeGoal(), is(myPledgeGoal2));
-        assertThat(projects.get(2).getPledgeGoal(), is(myPledgeGoal3));
-
-        assertThat(projects.get(0).getShortDescription(), is(myShortDescription1));
-        assertThat(projects.get(1).getShortDescription(), is(myShortDescription2));
-        assertThat(projects.get(2).getShortDescription(), is(myShortDescription3));
     }
 
     @Configuration

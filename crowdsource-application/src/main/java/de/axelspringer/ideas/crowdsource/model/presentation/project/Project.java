@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.crowdsource.model.presentation.project;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.User;
 import lombok.Data;
@@ -13,15 +14,18 @@ import javax.validation.constraints.Min;
 public class Project {
 
     @NotEmpty
+    @JsonView(ProjectSummaryView.class)
     private String title;
 
     @NotEmpty
+    @JsonView(ProjectSummaryView.class)
     private String shortDescription;
 
     @NotEmpty
     private String description;
 
     @Min(1)
+    @JsonView(ProjectSummaryView.class)
     private int pledgeGoal;
 
     // no validation here on purpose, as this is only filled on response and ignored in request. Ideally,

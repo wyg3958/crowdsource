@@ -1,8 +1,10 @@
 package de.axelspringer.ideas.crowdsource.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import de.axelspringer.ideas.crowdsource.enums.PublicationStatus;
 import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
-import de.axelspringer.ideas.crowdsource.model.presentation.project.ProjectListItem;
+import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
+import de.axelspringer.ideas.crowdsource.model.presentation.project.ProjectSummaryView;
 import de.axelspringer.ideas.crowdsource.repository.ProjectRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +26,10 @@ public class ProjectsController {
     private ProjectRepository projectRepository;
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<ProjectListItem> getProjects() {
+    @JsonView(ProjectSummaryView.class)
+    public List<Project> getProjects() {
 
         final List<ProjectEntity> projects = projectRepository.findByPublicationStatus(PublicationStatus.PUBLISHED);
-        final List<ProjectListItem> items = projects.stream().map(ProjectListItem::new).collect(toList());
-
-        return items;
+        return projects.stream().map(Project::new).collect(toList());
     }
 }

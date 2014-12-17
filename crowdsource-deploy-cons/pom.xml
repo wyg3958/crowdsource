@@ -30,7 +30,6 @@
                             <nodeAdress>54.194.152.80</nodeAdress>
 
                             <serviceName>crowdsource-cons-mongodb</serviceName>
-                            <ensure>RUNNING</ensure>
                             <instances>1</instances>
                             <dockerImageName>dockerfile/mongodb</dockerImageName>
                             <dockerRunOptions>-p 27001:27017 -p 28001:28017</dockerRunOptions>

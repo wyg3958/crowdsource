@@ -20,4 +20,8 @@ public class AddProjectConfirmationView {
     public void waitForPageLoad() {
         wait.until(visibilityOf(linkToProject));
     }
+
+    public void clickLinkToProject() {
+        linkToProject.click();
+    }
 }

@@ -5,7 +5,7 @@ Feature: Login
     Then he is redirected to the login page
     When he enters valid credentials
     Then he is redirected to the index page
-    And the text "Crowdsource says hi" is displayed
+    And the text "Crowdsource says hello!" is displayed
 
   Scenario: A user logs in and hits refresh
     Given the index page is visited
@@ -14,7 +14,7 @@ Feature: Login
     Then he is redirected to the index page
     When he reloads the page
     And the index page is visited
-    Then the text "Crowdsource says hi" is displayed
+    Then the text "Crowdsource says hello!" is displayed
 
   Scenario: A user tries to log in with invalid credentials
     Given the index page is visited

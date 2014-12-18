@@ -1,7 +1,18 @@
 angular.module('crowdsource')
 
-    .controller('ProjectDetailsController', function($routeParams, Project) {
+    .controller('ProjectDetailsController', function($routeParams, $location, Project) {
 
-        this.project = Project.get($routeParams.projectId);
+        var vm = this;
+
+        vm.project = Project.get($routeParams.projectId);
+
+        vm.project.$promise.catch(function(response) {
+            if (response.status == 404) {
+                $location.path('/error/notfound');
+            }
+            else {
+                $location.path('/error/unknown');
+            }
+        });
 
     });

@@ -42,6 +42,12 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
                 templateUrl: 'app/user/logout/user-logout.html',
                 controller: 'UserLogoutController as logout'
             })
+            .when('/error/notfound', {
+                templateUrl: 'app/error/error-notfound.html'
+            })
+            .when('/error/unknown', {
+                templateUrl: 'app/error/error-unknown.html'
+            })
             .otherwise({redirectTo: '/projects'});
 
         $httpProvider.interceptors.push('UnauthorizedInterceptor');

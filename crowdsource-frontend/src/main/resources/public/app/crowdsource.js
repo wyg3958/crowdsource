@@ -7,7 +7,6 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
         $routeProvider
             .when('/', {
                 templateUrl: 'app/overview/overview.html',
-                controller: 'OverviewController as overview',
                 requireLogin: true
             })
             .when('/projects', {

@@ -140,6 +140,7 @@ public class ProjectControllerTest {
                 .andReturn();
 
         assertThat(mvcResult.getResponse().getContentAsString(), is("{" +
+                "\"id\":\"existingProjectId\"," +
                 "\"title\":\"title\"," +
                 "\"shortDescription\":\"short description\"," +
                 "\"description\":\"description\"," +

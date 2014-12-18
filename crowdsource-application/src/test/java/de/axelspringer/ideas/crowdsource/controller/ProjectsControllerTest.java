@@ -56,27 +56,23 @@ public class ProjectsControllerTest {
         reset(projectRepository);
         reset(userRepository);
 
-        ProjectEntity entity1 = new ProjectEntity();
-        entity1.setTitle("myTitle1");
-        entity1.setPledgeGoal(123);
-        entity1.setShortDescription("myShortDescription1");
-        entity1.setUser(new UserEntity("user1@domain.com"));
-
-        ProjectEntity entity2 = new ProjectEntity();
-        entity2.setTitle("myTitle2");
-        entity2.setPledgeGoal(456);
-        entity2.setShortDescription("myShortDescription2");
-        entity2.setUser(new UserEntity("user2@domain.com"));
-
-        ProjectEntity entity3 = new ProjectEntity();
-        entity3.setTitle("myTitle3");
-        entity3.setPledgeGoal(789);
-        entity3.setShortDescription("myShortDescription3");
-        entity3.setUser(new UserEntity("user3@domain.com"));
-
-        List<ProjectEntity> entities = Arrays.asList(entity1, entity2, entity3);
+        List<ProjectEntity> entities = Arrays.asList(
+                createProjectEntity("projectId1", "myTitle1", 123, "myShortDescription1", "user1@domain.com"),
+                createProjectEntity("projectId2", "myTitle2", 456, "myShortDescription2", "user2@domain.com"),
+                createProjectEntity("projectId3", "myTitle3", 789, "myShortDescription3", "user3@domain.com")
+        );
 
         when(projectRepository.findByPublicationStatus(any())).thenReturn(entities);
+    }
+
+    private ProjectEntity createProjectEntity(String id, String title, int pledgeGoal, String shortDescription, String userEmail) {
+        ProjectEntity projectEntity = new ProjectEntity();
+        projectEntity.setId(id);
+        projectEntity.setTitle(title);
+        projectEntity.setPledgeGoal(pledgeGoal);
+        projectEntity.setShortDescription(shortDescription);
+        projectEntity.setUser(new UserEntity(userEmail));
+        return projectEntity;
     }
 
     @Test
@@ -87,9 +83,9 @@ public class ProjectsControllerTest {
                 .andReturn();
 
         assertThat(mvcResult.getResponse().getContentAsString(), is("[" +
-                "{\"title\":\"myTitle1\",\"shortDescription\":\"myShortDescription1\",\"pledgeGoal\":123}," +
-                "{\"title\":\"myTitle2\",\"shortDescription\":\"myShortDescription2\",\"pledgeGoal\":456}," +
-                "{\"title\":\"myTitle3\",\"shortDescription\":\"myShortDescription3\",\"pledgeGoal\":789}]"));
+                "{\"id\":\"projectId1\",\"title\":\"myTitle1\",\"shortDescription\":\"myShortDescription1\",\"pledgeGoal\":123}," +
+                "{\"id\":\"projectId2\",\"title\":\"myTitle2\",\"shortDescription\":\"myShortDescription2\",\"pledgeGoal\":456}," +
+                "{\"id\":\"projectId3\",\"title\":\"myTitle3\",\"shortDescription\":\"myShortDescription3\",\"pledgeGoal\":789}]"));
 
         verify(projectRepository).findByPublicationStatus(PublicationStatus.PUBLISHED);
     }

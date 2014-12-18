@@ -11,19 +11,19 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 @Component
 public class AddProjectForm {
 
-    @FindBy(css = "form[name='projectForm'] input[name='title']")
+    @FindBy(css = ".project-form input[name='title']")
     private WebElement titleInputField;
 
-    @FindBy(css = "form[name='projectForm'] textarea[name='shortDescription']")
+    @FindBy(css = ".project-form textarea[name='shortDescription']")
     private WebElement shortDescriptionInputField;
 
-    @FindBy(css = "form[name='projectForm'] input[name='pledgeGoal']")
+    @FindBy(css = ".project-form input[name='pledgeGoal']")
     private WebElement pledgeGoalInputField;
 
-    @FindBy(css = "form[name='projectForm'] textarea[name='description']")
+    @FindBy(css = ".project-form textarea[name='description']")
     private WebElement descriptionInputField;
 
-    @FindBy(css = "form[name='projectForm'] button[type='submit']")
+    @FindBy(css = ".project-form button[type='submit']")
     private WebElement submitButton;
 
     @Autowired

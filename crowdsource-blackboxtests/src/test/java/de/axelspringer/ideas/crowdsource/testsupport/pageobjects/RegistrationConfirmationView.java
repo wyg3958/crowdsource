@@ -11,7 +11,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 @Component
 public class RegistrationConfirmationView {
 
-    @FindBy(css = ".registration-success .email-recipient")
+    @FindBy(css = ".signup-success .email-recipient")
     private WebElement confirmedEmailAddress;
 
     @Autowired

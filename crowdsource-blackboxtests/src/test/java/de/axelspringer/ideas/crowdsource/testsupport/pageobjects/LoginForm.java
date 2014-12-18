@@ -11,16 +11,16 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 @Component
 public class LoginForm {
 
-    @FindBy(css = "form[name='loginForm'] input[name='email']")
+    @FindBy(css = ".login-form input[name='email']")
     private WebElement emailInputField;
 
-    @FindBy(css = "form[name='loginForm'] input[type='password']")
+    @FindBy(css = ".login-form input[type='password']")
     private WebElement passwordInputField;
 
-    @FindBy(css = "form[name='loginForm'] button[type='submit']")
+    @FindBy(css = ".login-form button[type='submit']")
     private WebElement saveButton;
 
-    @FindBy(css = "form[name='loginForm'] .general-error span")
+    @FindBy(css = ".login-form .general-error span")
     private WebElement errorText;
 
     @Autowired

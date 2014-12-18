@@ -33,8 +33,6 @@ describe('project list', function () {
         $scope.$digest();
         $httpBackend.flush();
 
-        expect(projectList.find('.project-list')).not.toHaveClass('ng-hide');
-
         var listItems = projectList.find('.project-tile');
         expect(listItems).toHaveLength(2);
 
@@ -66,7 +64,6 @@ describe('project list', function () {
         $scope.$digest();
         $httpBackend.flush();
 
-        expect(projectList.find('.project-list')).toHaveClass('ng-hide');
         expect(projectList.find('.no-projects-text')).not.toHaveClass('ng-hide');
         expect(projectList.find('.add-project-text')).toHaveClass('ng-hide');
     });

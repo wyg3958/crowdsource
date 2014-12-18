@@ -33,7 +33,9 @@ Feature: Registration
     When the user clicks the email's activation link
     And the user enters a valid password twice on activation page
     And the user submits the activation form
-    Then the secured index page is accessible
+    Then he is redirected to the index page
+    When he clicks on the New Project link in the navigation bar
+    Then he is redirected to the project creation page
 
   @ClearMailServer
   Scenario: A user tries to active an already activated account

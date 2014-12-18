@@ -5,10 +5,6 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
 
     .config(function ($routeProvider, $locationProvider, $httpProvider) {
         $routeProvider
-            .when('/', {
-                templateUrl: 'app/overview/overview.html',
-                requireLogin: true
-            })
             .when('/projects', {
                 templateUrl: 'app/project/list/project-list.html',
                 controller: 'ProjectListController as projectList'
@@ -46,7 +42,7 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
                 templateUrl: 'app/user/logout/user-logout.html',
                 controller: 'UserLogoutController as logout'
             })
-            .otherwise({redirectTo: '/'});
+            .otherwise({redirectTo: '/projects'});
 
         $httpProvider.interceptors.push('UnauthorizedInterceptor');
     })

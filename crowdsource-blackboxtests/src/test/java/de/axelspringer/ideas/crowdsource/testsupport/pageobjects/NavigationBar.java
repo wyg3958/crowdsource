@@ -11,6 +11,9 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 @Component
 public class NavigationBar {
 
+    @FindBy(css = "nav.top-bar a[href='#/login']")
+    private WebElement loginLink;
+
     @FindBy(css = "nav.top-bar a[href='#/signup']")
     private WebElement signupLink;
 
@@ -23,6 +26,11 @@ public class NavigationBar {
     public void clickSignup() {
         wait.until(visibilityOf(signupLink));
         signupLink.click();
+    }
+
+    public void clickLogin() {
+        wait.until(visibilityOf(loginLink));
+        loginLink.click();
     }
 
     public void clickNewProject() {

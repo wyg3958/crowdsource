@@ -1,14 +1,14 @@
 package de.axelspringer.ideas.crowdsource.testsupport.cucumber;
 
 import cucumber.api.java.Before;
-import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import de.axelspringer.ideas.crowdsource.config.security.MongoUserDetailsService;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
-import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.IndexPage;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.LoginForm;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.NavigationBar;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.ProjectsPage;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
 import org.openqa.selenium.WebDriver;
@@ -18,7 +18,6 @@ import org.springframework.test.context.ContextConfiguration;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
 
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
 public class LoginSteps {
@@ -30,7 +29,10 @@ public class LoginSteps {
     private UrlProvider urlProvider;
 
     @Autowired
-    private IndexPage indexPage;
+    private NavigationBar navigationBar;
+
+    @Autowired
+    private ProjectsPage projectsPage;
 
     @Autowired
     private LoginForm loginForm;
@@ -48,9 +50,15 @@ public class LoginSteps {
     @Given("^a user is logged in")
     public void a_user_is_logged_in() throws Throwable {
         the_index_page_is_visited();
-        he_is_redirected_to_the_login_page();
+        he_clicks_on_the_Login_link_in_the_navigation_bar();
         he_enters_valid_credentials();
         he_is_redirected_to_the_index_page();
+    }
+
+    @When("^he clicks on the Login link in the navigation bar$")
+    public void he_clicks_on_the_Login_link_in_the_navigation_bar() throws Throwable {
+        PageFactory.initElements(webDriver, navigationBar);
+        navigationBar.clickLogin();
     }
 
     @Then("^he is redirected to the login page$")
@@ -78,15 +86,8 @@ public class LoginSteps {
     @Then("^he is redirected to the index page$")
     public void he_is_redirected_to_the_index_page() throws Throwable {
 
-        PageFactory.initElements(webDriver, indexPage);
-        indexPage.waitForPageLoad();
-    }
-
-    @And("^the text \"([^\"]*)\" is displayed$")
-    public void the_text_is_displayed(String text) throws Throwable {
-
-        PageFactory.initElements(webDriver, indexPage);
-        assertEquals(text, indexPage.getHeadlineText());
+        PageFactory.initElements(webDriver, projectsPage);
+        projectsPage.waitForPageLoad();
     }
 
     @When("^he reloads the page$")

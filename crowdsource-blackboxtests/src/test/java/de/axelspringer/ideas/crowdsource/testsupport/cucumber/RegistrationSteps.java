@@ -8,7 +8,10 @@ import cucumber.api.java.en.When;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.UserRegistration;
 import de.axelspringer.ideas.crowdsource.service.UserActivationService;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
-import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.*;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.ActivationForm;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.NavigationBar;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.RegistrationConfirmationView;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.RegistrationForm;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.axelspringer.ideas.crowdsource.testsupport.util.MailServerClient;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
@@ -20,7 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.client.RestTemplate;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
@@ -42,9 +47,6 @@ public class RegistrationSteps {
 
     @Autowired
     private ActivationForm activationForm;
-
-    @Autowired
-    private IndexPage indexPage;
 
     @Autowired
     private RegistrationConfirmationView registrationConfirmationView;
@@ -173,12 +175,6 @@ public class RegistrationSteps {
     public void the_user_submits_the_activation_form() throws Throwable {
         PageFactory.initElements(webDriver, activationForm);
         activationForm.submit();
-    }
-
-    @Then("^the secured index page is accessible$")
-    public void the_secured_index_page_is_accessible() throws Throwable {
-        PageFactory.initElements(webDriver, indexPage);
-        assertThat(indexPage.getHeadlineText(), is("Crowdsource says hello!"));
     }
 
     @Given("^the user's email address is already activated$")

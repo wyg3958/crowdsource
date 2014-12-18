@@ -100,6 +100,7 @@ public class LoginSteps {
     public void the_index_page_is_visited() throws Throwable {
 
         webDriver.get(urlProvider.applicationUrl());
+        projectsPage.waitForPageLoad();
     }
 
     @Then("^the error \"([^\"]*)\" is displayed$")

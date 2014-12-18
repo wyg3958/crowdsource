@@ -9,7 +9,6 @@
 @import "components/project/project-list";
 @import "components/project/project-details";
 @import "components/project/project-form";
-@import "components/inline-modal";
 
 button {
     text-transform: uppercase;
@@ -46,6 +45,20 @@ body {
     color: $crowd-color-dark-grey;
 }
 
+%box {
+    @extend .panel;
+    @extend .radius;
+
+    margin: 0 auto;
+    background-color: $white;
+
+    h1 {
+        font-size: rem-calc(27);
+        color: $crowd-color-purple;
+        margin-bottom: 50px;
+    }
+}
+
 content-row {
     display: block;
     padding: 10px;
@@ -58,13 +71,14 @@ content-row {
         margin: 0 auto;
         max-width: $row-width;
     }
-}
 
-.light {
-    background-color: $white;
+    &.box .container {
+        @extend %box;
+        max-width: rem-calc(500);
+    }
 
-    h1, h2, h3, h4, h5, h6 {
-        color: $crowd-color-purple;
+    &.box-wide .container {
+        @extend %box;
     }
 }
 

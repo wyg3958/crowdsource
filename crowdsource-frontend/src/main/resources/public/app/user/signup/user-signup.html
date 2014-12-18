@@ -1,62 +1,59 @@
-<content-row class="signup-form">
+<content-row class="signup-form box">
     <form name="signup.form" novalidate>
 
-        <div class="inline-modal">
+        <h1>Registrierung</h1>
 
-            <h3 class="margin-bottom">Registrierung</h3>
-
-            <div class="general-error alert-box alert" ng-messages="signup.generalErrors" ng-if="signup.generalErrors">
-                <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.</span>
-            </div>
-
-            <div class="row">
-                <email-form-group model="signup.user.email" field-name="email"
-                                  class="small-12 columns form-controls-email" />
-            </div>
-
-            <div class="row">
-                <div class="small-12 columns form-controls-termsofservice">
-                    <label form-group="termsOfServiceAccepted">
-
-                        <input type="checkbox" name="termsOfServiceAccepted" ng-model="signup.user.termsOfServiceAccepted" required>
-
-                        <span form-label-valid="termsOfServiceAccepted">
-                            Ich akzeptiere die <a class="crowd-tos-link"
-                                                  ng-click="signup.showTermsOfService = !signup.showTermsOfService">AGBs</a>
-                        </span>
-
-                        <span form-label-invalid="termsOfServiceAccepted" ng-messages="signup.form.termsOfServiceAccepted.$error">
-                            <span ng-message="required">Bitte akzeptieren Sie die <a class="crowd-tos-link"
-                                                                                     ng-click="signup.showTermsOfService = !signup.showTermsOfService">AGBs</a></span>
-                        </span>
-                    </label>
-                </div>
-            </div>
-
-            <div class="row" ng-if="signup.showTermsOfService">
-                <div class="small-12 columns">
-                    <div class="crowd-tos-panel panel callout radius font-small">
-                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-                        At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit
-                        amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
-                        justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="small-12 columns text-center">
-                    <div>
-                        <button type="submit" class="success margin-top" ng-click="signup.signUp()" ng-disabled="signup.loading">
-                            {{ signup.loading ? 'Registrieren...' : 'Registrieren' }}
-                        </button>
-                    </div>
-                    <div>
-                        oder <a href="#/login">hier geht's zum Login</a>
-                    </div>
-                </div>
-            </div>
-
+        <div class="general-error alert-box alert" ng-messages="signup.generalErrors" ng-if="signup.generalErrors">
+            <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.</span>
         </div>
+
+        <div class="row">
+            <email-form-group model="signup.user.email" field-name="email"
+                              class="small-12 columns form-controls-email" />
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns form-controls-termsofservice">
+                <label form-group="termsOfServiceAccepted">
+
+                    <input type="checkbox" name="termsOfServiceAccepted" ng-model="signup.user.termsOfServiceAccepted" required>
+
+                    <span form-label-valid="termsOfServiceAccepted">
+                        Ich akzeptiere die <a class="crowd-tos-link"
+                                              ng-click="signup.showTermsOfService = !signup.showTermsOfService">AGBs</a>
+                    </span>
+
+                    <span form-label-invalid="termsOfServiceAccepted" ng-messages="signup.form.termsOfServiceAccepted.$error">
+                        <span ng-message="required">Bitte akzeptieren Sie die <a class="crowd-tos-link"
+                                                                                 ng-click="signup.showTermsOfService = !signup.showTermsOfService">AGBs</a></span>
+                    </span>
+                </label>
+            </div>
+        </div>
+
+        <div class="row" ng-if="signup.showTermsOfService">
+            <div class="small-12 columns">
+                <div class="crowd-tos-panel panel callout radius font-small">
+                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+                    At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit
+                    amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
+                    justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns text-center">
+                <div>
+                    <button type="submit" class="success margin-top" ng-click="signup.signUp()" ng-disabled="signup.loading">
+                        {{ signup.loading ? 'Registrieren...' : 'Registrieren' }}
+                    </button>
+                </div>
+                <div>
+                    oder <a href="#/login">hier geht's zum Login</a>
+                </div>
+            </div>
+        </div>
+
     </form>
 </content-row>

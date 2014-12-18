@@ -1,7 +1,24 @@
 .project-details {
     background: $white;
 
+    .container {
+        max-width: rem-calc(666);
+    }
+
+    h1 {
+        font-size: rem-calc(32);
+        line-height: rem-calc(40);
+        margin-bottom: rem-calc(16);
+    }
+
+    blockquote {
+        margin-bottom: rem-calc(72);
+        font-size: rem-calc(18);
+        line-height: rem-calc(24);
+    }
+
     .project-description {
         white-space: pre-wrap;
+        line-height: rem-calc(24);
     }
 }

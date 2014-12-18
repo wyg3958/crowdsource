@@ -44,19 +44,19 @@ body {
 .content {
     padding-bottom: 200px;
     color: $crowd-color-dark-grey;
+}
 
-    content-row {
-        display: block;
-        padding: 10px;
+content-row {
+    display: block;
+    padding: 10px;
 
-        @media #{$medium-up} {
-            padding: 40px;
-        }
+    @media #{$medium-up} {
+        padding: 40px;
+    }
 
-        .container {
-            margin: 0 auto;
-            max-width: $row-width;
-        }
+    .container {
+        margin: 0 auto;
+        max-width: $row-width;
     }
 }
 

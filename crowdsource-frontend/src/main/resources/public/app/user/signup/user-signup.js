@@ -1,24 +1,26 @@
 angular.module('crowdsource')
 
-    .controller('UserSignupController', function ($scope, $location, User, RemoteFormValidation) {
+    .controller('UserSignupController', function ($location, User, RemoteFormValidation) {
 
-        $scope.signUp = function () {
-            if (!$scope.signupForm.$valid) {
+        var vm = this;
+
+        vm.signUp = function () {
+            if (!vm.signupForm.$valid) {
                 return;
             }
 
-            RemoteFormValidation.clearRemoteErrors($scope);
-            $scope.loading = true;
+            RemoteFormValidation.clearRemoteErrors(vm);
+            vm.loading = true;
 
-            var promise = User.register($scope.user);
+            var promise = User.register(vm.user);
             promise.then(function () {
-                $location.path('/signup/' + $scope.user.email + '/success');
+                $location.path('/signup/' + vm.user.email + '/success');
             });
             promise.catch(function (response) {
-                RemoteFormValidation.applyServerErrorResponse($scope, $scope.signupForm, response);
+                RemoteFormValidation.applyServerErrorResponse(vm, vm.signupForm, response);
             });
             promise.finally(function () {
-                $scope.loading = false;
+                vm.loading = false;
             });
         };
     });

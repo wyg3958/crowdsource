@@ -40,12 +40,21 @@ body {
 }
 
 .content {
-    padding: 10px 10px 240px 10px;
+    padding-bottom: 200px;
     color: $crowd-color-dark-grey;
-    background-color: $crowd-color-light-grey;
 
-    @media #{$medium-up} {
-        padding: 40px 40px 240px 40px;
+    content-row {
+        display: block;
+        padding: 10px;
+
+        @media #{$medium-up} {
+            padding: 40px;
+        }
+
+        .container {
+            margin: 0 auto;
+            max-width: $row-width;
+        }
     }
 }
 

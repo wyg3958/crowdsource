@@ -1,62 +1,64 @@
-<form name="activationForm" novalidate>
+<content-row>
+    <form name="activationForm" novalidate>
 
-    <div class="inline-modal">
-        <h3 class="margin-bottom">Registrierung - Letzte Schritte</h3>
+        <div class="inline-modal">
+            <h3 class="margin-bottom">Registrierung - Letzte Schritte</h3>
 
-        <div class="margin-bottom-small">Bitte vergeben Sie ein Passwort, um Ihr Konto abschließend zu aktivieren.</div>
+            <div class="margin-bottom-small">Bitte vergeben Sie ein Passwort, um Ihr Konto abschließend zu aktivieren.</div>
 
-        <div class="general-error alert-box alert" ng-messages="generalErrors" ng-if="generalErrors">
-            <span ng-message="remote_already_activated">
-                Ihr Konto wurde bereits aktiviert. Sie können sich mit Ihrer Email-Adresse und Ihrem Passwort <a href="#/login">einloggen</a>.
-            </span>
-            <span ng-message="remote_activation_token_invalid">Der Aktivierungslink ist ungültig. Bitte <a href="#/signup">registrieren</a> Sie sich erneut um einen neuen Aktivierungslink zugesendet zu bekommen.</span>
-            <span ng-message="remote_not_found">Sie müssen sich mit Ihrer Email-Adresse erst <a href="#/signup">registrieren</a>.</span>
-            <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.</span>
-        </div>
-
-        <div class="row">
-            <div class="small-12 columns form-controls-password">
-                <label form-group="password">
-
-                    <span form-label-valid="password">Passwort</span>
-
-                    <span form-label-invalid="password" ng-messages="activationForm.password.$error">
-                        <span ng-message="required">Bitte geben Sie Ihr Passwort ein</span>
-                        <span ng-message="pattern">Das Passwort muss aus mindestens 8 Zeichen und einem Sonderzeichen bestehen</span>
-                    </span>
-
-                    <input type="password" name="password" ng-model="user.password"
-                           required pattern="^(?=.*\W)(?=\S+$).{8,}$" reset-remote-validation>
-                </label>
+            <div class="general-error alert-box alert" ng-messages="generalErrors" ng-if="generalErrors">
+                <span ng-message="remote_already_activated">
+                    Ihr Konto wurde bereits aktiviert. Sie können sich mit Ihrer Email-Adresse und Ihrem Passwort <a href="#/login">einloggen</a>.
+                </span>
+                <span ng-message="remote_activation_token_invalid">Der Aktivierungslink ist ungültig. Bitte <a href="#/signup">registrieren</a> Sie sich erneut um einen neuen Aktivierungslink zugesendet zu bekommen.</span>
+                <span ng-message="remote_not_found">Sie müssen sich mit Ihrer Email-Adresse erst <a href="#/signup">registrieren</a>.</span>
+                <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.</span>
             </div>
-        </div>
 
-        <div class="row">
-            <div class="small-12 columns form-controls-repeated-password">
-                <label form-group="repeatedPassword">
+            <div class="row">
+                <div class="small-12 columns form-controls-password">
+                    <label form-group="password">
 
-                    <span form-label-valid="repeatedPassword">Passwort wiederholen</span>
+                        <span form-label-valid="password">Passwort</span>
 
-                    <span form-label-invalid="repeatedPassword" ng-messages="activationForm.repeatedPassword.$error">
-                        <span ng-message="required">Bitte geben Sie Ihr Passwort erneut ein</span>
-                        <span ng-message="remote_equal">Die beiden Passwörter stimmen nicht überein</span>
-                    </span>
+                        <span form-label-invalid="password" ng-messages="activationForm.password.$error">
+                            <span ng-message="required">Bitte geben Sie Ihr Passwort ein</span>
+                            <span ng-message="pattern">Das Passwort muss aus mindestens 8 Zeichen und einem Sonderzeichen bestehen</span>
+                        </span>
 
-                    <input type="password" name="repeatedPassword" ng-model="user.repeatedPassword"
-                           required reset-remote-validation>
-                </label>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="small-12 columns text-center">
-                <div>
-                    <button type="submit" class="success margin-top" ng-click="activate()" ng-disabled="loading">
-                        {{ loading ? 'Speichern...' : 'Speichern' }}
-                    </button>
+                        <input type="password" name="password" ng-model="user.password"
+                               required pattern="^(?=.*\W)(?=\S+$).{8,}$" reset-remote-validation>
+                    </label>
                 </div>
             </div>
-        </div>
 
-    </div>
-</form>
+            <div class="row">
+                <div class="small-12 columns form-controls-repeated-password">
+                    <label form-group="repeatedPassword">
+
+                        <span form-label-valid="repeatedPassword">Passwort wiederholen</span>
+
+                        <span form-label-invalid="repeatedPassword" ng-messages="activationForm.repeatedPassword.$error">
+                            <span ng-message="required">Bitte geben Sie Ihr Passwort erneut ein</span>
+                            <span ng-message="remote_equal">Die beiden Passwörter stimmen nicht überein</span>
+                        </span>
+
+                        <input type="password" name="repeatedPassword" ng-model="user.repeatedPassword"
+                               required reset-remote-validation>
+                    </label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="small-12 columns text-center">
+                    <div>
+                        <button type="submit" class="success margin-top" ng-click="activate()" ng-disabled="loading">
+                            {{ loading ? 'Speichern...' : 'Speichern' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </form>
+</content-row>

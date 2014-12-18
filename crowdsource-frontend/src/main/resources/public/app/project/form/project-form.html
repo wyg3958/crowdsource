@@ -1,87 +1,89 @@
-<form name="projectForm" class="project-form inline-modal-fullwidth" novalidate>
+<content-row>
+    <form name="projectForm" class="project-form inline-modal-fullwidth" novalidate>
 
-    <h3 class="margin-bottom">Ihre neue Projektidee</h3>
+        <h3 class="margin-bottom">Ihre neue Projektidee</h3>
 
-    <div class="general-error alert-box alert" ng-messages="generalErrors" ng-if="generalErrors">
-        <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.</span>
-    </div>
-
-    <div class="row">
-        <div class="small-12 columns form-controls-title">
-            <label form-group="title">
-
-                <span form-label-valid="title">Projekt-Titel</span>
-
-                <span form-label-invalid="title" ng-messages="projectForm.title.$error">
-                    <span ng-message="required">Bitte geben Sie einen Titel an</span>
-                    <span ng-message="maxlength">Der Titel darf nur maximal 60 Zeichen lang sein</span>
-                </span>
-
-                <input type="text" name="title" ng-model="project.title" placeholder="Ein kurzer und prägnanter Titel (max. 60 Zeichen, kein HTML)"
-                       required maxlength="60" reset-remote-validation>
-            </label>
+        <div class="general-error alert-box alert" ng-messages="generalErrors" ng-if="generalErrors">
+            <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.</span>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="small-12 columns form-controls-short-description">
-            <label form-group="shortDescription">
+        <div class="row">
+            <div class="small-12 columns form-controls-title">
+                <label form-group="title">
 
-                <span form-label-valid="shortDescription">Kurzbeschreibung</span>
+                    <span form-label-valid="title">Projekt-Titel</span>
 
-                <span form-label-invalid="shortDescription" ng-messages="projectForm.shortDescription.$error">
-                    <span ng-message="required">Bitte geben Sie eine Kurzbeschreibung an</span>
-                    <span ng-message="maxlength">Die Kurzbeschreibung darf nur maximal 140 Zeichen lang sein</span>
-                </span>
+                    <span form-label-invalid="title" ng-messages="projectForm.title.$error">
+                        <span ng-message="required">Bitte geben Sie einen Titel an</span>
+                        <span ng-message="maxlength">Der Titel darf nur maximal 60 Zeichen lang sein</span>
+                    </span>
 
-                <textarea name="shortDescription" ng-model="project.shortDescription" placeholder="Die Kurzbeschreibung wird auf der Hauptseite von Crowdsource angezeigt (max. 140 Zeichen, kein HTML)"
-                       required maxlength="140" reset-remote-validation></textarea>
-            </label>
+                    <input type="text" name="title" ng-model="project.title" placeholder="Ein kurzer und prägnanter Titel (max. 60 Zeichen, kein HTML)"
+                           required maxlength="60" reset-remote-validation>
+                </label>
+            </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="columns form-controls-pledge-goal">
-            <label form-group="pledgeGoal">
+        <div class="row">
+            <div class="small-12 columns form-controls-short-description">
+                <label form-group="shortDescription">
 
-                <span form-label-valid="pledgeGoal">Finanzierungsbedarf</span>
+                    <span form-label-valid="shortDescription">Kurzbeschreibung</span>
 
-                <span form-label-invalid="pledgeGoal" ng-messages="projectForm.pledgeGoal.$error">
-                    <span ng-message="required">Bitte geben Sie den Finanzierungsbedarf an</span>
-                    <span ng-message="number">Bitte geben Sie nur Ziffern ein</span>
-                    <span ng-message="pattern">Bitte geben Sie nur Ziffern ein</span>
-                </span>
-            </label>
+                    <span form-label-invalid="shortDescription" ng-messages="projectForm.shortDescription.$error">
+                        <span ng-message="required">Bitte geben Sie eine Kurzbeschreibung an</span>
+                        <span ng-message="maxlength">Die Kurzbeschreibung darf nur maximal 140 Zeichen lang sein</span>
+                    </span>
 
-            <div class="table">
-                <div class="table-cell full-width">
-                    <input type="number" name="pledgeGoal" ng-model="project.pledgeGoal" class="text-right" placeholder="0"
-                           required ng-pattern="/^[0-9]+$/i" reset-remote-validation>
-                </div>
-                <div class="table-cell">
-                    <span class="postfix text-left">A$</span>
+                    <textarea name="shortDescription" ng-model="project.shortDescription" placeholder="Die Kurzbeschreibung wird auf der Hauptseite von Crowdsource angezeigt (max. 140 Zeichen, kein HTML)"
+                           required maxlength="140" reset-remote-validation></textarea>
+                </label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="columns form-controls-pledge-goal">
+                <label form-group="pledgeGoal">
+
+                    <span form-label-valid="pledgeGoal">Finanzierungsbedarf</span>
+
+                    <span form-label-invalid="pledgeGoal" ng-messages="projectForm.pledgeGoal.$error">
+                        <span ng-message="required">Bitte geben Sie den Finanzierungsbedarf an</span>
+                        <span ng-message="number">Bitte geben Sie nur Ziffern ein</span>
+                        <span ng-message="pattern">Bitte geben Sie nur Ziffern ein</span>
+                    </span>
+                </label>
+
+                <div class="table">
+                    <div class="table-cell full-width">
+                        <input type="number" name="pledgeGoal" ng-model="project.pledgeGoal" class="text-right" placeholder="0"
+                               required ng-pattern="/^[0-9]+$/i" reset-remote-validation>
+                    </div>
+                    <div class="table-cell">
+                        <span class="postfix text-left">A$</span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="small-12 columns form-controls-description">
-            <label form-group="description">
+        <div class="row">
+            <div class="small-12 columns form-controls-description">
+                <label form-group="description">
 
-                <span form-label-valid="description">Beschreibung</span>
+                    <span form-label-valid="description">Beschreibung</span>
 
-                <span form-label-invalid="description" ng-messages="projectForm.description.$error">
-                    <span ng-message="required">Bitte geben Sie eine ausführliche Beschreibung an</span>
-                </span>
+                    <span form-label-invalid="description" ng-messages="projectForm.description.$error">
+                        <span ng-message="required">Bitte geben Sie eine ausführliche Beschreibung an</span>
+                    </span>
 
-                <textarea name="description" ng-model="project.description" placeholder="Beschreiben Sie Ihre Idee ausführlich. Diese Information ist in der Detailansicht sichtbar (keine Zeichenbeschränkung, kein HTML)"
-                          required reset-remote-validation></textarea>
-            </label>
+                    <textarea name="description" ng-model="project.description" placeholder="Beschreiben Sie Ihre Idee ausführlich. Diese Information ist in der Detailansicht sichtbar (keine Zeichenbeschränkung, kein HTML)"
+                              required reset-remote-validation></textarea>
+                </label>
+            </div>
         </div>
-    </div>
 
-    <button type="submit" class="success margin-top" ng-click="submitProjectIdea()" ng-disabled="loading">
-        {{ loading ? 'Absenden...' : 'Absenden' }}
-    </button>
-</form>
+        <button type="submit" class="success margin-top" ng-click="submitProjectIdea()" ng-disabled="loading">
+            {{ loading ? 'Absenden...' : 'Absenden' }}
+        </button>
+    </form>
+</content-row>

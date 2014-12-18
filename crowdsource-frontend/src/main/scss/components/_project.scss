@@ -22,14 +22,16 @@
 }
 
 .project-list {
-    @media #{$small-up} {
-        @include block-grid(1);
-    }
-    @media #{$medium-up} {
-        @include block-grid(2);
-    }
-    @media #{$large-up} {
-        @include block-grid(3);
+    ul {
+        @media #{$small-up} {
+            @include block-grid(1);
+        }
+        @media #{$medium-up} {
+            @include block-grid(2);
+        }
+        @media #{$large-up} {
+            @include block-grid(3);
+        }
     }
 
     .project-tile {
@@ -47,5 +49,13 @@
         p {
             @include limit-lines(4, 16px, 1.5);
         }
+    }
+}
+
+.project-details {
+    background: $white;
+
+    .project-description {
+        white-space: pre-wrap;
     }
 }

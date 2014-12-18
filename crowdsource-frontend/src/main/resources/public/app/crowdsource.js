@@ -19,6 +19,10 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
                 controller: 'ProjectFormController',
                 requireLogin: true
             })
+            .when('/project/:projectId', {
+                templateUrl: 'app/project/details/project-details.html',
+                controller: 'ProjectDetailsController'
+            })
             .when('/project/new/success', {
                 templateUrl: 'app/project/form/project-form-success.html',
                 requireLogin: true
@@ -29,7 +33,7 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
             })
             .when('/signup', {
                 templateUrl: 'app/user/signup/user-signup.html',
-                controller: 'UserSignupController'
+                controller: 'UserSignupController as signup'
             })
             .when('/signup/:email/success', {
                 templateUrl: 'app/user/signup/user-signup-success.html',

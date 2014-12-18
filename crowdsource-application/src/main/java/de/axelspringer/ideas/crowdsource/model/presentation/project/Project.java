@@ -13,6 +13,10 @@ import javax.validation.constraints.Min;
 @NoArgsConstructor // needed for serialization
 public class Project {
 
+    // no validation here on purpose, as this is only filled on response and ignored in request.
+    @JsonView(ProjectSummaryView.class)
+    private String id;
+
     @NotEmpty
     @JsonView(ProjectSummaryView.class)
     private String title;
@@ -33,6 +37,7 @@ public class Project {
     private User creator;
 
     public Project(ProjectEntity projectEntity) {
+        this.id = projectEntity.getId();
         this.title = projectEntity.getTitle();
         this.shortDescription = projectEntity.getShortDescription();
         this.description = projectEntity.getDescription();

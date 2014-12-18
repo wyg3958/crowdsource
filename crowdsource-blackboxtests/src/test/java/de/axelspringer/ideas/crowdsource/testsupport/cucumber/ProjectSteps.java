@@ -6,6 +6,7 @@ import cucumber.api.java.en.When;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.NavigationBar;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.ProjectDetailPage;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.ProjectsPage;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.AddProjectConfirmationView;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.AddProjectForm;
@@ -21,12 +22,10 @@ import org.springframework.test.context.ContextConfiguration;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.startsWith;
+import static org.hamcrest.Matchers.*;
 
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
-public class AddProjectSteps {
+public class ProjectSteps {
 
     @Autowired
     private NavigationBar navigationBar;
@@ -41,6 +40,9 @@ public class AddProjectSteps {
     private ProjectsPage projectsPage;
 
     @Autowired
+    private ProjectDetailPage projectDetailPage;
+
+    @Autowired
     private WebDriverProvider webDriverProvider;
 
     @Autowired
@@ -49,6 +51,7 @@ public class AddProjectSteps {
     private WebDriver webDriver;
     private String randomProjectTitlePrefix;
     private String randomProjectShortDescriptionPrefix;
+    private String[] wantedStrings;
 
     @Before
     public void init() {
@@ -114,11 +117,26 @@ public class AddProjectSteps {
         assertThat(projects, hasItem(Matchers.<Project>hasProperty("shortDescription", endsWith("\u2026"))));
     }
 
-    @When("^he moves through the project creation process$")
+    @When("^(?:he moves through the project creation process|a published project is available)$")
     public void he_moves_through_the_project_creation_process() throws Throwable {
         he_clicks_on_the_New_Project_link_in_the_navigation_bar();
         he_is_redirected_to_the_project_creation_page();
         he_submits_the_form_with_valid_project_data();
         the_project_creation_success_page_is_shown();
     }
+
+    @When("^the user clicks on a project tile$")
+    public void the_user_clicks_on_a_project_tile() throws Throwable {
+        PageFactory.initElements(webDriver, projectsPage);
+        projectsPage.waitForPageLoad();
+        wantedStrings = projectsPage.clickProjectTile();
+    }
+
+    @Then("^the project detail page is displayed$")
+    public void the_project_detail_page_is_displayed() throws Throwable {
+        PageFactory.initElements(webDriver, projectDetailPage);
+        projectDetailPage.waitForTitleToBeAvailable(wantedStrings[0]);
+        projectDetailPage.waitForShortDescriptionToBeAvailable(wantedStrings[1]);
+    }
+
 }

@@ -40,4 +40,14 @@ public class ProjectsPage {
                     return project;
                 }).collect(toList());
     }
+
+    public String[] clickProjectTile() {
+        RemoteWebDriver webDriver = webDriverProvider.provideDriver();
+        final WebElement projectTile = webDriver.findElement(By.cssSelector(".project-tile"));
+        final String title = projectTile.findElement(By.cssSelector("h1")).getText();
+        final String shortDescription = projectTile.findElement(By.cssSelector("p")).getText();
+        String[] strings = {title, shortDescription};
+        projectTile.click();
+        return strings;
+    }
 }

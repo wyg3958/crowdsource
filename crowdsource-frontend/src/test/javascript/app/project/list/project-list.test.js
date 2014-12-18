@@ -18,7 +18,9 @@ describe('project list', function () {
             });
 
             var template = $templateCache.get('app/project/list/project-list.html');
-            projectList = $compile(template)($scope);
+
+            // wrap the template in a <div>, or $compile will return multiple elements for each top level element
+            projectList = $compile('<div>' + template + '<div>')($scope);
         });
     });
 
@@ -31,7 +33,9 @@ describe('project list', function () {
         $scope.$digest();
         $httpBackend.flush();
 
-        var listItems = projectList.find('li');
+        expect(projectList.find('.project-list')).not.toHaveClass('ng-hide');
+
+        var listItems = projectList.find('.project-tile');
         expect(listItems).toHaveLength(2);
 
         expect($(listItems[0]).find('h1')).toHaveText('Title');
@@ -39,6 +43,9 @@ describe('project list', function () {
 
         expect($(listItems[1]).find('h1')).toHaveText('Title 2');
         expect($(listItems[1]).find('p')).toHaveText('Short description 2');
+
+        expect(projectList.find('.no-projects-text')).toHaveClass('ng-hide');
+        expect(projectList.find('.add-project-text')).not.toHaveClass('ng-hide');
     });
 
     it("should redirect to the project's details page when the project tile is clicked", function () {
@@ -48,10 +55,31 @@ describe('project list', function () {
         $scope.$digest();
         $httpBackend.flush();
 
-        var tile = projectList.find('li .project-tile');
+        var tile = projectList.find('.project-tile');
         tile.click();
 
         expect($location.path()).toBe('/project/projectId');
+    });
+
+    it('should show a message if no projects exist yet', function () {
+        $httpBackend.expectGET('/projects').respond(200, []);
+        $scope.$digest();
+        $httpBackend.flush();
+
+        expect(projectList.find('.project-list')).toHaveClass('ng-hide');
+        expect(projectList.find('.no-projects-text')).not.toHaveClass('ng-hide');
+        expect(projectList.find('.add-project-text')).toHaveClass('ng-hide');
+    });
+
+    it('should hide the "create a new project" section while loading', function () {
+        $httpBackend.expectGET('/projects').respond(200, []);
+        $scope.$digest();
+
+        expect(projectList.find('.new-project')).toHaveClass('ng-hide');
+
+        $httpBackend.flush();
+
+        expect(projectList.find('.new-project')).not.toHaveClass('ng-hide');
     });
 
 });

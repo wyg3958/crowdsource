@@ -54,3 +54,10 @@
         margin-bottom: 50px;
     }
 }
+
+.divider {
+    width: rem-calc(50);
+    background: $black;
+    height: rem-calc(3);
+    margin: 0 auto rem-calc(40) auto;
+}

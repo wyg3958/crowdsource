@@ -1,4 +1,4 @@
-<content-row class="project-list">
+<content-row class="project-list" ng-show="projectList.projects.length > 0">
     <ul data-equalizer>
         <li ng-repeat="project in projectList.projects" foundation-reflow>
             <div class="project-tile" data-equalizer-watch ng-click="projectList.showProjectDetails(project)">
@@ -9,4 +9,15 @@
             </div>
         </li>
     </ul>
+</content-row>
+
+<content-row class="new-project" ng-show="projectList.projects.$resolved">
+    <h1>Neue Crowd Projekte</h1>
+
+    <p class="no-projects-text" ng-show="projectList.projects.length == 0">Oops. Noch sind keine neuen Projekte eingestellt. Erstellen Sie Ihr erstes Projekt!</p>
+    <p class="add-project-text" ng-show="projectList.projects.length > 0">Machen Sie mit und erstellen Sie Ihr neues Projekt!</p>
+
+    <div class="divider"></div>
+
+    <a class="button success" href="#/project/new">Jetzt neues Crowd Projekt starten</a>
 </content-row>

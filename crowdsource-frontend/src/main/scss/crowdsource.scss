@@ -6,7 +6,9 @@
 @import "util/form";
 @import "util/navigation";
 @import "util/objects";
-@import "components/project";
+@import "components/project/project-list";
+@import "components/project/project-details";
+@import "components/project/project-form";
 @import "components/inline-modal";
 
 button {

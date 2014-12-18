@@ -5,7 +5,7 @@ angular.module('crowdsource')
         var vm = this;
 
         vm.signUp = function () {
-            if (!vm.signupForm.$valid) {
+            if (!vm.form.$valid) {
                 return;
             }
 
@@ -17,7 +17,7 @@ angular.module('crowdsource')
                 $location.path('/signup/' + vm.user.email + '/success');
             });
             promise.catch(function (response) {
-                RemoteFormValidation.applyServerErrorResponse(vm, vm.signupForm, response);
+                RemoteFormValidation.applyServerErrorResponse(vm, vm.form, response);
             });
             promise.finally(function () {
                 vm.loading = false;

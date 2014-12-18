@@ -11,7 +11,7 @@ describe('project form', function () {
             $httpBackend = _$httpBackend_;
             $location = _$location_;
 
-            $controller('ProjectFormController', {
+            $controller('ProjectFormController as projectForm', {
                 $scope: $scope,
                 $location: _$location_,
                 Project: Project,
@@ -19,8 +19,10 @@ describe('project form', function () {
             });
 
             var template = $templateCache.get('app/project/form/project-form.html');
-            projectForm = new ProjectForm($compile(template)($scope));
+            var view = $compile(template)($scope);
+
             $scope.$digest();
+            projectForm = new ProjectForm(view);
         });
     });
 

@@ -1,17 +1,17 @@
-<content-row>
-    <form name="loginForm" novalidate>
+<content-row class="login-form">
+    <form name="login.form" novalidate>
 
         <div class="inline-modal">
 
             <h3 class="margin-bottom">Login</h3>
 
-            <div class="general-error alert-box alert" ng-messages="generalErrors" ng-if="generalErrors">
+            <div class="general-error alert-box alert" ng-messages="login.generalErrors" ng-if="login.generalErrors">
                 <span ng-message="remote_bad_credentials">Ihre Anmeldeinformationen sind ungültig. Bitte überprüfen Sie Ihre eingegebenen Daten.</span>
                 <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.</span>
             </div>
 
             <div class="row">
-                <email-form-group model="user.email" field-name="email"
+                <email-form-group model="login.user.email" field-name="email"
                                   class="small-12 columns form-controls-email" />
             </div>
 
@@ -21,11 +21,11 @@
 
                         <span form-label-valid="password">Passwort</span>
 
-                        <span form-label-invalid="password" ng-messages="loginForm.password.$error">
+                        <span form-label-invalid="password" ng-messages="login.form.password.$error">
                             <span ng-message="required">Bitte geben Sie Ihr Passwort ein</span>
                         </span>
 
-                        <input type="password" name="password" ng-model="user.password"
+                        <input type="password" name="password" ng-model="login.user.password"
                                required reset-remote-validation>
                     </label>
                 </div>
@@ -34,8 +34,8 @@
             <div class="row">
                 <div class="small-12 columns text-center">
                     <div>
-                        <button type="submit" class="success margin-top" ng-click="login()" ng-disabled="loading">
-                            {{ loading ? 'Login...' : 'Login' }}
+                        <button type="submit" class="success margin-top" ng-click="login.login()" ng-disabled="login.loading">
+                            {{ login.loading ? 'Login...' : 'Login' }}
                         </button>
                     </div>
                     <div>

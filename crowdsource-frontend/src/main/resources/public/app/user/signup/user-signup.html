@@ -1,11 +1,11 @@
 <content-row>
-    <form name="signup.signupForm" novalidate>
+    <form name="signup.form" novalidate>
 
         <div class="inline-modal">
 
             <h3 class="margin-bottom">Registrierung</h3>
 
-            <div class="general-error alert-box alert" ng-messages="signup.generalErrors" ng-if="generalErrors">
+            <div class="general-error alert-box alert" ng-messages="signup.generalErrors" ng-if="signup.generalErrors">
                 <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.</span>
             </div>
 
@@ -25,9 +25,9 @@
                                                   ng-click="signup.showTermsOfService = !signup.showTermsOfService">AGBs</a>
                         </span>
 
-                        <span form-label-invalid="termsOfServiceAccepted" ng-messages="signup.signupForm.termsOfServiceAccepted.$error">
+                        <span form-label-invalid="termsOfServiceAccepted" ng-messages="signup.form.termsOfServiceAccepted.$error">
                             <span ng-message="required">Bitte akzeptieren Sie die <a class="crowd-tos-link"
-                                                                                     ng-click="signupshowTermsOfService = !signupshowTermsOfService">AGBs</a></span>
+                                                                                     ng-click="signup.showTermsOfService = !signup.showTermsOfService">AGBs</a></span>
                         </span>
                     </label>
                 </div>

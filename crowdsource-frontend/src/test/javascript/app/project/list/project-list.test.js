@@ -1,4 +1,4 @@
-describe('project form', function () {
+describe('project list', function () {
 
     var $scope, $httpBackend, $location, projectList;
 
@@ -11,7 +11,7 @@ describe('project form', function () {
             $httpBackend = _$httpBackend_;
             $location = _$location_;
 
-            $controller('ProjectListController', {
+            $controller('ProjectListController as projectList', {
                 $scope: $scope,
                 $location: _$location_,
                 Project: Project
@@ -31,7 +31,7 @@ describe('project form', function () {
         $scope.$digest();
         $httpBackend.flush();
 
-        var listItems = projectList.find('> li');
+        var listItems = projectList.find('li');
         expect(listItems).toHaveLength(2);
 
         expect($(listItems[0]).find('h1')).toHaveText('Title');
@@ -48,7 +48,7 @@ describe('project form', function () {
         $scope.$digest();
         $httpBackend.flush();
 
-        var tile = projectList.find('> li .project-tile');
+        var tile = projectList.find('li .project-tile');
         tile.click();
 
         expect($location.path()).toBe('/project/projectId');

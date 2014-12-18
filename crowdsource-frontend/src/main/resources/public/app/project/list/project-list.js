@@ -1,10 +1,12 @@
 angular.module('crowdsource')
 
-    .controller('ProjectListController', function($scope, $location, Project) {
+    .controller('ProjectListController', function($location, Project) {
 
-        $scope.projects = Project.getAll();
+        var vm = this;
 
-        $scope.showProjectDetails = function(project) {
+        vm.projects = Project.getAll();
+
+        vm.showProjectDetails = function(project) {
             $location.path('/project/' + project.id);
         };
     });

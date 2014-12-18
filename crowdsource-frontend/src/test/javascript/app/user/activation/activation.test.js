@@ -11,7 +11,7 @@ describe('user activation view', function () {
             $httpBackend = _$httpBackend_;
             $location = _$location_;
 
-            $controller('UserActivationController', {
+            $controller('UserActivationController as activation', {
                 $scope: $scope,
                 $routeParams: {
                     email: "test@axelspringer.de",
@@ -24,8 +24,10 @@ describe('user activation view', function () {
             });
 
             var template = $templateCache.get('app/user/activation/user-activation.html');
-            activationForm = new ActivationForm($compile(template)($scope));
+            var view = $compile(template)($scope);
+
             $scope.$digest();
+            activationForm = new ActivationForm(view);
         });
     });
 

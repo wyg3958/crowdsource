@@ -11,7 +11,7 @@ describe('user login view', function () {
             $httpBackend = _$httpBackend_;
             $location = _$location_;
 
-            $controller('UserLoginController', {
+            $controller('UserLoginController as login', {
                 $scope: $scope,
                 Authentication: Authentication,
                 RemoteFormValidation: RemoteFormValidation,
@@ -19,8 +19,10 @@ describe('user login view', function () {
             });
 
             var template = $templateCache.get('app/user/login/user-login.html');
-            loginForm = new LoginForm($compile(template)($scope));
+            var view = $compile(template)($scope);
+
             $scope.$digest();
+            loginForm = new LoginForm(view);
         });
     });
 

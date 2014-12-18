@@ -11,7 +11,7 @@ describe('user signup view', function () {
             $httpBackend = _$httpBackend_;
             $location = _$location_;
 
-            $controller('UserSignupController', {
+            $controller('UserSignupController as signup', {
                 $scope: $scope,
                 $location: $location,
                 User: User,
@@ -19,8 +19,10 @@ describe('user signup view', function () {
             });
 
             var template = $templateCache.get('app/user/signup/user-signup.html');
-            signupForm = new SignupForm($compile(template)($scope));
+            var view = $compile(template)($scope);
+
             $scope.$digest();
+            signupForm = new SignupForm(view);
         });
     });
 

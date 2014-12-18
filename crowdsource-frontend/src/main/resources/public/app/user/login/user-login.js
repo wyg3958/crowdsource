@@ -1,24 +1,26 @@
 angular.module('crowdsource')
 
-    .controller('UserLoginController', function ($scope, Authentication, RemoteFormValidation, Route) {
+    .controller('UserLoginController', function (Authentication, RemoteFormValidation, Route) {
 
-        $scope.login = function () {
-            if (!$scope.loginForm.$valid) {
+        var vm = this;
+
+        vm.login = function () {
+            if (!vm.form.$valid) {
                 return;
             }
 
-            RemoteFormValidation.clearRemoteErrors($scope);
-            $scope.loading = true;
+            RemoteFormValidation.clearRemoteErrors(vm);
+            vm.loading = true;
 
-            Authentication.login($scope.user.email, $scope.user.password)
+            Authentication.login(vm.user.email, vm.user.password)
                 .then(function () {
                     Route.redirectToOriginallyRequestedPageOr('/');
                 })
                 .catch(function (errorCode) {
-                    RemoteFormValidation.setGeneralError($scope, errorCode);
+                    RemoteFormValidation.setGeneralError(vm, errorCode);
                 })
                 .finally(function () {
-                    $scope.loading = false;
+                    vm.loading = false;
                 });
         };
     });

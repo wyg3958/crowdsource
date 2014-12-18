@@ -7,21 +7,21 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
         $routeProvider
             .when('/', {
                 templateUrl: 'app/overview/overview.html',
-                controller: 'OverviewController',
+                controller: 'OverviewController as overview',
                 requireLogin: true
             })
             .when('/projects', {
                 templateUrl: 'app/project/list/project-list.html',
-                controller: 'ProjectListController'
+                controller: 'ProjectListController as projectList'
             })
             .when('/project/new', {
                 templateUrl: 'app/project/form/project-form.html',
-                controller: 'ProjectFormController',
+                controller: 'ProjectFormController as projectForm',
                 requireLogin: true
             })
             .when('/project/:projectId', {
                 templateUrl: 'app/project/details/project-details.html',
-                controller: 'ProjectDetailsController'
+                controller: 'ProjectDetailsController as projectDetails'
             })
             .when('/project/new/success', {
                 templateUrl: 'app/project/form/project-form-success.html',
@@ -29,7 +29,7 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
             })
             .when('/login', {
                 templateUrl: 'app/user/login/user-login.html',
-                controller: 'UserLoginController'
+                controller: 'UserLoginController as login'
             })
             .when('/signup', {
                 templateUrl: 'app/user/signup/user-signup.html',
@@ -37,15 +37,15 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
             })
             .when('/signup/:email/success', {
                 templateUrl: 'app/user/signup/user-signup-success.html',
-                controller: 'UserSignupSuccessController'
+                controller: 'UserSignupSuccessController as signupSuccess'
             })
             .when('/signup/:email/activation/:activationToken', {
                 templateUrl: 'app/user/activation/user-activation.html',
-                controller: 'UserActivationController'
+                controller: 'UserActivationController as activation'
             })
             .when('/logout', {
                 templateUrl: 'app/user/logout/user-logout.html',
-                controller: 'UserLogoutController'
+                controller: 'UserLogoutController as logout'
             })
             .otherwise({redirectTo: '/'});
 

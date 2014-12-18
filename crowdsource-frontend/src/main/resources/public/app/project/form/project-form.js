@@ -1,24 +1,26 @@
 angular.module('crowdsource')
 
-    .controller('ProjectFormController', function($scope, $location, Project, RemoteFormValidation) {
+    .controller('ProjectFormController', function($location, Project, RemoteFormValidation) {
 
-        $scope.submitProjectIdea = function() {
-            if (!$scope.projectForm.$valid) {
+        var vm = this;
+
+        vm.submitProjectIdea = function() {
+            if (!vm.form.$valid) {
                 return;
             }
 
-            RemoteFormValidation.clearRemoteErrors($scope);
-            $scope.loading = true;
+            RemoteFormValidation.clearRemoteErrors(vm);
+            vm.loading = true;
 
-            Project.add($scope.project)
+            Project.add(vm.project)
                 .then(function() {
                     $location.path('/project/new/success');
                 })
                 .catch(function(response) {
-                    RemoteFormValidation.applyServerErrorResponse($scope, $scope.projectForm, response);
+                    RemoteFormValidation.applyServerErrorResponse(vm, vm.form, response);
                 })
                 .finally(function() {
-                    $scope.loading = false;
+                    vm.loading = false;
                 });
         };
 

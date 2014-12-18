@@ -1,3 +1,36 @@
+.intro-section {
+    background: $white;
+    text-align: center;
+
+    .container > p {
+        max-width: rem-calc(600);
+        margin: 0 auto 20px auto;
+    }
+
+    .info-boxes {
+        @media #{$small-up} {
+            @include block-grid(
+                $per-row: 1,
+                $spacing: 5px
+            );
+        }
+        @media #{$medium-up} {
+            @include block-grid(
+                $per-row: 3,
+                $spacing: 20px
+            );
+        }
+
+        h2 {
+            font-size: rem-calc(20);
+        }
+
+        .divider {
+            margin-bottom: 10px;
+        }
+    }
+}
+
 @mixin limit-lines ($lines, $font-size, $line-height) {
     font-size: $font-size;
     line-height: $line-height;
@@ -34,9 +67,4 @@
             @include limit-lines(4, 16px, 1.5);
         }
     }
-}
-
-.new-project {
-    text-align: center;
-    background: $white;
 }

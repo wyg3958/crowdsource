@@ -1,4 +1,42 @@
+<content-row class="intro-section">
+    <h1>Axel Springer Crowd</h1>
+
+    <p>Die Axel Springer Crowd ist die Crowdfunding Plattform der AS IT. Hier kannst du deine - oder andere - innovativen Ideen pitchen und in die Tat umsetzen.</p>
+
+    <ul class="info-boxes" data-equalizer>
+        <li>
+            <div class="panel" data-equalizer-watch >
+                <h2>Dein Budget</h2>
+                <div class="divider"></div>
+
+                Nutze dein Budget und verteile es auf die aktuell eingereichten Ideen. Gefällt dir keines der vorgestellten Projekte? Dann starte dein eigenes!
+            </div>
+        </li>
+        <li>
+            <div class="panel" data-equalizer-watch >
+                <h2>Du</h2>
+                <div class="divider"></div>
+
+                Ohne dich geht nichts. Stelle uns deine coolen Ideen vor oder nutze dein Budget, um die innovativsten Crowd-Projekte zu fördern
+            </div>
+        </li>
+        <li>
+            <div class="panel" data-equalizer-watch >
+                <h2>Dein Zeitrahmen</h2>
+                <div class="divider"></div>
+
+                Die Uhr tickt. Mindestens einmail im Quartal schütten wir an alle Nutzer xxx AS$ aus. Nutze diese Zeit, denn sonst verfällt dein Budget!
+            </div>
+        </li>
+    </ul>
+
+    <p>Hast du noch Fragen? Dann überfliege unseren FAQ.<br/>Oder registriere dich, alternativ melde dich an, und leg los!</p>
+
+</content-row>
+
 <content-row class="project-list">
+    <h2 class="text-center">Die neusten Projekte</h2>
+
     <ul data-equalizer>
         <li ng-repeat="project in projectList.projects" foundation-reflow>
             <div class="project-tile" data-equalizer-watch ng-click="projectList.showProjectDetails(project)">
@@ -9,15 +47,13 @@
             </div>
         </li>
     </ul>
-</content-row>
 
-<content-row class="new-project" ng-show="projectList.projects.$resolved">
-    <h1>Neue Crowd Projekte</h1>
+    <div class="no-projects text-center" ng-show="projectList.projects.$resolved && projectList.projects.length == 0">
+        <p>Oops. Noch sind keine neuen Projekte eingestellt. Erstelle das erste Projekt!</p>
 
-    <p class="no-projects-text" ng-show="projectList.projects.length == 0">Oops. Noch sind keine neuen Projekte eingestellt. Erstellen Sie Ihr erstes Projekt!</p>
-    <p class="add-project-text" ng-show="projectList.projects.length > 0">Machen Sie mit und erstellen Sie Ihr neues Projekt!</p>
+        <div class="divider"></div>
 
-    <div class="divider"></div>
+        <a class="button success" href="#/project/new">Jetzt neues Crowd Projekt starten</a>
+    </div>
 
-    <a class="button success" href="#/project/new">Jetzt neues Crowd Projekt starten</a>
 </content-row>

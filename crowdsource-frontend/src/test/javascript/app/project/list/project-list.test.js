@@ -42,8 +42,7 @@ describe('project list', function () {
         expect($(listItems[1]).find('h1')).toHaveText('Title 2');
         expect($(listItems[1]).find('p')).toHaveText('Short description 2');
 
-        expect(projectList.find('.no-projects-text')).toHaveClass('ng-hide');
-        expect(projectList.find('.add-project-text')).not.toHaveClass('ng-hide');
+        expect(projectList.find('.no-projects')).toHaveClass('ng-hide');
     });
 
     it("should redirect to the project's details page when the project tile is clicked", function () {
@@ -64,19 +63,18 @@ describe('project list', function () {
         $scope.$digest();
         $httpBackend.flush();
 
-        expect(projectList.find('.no-projects-text')).not.toHaveClass('ng-hide');
-        expect(projectList.find('.add-project-text')).toHaveClass('ng-hide');
+        expect(projectList.find('.no-projects')).not.toHaveClass('ng-hide');
     });
 
     it('should hide the "create a new project" section while loading', function () {
         $httpBackend.expectGET('/projects').respond(200, []);
         $scope.$digest();
 
-        expect(projectList.find('.new-project')).toHaveClass('ng-hide');
+        expect(projectList.find('.no-projects')).toHaveClass('ng-hide');
 
         $httpBackend.flush();
 
-        expect(projectList.find('.new-project')).not.toHaveClass('ng-hide');
+        expect(projectList.find('.no-projects')).not.toHaveClass('ng-hide');
     });
 
 });

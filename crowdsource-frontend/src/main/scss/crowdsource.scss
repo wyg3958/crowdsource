@@ -45,20 +45,6 @@ body {
     color: $crowd-color-dark-grey;
 }
 
-%box {
-    @extend .panel;
-    @extend .radius;
-
-    margin: 0 auto;
-    background-color: $white;
-
-    h1 {
-        font-size: rem-calc(27);
-        color: $crowd-color-purple;
-        margin-bottom: 50px;
-    }
-}
-
 content-row {
     display: block;
     padding: 10px;

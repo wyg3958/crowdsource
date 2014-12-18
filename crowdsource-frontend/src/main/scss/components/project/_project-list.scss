@@ -20,7 +20,7 @@
 
     .project-tile {
         @extend .panel;
-        @extend .light;
+        @extend %light;
         @extend .radius;
         margin-bottom: 0;
         cursor: pointer;

@@ -41,13 +41,9 @@ public class ProjectsPage {
                 }).collect(toList());
     }
 
-    public String[] clickProjectTile() {
+    public void clickProjectTileWithTitle(String title) {
         RemoteWebDriver webDriver = webDriverProvider.provideDriver();
-        final WebElement projectTile = webDriver.findElement(By.cssSelector(".project-tile"));
-        final String title = projectTile.findElement(By.cssSelector("h1")).getText();
-        final String shortDescription = projectTile.findElement(By.cssSelector("p")).getText();
-        String[] strings = {title, shortDescription};
+        final WebElement projectTile = webDriver.findElement(By.xpath("//h1[text()='" + title + "']"));
         projectTile.click();
-        return strings;
     }
 }

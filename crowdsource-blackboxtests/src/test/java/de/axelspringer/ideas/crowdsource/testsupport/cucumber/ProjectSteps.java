@@ -1,6 +1,7 @@
 package de.axelspringer.ideas.crowdsource.testsupport.cucumber;
 
 import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
@@ -51,7 +52,9 @@ public class ProjectSteps {
     private WebDriver webDriver;
     private String randomProjectTitlePrefix;
     private String randomProjectShortDescriptionPrefix;
-    private String[] wantedStrings;
+    private String createdProjectTitle;
+    private String createdProjectShortDescription;
+    private String createdProjectDescription;
 
     @Before
     public void init() {
@@ -81,8 +84,7 @@ public class ProjectSteps {
         randomProjectShortDescriptionPrefix = "Short description " + RandomStringUtils.randomAlphanumeric(16);
 
         // makes exactly 60 characters, to cause the text to be abbreviated on purpose
-        addProjectForm.setTitle(randomProjectTitlePrefix +
-                " Mmmmm mmmmm mmmmm mmm mmmm, mmmmmmmmm");
+        addProjectForm.setTitle(randomProjectTitlePrefix + " Mmmmm mmmmm mmmmm mmm mmmm, mmmmmmmmm");
 
         // makes exactly 140 characters, to cause the text to be abbreviated on purpose
         addProjectForm.setShortDescription(randomProjectShortDescriptionPrefix +
@@ -117,7 +119,7 @@ public class ProjectSteps {
         assertThat(projects, hasItem(Matchers.<Project>hasProperty("shortDescription", endsWith("\u2026"))));
     }
 
-    @When("^(?:he moves through the project creation process|a published project is available)$")
+    @When("^he moves through the project creation process$")
     public void he_moves_through_the_project_creation_process() throws Throwable {
         he_clicks_on_the_New_Project_link_in_the_navigation_bar();
         he_is_redirected_to_the_project_creation_page();
@@ -129,14 +131,33 @@ public class ProjectSteps {
     public void the_user_clicks_on_a_project_tile() throws Throwable {
         PageFactory.initElements(webDriver, projectsPage);
         projectsPage.waitForPageLoad();
-        wantedStrings = projectsPage.clickProjectTile();
+        projectsPage.clickProjectTileWithTitle(createdProjectTitle);
     }
 
     @Then("^the project detail page is displayed$")
     public void the_project_detail_page_is_displayed() throws Throwable {
         PageFactory.initElements(webDriver, projectDetailPage);
-        projectDetailPage.waitForTitleToBeAvailable(wantedStrings[0]);
-        projectDetailPage.waitForShortDescriptionToBeAvailable(wantedStrings[1]);
+        projectDetailPage.waitForTitleToBeAvailable(createdProjectTitle);
+        projectDetailPage.waitForShortDescriptionToBeAvailable(createdProjectShortDescription);
+        projectDetailPage.waitForDescriptionToBeAvailable(createdProjectDescription);
     }
 
+    @And("^a published project is available$")
+    public void a_published_project_is_available() throws Throwable {
+        he_clicks_on_the_New_Project_link_in_the_navigation_bar();
+        he_is_redirected_to_the_project_creation_page();
+
+        PageFactory.initElements(webDriver, addProjectForm);
+        createdProjectTitle = "T" + RandomStringUtils.randomAlphanumeric(6);
+        createdProjectShortDescription = "Short description " + RandomStringUtils.randomAlphanumeric(16);
+        createdProjectDescription = "This is the project description text.";
+
+        addProjectForm.setTitle(createdProjectTitle);
+        addProjectForm.setShortDescription(createdProjectShortDescription);
+        addProjectForm.setPledgeGoal("25000");
+        addProjectForm.setDescription(createdProjectDescription);
+        addProjectForm.submit();
+
+        the_project_creation_success_page_is_shown();
+    }
 }

@@ -17,6 +17,10 @@ public class ProjectDetailPage {
         wait.until(presenceOfElementLocated(By.xpath("//h1[.='" + title + "']")));
     }
 
+    public void waitForDescriptionToBeAvailable(String description) {
+        wait.until(presenceOfElementLocated(By.xpath("//div[.='" + description + "']")));
+    }
+
     public void waitForShortDescriptionToBeAvailable(String shortDescription) {
         wait.until(presenceOfElementLocated(By.xpath("//blockquote[.='" + shortDescription + "']")));
     }

@@ -1,22 +1,18 @@
 package de.axelspringer.ideas.crowdsource.testsupport.cucumber.hooks;
 
-import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
-import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
+import cucumber.api.java.Before;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.LogoutPage;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class LogoutHook {
 
     @Autowired
-    private WebDriverProvider webDriverProvider;
+    private LogoutPage logoutPage;
 
-    @Autowired
-    private UrlProvider urlProvider;
-
-//    @Before
-//    public void init() {
-//        WebDriver webDriver = webDriverProvider.provideDriver();
-//        // logout
-//        webDriver.get(urlProvider.applicationUrl() + "/#/logout");
-//    }
+    @Before
+    public void init() {
+        logoutPage.open();
+        logoutPage.waitForPageLoad();
+    }
 
 }

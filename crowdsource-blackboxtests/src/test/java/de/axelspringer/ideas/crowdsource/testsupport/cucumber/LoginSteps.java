@@ -42,9 +42,6 @@ public class LoginSteps {
     @Before
     public void init() {
         webDriver = webDriverProvider.provideDriver();
-
-        // logout
-        webDriver.get(urlProvider.applicationUrl() + "/#/logout");
     }
 
     @Given("^a user is logged in")

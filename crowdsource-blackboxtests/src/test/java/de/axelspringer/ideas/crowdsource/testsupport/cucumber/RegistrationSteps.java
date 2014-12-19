@@ -64,9 +64,6 @@ public class RegistrationSteps {
     public void init() {
         webDriver = webDriverProvider.provideDriver();
 
-        // logout
-        webDriver.get(urlProvider.applicationUrl() + "/#/logout");
-
         emailName = "registrationTest+" + RandomStringUtils.randomAlphanumeric(10);
     }
 
@@ -93,11 +90,13 @@ public class RegistrationSteps {
     }
 
     @Given("^a user is on the registration page$")
-    public void a_user_visits_the_registration_page() throws Throwable {
+    public void a_user_is_on_the_registration_page() throws Throwable {
         webDriver.get(urlProvider.applicationUrl());
 
         PageFactory.initElements(webDriver, navigationBar);
         navigationBar.clickSignup();
+
+        registrationForm.waitForPageLoad();
     }
 
     @When("^the user enters his email address$")

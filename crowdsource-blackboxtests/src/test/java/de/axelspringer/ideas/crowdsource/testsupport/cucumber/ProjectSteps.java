@@ -12,7 +12,6 @@ import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.ProjectsPage;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.AddProjectConfirmationView;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.AddProjectForm;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
-import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.hamcrest.Matchers;
 import org.openqa.selenium.WebDriver;
@@ -23,7 +22,9 @@ import org.springframework.test.context.ContextConfiguration;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.startsWith;
 
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
 public class ProjectSteps {
@@ -46,9 +47,6 @@ public class ProjectSteps {
     @Autowired
     private WebDriverProvider webDriverProvider;
 
-    @Autowired
-    private UrlProvider urlProvider;
-
     private WebDriver webDriver;
     private String randomProjectTitlePrefix;
     private String randomProjectShortDescriptionPrefix;
@@ -59,9 +57,6 @@ public class ProjectSteps {
     @Before
     public void init() {
         webDriver = webDriverProvider.provideDriver();
-
-        // logout
-        webDriver.get(urlProvider.applicationUrl() + "/#/logout");
     }
 
     @When("^he clicks on the New Project link in the navigation bar$")

@@ -29,7 +29,7 @@ public class ProjectsController {
     @JsonView(ProjectSummaryView.class)
     public List<Project> getProjects() {
 
-        final List<ProjectEntity> projects = projectRepository.findByPublicationStatus(PublicationStatus.PUBLISHED);
+        final List<ProjectEntity> projects = projectRepository.findByPublicationStatusOrderByCreatedDateDesc(PublicationStatus.PUBLISHED);
         return projects.stream().map(Project::new).collect(toList());
     }
 }

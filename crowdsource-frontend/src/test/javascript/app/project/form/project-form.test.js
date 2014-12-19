@@ -160,6 +160,12 @@ describe('project form', function () {
         expectValidationError('pledgeGoal', 'pattern');
     });
 
+    it('should show a validation error if the pledge goal is zero', function () {
+        projectForm.pledgeGoal.getInputField().val('0').trigger('input');
+
+        expectValidationError('pledgeGoal', 'min');
+    });
+
     it('should cut off a trailing dot in pledge goal before sending it to the server', function () {
         // this is some implicit logic of the input type="number" field and angular
         // that the trailing dot is removed automatically. This test is here to make sure this functionality

@@ -53,13 +53,14 @@
                         <span ng-message="required">Bitte geben Sie den Finanzierungsbedarf an</span>
                         <span ng-message="number">Bitte geben Sie nur Ziffern ein</span>
                         <span ng-message="pattern">Bitte geben Sie nur Ziffern ein</span>
+                        <span ng-message="min">Bitte geben Sie einen Wert über Null ein</span>
                     </span>
                 </label>
 
                 <div class="table">
                     <div class="table-cell full-width">
                         <input type="number" name="pledgeGoal" ng-model="projectForm.project.pledgeGoal" class="text-right" placeholder="0"
-                               required ng-pattern="/^[0-9]+$/i" reset-remote-validation>
+                               required ng-pattern="/^[0-9]+$/i" min="1" reset-remote-validation>
                     </div>
                     <div class="table-cell">
                         <span class="postfix text-left">AS$</span>

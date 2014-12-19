@@ -7,5 +7,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface ProjectRepository extends MongoRepository<ProjectEntity, String> {
-    List<ProjectEntity> findByPublicationStatus(PublicationStatus publicationStatus);
+    List<ProjectEntity> findByPublicationStatusOrderByCreatedDateDesc(PublicationStatus publicationStatus);
 }

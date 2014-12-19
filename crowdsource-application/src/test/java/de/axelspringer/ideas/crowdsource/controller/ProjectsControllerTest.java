@@ -26,11 +26,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -62,7 +58,7 @@ public class ProjectsControllerTest {
                 createProjectEntity("projectId3", "myTitle3", 789, "myShortDescription3", "user3@domain.com")
         );
 
-        when(projectRepository.findByPublicationStatus(any())).thenReturn(entities);
+        when(projectRepository.findByPublicationStatusOrderByCreatedDateDesc(any())).thenReturn(entities);
     }
 
     private ProjectEntity createProjectEntity(String id, String title, int pledgeGoal, String shortDescription, String userEmail) {
@@ -87,7 +83,7 @@ public class ProjectsControllerTest {
                 "{\"id\":\"projectId2\",\"title\":\"myTitle2\",\"shortDescription\":\"myShortDescription2\",\"pledgeGoal\":456}," +
                 "{\"id\":\"projectId3\",\"title\":\"myTitle3\",\"shortDescription\":\"myShortDescription3\",\"pledgeGoal\":789}]"));
 
-        verify(projectRepository).findByPublicationStatus(PublicationStatus.PUBLISHED);
+        verify(projectRepository).findByPublicationStatusOrderByCreatedDateDesc(PublicationStatus.PUBLISHED);
     }
 
     @Configuration

@@ -142,4 +142,9 @@ public class ProjectSteps {
         projectDetailPage.waitForShortDescriptionToBeAvailable(createdProject.getShortDescription());
         projectDetailPage.waitForDescriptionToBeAvailable(createdProject.getDescription());
     }
+
+    @Given("^the user requests the project detail page with a non existant project id$")
+    public void the_user_requests_the_project_detail_page_with_a_non_existant_project_id() throws Throwable {
+        projectDetailPage.open("i-dont-exist-project-id");
+    }
 }

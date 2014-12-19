@@ -17,6 +17,13 @@ public class UserTest {
     }
 
     @Test
+    public void testDetermineNameFromEmail_withDigits() throws Exception {
+        User user = new User(new UserEntity("f12oo123.91bar2@domain.com"));
+
+        assertThat(user.getName(), is("Foo Bar"));
+    }
+
+    @Test
     public void testDetermineNameFromEmail_singleName() throws Exception {
         User user = new User(new UserEntity("foo@domain.com"));
 

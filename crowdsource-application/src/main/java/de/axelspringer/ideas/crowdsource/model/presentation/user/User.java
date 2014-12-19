@@ -41,6 +41,7 @@ public class User {
         List<String> localParts = Arrays.asList(localPart.split("\\."));
 
         return localParts.stream()
+                .map(s -> s.replaceAll("\\d+", ""))
                 .map(StringUtils::capitalize)
                 .collect(joining(" "));
     }

@@ -33,7 +33,7 @@
                             <ensure>RUNNING</ensure>
                             <instances>3</instances>
                             <dockerImageName>dockerfile/mongodb</dockerImageName>
-                            <dockerRunOptions>-p 27017:27017</dockerRunOptions>
+                            <dockerRunOptions>-p 27017:27017 -v /var/mongo:/data/db</dockerRunOptions>
                         </configuration>
                     </execution>
                     <execution>

@@ -1,7 +1,7 @@
 package de.axelspringer.ideas.crowdsource.testsupport.cucumber;
 
 import cucumber.api.java.Before;
-import cucumber.api.java.en.And;
+import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
@@ -12,6 +12,7 @@ import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.ProjectsPage;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.AddProjectConfirmationView;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.AddProjectForm;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
+import de.axelspringer.ideas.crowdsource.testsupport.util.CrowdSourceClient;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.hamcrest.Matchers;
 import org.openqa.selenium.WebDriver;
@@ -47,16 +48,29 @@ public class ProjectSteps {
     @Autowired
     private WebDriverProvider webDriverProvider;
 
+    @Autowired
+    private CrowdSourceClient crowdSourceClient;
+
     private WebDriver webDriver;
     private String randomProjectTitlePrefix;
     private String randomProjectShortDescriptionPrefix;
-    private String createdProjectTitle;
-    private String createdProjectShortDescription;
-    private String createdProjectDescription;
+    private Project createdProject;
 
     @Before
     public void init() {
         webDriver = webDriverProvider.provideDriver();
+    }
+
+    @Given("^a published project is available$")
+    public void a_published_project_is_available() throws Throwable {
+        createdProject = new Project();
+        createdProject.setTitle("T" + RandomStringUtils.randomAlphanumeric(6));
+        createdProject.setShortDescription("Short description " + RandomStringUtils.randomAlphanumeric(16));
+        createdProject.setPledgeGoal(25);
+        createdProject.setDescription("This is the project description text.");
+
+        CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithDefaultUser();
+        crowdSourceClient.createProject(createdProject, authToken);
     }
 
     @When("^he clicks on the New Project link in the navigation bar$")
@@ -114,45 +128,18 @@ public class ProjectSteps {
         assertThat(projects, hasItem(Matchers.<Project>hasProperty("shortDescription", endsWith("\u2026"))));
     }
 
-    @When("^he moves through the project creation process$")
-    public void he_moves_through_the_project_creation_process() throws Throwable {
-        he_clicks_on_the_New_Project_link_in_the_navigation_bar();
-        he_is_redirected_to_the_project_creation_page();
-        he_submits_the_form_with_valid_project_data();
-        the_project_creation_success_page_is_shown();
-    }
-
-    @When("^the user clicks on a project tile$")
-    public void the_user_clicks_on_a_project_tile() throws Throwable {
+    @When("^the user clicks on the tile of this published project$")
+    public void the_user_clicks_on_the_tile_of_this_published_project() throws Throwable {
         PageFactory.initElements(webDriver, projectsPage);
         projectsPage.waitForPageLoad();
-        projectsPage.clickProjectTileWithTitle(createdProjectTitle);
+        projectsPage.clickProjectTileWithTitle(createdProject.getTitle());
     }
 
-    @Then("^the project detail page is displayed$")
-    public void the_project_detail_page_is_displayed() throws Throwable {
+    @Then("^the project detail page of this project is displayed$")
+    public void the_project_detail_page_of_this_project_is_displayed() throws Throwable {
         PageFactory.initElements(webDriver, projectDetailPage);
-        projectDetailPage.waitForTitleToBeAvailable(createdProjectTitle);
-        projectDetailPage.waitForShortDescriptionToBeAvailable(createdProjectShortDescription);
-        projectDetailPage.waitForDescriptionToBeAvailable(createdProjectDescription);
-    }
-
-    @And("^a published project is available$")
-    public void a_published_project_is_available() throws Throwable {
-        he_clicks_on_the_New_Project_link_in_the_navigation_bar();
-        he_is_redirected_to_the_project_creation_page();
-
-        PageFactory.initElements(webDriver, addProjectForm);
-        createdProjectTitle = "T" + RandomStringUtils.randomAlphanumeric(6);
-        createdProjectShortDescription = "Short description " + RandomStringUtils.randomAlphanumeric(16);
-        createdProjectDescription = "This is the project description text.";
-
-        addProjectForm.setTitle(createdProjectTitle);
-        addProjectForm.setShortDescription(createdProjectShortDescription);
-        addProjectForm.setPledgeGoal("25000");
-        addProjectForm.setDescription(createdProjectDescription);
-        addProjectForm.submit();
-
-        the_project_creation_success_page_is_shown();
+        projectDetailPage.waitForTitleToBeAvailable(createdProject.getTitle());
+        projectDetailPage.waitForShortDescriptionToBeAvailable(createdProject.getShortDescription());
+        projectDetailPage.waitForDescriptionToBeAvailable(createdProject.getDescription());
     }
 }

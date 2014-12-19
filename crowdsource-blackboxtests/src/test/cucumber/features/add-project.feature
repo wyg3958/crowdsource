@@ -6,6 +6,8 @@ Feature: Add project
     Then he is redirected to the project creation page
     When he submits the form with valid project data
     Then the project creation success page is shown
+    When he clicks the project overview link
+    Then the project overview page shows the new project
 
   Scenario: An anonymous user tries to add a new project
     Given the index page is visited
@@ -13,9 +15,3 @@ Feature: Add project
     Then he is redirected to the login page
     When he enters valid credentials
     Then he is redirected to the project creation page
-
-  Scenario: The overview page shows a new published project
-    Given a user is logged in
-    When he moves through the project creation process
-    When he clicks the project overview link
-    Then the project overview page shows the new project

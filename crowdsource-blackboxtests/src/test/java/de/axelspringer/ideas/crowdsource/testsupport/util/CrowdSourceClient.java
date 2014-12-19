@@ -8,6 +8,7 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -38,12 +39,16 @@ public class CrowdSourceClient {
         return restTemplate.postForObject(urlProvider.applicationUrl() + "/oauth/token", tokenRequest, AuthToken.class);
     }
 
-    public void createProject(Project project, AuthToken authToken) {
+    public ResponseEntity<Void> createProject(Project project, AuthToken authToken) {
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.put("Authorization", Arrays.asList("Bearer " + authToken.accessToken));
 
         HttpEntity<Project> requestEntity = new HttpEntity<>(project, headers);
-        restTemplate.exchange(urlProvider.applicationUrl() + "/project", HttpMethod.POST, requestEntity, Void.class);
+        return restTemplate.exchange(urlProvider.applicationUrl() + "/project", HttpMethod.POST, requestEntity, Void.class);
+    }
+
+    public RestTemplate getUnderlyingClient() {
+        return restTemplate;
     }
 
     @Data

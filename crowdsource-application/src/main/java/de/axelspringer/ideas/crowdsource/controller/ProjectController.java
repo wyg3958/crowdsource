@@ -3,9 +3,12 @@ package de.axelspringer.ideas.crowdsource.controller;
 import de.axelspringer.ideas.crowdsource.config.security.Roles;
 import de.axelspringer.ideas.crowdsource.exceptions.NotAuthorizedException;
 import de.axelspringer.ideas.crowdsource.exceptions.ResourceNotFoundException;
+import de.axelspringer.ideas.crowdsource.model.persistence.PledgeEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
+import de.axelspringer.ideas.crowdsource.model.presentation.Pledge;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
+import de.axelspringer.ideas.crowdsource.repository.PledgeRepository;
 import de.axelspringer.ideas.crowdsource.repository.ProjectRepository;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +33,9 @@ public class ProjectController {
 
     @Autowired
     private ProjectRepository projectRepository;
+
+    @Autowired
+    private PledgeRepository pledgeRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -60,5 +66,24 @@ public class ProjectController {
         }
 
         return new Project(projectEntity);
+    }
+
+    @Secured(Roles.ROLE_USER)
+    @ResponseStatus(HttpStatus.CREATED)
+    @RequestMapping("/{projectId}/pledge")
+    public void pledgeProject(@PathVariable String projectId, @RequestBody @Valid Pledge pledge, Principal principal) {
+
+        UserEntity userEntity = userRepository.findByEmail(principal.getName());
+        if (userEntity == null) {
+            throw new NotAuthorizedException("No user found with username " + principal.getName());
+        }
+
+        ProjectEntity projectEntity = projectRepository.findOne(projectId);
+        if (projectEntity == null) {
+            throw new ResourceNotFoundException();
+        }
+
+        PledgeEntity pledgeEntity = new PledgeEntity(projectEntity, userEntity, pledge);
+        pledgeRepository.save(pledgeEntity);
     }
 }

@@ -1,6 +1,7 @@
 package de.axelspringer.ideas.crowdsource.testsupport.cucumber;
 
 import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -11,6 +12,8 @@ import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.NavigationBar;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.ProjectsPage;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +23,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
-public class LoginSteps {
+public class LoginLogoutSteps {
 
     @Autowired
     private WebDriverProvider webDriverProvider;
@@ -103,5 +106,25 @@ public class LoginSteps {
     @Then("^the error \"([^\"]*)\" is displayed$")
     public void the_error_is_displayed(String errorText) throws Throwable {
         assertThat(loginForm.getErrorText(), is(errorText));
+    }
+
+    @Then("^the \"([^\"]*)\" button is visible$")
+    public void the_button_is_visible(String buttonName) throws Throwable {
+
+        // will throw an exception if element does not exist
+        webDriver.findElement(By.className(buttonName));
+    }
+
+
+    @And("^the \"([^\"]*)\" button is not visible$")
+    public void the_button_is_not_visible(String buttonName) throws Throwable {
+
+        boolean notFound = false;
+        try {
+            the_button_is_visible(buttonName);
+        } catch (NoSuchElementException e) {
+            notFound = true;
+        }
+        assertThat("button should not be visible", notFound, is(true));
     }
 }

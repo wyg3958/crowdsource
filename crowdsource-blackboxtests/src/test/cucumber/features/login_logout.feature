@@ -1,4 +1,11 @@
-Feature: Login
+Feature: Login and Logout
+
+  Scenario: A user is not logged in and visits the index page
+    Given the index page is visited
+    Then the "newProject" button is visible
+    And the "login" button is visible
+    And the "register" button is visible
+    And the "logout" button is not visible
 
   Scenario: A user logs in
     Given the index page is visited
@@ -6,6 +13,16 @@ Feature: Login
     Then he is redirected to the login page
     When he enters valid credentials
     Then he is redirected to the index page
+
+  Scenario: A user is logged in and visits the index page
+    Given the index page is visited
+    When he clicks on the Login link in the navigation bar
+    And he enters valid credentials
+    Then he is redirected to the index page
+    And the "newProject" button is visible
+    And the "login" button is not visible
+    And the "register" button is not visible
+    And the "logout" button is visible
 
   Scenario: A user logs in and hits refresh
     Given the index page is visited

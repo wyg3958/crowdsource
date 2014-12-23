@@ -220,6 +220,32 @@ public class ProjectControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    public void pledgeProject_shouldRespondWith400IfTheRequestObjectIsInvalid() throws Exception {
+
+        MvcResult mvcResult = mockMvc.perform(post("/project/{projectId}/pledge", EXISTING_PROJECT_ID)
+                .principal(new UsernamePasswordAuthenticationToken(EXISTING_USER_MAIL, "somepassword"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(new Pledge(0))))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"errorCode\":\"field_errors\",\"fieldViolations\":{\"amount\":\"must be greater than or equal to 1\"}}"));
+    }
+
+    @Test
+    public void pledgeProject_shouldRespondWith400IfThePledgeGoalIsExceeded() throws Exception {
+
+        MvcResult mvcResult = mockMvc.perform(post("/project/{projectId}/pledge", EXISTING_PROJECT_ID)
+                .principal(new UsernamePasswordAuthenticationToken(EXISTING_USER_MAIL, "somepassword"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(new Pledge(42)))) // pledge goal is 44, 3 was already pledged
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"errorCode\":\"pledge_goal_exceeded\",\"fieldViolations\":{}}"));
+    }
+
     private ProjectEntity createProjectEntity(String id, String title, int pledgeGoal, String shortDescription, String description) {
         ProjectEntity projectEntity = new ProjectEntity();
         projectEntity.setId(id);
@@ -234,6 +260,11 @@ public class ProjectControllerTest {
     @Configuration
     @EnableWebMvc
     static class Config {
+
+        @Bean
+        public ControllerExceptionAdvice controllerExceptionAdvice() {
+            return new ControllerExceptionAdvice();
+        }
 
         @Bean
         public ProjectController projectController() {

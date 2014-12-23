@@ -10,6 +10,10 @@ public class InvalidRequestException extends RuntimeException {
         return new InvalidRequestException("activation_token_invalid");
     }
 
+    public static InvalidRequestException pledgeGoalExceeded() {
+        return new InvalidRequestException("pledge_goal_exceeded");
+    }
+
     public InvalidRequestException(String message) {
         super(message);
     }

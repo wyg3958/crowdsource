@@ -3,7 +3,6 @@ package de.axelspringer.ideas.crowdsource.controller;
 import de.axelspringer.ideas.crowdsource.exceptions.InvalidRequestException;
 import de.axelspringer.ideas.crowdsource.exceptions.ResourceNotFoundException;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
-import de.axelspringer.ideas.crowdsource.model.presentation.ErrorResponse;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.UserActivation;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.UserRegistration;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
@@ -15,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -90,23 +87,5 @@ public class UserController {
 
         userRepository.save(userEntity);
         log.debug("User activated: {}", userEntity);
-    }
-
-    @ExceptionHandler(InvalidRequestException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleInvalidRequest(InvalidRequestException e) {
-
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleConstraintViolations(MethodArgumentNotValidException e) {
-
-        ErrorResponse errorResponse = new ErrorResponse("field_errors");
-        e.getBindingResult().getFieldErrors().stream()
-                .forEach(fieldError -> errorResponse
-                        .addConstraintViolation(fieldError.getField(), fieldError.getDefaultMessage()));
-        return errorResponse;
     }
 }

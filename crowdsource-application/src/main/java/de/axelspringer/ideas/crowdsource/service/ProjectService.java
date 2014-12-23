@@ -1,6 +1,7 @@
 package de.axelspringer.ideas.crowdsource.service;
 
 import de.axelspringer.ideas.crowdsource.enums.PublicationStatus;
+import de.axelspringer.ideas.crowdsource.exceptions.InvalidRequestException;
 import de.axelspringer.ideas.crowdsource.exceptions.ResourceNotFoundException;
 import de.axelspringer.ideas.crowdsource.model.persistence.PledgeEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
@@ -60,7 +61,11 @@ public class ProjectService {
         }
 
         // TODO: may the creator of the project pledge on his own project?
-        // TODO: check that the pledgedAmount does not exceed the pledgeGoal
+
+        Project project = convertProject(projectEntity);
+        if ((pledge.getAmount() + project.getPledgedAmount()) > project.getPledgeGoal()) {
+            throw InvalidRequestException.pledgeGoalExceeded();
+        }
 
         PledgeEntity pledgeEntity = new PledgeEntity(projectEntity, userEntity, pledge);
         pledgeRepository.save(pledgeEntity);

@@ -9,4 +9,8 @@ public class Pledge {
 
     private int amount;
 
+    public Pledge(int amount) {
+        this.amount = amount;
+    }
+
 }

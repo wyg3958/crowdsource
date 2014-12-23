@@ -8,6 +8,7 @@ import org.joda.time.DateTime;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -19,7 +20,7 @@ public class ProjectEntity {
     private String id;
 
     @DBRef
-    private UserEntity user;
+    private UserEntity creator;
 
     private String title;
 
@@ -31,14 +32,15 @@ public class ProjectEntity {
 
     private int pledgeGoal;
 
+    @Indexed // since we order by this field
     @CreatedDate
     private DateTime createdDate;
 
     @LastModifiedDate
     private DateTime lastModifiedDate;
 
-    public ProjectEntity(UserEntity userEntity, Project project) {
-        this.user = userEntity;
+    public ProjectEntity(UserEntity creator, Project project) {
+        this.creator = creator;
         this.title = project.getTitle();
         this.shortDescription = project.getShortDescription();
         this.description = project.getDescription();

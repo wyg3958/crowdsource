@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.crowdsource.resource;
 
+import de.axelspringer.ideas.crowdsource.model.presentation.Pledge;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
@@ -25,7 +26,7 @@ public class ProjectIT {
     private UrlProvider urlProvider;
 
     @Test
-    public void testAccessDenied() {
+    public void addProject_accessDenied() {
         RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
 
         Project project = new Project();
@@ -44,7 +45,7 @@ public class ProjectIT {
     }
 
     @Test
-    public void testNotFound() {
+    public void getProject_notFound() {
         RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
 
         try {
@@ -53,6 +54,21 @@ public class ProjectIT {
         }
         catch (HttpClientErrorException e) {
             assertThat(e.getStatusCode(), is(HttpStatus.NOT_FOUND));
+        }
+    }
+
+    @Test
+    public void pledgeProject_accessDenied() {
+        RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
+
+        Pledge pledge = new Pledge(1);
+
+        try {
+            restTemplate.postForObject(urlProvider.applicationUrl() + "/project/{projectId}/pledge", pledge, Void.class, "some-project-id");
+            Assert.fail("Accessing a protected resource should fail");
+        }
+        catch (HttpClientErrorException e) {
+            assertThat(e.getStatusCode(), is(HttpStatus.UNAUTHORIZED));
         }
     }
 

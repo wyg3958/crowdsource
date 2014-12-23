@@ -8,6 +8,7 @@ import cucumber.api.java.en.When;
 import de.axelspringer.ideas.crowdsource.config.security.MongoUserDetailsService;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.LoginForm;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.LogoutPage;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.NavigationBar;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.ProjectsPage;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
@@ -39,6 +40,9 @@ public class LoginLogoutSteps {
 
     @Autowired
     private LoginForm loginForm;
+
+    @Autowired
+    private LogoutPage logoutPage;
 
     private WebDriver webDriver;
 
@@ -126,5 +130,22 @@ public class LoginLogoutSteps {
             notFound = true;
         }
         assertThat("button should not be visible", notFound, is(true));
+    }
+
+    @When("^he clicks on the Logout button$")
+    public void he_clicks_on_the_Logout_button() throws Throwable {
+        PageFactory.initElements(webDriver, navigationBar);
+        navigationBar.clickLogout();
+    }
+
+    @Then("^he is redirected to the logout page$")
+    public void he_is_redirected_to_the_logout_page() throws Throwable {
+        PageFactory.initElements(webDriver, logoutPage);
+        logoutPage.waitForPageLoad();
+    }
+
+    @When("^he clicks on the relogin-link$")
+    public void he_clicks_on_the_relogin_link() throws Throwable {
+        logoutPage.clickRelogin();
     }
 }

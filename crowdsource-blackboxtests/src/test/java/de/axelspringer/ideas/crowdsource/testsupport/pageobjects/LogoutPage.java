@@ -5,6 +5,8 @@ import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +24,9 @@ public class LogoutPage {
     @Autowired
     private SeleniumWait wait;
 
+    @FindBy(className = "relogin")
+    private WebElement reloginLink;
+
     public void waitForPageLoad() {
         wait.until(presenceOfElementLocated(By.cssSelector(".logout-success")));
     }
@@ -30,5 +35,9 @@ public class LogoutPage {
         WebDriver webDriver = webDriverProvider.provideDriver();
         // logout
         webDriver.get(urlProvider.applicationUrl() + "/#/logout");
+    }
+
+    public void clickRelogin() {
+        reloginLink.click();
     }
 }

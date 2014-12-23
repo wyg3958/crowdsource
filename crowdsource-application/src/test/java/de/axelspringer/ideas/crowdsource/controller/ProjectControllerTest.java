@@ -1,10 +1,14 @@
 package de.axelspringer.ideas.crowdsource.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.axelspringer.ideas.crowdsource.enums.PublicationStatus;
+import de.axelspringer.ideas.crowdsource.model.persistence.PledgeEntity;
+import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.model.presentation.Pledge;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
-import de.axelspringer.ideas.crowdsource.model.presentation.user.User;
+import de.axelspringer.ideas.crowdsource.repository.PledgeRepository;
+import de.axelspringer.ideas.crowdsource.repository.ProjectRepository;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import de.axelspringer.ideas.crowdsource.service.ProjectService;
 import org.junit.Before;
@@ -30,6 +34,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
@@ -50,7 +55,10 @@ public class ProjectControllerTest {
     private static final String NON_EXISTING_PROJECT_ID = "nonexistingProjectId";
 
     @Autowired
-    private ProjectService projectService;
+    private ProjectRepository projectRepository;
+
+    @Autowired
+    private PledgeRepository pledgeRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -61,12 +69,13 @@ public class ProjectControllerTest {
     private MockMvc mockMvc;
     private ObjectMapper mapper = new ObjectMapper();
     private UserEntity existingUserEntity;
-    private Project existingProject;
+    private ProjectEntity existingProject;
 
     @Before
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        reset(projectService);
+        reset(projectRepository);
+        reset(pledgeRepository);
         reset(userRepository);
 
         existingUserEntity = new UserEntity(EXISTING_USER_MAIL);
@@ -75,15 +84,24 @@ public class ProjectControllerTest {
         when(userRepository.findByEmail(EXISTING_USER_MAIL)).thenReturn(existingUserEntity);
         when(userRepository.findByEmail(NON_EXISTING_USER_MAIL)).thenReturn(null);
 
-        existingProject = createProject(EXISTING_PROJECT_ID, "title", "short description", "description", 44, 10, 2);
-        when(projectService.getProject(EXISTING_PROJECT_ID)).thenReturn(existingProject);
+        existingProject = createProjectEntity(EXISTING_PROJECT_ID, "title", 44, "short description", "description");
+        when(projectRepository.findOne(EXISTING_PROJECT_ID)).thenReturn(existingProject);
+        when(pledgeRepository.findByProject(eq(existingProject))).thenReturn(Arrays.asList(
+                new PledgeEntity(existingProject, existingUserEntity, new Pledge(3))));
 
-        List<Project> projects = Arrays.asList(
-                createProject("projectId1", "myTitle1", "myShortDescription1", "description1", 1000, 0, 0),
-                createProject("projectId2", "myTitle2", "myShortDescription2", "description2", 5000, 2500, 1),
-                createProject("projectId3", "myTitle3", "myShortDescription3", "description3", 100, 100, 3)
-        );
-        when(projectService.getProjects()).thenReturn(projects);
+        ProjectEntity project1 = createProjectEntity("projectId1", "title1", 11, "short description1", "description1");
+        ProjectEntity project2 = createProjectEntity("projectId2", "title2", 22, "short description2", "description2");
+        ProjectEntity project3 = createProjectEntity("projectId3", "title3", 33, "short description3", "description3");
+        List<ProjectEntity> projects = Arrays.asList(project1, project2, project3);
+
+        when(projectRepository.findByPublicationStatusOrderByCreatedDateDesc(any())).thenReturn(projects);
+
+        when(pledgeRepository.findByProject(eq(project1))).thenReturn(Arrays.asList(
+                new PledgeEntity(project1, existingUserEntity, new Pledge(11))));
+        when(pledgeRepository.findByProject(eq(project2))).thenReturn(Arrays.asList(
+                new PledgeEntity(project2, existingUserEntity, new Pledge(2)),
+                new PledgeEntity(project2, existingUserEntity, new Pledge(20))));
+        when(pledgeRepository.findByProject(eq(project3))).thenReturn(Arrays.asList());
     }
 
     @Test
@@ -100,7 +118,8 @@ public class ProjectControllerTest {
                 .content(mapper.writeValueAsString(project)))
                 .andExpect(status().isCreated());
 
-        verify(projectService).addProject(eq(project), eq(existingUserEntity));
+        ProjectEntity projectEntity = new ProjectEntity(existingUserEntity, project);
+        verify(projectRepository).save(eq(projectEntity));
     }
 
     @Test
@@ -141,8 +160,8 @@ public class ProjectControllerTest {
                 "\"shortDescription\":\"short description\"," +
                 "\"description\":\"description\"," +
                 "\"pledgeGoal\":44," +
-                "\"pledgedAmount\":10," +
-                "\"backers\":2," +
+                "\"pledgedAmount\":3," +
+                "\"backers\":1," +
                 "\"creator\":{\"id\":\"existingUserId\",\"name\":\"Existing\"}}"));
     }
 
@@ -160,11 +179,11 @@ public class ProjectControllerTest {
                 .andReturn();
 
         assertThat(mvcResult.getResponse().getContentAsString(), is("[" +
-                "{\"id\":\"projectId1\",\"title\":\"myTitle1\",\"shortDescription\":\"myShortDescription1\",\"pledgeGoal\":1000,\"pledgedAmount\":0,\"backers\":0}," +
-                "{\"id\":\"projectId2\",\"title\":\"myTitle2\",\"shortDescription\":\"myShortDescription2\",\"pledgeGoal\":5000,\"pledgedAmount\":2500,\"backers\":1}," +
-                "{\"id\":\"projectId3\",\"title\":\"myTitle3\",\"shortDescription\":\"myShortDescription3\",\"pledgeGoal\":100,\"pledgedAmount\":100,\"backers\":3}]"));
+                "{\"id\":\"projectId1\",\"title\":\"title1\",\"shortDescription\":\"short description1\",\"pledgeGoal\":11,\"pledgedAmount\":11,\"backers\":1}," +
+                "{\"id\":\"projectId2\",\"title\":\"title2\",\"shortDescription\":\"short description2\",\"pledgeGoal\":22,\"pledgedAmount\":22,\"backers\":1}," +
+                "{\"id\":\"projectId3\",\"title\":\"title3\",\"shortDescription\":\"short description3\",\"pledgeGoal\":33,\"pledgedAmount\":0,\"backers\":0}]"));
 
-        verify(projectService).getProjects();
+        verify(projectRepository).findByPublicationStatusOrderByCreatedDateDesc(PublicationStatus.PUBLISHED);
     }
 
     @Test
@@ -177,7 +196,8 @@ public class ProjectControllerTest {
                 .content(mapper.writeValueAsString(pledge)))
                 .andExpect(status().isCreated());
 
-        verify(projectService).pledgeProject(eq(EXISTING_PROJECT_ID), eq(existingUserEntity), eq(pledge));
+        PledgeEntity pledgeEntity = new PledgeEntity(existingProject, existingUserEntity, pledge);
+        verify(pledgeRepository).save(pledgeEntity);
     }
 
     @Test
@@ -190,19 +210,25 @@ public class ProjectControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 
-    private Project createProject(String projectId, String title, String shortDescription, String description, int pledgeGoal, int pledgedAmount, int backers) {
-        Project project = new Project();
-        project.setId(projectId);
-        project.setTitle(title);
-        project.setShortDescription(shortDescription);
-        project.setDescription(description);
-        project.setPledgeGoal(pledgeGoal);
-        project.setPledgedAmount(pledgedAmount);
-        project.setBackers(backers);
+    @Test
+    public void pledgeProject_shouldRespondWith404IfTheProjectWasNotFound() throws Exception {
 
-        project.setCreator(new User(existingUserEntity));
+        mockMvc.perform(post("/project/{projectId}/pledge", NON_EXISTING_PROJECT_ID)
+                .principal(new UsernamePasswordAuthenticationToken(EXISTING_USER_MAIL, "somepassword"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(new Pledge(35))))
+                .andExpect(status().isNotFound());
+    }
 
-        return project;
+    private ProjectEntity createProjectEntity(String id, String title, int pledgeGoal, String shortDescription, String description) {
+        ProjectEntity projectEntity = new ProjectEntity();
+        projectEntity.setId(id);
+        projectEntity.setTitle(title);
+        projectEntity.setPledgeGoal(pledgeGoal);
+        projectEntity.setShortDescription(shortDescription);
+        projectEntity.setDescription(description);
+        projectEntity.setCreator(existingUserEntity);
+        return projectEntity;
     }
 
     @Configuration
@@ -216,7 +242,17 @@ public class ProjectControllerTest {
 
         @Bean
         public ProjectService projectService() {
-            return mock(ProjectService.class);
+            return new ProjectService();
+        }
+
+        @Bean
+        public ProjectRepository projectRepository() {
+            return mock(ProjectRepository.class);
+        }
+
+        @Bean
+        public PledgeRepository pledgeRepository() {
+            return mock(PledgeRepository.class);
         }
 
         @Bean

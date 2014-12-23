@@ -3,7 +3,6 @@ package de.axelspringer.ideas.crowdsource.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import de.axelspringer.ideas.crowdsource.config.security.Roles;
 import de.axelspringer.ideas.crowdsource.exceptions.NotAuthorizedException;
-import de.axelspringer.ideas.crowdsource.exceptions.ResourceNotFoundException;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.model.presentation.Pledge;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
@@ -47,12 +46,7 @@ public class ProjectController {
     @RequestMapping(value = "/project/{projectId}", method = RequestMethod.GET)
     public Project getProject(@PathVariable String projectId) {
 
-        Project project = projectService.getProject(projectId);
-        if (project == null) {
-            throw new ResourceNotFoundException();
-        }
-
-        return project;
+        return projectService.getProject(projectId);
     }
 
     @Secured(Roles.ROLE_USER)

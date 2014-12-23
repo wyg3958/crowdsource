@@ -16,6 +16,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor // needed for serialization
 @Document(collection = "projects")
 public class ProjectEntity {
+
     @Id
     private String id;
 

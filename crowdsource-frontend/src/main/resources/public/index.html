@@ -37,16 +37,17 @@
 
             <section class="top-bar-section">
                 <ul class="right">
-                    <li ng-class="getClassForMenuItem('/project/new')" class="border"><a href="#/project/new">Neues Projekt</a></li>
-                    <li ng-class="getClassForMenuItem('/login')"><a href="#/login">Login</a></li>
-                    <li ng-class="getClassForMenuItem('/signup')"><a href="#/signup">Registrieren</a></li>
+                    <li ng-show="loggedIn()" ng-class="getClassForMenuItem('/project/new')" class="border"><a href="#/project/new">Neues Projekt</a></li>
+                    <li ng-show="!loggedIn()" ng-class="getClassForMenuItem('/login')"><a href="#/login">Login</a></li>
+                    <li ng-show="!loggedIn()" ng-class="getClassForMenuItem('/signup')"><a href="#/signup">Registrieren</a></li>
+                    <li ng-show="loggedIn()" ng-class="getClassForMenuItem('/logout')"><a href="#/logout">Logout</a></li>
                 </ul>
             </section>
         </nav>
     </div>
 
     <div class="teaser text-center">
-        Kickstart your next innovation at Axel Springer.
+        Kickstart your innovation at Axel Springer.
     </div>
 
     <div class="content" ng-view></div>

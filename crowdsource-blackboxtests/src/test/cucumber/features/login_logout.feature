@@ -59,6 +59,7 @@ Feature: Login and Logout
     Then he is redirected to the index page
     When he clicks on the Logout button
     Then he is redirected to the logout page
+    And the text "Sie wurden ausgeloggt" is displayed
     When he clicks on the New Project link in the navigation bar
     Then he is redirected to the login page
 

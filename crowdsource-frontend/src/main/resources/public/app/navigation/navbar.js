@@ -10,9 +10,6 @@ angular.module('crowdsource')
             return '';
         };
 
-        /**
-         * Will influence behaviour (eg login/logout-links, create project, ...)
-         */
         $scope.loggedIn = function () {
             return Authentication.isLoggedIn();
         }

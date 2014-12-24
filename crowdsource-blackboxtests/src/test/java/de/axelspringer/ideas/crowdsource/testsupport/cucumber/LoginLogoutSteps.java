@@ -20,6 +20,7 @@ import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -147,5 +148,11 @@ public class LoginLogoutSteps {
     @When("^he clicks on the relogin-link$")
     public void he_clicks_on_the_relogin_link() throws Throwable {
         logoutPage.clickRelogin();
+    }
+
+    @And("^the text \"([^\"]*)\" is displayed$")
+    public void the_text_is_displayed(String text) throws Throwable {
+        String pageSource = webDriver.getPageSource();
+        assertThat(text + "should be present but could not be found in: " + pageSource, pageSource, containsString(text));
     }
 }

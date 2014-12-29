@@ -1,6 +1,7 @@
 angular.module('crowdsource')
 
     .factory('AuthenticationToken', function($http) {
+
         var TOKENS_LOCAL_STORAGE_KEY = 'tokens';
 
         var service = {};

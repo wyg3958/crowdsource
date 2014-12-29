@@ -1,26 +1,31 @@
 package de.axelspringer.ideas.crowdsource.testsupport.cucumber;
 
 import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import de.axelspringer.ideas.crowdsource.config.security.MongoUserDetailsService;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.LoginForm;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.LogoutPage;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.NavigationBar;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.ProjectsPage;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
-public class LoginSteps {
+public class LoginLogoutSteps {
 
     @Autowired
     private WebDriverProvider webDriverProvider;
@@ -36,6 +41,9 @@ public class LoginSteps {
 
     @Autowired
     private LoginForm loginForm;
+
+    @Autowired
+    private LogoutPage logoutPage;
 
     private WebDriver webDriver;
 
@@ -103,5 +111,48 @@ public class LoginSteps {
     @Then("^the error \"([^\"]*)\" is displayed$")
     public void the_error_is_displayed(String errorText) throws Throwable {
         assertThat(loginForm.getErrorText(), is(errorText));
+    }
+
+    @Then("^the \"([^\"]*)\" button is visible$")
+    public void the_button_is_visible(String buttonName) throws Throwable {
+
+        // will throw an exception if element does not exist
+        webDriver.findElement(By.className(buttonName));
+    }
+
+
+    @And("^the \"([^\"]*)\" button is not visible$")
+    public void the_button_is_not_visible(String buttonName) throws Throwable {
+
+        boolean notFound = false;
+        try {
+            the_button_is_visible(buttonName);
+        } catch (NoSuchElementException e) {
+            notFound = true;
+        }
+        assertThat("button should not be visible", notFound, is(true));
+    }
+
+    @When("^he clicks on the Logout button$")
+    public void he_clicks_on_the_Logout_button() throws Throwable {
+        PageFactory.initElements(webDriver, navigationBar);
+        navigationBar.clickLogout();
+    }
+
+    @Then("^he is redirected to the logout page$")
+    public void he_is_redirected_to_the_logout_page() throws Throwable {
+        PageFactory.initElements(webDriver, logoutPage);
+        logoutPage.waitForPageLoad();
+    }
+
+    @When("^he clicks on the relogin-link$")
+    public void he_clicks_on_the_relogin_link() throws Throwable {
+        logoutPage.clickRelogin();
+    }
+
+    @And("^the text \"([^\"]*)\" is displayed$")
+    public void the_text_is_displayed(String text) throws Throwable {
+        String pageSource = webDriver.getPageSource();
+        assertThat(text + "should be present but could not be found in: " + pageSource, pageSource, containsString(text));
     }
 }

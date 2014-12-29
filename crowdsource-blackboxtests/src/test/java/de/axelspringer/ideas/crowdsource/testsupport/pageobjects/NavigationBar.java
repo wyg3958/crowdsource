@@ -14,6 +14,9 @@ public class NavigationBar {
     @FindBy(css = "nav.top-bar a[href='#/login']")
     private WebElement loginLink;
 
+    @FindBy(css = "nav.top-bar a[href='#/logout']")
+    private WebElement logoutLink;
+
     @FindBy(css = "nav.top-bar a[href='#/signup']")
     private WebElement signupLink;
 
@@ -31,6 +34,11 @@ public class NavigationBar {
     public void clickLogin() {
         wait.until(visibilityOf(loginLink));
         loginLink.click();
+    }
+
+    public void clickLogout() {
+        wait.until(visibilityOf(logoutLink));
+        logoutLink.click();
     }
 
     public void clickNewProject() {

@@ -2,11 +2,12 @@ describe('user login view', function () {
 
     var $httpBackend, $location, loginForm;
 
-    beforeEach(function() {
+    beforeEach(function () {
+
         module('crowdsource');
         module('crowdsource.templates');
 
-        inject(function($compile, $rootScope, $templateCache, $controller, _$httpBackend_, _$location_, Authentication, RemoteFormValidation, Route) {
+        inject(function ($compile, $rootScope, $templateCache, $controller, _$httpBackend_, _$location_, Authentication, RemoteFormValidation, Route) {
             var $scope = $rootScope.$new();
             $httpBackend = _$httpBackend_;
             $location = _$location_;
@@ -51,7 +52,6 @@ describe('user login view', function () {
             .respond(statusCode, responseBody);
     }
 
-
     it('should show no validation errors when the form is untouched', function () {
         expect(loginForm.getGeneralErrorsContainer()).not.toExist();
 
@@ -59,7 +59,7 @@ describe('user login view', function () {
         expectNoValidationError('password');
     });
 
-    it('should request an access token from the server and redirect to index page', function() {
+    it('should request an access token from the server and redirect to index page', function () {
         expectBackendCallAndRespond(200);
 
         fillAndSubmitForm();
@@ -68,7 +68,7 @@ describe('user login view', function () {
         expect($location.path()).toBe('/');
     });
 
-    it('should disable the submit button and change it\'s text while loading', function() {
+    it('should disable the submit button and change it\'s text while loading', function () {
         expectBackendCallAndRespond(201);
         expect(loginForm.getSubmitButton()).toHaveText('Login');
         expect(loginForm.getSubmitButton()).not.toBeDisabled();
@@ -84,7 +84,7 @@ describe('user login view', function () {
         expect(loginForm.getSubmitButton()).not.toBeDisabled();
     });
 
-    it('should show an unknown error message when the server responds with 500', function() {
+    it('should show an unknown error message when the server responds with 500', function () {
 
         // spy on path-method
         spyOn($location, 'path');
@@ -97,11 +97,11 @@ describe('user login view', function () {
         expect(loginForm.getGeneralError('remote_unknown')).toExist();
     });
 
-    it('should show an unknown error message if the server responds with "an unknown result"', function() {
+    it('should show an unknown error message if the server responds with "an unknown result"', function () {
 
         // spy on path-method
         spyOn($location, 'path');
-        expectBackendCallAndRespond(400, { error: "wooOooodooOoo" });
+        expectBackendCallAndRespond(400, {error: "wooOooodooOoo"});
 
         fillAndSubmitForm();
         $httpBackend.flush();
@@ -110,11 +110,11 @@ describe('user login view', function () {
         expect(loginForm.getGeneralError('remote_unknown')).toExist();
     });
 
-    it('should show an appropriate error message if the server responds with "bad_credentials"', function() {
+    it('should show an appropriate error message if the server responds with "bad_credentials"', function () {
 
         // spy on path-method
         spyOn($location, 'path');
-        expectBackendCallAndRespond(400, { error: "invalid_grant" });
+        expectBackendCallAndRespond(400, {error: "invalid_grant"});
 
         fillAndSubmitForm();
         $httpBackend.flush();

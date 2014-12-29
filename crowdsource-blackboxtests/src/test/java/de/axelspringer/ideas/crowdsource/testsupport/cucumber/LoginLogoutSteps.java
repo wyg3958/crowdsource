@@ -153,6 +153,6 @@ public class LoginLogoutSteps {
     @And("^the text \"([^\"]*)\" is displayed$")
     public void the_text_is_displayed(String text) throws Throwable {
         String pageSource = webDriver.getPageSource();
-        assertThat(text + "should be present but could not be found in: " + pageSource, pageSource, containsString(text));
+        assertThat(pageSource, containsString(text));
     }
 }

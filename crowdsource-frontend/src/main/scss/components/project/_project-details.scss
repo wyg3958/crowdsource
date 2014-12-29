@@ -23,6 +23,7 @@
 }
 
 .project-status {
+    width: 100%;
     margin: 50px 0;
     border-collapse: collapse;
 
@@ -40,6 +41,26 @@
     }
 
     .creator {
+        white-space: nowrap;
+        vertical-align: middle;
+
+        img {
+            @media #{$medium-up} {
+                // display image above the name on non-smartphones
+                display: block;
+
+                // center image
+                margin: 0 auto;
+            }
+            @media #{$small-only} {
+                // on smartphones, the name is displayed next to the image. Add some space between them
+                padding-right: 10px;
+            }
+        }
+
+        .name {
+            font-weight: 600;
+        }
     }
 
     .funding-status {
@@ -56,6 +77,14 @@
             font-weight: 600;
         }
 
+        li:last-child {
+            margin-right: 0;
+        }
+
+        .pledge-info {
+            white-space: nowrap;
+        }
+
         small {
             display: block;
             font-size: rem-calc(12);
@@ -65,9 +94,10 @@
 
     .call-to-action {
         vertical-align: middle;
+        text-align: center;
 
         button {
-            margin: 0;
+            margin: 10px;
             background-color: $crowd-primary-color;
         }
     }

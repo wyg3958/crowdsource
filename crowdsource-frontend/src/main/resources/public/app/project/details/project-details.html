@@ -3,13 +3,14 @@
 
     <div class="project-status">
         <div class="creator">
-            {{ projectDetails.project.creator.name }}
+            <img src="app/user/avatar.png">
+            von <span class="name">{{ projectDetails.project.creator.name }}</span>
         </div>
 
         <div class="funding-status">
             <progress-bar value="projectDetails.project.pledgedAmount" maximum="projectDetails.project.pledgeGoal"></progress-bar>
             <ul>
-                <li>
+                <li class="pledge-info">
                     <span class="pledged-amount">${{ projectDetails.project.pledgedAmount | number }}</span>
                     /
                     <span class="pledge-goal">${{ projectDetails.project.pledgeGoal | number }}</span>

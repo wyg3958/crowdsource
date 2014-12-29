@@ -30,7 +30,7 @@ public class ProjectDetailPage {
     }
 
     public void waitForShortDescriptionToBeAvailable(String shortDescription) {
-        wait.until(presenceOfElementLocated(By.xpath("//blockquote[.='" + shortDescription + "']")));
+        wait.until(presenceOfElementLocated(By.xpath("//h2[.='" + shortDescription + "']")));
     }
 
     public void open(String projectId) {

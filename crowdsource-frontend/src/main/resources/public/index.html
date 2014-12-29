@@ -37,7 +37,7 @@
 
             <section class="top-bar-section">
                 <ul class="right">
-                    <li ng-class="getClassForMenuItem('/project/new')" class="border newProject"><a href="#/project/new">Neues Projekt</a></li>
+                    <li ng-class="getClassForMenuItem('/project/new')" class="border new-project"><a href="#/project/new">Neues Projekt</a></li>
                     <li ng-if="!loggedIn()" ng-class="getClassForMenuItem('/login')" class="login"><a href="#/login">Login</a></li>
                     <li ng-if="!loggedIn()" ng-class="getClassForMenuItem('/signup')" class="register"><a href="#/signup">Registrieren</a></li>
                     <li ng-if="loggedIn()" ng-class="getClassForMenuItem('/logout')" class="logout"><a href="#/logout">Logout</a></li>

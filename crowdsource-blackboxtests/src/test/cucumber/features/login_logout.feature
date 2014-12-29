@@ -2,7 +2,7 @@ Feature: Login and Logout
 
   Scenario: A user is not logged in and visits the index page
     Given the index page is visited
-    Then the "newProject" button is visible
+    Then the "new-project" button is visible
     And the "login" button is visible
     And the "register" button is visible
     And the "logout" button is not visible
@@ -19,7 +19,7 @@ Feature: Login and Logout
     When he clicks on the Login link in the navigation bar
     And he enters valid credentials
     Then he is redirected to the index page
-    And the "newProject" button is visible
+    And the "new-project" button is visible
     And the "login" button is not visible
     And the "register" button is not visible
     And the "logout" button is visible

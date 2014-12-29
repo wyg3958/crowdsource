@@ -3,6 +3,7 @@ var sourcemaps = require('gulp-sourcemaps');
 var ngAnnotate = require('gulp-ng-annotate');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
+var merge = require('merge-stream');
 var sass = require('gulp-sass');
 
 var BASE_DIR = 'src/main';
@@ -15,9 +16,14 @@ var SCSS_FILES = SCSS_DIR + '/**/*.scss';
 // all files except javascript files
 var RESOURCE_FILES = [APP_DIR + '/**/*', '!' + JS_FILES];
 
-var JS_LIB_FILES = [
-    'bower_components/angular-ellipsis/src/angular-ellipsis.min.js'
-];
+var JS_LIB_FILES = {
+    minified: [
+        'bower_components/angular-ellipsis/src/angular-ellipsis.min.js'
+    ],
+    unminified: [
+        'bower_components/angular-i18n/angular-locale_de.js'
+    ]
+};
 
 var BASE_DEST_DIR = 'target/classes/public';
 
@@ -49,7 +55,13 @@ gulp.task('js', function() {
 
 // concat javascript libraries
 gulp.task('js-libs', function() {
-    return gulp.src(JS_LIB_FILES)
+    var alreadyMinified = gulp.src(JS_LIB_FILES.minified);
+
+    var nowMinified = gulp.src(JS_LIB_FILES.unminified)
+        .pipe(ngAnnotate())
+        .pipe(uglify());
+
+    merge(alreadyMinified, nowMinified)
         .pipe(concat('libs.min.js'))
         .pipe(gulp.dest(BASE_DEST_DIR + '/app'));
 });

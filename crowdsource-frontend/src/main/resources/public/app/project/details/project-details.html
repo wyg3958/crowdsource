@@ -1,7 +1,33 @@
 <content-row class="project-details">
     <h1>{{ projectDetails.project.title }}</h1>
 
-    <blockquote>{{ projectDetails.project.shortDescription}}</blockquote>
+    <div class="project-status">
+        <div class="creator">
+            {{ projectDetails.project.creator.name }}
+        </div>
+
+        <div class="funding-status">
+            <progress-bar value="projectDetails.project.pledgedAmount" maximum="projectDetails.project.pledgeGoal"></progress-bar>
+            <ul>
+                <li>
+                    <span class="pledged-amount">${{ projectDetails.project.pledgedAmount | number }}</span>
+                    /
+                    <span class="pledge-goal">${{ projectDetails.project.pledgeGoal | number }}</span>
+                    <small>Finanzierung</small>
+                </li>
+                <li>
+                    <span class="backers">{{ projectDetails.project.backers }}</span>
+                    <small>Förderer</small>
+                </li>
+            </ul>
+        </div>
+
+        <div class="call-to-action">
+            <button>Zur&nbsp;Finanzierung</button>
+        </div>
+    </div>
+
+    <h2>{{ projectDetails.project.shortDescription}}</h2>
 
     <div class="project-description">{{ projectDetails.project.description }}</div>
 

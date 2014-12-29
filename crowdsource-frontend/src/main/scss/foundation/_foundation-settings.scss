@@ -115,7 +115,7 @@ $black: #000000;
 // $primary-color: #008CBA;
 // $secondary-color: #e7e7e7;
 // $alert-color: #f04124;
-// $success-color: #43AC6A;
+$success-color: #43AC6A;
 // $warning-color: #f08a24;
 // $info-color: #a0d3e8;
 
@@ -1023,7 +1023,7 @@ $anchor-font-color-hover: $crowd-color-purple;
 // $include-html-media-classes: $include-html-classes;
 
 // We use this to set the progress bar height
-// $progress-bar-height: rem-calc(25);
+$progress-bar-height: rem-calc(10);
 // $progress-bar-color: $vapor  ;
 
 // We use these to control the border styles

@@ -1,24 +1,74 @@
 .project-details {
     background: $white;
 
-    .container {
-        max-width: rem-calc(666);
-    }
-
     h1 {
         font-size: rem-calc(32);
         line-height: rem-calc(40);
         margin-bottom: rem-calc(16);
+        font-weight: 600;
     }
 
-    blockquote {
+    h2 {
         margin-bottom: rem-calc(72);
-        font-size: rem-calc(18);
-        line-height: rem-calc(24);
+        font-size: rem-calc(24);
+        line-height: rem-calc(30);
+        color: $crowd-secondary-color;
+        font-weight: normal;
     }
 
     .project-description {
         white-space: pre-wrap;
         line-height: rem-calc(24);
+    }
+}
+
+.project-status {
+    margin: 50px 0;
+    border-collapse: collapse;
+
+    @media #{$medium-up} {
+        display: table;
+    }
+
+    > div {
+        border: 1px solid $crowd-color-light-grey;
+        padding: 10px;
+
+        @media #{$medium-up} {
+            display: table-cell;
+        }
+    }
+
+    .creator {
+    }
+
+    .funding-status {
+        width: 100%;
+
+        ul {
+            margin: 0;
+        }
+
+        li {
+            display: inline-block;
+            margin: 0 50px 0 0;
+            font-size: rem-calc(26);
+            font-weight: 600;
+        }
+
+        small {
+            display: block;
+            font-size: rem-calc(12);
+            font-weight: normal;
+        }
+    }
+
+    .call-to-action {
+        vertical-align: middle;
+
+        button {
+            margin: 0;
+            background-color: $crowd-primary-color;
+        }
     }
 }

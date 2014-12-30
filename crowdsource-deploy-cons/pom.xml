@@ -31,7 +31,7 @@
 
                             <serviceName>crowdsource-cons-mongodb</serviceName>
                             <instances>1</instances>
-                            <dockerImageName>dockerfile/mongodb</dockerImageName>
+                            <dockerImageName>mongo:2.6.6</dockerImageName>
                             <dockerRunOptions>-p 27001:27017 -p 28001:28017</dockerRunOptions>
                             <!-- pin to exactly one machine -->
                             <xFleetOptions>MachineID=2f5479ff9b7847a5a3e790ab63cfa62e</xFleetOptions>

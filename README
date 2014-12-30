@@ -8,7 +8,7 @@ Enable dev-profile providing "spring.profiles.active=dev" in your run configurat
 
 MONGO-DB for local development
 
-docker run -d -p 27000:27017 -p 28000:28017 --name crowdsourcetestdb dockerfile/mongodb
+docker run -d -p 27000:27017 -p 28000:28017 --name crowdsourcetestdb mongo:2.6.6
 
 
 MAIL-Server for local development

@@ -2,12 +2,19 @@ package de.axelspringer.ideas.crowdsource.config;
 
 import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
+import com.mongodb.ServerAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.authentication.UserCredentials;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
+
+import java.net.UnknownHostException;
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Configuration
 @EnableMongoAuditing
@@ -15,24 +22,61 @@ public class MongoDBConfig extends AbstractMongoConfiguration {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
-    @Value("${de.axelspringer.ideas.crowdsource.db.host:172.31.0.106}")
-    private String DB_HOST;
+    @Value("#{'${de.axelspringer.ideas.crowdsource.db.hosts:172.31.0.106,172.31.46.89,172.31.18.9}'.split(',')}")
+    private List<String> hosts;
 
     @Value("${de.axelspringer.ideas.crowdsource.db.port:27017}")
-    private int DB_PORT;
+    private int port;
 
     @Value("${de.axelspringer.ideas.crowdsource.db.name:crowdsource}")
-    private String DB_NAME;
+    private String databaseName;
+
+    @Value("${de.axelspringer.ideas.crowdsource.db.username:crowdsource}")
+    private String username;
+
+    @Value("${de.axelspringer.ideas.crowdsource.db.password:sRBfksXzltBgYHxvNUMoSKVHNLsIHHlI1B5Np2S8oyE=}")
+    private String password;
+
 
     @Override
     protected String getDatabaseName() {
-        return DB_NAME;
+        return databaseName;
     }
 
     @Override
     public Mongo mongo() throws Exception {
 
-        log.debug("connecting to db host: {}...", DB_HOST);
-        return new MongoClient(DB_HOST, DB_PORT);
+        List<ServerAddress> serverAddresses = hosts.stream()
+                .map(this::createServerAddress)
+                .collect(toList());
+
+        log.debug("connecting to db hosts: {}...", serverAddresses);
+
+        if (serverAddresses.size() == 1) {
+            // create a mongo client that connects to a single database,
+            // this is NOT the same as calling the constructor with a list of ServerAddresses with only one element!
+            return new MongoClient(serverAddresses.get(0));
+        }
+        else {
+            // create a mongo client that connects to a replicaset
+            return new MongoClient(serverAddresses);
+        }
+    }
+
+    @Override
+    protected UserCredentials getUserCredentials() {
+        if (username.isEmpty() || password.isEmpty()) {
+            return null;
+        }
+
+        return new UserCredentials(username, password);
+    }
+
+    private ServerAddress createServerAddress(String host) {
+        try {
+            return new ServerAddress(host, port);
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

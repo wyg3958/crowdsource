@@ -21,25 +21,6 @@
                 <version>${coreos-maven-plugin.version}</version>
                 <executions>
                     <execution>
-                        <id>mongodb for prod-stage</id>
-                        <goals>
-                            <goal>deploy</goal>
-                        </goals>
-                        <phase>deploy</phase>
-                        <configuration>
-                            <keyFile>src/main/resources/coreos_rsa</keyFile>
-                            <nodeAdress>54.194.152.80</nodeAdress>
-                            <serviceName>crowdsource-mongodb</serviceName>
-                            <ensure>RUNNING</ensure>
-                            <instances>1</instances>
-                            <dockerImageName>dockerfile/mongodb</dockerImageName>
-                            <dockerRunOptions>-p 27017:27017 -v /var/mongo:/data/db</dockerRunOptions>
-
-                            <!-- pin to exactly one machine -->
-                            <xFleetOptions>MachineID=7d70b04a731143479c7e883aa7fc1a7c</xFleetOptions>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>deploy crowdsource to prod-stage</id>
                         <goals>
                             <goal>deploy</goal>

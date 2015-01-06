@@ -19,13 +19,13 @@ ExecStart=/bin/bash -c "\
           REPLICA_KEY=$(etcdctl get /mongo/replica/key 2>/dev/null || true); \
           MONGO_ARGS='--smallfiles'; \
           \
-          echo \"creating mongo data container\"; \
+          echo \"creating mongo data container (if it does not exist)\"; \
           docker run -v /data/db --name mongodb-data mongo:2.6 echo true || true; \
           \
           if [ -n \"$REPLICA_KEY\" ]; \
           then \
             MONGO_ARGS=\"--replSet $REPLICA_NAME --keyFile /data/db/replica.key\"; \
-            echo $REPLICA_KEY | docker run -i --rm --volumes-from mongodb-data mongo:2.6 bash -c \"cat >> /data/db/replica.key && chmod 700 /data/db/replica.key\"; \
+            echo $REPLICA_KEY | docker run -i --rm --volumes-from mongodb-data mongo:2.6 bash -c \"cat > /data/db/replica.key && chmod 700 /data/db/replica.key\"; \
           else \
             if [ \"$INSTANCE\" -eq \"1\" ]; \
             then \

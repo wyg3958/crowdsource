@@ -14,7 +14,7 @@ public class FinanceRoundEntity {
     @Id
     private String id;
 
-    private int initialUserBudget;
+    private DateTime startDate;
 
     private DateTime endDate;
 

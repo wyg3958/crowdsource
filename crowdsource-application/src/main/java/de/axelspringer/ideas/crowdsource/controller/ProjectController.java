@@ -54,11 +54,7 @@ public class ProjectController {
     @RequestMapping(value = "/project", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public void addProject(@RequestBody @Valid Project project, Principal principal) {
 
-        UserEntity userEntity = userRepository.findByEmail(principal.getName());
-        if (userEntity == null) {
-            throw new NotAuthorizedException("No user found with username " + principal.getName());
-        }
-
+        UserEntity userEntity = findUserEntity(principal);
         projectService.addProject(project, userEntity);
     }
 
@@ -67,11 +63,15 @@ public class ProjectController {
     @RequestMapping("/project/{projectId}/pledge")
     public void pledgeProject(@PathVariable String projectId, @RequestBody @Valid Pledge pledge, Principal principal) {
 
+        UserEntity userEntity = findUserEntity(principal);
+        projectService.pledgeProject(projectId, userEntity, pledge);
+    }
+
+    private UserEntity findUserEntity(Principal principal) {
         UserEntity userEntity = userRepository.findByEmail(principal.getName());
         if (userEntity == null) {
             throw new NotAuthorizedException("No user found with username " + principal.getName());
         }
-
-        projectService.pledgeProject(projectId, userEntity, pledge);
+        return userEntity;
     }
 }

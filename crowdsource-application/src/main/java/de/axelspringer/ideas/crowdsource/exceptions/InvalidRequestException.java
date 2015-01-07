@@ -14,6 +14,10 @@ public class InvalidRequestException extends RuntimeException {
         return new InvalidRequestException("pledge_goal_exceeded");
     }
 
+    public static InvalidRequestException userBudgetExceeded() {
+        return new InvalidRequestException("user_budget_exceeded");
+    }
+
     public InvalidRequestException(String message) {
         super(message);
     }

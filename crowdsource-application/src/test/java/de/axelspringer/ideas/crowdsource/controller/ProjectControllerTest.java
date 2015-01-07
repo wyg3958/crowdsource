@@ -53,6 +53,7 @@ public class ProjectControllerTest {
     private static final String NON_EXISTING_USER_MAIL = "nonexisting@mail.com";
     private static final String EXISTING_PROJECT_ID = "existingProjectId";
     private static final String NON_EXISTING_PROJECT_ID = "nonexistingProjectId";
+    private static final int ALREADY_PLEDGED = 3;
 
     @Autowired
     private ProjectRepository projectRepository;
@@ -80,6 +81,7 @@ public class ProjectControllerTest {
 
         existingUserEntity = new UserEntity(EXISTING_USER_MAIL);
         existingUserEntity.setId("existingUserId");
+        existingUserEntity.setBudget(1000);
 
         when(userRepository.findByEmail(EXISTING_USER_MAIL)).thenReturn(existingUserEntity);
         when(userRepository.findByEmail(NON_EXISTING_USER_MAIL)).thenReturn(null);
@@ -87,7 +89,7 @@ public class ProjectControllerTest {
         existingProject = createProjectEntity(EXISTING_PROJECT_ID, "title", 44, "short description", "description");
         when(projectRepository.findOne(EXISTING_PROJECT_ID)).thenReturn(existingProject);
         when(pledgeRepository.findByProject(eq(existingProject))).thenReturn(Arrays.asList(
-                new PledgeEntity(existingProject, existingUserEntity, new Pledge(3))));
+                new PledgeEntity(existingProject, existingUserEntity, new Pledge(ALREADY_PLEDGED))));
 
         ProjectEntity project1 = createProjectEntity("projectId1", "title1", 11, "short description1", "description1");
         ProjectEntity project2 = createProjectEntity("projectId2", "title2", 22, "short description2", "description2");
@@ -188,7 +190,9 @@ public class ProjectControllerTest {
 
     @Test
     public void pledgeProject_shouldCallTheProjectServiceCorrectly() throws Exception {
-        Pledge pledge = new Pledge(35);
+        Pledge pledge = new Pledge(existingProject.getPledgeGoal() - ALREADY_PLEDGED);
+
+        int budgetBeforePledge = existingUserEntity.getBudget();
 
         mockMvc.perform(post("/project/{projectId}/pledge", EXISTING_PROJECT_ID)
                 .principal(new UsernamePasswordAuthenticationToken(EXISTING_USER_MAIL, "somepassword"))
@@ -198,6 +202,9 @@ public class ProjectControllerTest {
 
         PledgeEntity pledgeEntity = new PledgeEntity(existingProject, existingUserEntity, pledge);
         verify(pledgeRepository).save(pledgeEntity);
+        verify(userRepository).save(existingUserEntity);
+
+        assertThat(existingUserEntity.getBudget(), is(budgetBeforePledge - pledge.getAmount()));
     }
 
     @Test
@@ -206,7 +213,7 @@ public class ProjectControllerTest {
         mockMvc.perform(post("/project/{projectId}/pledge", EXISTING_PROJECT_ID)
                 .principal(new UsernamePasswordAuthenticationToken(NON_EXISTING_USER_MAIL, "somepassword"))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(new Pledge(35))))
+                .content(mapper.writeValueAsString(new Pledge(1))))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -216,7 +223,7 @@ public class ProjectControllerTest {
         mockMvc.perform(post("/project/{projectId}/pledge", NON_EXISTING_PROJECT_ID)
                 .principal(new UsernamePasswordAuthenticationToken(EXISTING_USER_MAIL, "somepassword"))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(new Pledge(35))))
+                .content(mapper.writeValueAsString(new Pledge(1))))
                 .andExpect(status().isNotFound());
     }
 
@@ -239,11 +246,24 @@ public class ProjectControllerTest {
         MvcResult mvcResult = mockMvc.perform(post("/project/{projectId}/pledge", EXISTING_PROJECT_ID)
                 .principal(new UsernamePasswordAuthenticationToken(EXISTING_USER_MAIL, "somepassword"))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(new Pledge(42)))) // pledge goal is 44, 3 was already pledged
+                .content(mapper.writeValueAsString(new Pledge(existingProject.getPledgeGoal() - ALREADY_PLEDGED + 1))))
                 .andExpect(status().isBadRequest())
                 .andReturn();
 
         assertThat(mvcResult.getResponse().getContentAsString(), is("{\"errorCode\":\"pledge_goal_exceeded\",\"fieldViolations\":{}}"));
+    }
+
+    @Test
+    public void pledgeProject_shouldRespondWith400IfTheUserBudgetIsExceeded() throws Exception {
+
+        MvcResult mvcResult = mockMvc.perform(post("/project/{projectId}/pledge", EXISTING_PROJECT_ID)
+                .principal(new UsernamePasswordAuthenticationToken(EXISTING_USER_MAIL, "somepassword"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(new Pledge(existingUserEntity.getBudget() + 1))))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"errorCode\":\"user_budget_exceeded\",\"fieldViolations\":{}}"));
     }
 
     private ProjectEntity createProjectEntity(String id, String title, int pledgeGoal, String shortDescription, String description) {

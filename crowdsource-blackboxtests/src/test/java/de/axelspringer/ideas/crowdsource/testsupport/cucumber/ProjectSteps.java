@@ -23,9 +23,7 @@ import org.springframework.test.context.ContextConfiguration;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.startsWith;
+import static org.hamcrest.Matchers.*;
 
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
 public class ProjectSteps {
@@ -141,6 +139,11 @@ public class ProjectSteps {
         projectDetailPage.waitForTitleToBeAvailable(createdProject.getTitle());
         projectDetailPage.waitForShortDescriptionToBeAvailable(createdProject.getShortDescription());
         projectDetailPage.waitForDescriptionToBeAvailable(createdProject.getDescription());
+        projectDetailPage.waitForStatusWidgetToBeAvailable();
+        assertThat(projectDetailPage.getStatusWidgetPledgedAmount(), Matchers.equalTo("$0"));
+        assertThat(projectDetailPage.getStatusWidgetPledgeGoal(), Matchers.equalTo("$25"));
+        assertThat(projectDetailPage.getStatusWidgetBackers(), Matchers.equalTo("0"));
+        assertThat(projectDetailPage.getStatusWidgetUserName(), Matchers.equalTo("Crowdsource"));
     }
 
     @Given("^the user requests the project detail page with a non existant project id$")

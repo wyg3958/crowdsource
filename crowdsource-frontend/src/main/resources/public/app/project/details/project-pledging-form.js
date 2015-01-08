@@ -18,7 +18,7 @@ angular.module('crowdsource')
                             $route.reload();
                         })
                         .catch(function() {
-                            alert('Zu viel');
+                            alert('Zu hoher Finanzierungsbetrag oder nicht eingeloggt');
                         });
                 };
             }

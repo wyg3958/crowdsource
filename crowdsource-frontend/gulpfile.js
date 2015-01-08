@@ -61,5 +61,5 @@ gulp.task('watch', function () {
     gulp.watch(SCSS_FILES, ['sass']);
 });
 
-// sass is the default gulp task
+// the default gulp task
 gulp.task('default', ['js-libs', 'js', 'resources', 'sass']);

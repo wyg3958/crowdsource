@@ -36,4 +36,30 @@ public class ProjectDetailPage {
     public void open(String projectId) {
         webDriverProvider.provideDriver().get(urlProvider.applicationUrl() + "#/project/" + projectId);
     }
+
+    public void waitForStatusWidgetToBeAvailable() {
+        //check div containers
+        wait.until(presenceOfElementLocated(By.cssSelector(".project-status")));
+        wait.until(presenceOfElementLocated(By.cssSelector(".creator")));
+        wait.until(presenceOfElementLocated(By.cssSelector(".funding-status")));
+        wait.until(presenceOfElementLocated(By.cssSelector(".call-to-action")));
+        //check button
+        wait.until(presenceOfElementLocated(By.xpath("//div[@class='call-to-action']/button")));
+    }
+
+    public String getStatusWidgetPledgedAmount() {
+        return webDriverProvider.provideDriver().findElement(By.cssSelector(".pledged-amount")).getText();
+    }
+
+    public String getStatusWidgetPledgeGoal() {
+        return webDriverProvider.provideDriver().findElement(By.cssSelector(".pledge-goal")).getText();
+    }
+
+    public String getStatusWidgetBackers() {
+        return webDriverProvider.provideDriver().findElement(By.cssSelector(".backers")).getText();
+    }
+
+    public String getStatusWidgetUserName() {
+        return webDriverProvider.provideDriver().findElement(By.cssSelector(".creator span")).getText();
+    }
 }

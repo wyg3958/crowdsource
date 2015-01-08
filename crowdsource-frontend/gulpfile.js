@@ -17,6 +17,7 @@ var config = require('./config.js');
 // ---
 
 // SASS compile task
+
 gulp.task('sass', function () {
     return gulp.src(config.scssDir + '/crowdsource.scss')
 
@@ -28,7 +29,7 @@ gulp.task('sass', function () {
       }))
 
       // Sourcemaps will only work, if sass output is not compressed or minified
-      // like so: sass({output_style: compressed}) 
+      // like so: sass({output_style: compressed})
 
       .pipe(sourcemaps.init())
       .pipe(sass({includePaths: ['bower_components']}))

@@ -22,13 +22,39 @@
     }
 }
 
+
+
+// ---
+// Status Widget
+// ---
+
+
 .project-status {
-    width: 100%;
+
+}
+
+
+.project-status__creator {
+
+}
+
+
+.project-status__funding {
+
+}
+
+
+
+
+.project-status {
+
     margin: 50px 0;
-    border-collapse: collapse;
 
     @media #{$medium-up} {
         display: table;
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
     }
 
     > div {
@@ -64,7 +90,7 @@
     }
 
     .funding-status {
-        width: 100%;
+        // width: 100%;
 
         ul {
             margin: 0;

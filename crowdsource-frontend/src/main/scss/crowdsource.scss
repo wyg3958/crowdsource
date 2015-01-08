@@ -1,14 +1,16 @@
 @charset "UTF-8";
 
 @import "settings";
+@import "util/helper";
 @import "foundation/scss/normalize";
 @import "foundation/foundation";
 @import "util/form";
-@import "util/navigation";
 @import "util/objects";
 @import "components/project/project-list";
 @import "components/project/project-details";
 @import "components/project/project-form";
+@import "components/teaser";
+@import "components/main-nav";
 
 .button, button {
     text-transform: uppercase;
@@ -27,18 +29,22 @@ body {
     position: relative;
 }
 
-.teaser {
-    width: 100%;
-    line-height: 100px;
-    background-color: $crowd-color-purple;
-    color: white;
-    font-size: 4.1vw;
 
-    @media #{$medium-up} {
-        line-height: 200px;
-        font-size: 28px;
-    }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .content {
     padding-bottom: 200px;

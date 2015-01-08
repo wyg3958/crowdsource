@@ -1,7 +1,7 @@
 /**
  * global application configuration
  */
-angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.angular-ellipsis'])
+angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.angular-ellipsis', 'ngScrollTo'])
 
     .config(function ($routeProvider, $locationProvider, $httpProvider) {
         $routeProvider

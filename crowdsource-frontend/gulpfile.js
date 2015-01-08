@@ -21,7 +21,8 @@ var JS_LIB_FILES = {
         'bower_components/angular-ellipsis/src/angular-ellipsis.min.js'
     ],
     unminified: [
-        'bower_components/angular-i18n/angular-locale_de.js'
+        'bower_components/angular-i18n/angular-locale_de.js',
+        'bower_components/ngScrollTo/ng-scrollto.js'
     ]
 };
 

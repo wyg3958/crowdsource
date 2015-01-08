@@ -62,4 +62,13 @@ public class ProjectDetailPage {
     public String getStatusWidgetUserName() {
         return webDriverProvider.provideDriver().findElement(By.cssSelector(".creator span")).getText();
     }
+
+    public void clickFundingButton() {
+        webDriverProvider.provideDriver().findElement(By.cssSelector(".funding-button")).click();
+    }
+
+    public int getPageYOffset() {
+        Object pageYOffset = webDriverProvider.provideDriver().executeScript("return window.pageYOffset;");
+        return ((Long) pageYOffset).intValue();
+    }
 }

@@ -13,6 +13,7 @@ import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.AddProj
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.AddProjectForm;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.axelspringer.ideas.crowdsource.testsupport.util.CrowdSourceClient;
+import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.hamcrest.Matchers;
 import org.openqa.selenium.WebDriver;
@@ -49,10 +50,14 @@ public class ProjectSteps {
     @Autowired
     private CrowdSourceClient crowdSourceClient;
 
+    @Autowired
+    private UrlProvider urlProvider;
+
     private WebDriver webDriver;
     private String randomProjectTitlePrefix;
     private String randomProjectShortDescriptionPrefix;
     private Project createdProject;
+    private int savedPageYOffset;
 
     @Before
     public void init() {
@@ -65,7 +70,7 @@ public class ProjectSteps {
         createdProject.setTitle("T" + RandomStringUtils.randomAlphanumeric(6));
         createdProject.setShortDescription("Short description " + RandomStringUtils.randomAlphanumeric(16));
         createdProject.setPledgeGoal(25);
-        createdProject.setDescription("This is the project description text.");
+        createdProject.setDescription("This is the project description text." + RandomStringUtils.random(1000, "\nabc"));
 
         CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithDefaultUser();
         crowdSourceClient.createProject(createdProject, authToken);
@@ -149,5 +154,27 @@ public class ProjectSteps {
     @Given("^the user requests the project detail page with a non existant project id$")
     public void the_user_requests_the_project_detail_page_with_a_non_existant_project_id() throws Throwable {
         projectDetailPage.open("i-dont-exist-project-id");
+    }
+
+    @Given("^the user is on a project detail page$")
+    public void the_user_is_on_a_project_detail_page() throws Throwable {
+        a_published_project_is_available();
+
+        webDriver.get(urlProvider.applicationUrl());
+        projectsPage.waitForPageLoad();
+
+        the_user_clicks_on_the_tile_of_this_published_project();
+    }
+
+    @When("^the user clicks the funding button in status widget$")
+    public void the_user_clicks_the_funding_button_in_status_widget() throws Throwable {
+        PageFactory.initElements(webDriver, projectDetailPage);
+        savedPageYOffset = projectDetailPage.getPageYOffset();
+        projectDetailPage.clickFundingButton();
+    }
+
+    @Then("^the browser scrolls to the funding widget$")
+    public void the_browser_scrolls_to_the_funding_widget() throws Throwable {
+        assertThat(projectDetailPage.getPageYOffset(), Matchers.greaterThan(savedPageYOffset));
     }
 }

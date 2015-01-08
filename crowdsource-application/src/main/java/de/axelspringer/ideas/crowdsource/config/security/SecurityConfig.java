@@ -69,7 +69,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
             http
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER)
-                    .and().authorizeRequests().antMatchers("/hello/**").authenticated();
+                    // at least one location of the app needs to be secured here, or the app won't start up,
+                    // even if there are controllers secured with the help of @EnableGlobalMethodSecurity
+                    // -> we define some dummy value to hopefully never match a real url
+                    // (haven't found the right way to configure spring security yet ...)
+                    .and().authorizeRequests().antMatchers("/some-pattern-to-make-spring-security-happy").authenticated();
         }
     }
 

@@ -16,13 +16,13 @@ import static java.util.stream.Collectors.joining;
 @ToString
 @EqualsAndHashCode
 @NoArgsConstructor // required for serialization
-public class User {
+public class ProjectCreator {
 
     private String id;
 
     private String name;
 
-    public User(UserEntity user) {
+    public ProjectCreator(UserEntity user) {
         this.id = user.getId();
         this.name = determineNameFromEmail(user.getEmail());
     }

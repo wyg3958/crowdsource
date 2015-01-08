@@ -24,7 +24,7 @@
         </div>
 
         <div class="call-to-action">
-            <button scroll-to="funding-widget" class="funding-button">Zur&nbsp;Finanzierung</button>
+            <button scroll-to="project-pledging-form" class="to-pledging-form-button">Zur&nbsp;Finanzierung</button>
         </div>
     </div>
 
@@ -32,7 +32,7 @@
 
     <div class="project-description">{{ projectDetails.project.description }}</div>
 
-    <div class="funding-widget" id="funding-widget"></div>
+    <project-pledging-form id="project-pledging-form" project="projectDetails.project"></project-pledging-form>
 
     <p class="push-down">
         <a href="#/projects">zurück zur Übersicht</a>

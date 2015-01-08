@@ -64,7 +64,7 @@ public class ProjectDetailPage {
     }
 
     public void clickFundingButton() {
-        webDriverProvider.provideDriver().findElement(By.cssSelector(".funding-button")).click();
+        webDriverProvider.provideDriver().findElement(By.cssSelector(".to-pledging-form-button")).click();
     }
 
     public int getPageYOffset() {

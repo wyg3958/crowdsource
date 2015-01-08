@@ -1,0 +1,11 @@
+<form name="pledgingForm.form" class="pledging-form" novalidate>
+    <div class="row collapse">
+        <div class="small-3 columns">
+            <input type="number" min="1" ng-model="pledgingForm.pledge.amount" placeholder="Finanzierungsbetrag" required>
+        </div>
+        <div class="small-3 columns">
+            <button class="success postfix" ng-click="pledgingForm.pledgeProject()" ng-disabled="pledgingForm.form.$invalid">Jetzt finanzieren</button>
+        </div>
+        <div class="small-6 columns"></div>
+    </div>
+</form>

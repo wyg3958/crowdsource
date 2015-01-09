@@ -45,11 +45,12 @@
 @mixin css-table($options: ()) {
   $options: map-merge((
       width: 100%,
+      table-layout: initial
     ), $options);
 
   display: table;
-  table-layout: fixed;
   border-collapse: collapse;
+  table-layout: map-get($options, table-layout);
   width: map-get($options, width);
 }
 

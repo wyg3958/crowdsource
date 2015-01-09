@@ -10,7 +10,7 @@
   color: $clr-body;
 
   @media #{$medium-up} {
-    @include css-table;
+    @include css-table();
   }
 }
 
@@ -36,7 +36,7 @@
   text-align: center;
 
   @media #{$medium-up} {
-    @include css-table-cell;
+    @include css-table-cell((width: 25%));
   }
 }
 

@@ -4,8 +4,9 @@ angular.module('crowdsource')
 
         var service = {};
 
-        var projectsResource = $resource('/projects');
         var projectResource = $resource('/project/:id');
+        var projectsResource = $resource('/projects');
+        var projectPledgeResource = $resource('/project/:id/pledge');
 
         service.add = function (project) {
             return projectResource.save(project).$promise;
@@ -17,6 +18,10 @@ angular.module('crowdsource')
 
         service.get = function (projectId) {
             return projectResource.get({ id: projectId });
+        };
+
+        service.pledge = function(projectId, pledge) {
+            return projectPledgeResource.save({ id: projectId }, pledge);
         };
 
         return service;

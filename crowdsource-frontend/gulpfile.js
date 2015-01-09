@@ -21,26 +21,23 @@ var config = require('./config.js');
 gulp.task('sass', function () {
     return gulp.src(config.scssDir + '/crowdsource.scss')
 
-      // Prevents errors from interrupting watch task
+        // Prevents errors from interrupting watch task
+        .pipe(plumber(function (err) {
+            console.log(err);
+            this.emit('end');
+        }))
 
-      .pipe(plumber(function (err) {
-        console.log(err);
-        this.emit('end');
-      }))
+        .pipe(sourcemaps.init())
+            .pipe(sass({
+                includePaths: ['bower_components'],
 
-      // Sourcemaps will only work, if sass output is not compressed or minified
-      // like so: sass({output_style: compressed})
-
-      .pipe(sourcemaps.init())
-      .pipe(sass({includePaths: ['bower_components']}))
-
-      .pipe(sourcemaps.write('./'))
-      .pipe(gulp.dest(config.baseDestDir + '/css'));
+                // Sourcemaps will only work, if sass output is not compressed or minified,
+                // comment out the following line to make sourcemaps work:
+                output_style: 'compressed'
+            }))
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest(config.baseDestDir + '/css'));
 });
-
-
-
-
 
 // copies all files except js files to the target directory (js files are processed by the js task)
 gulp.task('resources', function() {

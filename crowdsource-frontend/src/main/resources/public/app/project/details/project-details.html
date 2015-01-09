@@ -1,40 +1,41 @@
 <content-row class="project-details">
-    <h1>{{ projectDetails.project.title }}</h1>
+  <h1>{{ projectDetails.project.title }}</h1>
 
-    <div class="project-status">
-        <div class="creator">
-            <img src="app/user/avatar.png">
-            von <span class="name">{{ projectDetails.project.creator.name }}</span>
-        </div>
+  <div class="project-status">
 
-        <div class="funding-status">
-            <progress-bar value="projectDetails.project.pledgedAmount" maximum="projectDetails.project.pledgeGoal"></progress-bar>
-            <ul>
-                <li class="pledge-info">
-                    <span class="pledged-amount">${{ projectDetails.project.pledgedAmount | number }}</span>
-                    /
-                    <span class="pledge-goal">${{ projectDetails.project.pledgeGoal | number }}</span>
-                    <small>Finanzierung</small>
-                </li>
-                <li>
-                    <span class="backers">{{ projectDetails.project.backers }}</span>
-                    <small>Förderer</small>
-                </li>
-            </ul>
-        </div>
-
-        <div class="call-to-action">
-            <button scroll-to="funding-widget">Zur&nbsp;Finanzierung</button>
-        </div>
+    <div class="project-status__creator">
+      <img class="project-status__user-avatar" src="app/user/avatar.png">
+      von <strong class="text--strong">{{ projectDetails.project.creator.name }}</strong>
     </div>
 
-    <h2>{{ projectDetails.project.shortDescription}}</h2>
+    <div class="project-status__funding">
+      <progress-bar value="projectDetails.project.pledgedAmount" maximum="projectDetails.project.pledgeGoal"></progress-bar>
+      <ul class="project-status__funding-list">
+        <li>
+          ${{ projectDetails.project.pledgedAmount | number }}
+          <span class="project-status__funding-cat">Finanzierung</span>
+        </li>
+        <li>
+          {{ projectDetails.project.backers }}
+          <span class="project-status__funding-cat">Förderer</span>
+        </li>
+      </ul>
+    </div>
 
-    <div class="project-description">{{ projectDetails.project.description }}</div>
+    <div class="project-status__cta">
+      <button class="project-status__btn" scroll-to="funding-widget">Zur&nbsp;Finanzierung</button>
+    </div>
 
-    <div class="funding-widget" id="funding-widget"></div>
+  </div>
 
-    <p class="push-down">
-        <a href="#/projects">zurück zur Übersicht</a>
-    </p>
+  <h2>{{ projectDetails.project.shortDescription}}</h2>
+
+  <div class="project-description">{{ projectDetails.project.description }}</div>
+
+  <div class="funding-widget" id="funding-widget"></div>
+
+  <p class="push-down">
+    <a href="#/projects">zurück zur Übersicht</a>
+  </p>
+
 </content-row>

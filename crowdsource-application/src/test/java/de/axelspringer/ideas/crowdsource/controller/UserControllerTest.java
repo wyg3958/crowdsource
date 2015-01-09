@@ -6,6 +6,7 @@ import de.axelspringer.ideas.crowdsource.model.presentation.user.UserActivation;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.UserRegistration;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import de.axelspringer.ideas.crowdsource.service.UserActivationService;
+import de.axelspringer.ideas.crowdsource.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,19 +32,13 @@ import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.isEmptyString;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.sameInstance;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -53,6 +48,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserControllerTest {
 
     private static final String NEW_USER_MAIL_ADDRESS = "new@axelspringer.de";
+    private static final String EXISTING_USER_MAIL = "existing@mail.com";
     private static final String EXISTING_BUT_NOT_YET_ACTIVATED_USER_MAIL_ADDRESS = "existing_not_yet_activated@axelspringer.de";
     private static final String ACTIVATED_USER_MAIL_ADDRESS = "existing_and_activated@axelspringer.de";
     private static final String INVALID_USER_MAIL_ADDRESS = "test@test.de";
@@ -192,13 +188,27 @@ public class UserControllerTest {
         assertEquals("", "{\"errorCode\":\"field_errors\",\"fieldViolations\":{\"email\":\"not_activated\"}}", mvcResult.getResponse().getContentAsString());
     }
 
-    private MvcResult registerUserAndExpect(ResultMatcher expectedResponseStatus) throws Exception {
-        return mockMvc.perform(post("/user")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(userRegistration)))
-                .andExpect(expectedResponseStatus)
-                .andReturn();
-    }
+//    @Test
+//    public void shouldReturnUserSuccessfully() throws Exception{
+//
+//        List<String> roles = new ArrayList<>();
+//        roles.add(Roles.ROLE_USER);
+//
+//
+//        SecurityProperties.User user = new SecurityProperties.User();
+//        user.setName(ACTIVATED_USER_MAIL_ADDRESS);
+//        user.setPassword("banane");
+//        user.setRole(roles);
+//
+//        TestingAuthenticationToken token = new TestingAuthenticationToken(user,null);
+//        SecurityContextHolder.getContext().setAuthentication(token);
+//
+//        mockMvc.perform(get("/user/current")
+//                .principal(token)
+//                .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk());
+//    }
+
 
     @Test
     public void testActivateUser() throws Exception {
@@ -312,6 +322,15 @@ public class UserControllerTest {
         assertEquals("{\"errorCode\":\"already_activated\",\"fieldViolations\":{}}", mvcResult.getResponse().getContentAsString());
     }
 
+    private MvcResult registerUserAndExpect(ResultMatcher expectedResponseStatus) throws Exception {
+        return mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(userRegistration)))
+                .andExpect(expectedResponseStatus)
+                .andReturn();
+    }
+
+
     @Configuration
     @EnableWebMvc
     static class Config {
@@ -327,8 +346,13 @@ public class UserControllerTest {
         }
 
         @Bean
-        public UserActivationService userService() {
+        public UserActivationService userActivationService() {
             return mock(UserActivationService.class);
+        }
+
+        @Bean
+        public UserService userService() {
+            return new UserService();
         }
 
         @Bean

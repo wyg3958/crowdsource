@@ -1,27 +1,27 @@
 package de.axelspringer.ideas.crowdsource.controller;
 
+import de.axelspringer.ideas.crowdsource.config.security.Roles;
 import de.axelspringer.ideas.crowdsource.exceptions.InvalidRequestException;
 import de.axelspringer.ideas.crowdsource.exceptions.ResourceNotFoundException;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
+import de.axelspringer.ideas.crowdsource.model.presentation.user.User;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.UserActivation;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.UserRegistration;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import de.axelspringer.ideas.crowdsource.service.UserActivationService;
+import de.axelspringer.ideas.crowdsource.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 @Slf4j
 @RestController
@@ -36,6 +36,9 @@ public class UserController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserService userService;
 
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method = RequestMethod.POST)
@@ -87,5 +90,14 @@ public class UserController {
 
         userRepository.save(userEntity);
         log.debug("User activated: {}", userEntity);
+    }
+
+    @Secured(Roles.ROLE_USER)
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/current", method = RequestMethod.GET)
+    public User getCurrentUser(Principal principal) {
+
+        UserEntity userEntity = userService.getUserByName(principal.getName());
+        return new User(userEntity);
     }
 }

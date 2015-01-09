@@ -1,4 +1,7 @@
 <form name="pledgingForm.form" class="pledging-form" novalidate>
+
+    <range-slider ng-model="pledgingForm.pledge.amount"></range-slider>
+
     <div class="row collapse">
         <div class="small-3 columns">
             <input type="number" min="1" ng-model="pledgingForm.pledge.amount" placeholder="Finanzierungsbetrag" required>

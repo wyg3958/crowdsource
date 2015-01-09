@@ -1,0 +1,76 @@
+/***
+ * HELPER
+ *
+ * This is a set of helper – or if you prefer utility – classes, that extend
+ * the Foundation framework.
+ *
+ */
+
+// ---
+// Layout helpers, like margins and paddings...
+// ---
+
+// See inuit.css  >>> helpers
+
+.push                 { margin:       $su-base!important; }
+.push--top            { margin-top:   $su-base!important; }
+.push--right          { margin-right: $su-base!important; }
+.push--bottom         { margin-bottom:$su-base!important; }
+.push--left           { margin-left:  $su-base!important; }
+.push--ends           { margin-top:   $su-base!important; margin-bottom:$su-base!important; }
+.push--sides          { margin-right: $su-base!important; margin-left:  $su-base!important; }
+
+.push-dble            { margin:       $su-dble!important; }
+.push-dble--top       { margin-top:   $su-dble!important; }
+.push-dble--right     { margin-right: $su-dble!important; }
+.push-dble--bottom    { margin-bottom:$su-dble!important; }
+.push-dble--left      { margin-left:  $su-dble!important; }
+.push-dble--ends      { margin-top:   $su-dble!important; margin-bottom:$su-dble!important; }
+.push-dble--sides     { margin-right: $su-dble!important; margin-left:  $su-dble!important; }
+
+.flush                { margin:       0!important; }
+.flush--top           { margin-top:   0!important; }
+.flush--right         { margin-right: 0!important; }
+.flush--bottom        { margin-bottom:0!important; }
+.flush--left          { margin-left:  0!important; }
+.flush--ends          { margin-top:   0!important; margin-bottom:0!important; }
+.flush--sides         { margin-right: 0!important; margin-left:  0!important; }
+
+
+
+// ---
+// Simple CSS table for resposnive layouts
+// ---
+
+@mixin css-table($options: ()) {
+  $options: map-merge((
+      width: 100%,
+    ), $options);
+
+  display: table;
+  table-layout: fixed;
+  border-collapse: collapse;
+  width: map-get($options, width);
+}
+
+
+@mixin css-table-cell($options: ()) {
+  $options: map-merge((
+    width:  auto,
+    valign: middle
+  ), $options);
+
+  display: table-cell;
+  width: map-get($options, width);
+  vertical-align: map-get($options, valign);
+}
+
+
+
+// ---
+// Text-Helpers
+// ---
+
+.text--strong {
+  font-weight: $fw-bold;
+}

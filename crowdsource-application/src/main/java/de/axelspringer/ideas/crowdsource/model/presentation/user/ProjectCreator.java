@@ -6,23 +6,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.util.List;
-
 @Getter
 @ToString
 @EqualsAndHashCode
 @NoArgsConstructor // required for serialization
-public class User {
+public class ProjectCreator {
 
-    private String email;
-    private List<String> roles;
-    private int budget;
+    private String id;
+
     private String name;
 
-    public User(final UserEntity userEntity) {
-        this.email = userEntity.getEmail();
-        this.budget = userEntity.getBudget();
-        this.roles = userEntity.getRoles();
-        this.name = UserHelper.determineNameFromEmail(email);
+    public ProjectCreator(UserEntity user) {
+        this.id = user.getId();
+        this.name = UserHelper.determineNameFromEmail(user.getEmail());
     }
 }

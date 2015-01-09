@@ -1,0 +1,73 @@
+/***
+ * Teaser
+ *
+ * Teaser area on top of most pages
+ *
+ */
+
+// ---
+// Teaser Widgets
+// ---
+
+%teaser {
+  background-color: $clr-teaser-start;
+  background-image: linear-gradient(to right, $clr-teaser-start, $clr-teaser-end);
+  text-align: center;
+}
+
+
+// Hero class
+
+.teaser--hero {
+  @extend  %teaser;
+  padding: 2rem;
+}
+
+
+// Slim class
+
+.teaser--slim {
+ @extend %teaser;
+ height: 1rem;
+
+  // Remove all HTML inside our slim teaser
+
+  * {
+    display: none;
+  }
+}
+
+
+
+// ---
+// Teaser Components
+// ---
+
+/*h1*/.teaser__heading {
+  margin:      0;
+  font-size:   $fs-medium;
+  font-weight: 200;
+  color:       $white;
+
+  @media #{$medium-up} {
+   font-size: $fs-hero;
+  }
+}
+
+
+/*p*/.teaser__intro {
+  margin-bottom: 0;
+  font-weight:   200;
+  color:         $clr-emerald;
+
+  @media #{$medium-up} {
+    font-size: $fs-medium;
+  }
+}
+
+
+/*button*/.teaser__button {
+  @extend .push-dble--top;
+  @extend .flush--bottom;
+  @extend .round;  // Foundation class
+}

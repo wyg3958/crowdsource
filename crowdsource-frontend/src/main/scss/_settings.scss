@@ -1,16 +1,123 @@
-// crowdsource settings
-// --------------------
-@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700,400italic);
+/***
+* Crowdsource Settings
+*
+*
+*
+*/
 
-$crowd-font-family: "Source Sans Pro", sans-serif;
+// ---
+// Type Definitions
+// ---
 
-$crowd-color-purple: #6455a0;
-$crowd-color-orange: orange;
-$crowd-color-darker-grey: #575757;
-$crowd-color-dark-grey: #6b6b6b;
-$crowd-color-light-grey: #e6e6e6;
 
-$crowd-font-size: 16px;
-$crowd-line-height: 20.8px;
+// Font families + Colors for Foundation
+
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,500,600,700,400italic);
+
+$ff:       "Source Sans Pro", "Helvetica Neue", Helvetica, sans-serif;
+$ff-brand: 'Helvetica Neue';
+$crowd-font-family: $ff;
+$crowd-line-height: 22px;
+
+
+
+// ---
+// Import AND Extend Foundation Settings
+// ---
+
+$crowd-color-purple:       #6455a0;
+$crowd-color-orange:       orange;
+$crowd-color-darker-grey:  #575757;
+$crowd-color-dark-grey:    #6b6b6b;
+$crowd-color-light-grey:   #e6e6e6;
+
+$success-color:            #43AC6A; // Abhängigkeit zu Foundation Settings
+
+$crowd-primary-color:      $crowd-color-purple;
+$crowd-secondary-color:    $success-color;
 
 @import "foundation/_foundation-settings";
+
+
+
+// ---
+// Sapcing Units, eg. for helper classes
+// ---
+
+$crowd-font-size: 16px;
+
+$su-base: rem-calc($crowd-font-size);
+$su-half: rem-calc($crowd-font-size / 2);
+$su-dble: rem-calc($crowd-font-size * 2);
+
+
+
+// ---
+// Color Definitions, see other color settings in foundation settings
+// ---
+
+// Colors by name
+// Greys
+
+$clr-mine-shaft: #2D2D2D;  // bodycopy
+$clr-boulder:    #787878;  // bodycopy light
+$clr-gallery:    #F0F0F0;  // use for very light bg's
+$clr-alto:       #D8D8D8;  // outlines
+
+
+// Shades of blue
+
+$clr-bossanova:       #532054;
+$clr-butterfly:       #5D568C;
+
+
+// Shades of green
+
+$clr-emerald:         #56BF84;
+$clr-emerald-lighter: #35BF72;
+$clr-aquamarine:      #61FFA6;
+
+
+// Colors by function
+
+$clr-body:            $clr-mine-shaft;
+$clr-body-light:      $clr-boulder;
+$clr-border:          $clr-alto;
+$clr-teaser-start:    $clr-bossanova;
+$clr-teaser-end:      $clr-butterfly;
+
+
+
+// ---
+// Font Size's Definitions
+// ---
+
+
+$fs-small:    rem-calc(14px);
+$fs-normal:   rem-calc(16px);
+$fs-medium:   rem-calc(24px);
+$fs-hero:     rem-calc(32px);
+
+
+
+// ---
+// Font Weight
+// ---
+
+
+$fw-extralight: 200;
+$fw-light:      300;
+$fw-regular:    400;
+$fw-medium:     500;
+$fw-bold:       600;
+$fw-extrabold:  700;
+$fw-black:      800;
+
+
+
+// ---
+// Border Definitions
+// ---
+
+
+$border-radius: 3px;

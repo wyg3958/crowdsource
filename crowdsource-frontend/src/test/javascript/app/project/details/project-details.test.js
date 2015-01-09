@@ -27,12 +27,26 @@ describe('project details', function () {
 
     it("should display the project's details that were retrieved from backend", function () {
 
-        $httpBackend.expectGET('/project/xyz').respond(200, { title: 'Title', shortDescription: 'Short description', description: 'Looong description' });
+        $httpBackend.expectGET('/project/xyz').respond(200, {
+            title: 'Title',
+            shortDescription: 'Short description',
+            description: 'Looong description',
+            creator: { name: 'Foo Bar' },
+            pledgedAmount: 13853,
+            pledgeGoal: 20000,
+            backers: 7
+        });
+
         $scope.$digest();
         $httpBackend.flush();
 
         expect(projectDetails.find('h1')).toHaveText('Title');
-        expect(projectDetails.find('blockquote')).toHaveText('Short description');
+        expect(projectDetails.find('.project-status__creator strong')).toHaveText('Foo Bar');
+        expect(projectDetails.find('.project-status__funding progress-bar .meter')).toHaveCss({ width: '69.265%' });
+        expect(projectDetails.find('.project-status__pledge-goal')).toHaveText('$20,000');
+        expect(projectDetails.find('.project-status__pledged-amount')).toHaveText('$13,853');
+        expect(projectDetails.find('.project-status__backers')).toHaveText('7');
+        expect(projectDetails.find('h2')).toHaveText('Short description');
         expect(projectDetails.find('.project-description')).toHaveText('Looong description');
     });
 

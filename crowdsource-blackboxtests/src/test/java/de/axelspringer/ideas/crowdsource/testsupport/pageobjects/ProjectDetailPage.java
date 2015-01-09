@@ -30,10 +30,44 @@ public class ProjectDetailPage {
     }
 
     public void waitForShortDescriptionToBeAvailable(String shortDescription) {
-        wait.until(presenceOfElementLocated(By.xpath("//blockquote[.='" + shortDescription + "']")));
+        wait.until(presenceOfElementLocated(By.xpath("//h2[.='" + shortDescription + "']")));
     }
 
     public void open(String projectId) {
         webDriverProvider.provideDriver().get(urlProvider.applicationUrl() + "#/project/" + projectId);
+    }
+
+    public void waitForStatusWidgetToBeAvailable() {
+        //check div containers
+        wait.until(presenceOfElementLocated(By.cssSelector(".project-status")));
+    }
+
+    public String getStatusWidgetProgressBarValue() {
+        return webDriverProvider.provideDriver().findElement(By.cssSelector(".project-status__funding progress-bar .meter")).getCssValue("width");
+    }
+
+    public String getStatusWidgetPledgedAmount() {
+        return webDriverProvider.provideDriver().findElement(By.className("project-status__pledged-amount")).getText();
+    }
+
+    public String getStatusWidgetPledgeGoal() {
+        return webDriverProvider.provideDriver().findElement(By.className("project-status__pledge-goal")).getText();
+    }
+
+    public String getStatusWidgetBackers() {
+        return webDriverProvider.provideDriver().findElement(By.className("project-status__backers")).getText();
+    }
+
+    public String getStatusWidgetUserName() {
+        return webDriverProvider.provideDriver().findElement(By.cssSelector(".project-status__creator strong")).getText();
+    }
+
+    public void clickFundingButton() {
+        webDriverProvider.provideDriver().findElement(By.className("to-pledging-form-button")).click();
+    }
+
+    public int getPageYOffset() {
+        Object pageYOffset = webDriverProvider.provideDriver().executeScript("return window.pageYOffset;");
+        return ((Long) pageYOffset).intValue();
     }
 }

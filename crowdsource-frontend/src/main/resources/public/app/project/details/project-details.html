@@ -9,16 +9,16 @@
         </div>
 
         <div class="project-status__funding">
-            <progress-bar value="projectDetails.project.pledgedAmount"
-                          maximum="projectDetails.project.pledgeGoal"></progress-bar>
+            <progress-bar value="projectDetails.project.pledgedAmount" maximum="projectDetails.project.pledgeGoal"></progress-bar>
+
             <ul class="project-status__funding-list">
                 <li>
-                    ${{ projectDetails.project.pledgedAmount | number }} /
-                    ${{ projectDetails.project.pledgeGoal | number }}
+                    <span class="project-status__pledged-amount">${{ projectDetails.project.pledgedAmount | number }}</span> /
+                    <span class="project-status__pledge-goal">${{ projectDetails.project.pledgeGoal | number }}</span>
                     <span class="project-status__funding-cat">Finanzierung</span>
                 </li>
                 <li>
-                    {{ projectDetails.project.backers }}
+                    <span class="project-status__backers">{{ projectDetails.project.backers }}</span>
                     <span class="project-status__funding-cat">Förderer</span>
                 </li>
             </ul>

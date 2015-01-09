@@ -63,7 +63,7 @@ public class ProjectDetailPage {
     }
 
     public void clickFundingButton() {
-        webDriverProvider.provideDriver().findElement(By.className(".to-pledging-form-button")).click();
+        webDriverProvider.provideDriver().findElement(By.className("to-pledging-form-button")).click();
     }
 
     public int getPageYOffset() {

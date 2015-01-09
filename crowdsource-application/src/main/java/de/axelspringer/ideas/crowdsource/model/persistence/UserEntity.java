@@ -33,6 +33,8 @@ public class UserEntity {
 
     private boolean activated = false;
 
+    private int budget = 0;
+
     @CreatedDate
     private DateTime createdDate;
 

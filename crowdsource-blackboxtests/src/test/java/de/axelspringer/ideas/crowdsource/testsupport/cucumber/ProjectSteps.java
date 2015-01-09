@@ -24,7 +24,11 @@ import org.springframework.test.context.ContextConfiguration;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.startsWith;
 
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
 public class ProjectSteps {
@@ -145,10 +149,12 @@ public class ProjectSteps {
         projectDetailPage.waitForShortDescriptionToBeAvailable(createdProject.getShortDescription());
         projectDetailPage.waitForDescriptionToBeAvailable(createdProject.getDescription());
         projectDetailPage.waitForStatusWidgetToBeAvailable();
-        assertThat(projectDetailPage.getStatusWidgetPledgedAmount(), Matchers.equalTo("$0"));
-        assertThat(projectDetailPage.getStatusWidgetPledgeGoal(), Matchers.equalTo("$25"));
-        assertThat(projectDetailPage.getStatusWidgetBackers(), Matchers.equalTo("0"));
-        assertThat(projectDetailPage.getStatusWidgetUserName(), Matchers.equalTo("Crowdsource"));
+
+        assertThat(projectDetailPage.getStatusWidgetProgressBarValue(), is("0px"));
+        assertThat(projectDetailPage.getStatusWidgetPledgedAmount(), is("$0"));
+        assertThat(projectDetailPage.getStatusWidgetPledgeGoal(), is("$25"));
+        assertThat(projectDetailPage.getStatusWidgetBackers(), is("0"));
+        assertThat(projectDetailPage.getStatusWidgetUserName(), is("Crowdsource"));
     }
 
     @Given("^the user requests the project detail page with a non existant project id$")
@@ -175,6 +181,6 @@ public class ProjectSteps {
 
     @Then("^the browser scrolls to the funding widget$")
     public void the_browser_scrolls_to_the_funding_widget() throws Throwable {
-        assertThat(projectDetailPage.getPageYOffset(), Matchers.greaterThan(savedPageYOffset));
+        assertThat(projectDetailPage.getPageYOffset(), greaterThan(savedPageYOffset));
     }
 }

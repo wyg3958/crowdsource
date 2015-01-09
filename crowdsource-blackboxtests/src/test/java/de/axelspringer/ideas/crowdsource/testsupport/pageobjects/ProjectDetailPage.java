@@ -40,31 +40,30 @@ public class ProjectDetailPage {
     public void waitForStatusWidgetToBeAvailable() {
         //check div containers
         wait.until(presenceOfElementLocated(By.cssSelector(".project-status")));
-        wait.until(presenceOfElementLocated(By.cssSelector(".creator")));
-        wait.until(presenceOfElementLocated(By.cssSelector(".funding-status")));
-        wait.until(presenceOfElementLocated(By.cssSelector(".call-to-action")));
-        //check button
-        wait.until(presenceOfElementLocated(By.xpath("//div[@class='call-to-action']/button")));
+    }
+
+    public String getStatusWidgetProgressBarValue() {
+        return webDriverProvider.provideDriver().findElement(By.cssSelector(".project-status__funding progress-bar .meter")).getCssValue("width");
     }
 
     public String getStatusWidgetPledgedAmount() {
-        return webDriverProvider.provideDriver().findElement(By.cssSelector(".pledged-amount")).getText();
+        return webDriverProvider.provideDriver().findElement(By.className("project-status__pledged-amount")).getText();
     }
 
     public String getStatusWidgetPledgeGoal() {
-        return webDriverProvider.provideDriver().findElement(By.cssSelector(".pledge-goal")).getText();
+        return webDriverProvider.provideDriver().findElement(By.className("project-status__pledge-goal")).getText();
     }
 
     public String getStatusWidgetBackers() {
-        return webDriverProvider.provideDriver().findElement(By.cssSelector(".backers")).getText();
+        return webDriverProvider.provideDriver().findElement(By.className("project-status__backers")).getText();
     }
 
     public String getStatusWidgetUserName() {
-        return webDriverProvider.provideDriver().findElement(By.cssSelector(".creator span")).getText();
+        return webDriverProvider.provideDriver().findElement(By.cssSelector(".project-status__creator strong")).getText();
     }
 
     public void clickFundingButton() {
-        webDriverProvider.provideDriver().findElement(By.cssSelector(".to-pledging-form-button")).click();
+        webDriverProvider.provideDriver().findElement(By.className(".to-pledging-form-button")).click();
     }
 
     public int getPageYOffset() {

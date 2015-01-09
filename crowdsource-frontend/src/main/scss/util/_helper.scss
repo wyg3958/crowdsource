@@ -42,14 +42,35 @@
 // Simple CSS table for resposnive layouts
 // ---
 
-%css-table {
+@mixin css-table($options: ()) {
+  $options: map-merge((
+      width: 100%,
+    ), $options);
+
   display: table;
-  width: 100%;
   table-layout: fixed;
   border-collapse: collapse;
+  width: map-get($options, width);
 }
 
 
-%css-table-cell {
+@mixin css-table-cell($options: ()) {
+  $options: map-merge((
+    width:  auto,
+    valign: middle
+  ), $options);
+
   display: table-cell;
+  width: map-get($options, width);
+  vertical-align: map-get($options, valign);
+}
+
+
+
+// ---
+// Text-Helpers
+// ---
+
+.text--strong {
+  font-weight: $fw-bold;
 }

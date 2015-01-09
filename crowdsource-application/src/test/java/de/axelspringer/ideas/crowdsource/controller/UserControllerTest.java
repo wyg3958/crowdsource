@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -32,13 +33,20 @@ import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.isEmptyString;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,9 +56,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserControllerTest {
 
     private static final String NEW_USER_MAIL_ADDRESS = "new@axelspringer.de";
-    private static final String EXISTING_USER_MAIL = "existing@mail.com";
-    private static final String EXISTING_BUT_NOT_YET_ACTIVATED_USER_MAIL_ADDRESS = "existing_not_yet_activated@axelspringer.de";
-    private static final String ACTIVATED_USER_MAIL_ADDRESS = "existing_and_activated@axelspringer.de";
+    private static final String EXISTING_BUT_NOT_YET_ACTIVATED_USER_MAIL_ADDRESS = "existing.not.yet.activated@axelspringer.de";
+    private static final String ACTIVATED_USER_MAIL_ADDRESS = "existing.and.activated@axelspringer.de";
     private static final String INVALID_USER_MAIL_ADDRESS = "test@test.de";
     private static final String ENCODED_PASSWORD = "3nc0d3d";
 
@@ -77,6 +84,7 @@ public class UserControllerTest {
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
+        reset(userActivationService);
         reset(userRepository);
 
         when(userRepository.findByEmail(eq(NEW_USER_MAIL_ADDRESS))).thenReturn(null);
@@ -96,7 +104,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void shouldReturnSuccessfullyWhenEmailAndTosOkOnSave() throws Exception {
+    public void registerUser_shouldReturnSuccessfullyWhenEmailAndTosOkOnSave() throws Exception {
 
         userRegistration.setEmail(NEW_USER_MAIL_ADDRESS);
         userRegistration.setTermsOfServiceAccepted(true);
@@ -105,7 +113,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void shouldCallAllRelevantMethodsOnSave() throws Exception {
+    public void registerUser_shouldCallAllRelevantMethodsOnSave() throws Exception {
 
         userRegistration.setEmail(NEW_USER_MAIL_ADDRESS);
         userRegistration.setTermsOfServiceAccepted(true);
@@ -119,7 +127,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void shouldAddNewUserIntoDatabase() throws Exception {
+    public void registerUser_shouldAddNewUserIntoDatabase() throws Exception {
 
         userRegistration.setEmail(NEW_USER_MAIL_ADDRESS);
         userRegistration.setTermsOfServiceAccepted(true);
@@ -135,7 +143,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void shouldUpdateExistingUserWithNewActivationToken() throws Exception {
+    public void registerUser_shouldUpdateExistingUserWithNewActivationToken() throws Exception {
 
         String originalActivationToken = existingButNotYetActivatedUser.getActivationToken();
 
@@ -156,7 +164,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void shouldReturnErroneouslyWhenEmailNotAxelspringerOnSave() throws Exception {
+    public void registerUser_shouldReturnErroneouslyWhenEmailNotAxelspringerOnSave() throws Exception {
 
         userRegistration.setEmail(INVALID_USER_MAIL_ADDRESS);
         userRegistration.setTermsOfServiceAccepted(true);
@@ -167,7 +175,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void shouldReturnErroneouslyWhenTocNotAcceptedOnSave() throws Exception {
+    public void registerUser_shouldReturnErroneouslyWhenTocNotAcceptedOnSave() throws Exception {
 
         userRegistration.setEmail(NEW_USER_MAIL_ADDRESS);
         userRegistration.setTermsOfServiceAccepted(false);
@@ -178,7 +186,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void shouldReturnErroneouslyWhenUserAlreadyActivated() throws Exception {
+    public void registerUser_shouldReturnErroneouslyWhenUserAlreadyActivated() throws Exception {
 
         userRegistration.setEmail(ACTIVATED_USER_MAIL_ADDRESS);
         userRegistration.setTermsOfServiceAccepted(true);
@@ -188,27 +196,27 @@ public class UserControllerTest {
         assertEquals("", "{\"errorCode\":\"field_errors\",\"fieldViolations\":{\"email\":\"not_activated\"}}", mvcResult.getResponse().getContentAsString());
     }
 
-//    @Test
-//    public void shouldReturnUserSuccessfully() throws Exception{
-//
-//        List<String> roles = new ArrayList<>();
-//        roles.add(Roles.ROLE_USER);
-//
-//
-//        SecurityProperties.User user = new SecurityProperties.User();
-//        user.setName(ACTIVATED_USER_MAIL_ADDRESS);
-//        user.setPassword("banane");
-//        user.setRole(roles);
-//
-//        TestingAuthenticationToken token = new TestingAuthenticationToken(user,null);
-//        SecurityContextHolder.getContext().setAuthentication(token);
-//
-//        mockMvc.perform(get("/user/current")
-//                .principal(token)
-//                .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk());
-//    }
+    @Test
+    public void getCurrentUser_shouldReturnUserSuccessfully() throws Exception{
 
+        MvcResult mvcResult = mockMvc.perform(get("/user/current")
+                .principal(new UsernamePasswordAuthenticationToken(ACTIVATED_USER_MAIL_ADDRESS, "somepassword"))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        assertThat(mvcResult.getResponse().getContentAsString(),
+                is("{\"email\":\"existing.and.activated@axelspringer.de\",\"roles\":[\"ROLE_USER\"],\"budget\":0,\"name\":\"Existing And Activated\"}"));
+    }
+
+    @Test
+    public void getCurrentUser_shouldRespondWith401IfUserWasNotFound() throws Exception{
+
+        mockMvc.perform(get("/user/current")
+                .principal(new UsernamePasswordAuthenticationToken("unknown@user.com", "somepassword"))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
 
     @Test
     public void testActivateUser() throws Exception {

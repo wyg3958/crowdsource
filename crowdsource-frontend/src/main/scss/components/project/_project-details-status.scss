@@ -1,0 +1,98 @@
+// ---
+// Status Widget
+// ---
+
+
+.project-status {
+  margin: 3rem 0;
+  border: 1px solid $clr-border;
+  border-radius: $border-radius;
+  color: $clr-body;
+
+  @media #{$medium-up} {
+    @include css-table;
+  }
+}
+
+
+%project-status__cell {
+  padding: 1rem;
+  border-bottom: 1px solid $clr-border;
+
+  &:last-child {
+    border-right:  none;
+    border-bottom: none;
+  }
+
+  @media #{$medium-up} {
+    border-right:  1px solid $clr-border;
+    border-bottom: none;
+  }
+}
+
+
+.project-status__creator {
+  @extend %project-status__cell;
+  text-align: center;
+
+  @media #{$medium-up} {
+    @include css-table-cell;
+  }
+}
+
+
+.project-status__funding {
+  @extend %project-status__cell;
+  @media #{$medium-up} {
+    @include css-table-cell((width: 65%));
+  }
+}
+
+
+.project-status__cta {
+  @extend %project-status__cell;
+  @media #{$medium-up} {
+    @include css-table-cell((width: 180px));
+  }
+}
+
+
+/*img*/.project-status__user-avatar {
+  display: block;
+  margin:  0 auto rem-calc(4px) auto;
+}
+
+
+/*ul*/.project-status__funding-list {
+  @extend .clearfix;  // Foundation clearfix
+  margin: 0;
+  list-style-type: none;
+  font-size: $fs-medium;
+  font-weight: $fw-bold;
+
+  > li {
+    float: left;
+    margin-right: 2rem;
+  }
+}
+
+
+/*span*/.project-status__funding-cat {
+  display: block;
+  color: $clr-body-light;
+  font-size: $fs-normal;
+}
+
+
+/*button*/.project-status__btn {
+  @extend .radius; // Foundation: button extension
+  margin:  0 auto;
+  padding: rem-calc(8px) rem-calc(16px);
+  width: 100%;
+  font-size: $fs-small;
+  background-color: $clr-butterfly;
+
+  &:hover {
+    background-color: $clr-bossanova;
+  }
+}

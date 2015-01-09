@@ -1,41 +1,43 @@
 <content-row class="project-details">
     <h1>{{ projectDetails.project.title }}</h1>
 
-  <div class="project-status">
+    <div class="project-status">
 
-    <div class="project-status__creator">
-      <img class="project-status__user-avatar" src="app/user/avatar.png">
-      von <strong class="text--strong">{{ projectDetails.project.creator.name }}</strong>
+        <div class="project-status__creator">
+            <img class="project-status__user-avatar" src="app/user/avatar.png">
+            von <strong class="text--strong">{{ projectDetails.project.creator.name }}</strong>
+        </div>
+
+        <div class="project-status__funding">
+            <progress-bar value="projectDetails.project.pledgedAmount"
+                          maximum="projectDetails.project.pledgeGoal"></progress-bar>
+            <ul class="project-status__funding-list">
+                <li>
+                    ${{ projectDetails.project.pledgedAmount | number }} /
+                    ${{ projectDetails.project.pledgeGoal | number }}
+                    <span class="project-status__funding-cat">Finanzierung</span>
+                </li>
+                <li>
+                    {{ projectDetails.project.backers }}
+                    <span class="project-status__funding-cat">Förderer</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="project-status__cta">
+            <button class="project-status__btn  to-pledging-form-button" scroll-to="project-pledging-form">Zur&nbsp;Finanzierung</button>
+        </div>
+
     </div>
 
-    <div class="project-status__funding">
-      <progress-bar value="projectDetails.project.pledgedAmount" maximum="projectDetails.project.pledgeGoal"></progress-bar>
-      <ul class="project-status__funding-list">
-        <li>
-          ${{ projectDetails.project.pledgedAmount | number }} / ${{ projectDetails.project.pledgeGoal | number }}
-          <span class="project-status__funding-cat">Finanzierung</span>
-        </li>
-        <li>
-          {{ projectDetails.project.backers }}
-          <span class="project-status__funding-cat">Förderer</span>
-        </li>
-      </ul>
-    </div>
+    <h2>{{ projectDetails.project.shortDescription}}</h2>
 
-    <div class="project-status__cta">
-      <button class="project-status__btn  to-pledging-form-button" scroll-to="project-pledging-form">Zur&nbsp;Finanzierung</button>
-    </div>
-
-  </div>
-
-  <h2>{{ projectDetails.project.shortDescription}}</h2>
-
-  <div class="project-description">{{ projectDetails.project.description }}</div>
+    <div class="project-description">{{ projectDetails.project.description }}</div>
 
     <project-pledging-form id="project-pledging-form" project="projectDetails.project"></project-pledging-form>
 
-  <p class="push-down">
-    <a href="#/projects">zurück zur Übersicht</a>
-  </p>
+    <p class="push-down">
+        <a href="#/projects">zurück zur Übersicht</a>
+    </p>
 
 </content-row>

@@ -3,13 +3,13 @@ angular.module('crowdsource')
     .factory('Foundation', function($timeout) {
         var service = {};
 
-        service.reflow = function(reflowComponent) {
+        service.reflow = function(componentType) {
             // angular may not have fully completed it's digest cycle
             // -> delay the reflow for the next javascript cycle
             $timeout(function() {
-                if (reflowComponent) {
+                if (componentType) {
                     // only reflow certain foundation element types, e.g. 'tooltip'
-                    $(document).foundation(reflowComponent, 'reflow');
+                    $(document).foundation(componentType, 'reflow');
                 }
                 else {
                     $(document).foundation('reflow');
@@ -35,16 +35,16 @@ angular.module('crowdsource')
         return {
             restrict: 'A',
             link: function(scope, elem, attrs) {
-                var reflowComponent = attrs.foundationReflow;
+                var componentType = attrs.foundationReflow;
 
                 if (attrs.ngRepeat) {
                     // if this directive was applied on an ng-repeat element, reflow only after ng-repeat is done
                     if (scope.$last) {
-                        Foundation.reflow(reflowComponent);
+                        Foundation.reflow(componentType);
                     }
                 }
                 else {
-                    Foundation.reflow(reflowComponent);
+                    Foundation.reflow(componentType);
                 }
             }
         }

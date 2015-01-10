@@ -14,12 +14,12 @@ import javax.validation.constraints.Min;
 @FinancingRoundNotColliding
 public class FinancingRound {
 
-    private DateTime start;
+    private DateTime start = new DateTime();
 
-    @Future
+    @Future(message = "end-date-in-future")
     private DateTime end;
 
-    @Min(1l)
+    @Min(value = 1l, message = "at-least-one-dollar")
     private Integer value;
 
     public FinancingRound(FinancingRoundEntity financingRoundEntity) {

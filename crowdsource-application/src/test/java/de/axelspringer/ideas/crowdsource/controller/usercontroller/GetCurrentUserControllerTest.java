@@ -1,4 +1,4 @@
-package de.axelspringer.ideas.crowdsource.controller;
+package de.axelspringer.ideas.crowdsource.controller.usercontroller;
 
 import org.junit.Test;
 import org.springframework.http.MediaType;

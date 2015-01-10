@@ -20,7 +20,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @ReportAsSingleViolation
 public @interface FinancingRoundNotColliding {
 
-    String message() default "eligible";
+    String message() default "non-colliding";
 
     Class<?>[] groups() default {};
 

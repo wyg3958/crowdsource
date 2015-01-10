@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @Document(collection = "financerounds")
-public class FinanceRoundEntity {
+public class FinancingRoundEntity {
 
     @Id
     private String id;
@@ -17,6 +17,11 @@ public class FinanceRoundEntity {
     private DateTime startDate;
 
     private DateTime endDate;
+
+    /**
+     * The amount of money available in the financing round
+     */
+    private Integer value;
 
     @CreatedDate
     private DateTime createdDate;

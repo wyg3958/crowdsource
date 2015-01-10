@@ -12,7 +12,6 @@ public class EligibleEmailValidator implements ConstraintValidator<EligibleEmail
 
     @Override
     public void initialize(EligibleEmail constraintAnnotation) {
-        // no-op
     }
 
     @Override

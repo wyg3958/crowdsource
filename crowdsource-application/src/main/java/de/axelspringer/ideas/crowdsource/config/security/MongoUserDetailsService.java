@@ -49,6 +49,7 @@ public class MongoUserDetailsService implements UserDetailsService {
         String encodedPassword = passwordEncoder.encode(defaultPassword);
 
         UserEntity user = new UserEntity(defaultEmailAddress, encodedPassword);
+        user.addRole(Roles.ROLE_ADMIN);
         user.setActivated(true);
 
         userRepository.save(user);

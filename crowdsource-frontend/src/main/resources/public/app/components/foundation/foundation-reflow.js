@@ -8,7 +8,7 @@ angular.module('crowdsource')
             // -> delay the reflow for the next javascript cycle
             $timeout(function() {
                 if (reflowComponent) {
-                    // only reflow certain foundation element types, e.g. 'slider'
+                    // only reflow certain foundation element types, e.g. 'tooltip'
                     $(document).foundation(reflowComponent, 'reflow');
                 }
                 else {
@@ -20,6 +20,17 @@ angular.module('crowdsource')
         return service;
     })
 
+    /**
+     * Used to call foundation's reflow function which re-scans the DOM for foundation elements that need javascript to work.
+     * This might be needed when elements were rendered into the DOM at a later point (e.g. when changing views).
+     *
+     * If the directive is used on an element without an attribute value, e.g. <div foundation-reflow></div>,
+     * then $(document).foundation('reflow') is called. This scans the DOM for all kind of foundation widgets.
+     *
+     * If the directive is used with an attribute value, e.g. <div foundation-reflow="tooltip">,
+     * then $(document).foundation('tooltip', 'reflow') is called. This scans the DOM only for tooltip widgets in this example.
+     * This reduces computation time.
+     */
     .directive('foundationReflow', function(Foundation) {
         return {
             restrict: 'A',

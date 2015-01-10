@@ -6,9 +6,7 @@
         <div class="margin-bottom-small">Bitte vergib ein Passwort, um die Aktivierung Deines Kontos abzuschließen.</div>
 
         <div class="general-error alert-box alert" ng-messages="activation.generalErrors" ng-if="activation.generalErrors">
-            <span ng-message="remote_already_activated">
-                Dein Konto wurde bereits aktiviert. Du kannst Dich mit Deine Email-Adresse und Deinem Passwort <a href="#/login">einloggen</a>.
-            </span>
+            <span ng-message="remote_already_activated">Dein Konto wurde bereits aktiviert. Du kannst Dich mit Deiner Email-Adresse und Deinem Passwort <a href="#/login">einloggen</a>.</span>
             <span ng-message="remote_activation_token_invalid">Der Aktivierungslink ist ungültig. Bitte <a href="#/signup">registriere</a> Dich erneut um einen neuen Aktivierungslink zugesendet zu bekommen.</span>
             <span ng-message="remote_not_found">Du musst Dich zunächst mit Deiner Email-Adresse <a href="#/signup">registrieren</a>.</span>
             <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuche es erneut.</span>

@@ -4,8 +4,8 @@
         <h1>Login</h1>
 
         <div class="general-error alert-box alert" ng-messages="login.generalErrors" ng-if="login.generalErrors">
-            <span ng-message="remote_bad_credentials">Ihre Anmeldeinformationen sind ungültig. Bitte überprüfen Sie Ihre eingegebenen Daten.</span>
-            <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.</span>
+            <span ng-message="remote_bad_credentials">Deine Anmeldeinformationen sind ungültig. Bitte überprüfe die eingegebenen Daten.</span>
+            <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuche es erneut.</span>
         </div>
 
         <div class="row">
@@ -20,7 +20,7 @@
                     <span form-label-valid="password">Passwort</span>
 
                     <span form-label-invalid="password" ng-messages="login.form.password.$error">
-                        <span ng-message="required">Bitte geben Sie Ihr Passwort ein</span>
+                        <span ng-message="required">Bitte gib Dein Passwort ein</span>
                     </span>
 
                     <input type="password" name="password" ng-model="login.user.password"

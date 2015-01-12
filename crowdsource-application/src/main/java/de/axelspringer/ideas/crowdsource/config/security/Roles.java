@@ -18,7 +18,7 @@ public interface Roles {
     String ROLE_USER = "ROLE_USER";
 
     /**
-     * Admin
+     * Logged in user that has admin privileges.
      */
     String ROLE_ADMIN = "ROLE_ADMIN";
 }

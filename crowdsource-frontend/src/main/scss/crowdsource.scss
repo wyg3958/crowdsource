@@ -13,6 +13,7 @@
 @import "components/project/project-form";
 @import "components/teaser";
 @import "components/main-nav";
+@import "components/footer";
 
 .button, button {
     text-transform: uppercase;
@@ -32,7 +33,7 @@ body {
 }
 
 .content {
-    padding-bottom: 200px;
+    padding-bottom: 300px; // Height of sticky footer
     color: $crowd-color-dark-grey;
 }
 
@@ -57,12 +58,4 @@ content-row {
     &.box-wide .container {
         @extend %box;
     }
-}
-
-.footer {
-    position: absolute;
-    bottom: 0;
-    height: 200px;
-    width: 100%;
-    background-color: $crowd-color-darker-grey;
 }

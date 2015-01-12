@@ -69,6 +69,7 @@ $clr-alto:       #D8D8D8;  // outlines
 
 $clr-bossanova:       #532054;
 $clr-butterfly:       #5D568C;
+$clr-blue-bell:       #8C82C8;
 
 
 // Shades of green
@@ -83,8 +84,16 @@ $clr-aquamarine:      #61FFA6;
 $clr-body:            $clr-mine-shaft;
 $clr-body-light:      $clr-boulder;
 $clr-border:          $clr-alto;
+
+
+// Gradient for teaser
 $clr-teaser-start:    $clr-bossanova;
 $clr-teaser-end:      $clr-butterfly;
+
+
+// Gradient for divider
+$cl-solar-light-start:  $clr-butterfly;
+$cl-solar-light-end:    $clr-emerald;
 
 
 

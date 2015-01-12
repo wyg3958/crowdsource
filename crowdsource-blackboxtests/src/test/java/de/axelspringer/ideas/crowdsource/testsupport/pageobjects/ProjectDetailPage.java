@@ -4,6 +4,8 @@ import de.axelspringer.ideas.crowdsource.testsupport.selenium.SeleniumWait;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -69,5 +71,24 @@ public class ProjectDetailPage {
     public int getPageYOffset() {
         Object pageYOffset = webDriverProvider.provideDriver().executeScript("return window.pageYOffset;");
         return ((Long) pageYOffset).intValue();
+    }
+
+    public boolean currencyConversionTooltipVisible() {
+        final String tooltipSpanId = currencyElement().getAttribute("data-selector");
+        final WebElement tooltip = webDriverProvider.provideDriver().findElement(By.id(tooltipSpanId));
+        return tooltip.getCssValue("display").equals("block");
+    }
+
+    public void hoverCurrency() {
+        new Actions(webDriverProvider.provideDriver()).moveToElement(currencyElement()).perform();
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            throw new RuntimeException();
+        }
+    }
+
+    private WebElement currencyElement() {
+        return webDriverProvider.provideDriver().findElement(By.className("currency"));
     }
 }

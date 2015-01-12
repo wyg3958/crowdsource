@@ -1,6 +1,7 @@
 package de.axelspringer.ideas.crowdsource.testsupport.cucumber;
 
 import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -29,6 +30,8 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
 public class ProjectSteps {
@@ -182,5 +185,20 @@ public class ProjectSteps {
     @Then("^the browser scrolls to the funding widget$")
     public void the_browser_scrolls_to_the_funding_widget() throws Throwable {
         assertThat(projectDetailPage.getPageYOffset(), greaterThan(savedPageYOffset));
+    }
+
+    @And("^the tooltip for currency conversion is not visible$")
+    public void the_tooltip_for_currency_conversion_is_not_visible() throws Throwable {
+        assertFalse(projectDetailPage.currencyConversionTooltipVisible());
+    }
+
+    @When("^he hovers the currency element$")
+    public void he_hovers_the_currency_element() throws Throwable {
+        projectDetailPage.hoverCurrency();
+    }
+
+    @Then("^the tooltip for currency conversion is visible$")
+    public void the_tooltip_for_currency_conversion_is_visible() throws Throwable {
+        assertTrue(projectDetailPage.currencyConversionTooltipVisible());
     }
 }

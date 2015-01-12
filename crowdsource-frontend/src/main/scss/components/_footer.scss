@@ -1,0 +1,91 @@
+/***
+ * Footer
+ *
+ *
+ */
+
+// ---
+//
+// ---
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  height: 300px;
+  width: 100%;
+  color: $white;
+  background-color: $black;
+}
+
+
+// Inner container layout box
+.footer__l-inner {
+  width: 100%;
+  max-width: 62.5rem;
+  margin: 0 auto;
+  padding: 3rem 0;
+}
+
+
+// Heading list: first footer list that acts as a heading
+.footer__ul-heading {
+  @extend .clearfix;
+
+  margin: 1rem 0;
+  list-style-type: none;
+
+  > li {
+    float: left;
+    margin-right: 2rem;
+    width: 20%;
+
+    &:last-child {
+      margin-right: 0;
+      width: auto;
+    }
+  }
+}
+
+
+.footer__list-item-heading {
+  color: $clr-blue-bell;
+  font-weight: $fw-extrabold;
+}
+
+
+// Content list: List with content items
+.footer__ul-content {
+  @extend .clearfix; // Foundation clearfix
+  margin: 1rem 0;
+  list-style-type: none;
+
+  > li {
+    float: left;
+    width: 20%;
+    margin-right: 2rem;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+
+// 2nd level list in content footer
+.footer__ul-content-secondary {
+  margin: 1rem 0;
+  list-style-type: none;
+
+  a {
+    color: $white;
+    text-decoration: none;
+  }
+}
+
+
+// Divider
+.divider--solar-light {
+  height: 1px;
+  background-color: $cl-solar-light-start;
+  background-image: linear-gradient(to right, $cl-solar-light-start, $cl-solar-light-end);
+}

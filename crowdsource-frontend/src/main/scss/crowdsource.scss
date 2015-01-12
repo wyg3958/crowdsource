@@ -13,6 +13,7 @@
 @import "components/project/project-form";
 @import "components/teaser";
 @import "components/main-nav";
+@import "components/footer";
 
 .button, button {
     text-transform: uppercase;
@@ -57,12 +58,4 @@ content-row {
     &.box-wide .container {
         @extend %box;
     }
-}
-
-.footer {
-    position: absolute;
-    bottom: 0;
-    height: 200px;
-    width: 100%;
-    background-color: $crowd-color-darker-grey;
 }

@@ -3,15 +3,13 @@
 
         <h1>Registrierung - Letzte Schritte</h1>
 
-        <div class="margin-bottom-small">Bitte vergeben Sie ein Passwort, um Ihr Konto abschließend zu aktivieren.</div>
+        <div class="margin-bottom-small">Bitte vergib ein Passwort, um die Aktivierung Deines Kontos abzuschließen.</div>
 
         <div class="general-error alert-box alert" ng-messages="activation.generalErrors" ng-if="activation.generalErrors">
-            <span ng-message="remote_already_activated">
-                Ihr Konto wurde bereits aktiviert. Sie können sich mit Ihrer Email-Adresse und Ihrem Passwort <a href="#/login">einloggen</a>.
-            </span>
-            <span ng-message="remote_activation_token_invalid">Der Aktivierungslink ist ungültig. Bitte <a href="#/signup">registrieren</a> Sie sich erneut um einen neuen Aktivierungslink zugesendet zu bekommen.</span>
-            <span ng-message="remote_not_found">Sie müssen sich mit Ihrer Email-Adresse erst <a href="#/signup">registrieren</a>.</span>
-            <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.</span>
+            <span ng-message="remote_already_activated">Dein Konto wurde bereits aktiviert. Du kannst Dich mit Deiner Email-Adresse und Deinem Passwort <a href="#/login">einloggen</a>.</span>
+            <span ng-message="remote_activation_token_invalid">Der Aktivierungslink ist ungültig. Bitte <a href="#/signup">registriere</a> Dich erneut um einen neuen Aktivierungslink zugesendet zu bekommen.</span>
+            <span ng-message="remote_not_found">Du musst Dich zunächst mit Deiner Email-Adresse <a href="#/signup">registrieren</a>.</span>
+            <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuche es erneut.</span>
         </div>
 
         <div class="row">
@@ -21,7 +19,7 @@
                     <span form-label-valid="password">Passwort</span>
 
                     <span form-label-invalid="password" ng-messages="activation.form.password.$error">
-                        <span ng-message="required">Bitte geben Sie Ihr Passwort ein</span>
+                        <span ng-message="required">Bitte gib Dein Passwort ein</span>
                         <span ng-message="pattern">Das Passwort muss aus mindestens 8 Zeichen und einem Sonderzeichen bestehen</span>
                     </span>
 
@@ -38,7 +36,7 @@
                     <span form-label-valid="repeatedPassword">Passwort wiederholen</span>
 
                     <span form-label-invalid="repeatedPassword" ng-messages="activation.form.repeatedPassword.$error">
-                        <span ng-message="required">Bitte geben Sie Ihr Passwort erneut ein</span>
+                        <span ng-message="required">Bitte gib Dein Passwort erneut ein</span>
                         <span ng-message="remote_equal">Die beiden Passwörter stimmen nicht überein</span>
                     </span>
 

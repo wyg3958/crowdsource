@@ -31,6 +31,6 @@ describe('user logout view', function () {
     });
 
     it('should display logout text', function () {
-        expect(html).toContainText('Sie wurden ausgeloggt');
+        expect(html).toContainText('Du wurdest ausgeloggt');
     });
 });

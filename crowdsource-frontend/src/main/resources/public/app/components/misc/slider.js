@@ -22,10 +22,11 @@ angular.module('crowdsource')
             require: 'ngModel',
             scope: {
                 start: '@',
-                end: '@'
+                end: '@',
+                disabled: '='
             },
             template:
-                '<div class="range-slider" data-slider="0" data-options="start: 0; end: {{ sliderMax }}" foundation-reflow="slider">' +
+                '<div class="range-slider" data-slider="0" data-options="start: 0; end: {{ sliderMax }}" ng-class="{ disabled: disabled }" foundation-reflow="slider">' +
                     '<span class="range-slider-handle" role="slider" tabindex="0"></span>' +
                     '<span class="range-slider-active-segment"></span>' +
                 '</div>',

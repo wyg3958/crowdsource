@@ -1,6 +1,6 @@
 <form name="pledgingForm.form" class="pledging-form" novalidate>
 
-    <range-slider ng-model="pledgingForm.pledge.amount" start="0" end="{{ pledgingForm.getPledgableAmount() }}"></range-slider>
+    <range-slider ng-model="pledgingForm.pledge.amount" start="0" end="{{ pledgingForm.getPledgableAmount() }}" disabled="pledgingForm.user.budget == 0"></range-slider>
 
     <div class="row collapse">
         <div class="small-3 columns">

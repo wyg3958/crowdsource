@@ -7,15 +7,14 @@ if [ $# -ne 2 ]; then
 	exit
 fi
 
+ssh -i $1 core@$2 "
+    mkdir services
+"
+
+scp -i $1 -r coreos-mongodb core@$2:services/.
 
 ssh -i $1 core@$2 "
-
-    mkdir -p services
-    cd services
-
-    git clone https://github.com/auth0/coreos-mongodb.git
-
-    cd coreos-mongodb
+    cd services/coreos-mongodb
 
     etcdctl set /mongo/replica/name crowdsourcereplica
 
@@ -35,7 +34,7 @@ FIRST_NODE=\$(fleetctl list-machines --no-legend | awk '{print \$2}' | head -n 1
 docker run -it --rm mongo:2.6 mongo \$REPLICA/\$FIRST_NODE/admin -u siteUserAdmin -p \$SITE_USER_PWD
 
 use crowdsource
-db.createUser({user: \"crowdsource2\", pwd: \"sRBfksXzltBgYHxvNUMoSKVHNLsIHHlI1B5Np2S8oyE=\", roles: [{role: \"dbOwner\", db: \"crowdsource\"}]})
+db.createUser({user: \"crowdsource\", pwd: \"sRBfksXzltBgYHxvNUMoSKVHNLsIHHlI1B5Np2S8oyE=\", roles: [{role: \"dbOwner\", db: \"crowdsource\"}]})
 
 #################################################################################################################################################
 "

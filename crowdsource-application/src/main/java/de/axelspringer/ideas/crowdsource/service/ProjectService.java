@@ -10,6 +10,7 @@ import de.axelspringer.ideas.crowdsource.model.presentation.Pledge;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
 import de.axelspringer.ideas.crowdsource.repository.PledgeRepository;
 import de.axelspringer.ideas.crowdsource.repository.ProjectRepository;
+import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,9 @@ public class ProjectService {
 
     @Autowired
     private PledgeRepository pledgeRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
 
     public Project getProject(String projectId) {
@@ -60,15 +64,30 @@ public class ProjectService {
             throw new ResourceNotFoundException();
         }
 
-        // TODO: may the creator of the project pledge on his own project?
+        if (pledge.getAmount() > userEntity.getBudget()) {
+            throw InvalidRequestException.userBudgetExceeded();
+        }
 
         Project project = convertProject(projectEntity);
-        if ((pledge.getAmount() + project.getPledgedAmount()) > project.getPledgeGoal()) {
+        int newPledgedAmount = pledge.getAmount() + project.getPledgedAmount();
+        if (newPledgedAmount > project.getPledgeGoal()) {
             throw InvalidRequestException.pledgeGoalExceeded();
         }
 
         PledgeEntity pledgeEntity = new PledgeEntity(projectEntity, userEntity, pledge);
-        pledgeRepository.save(pledgeEntity);
+        userEntity.reduceBudget(pledge.getAmount());
+
+        userRepository.save(userEntity);
+
+        try {
+            pledgeRepository.save(pledgeEntity);
+        }
+        catch (Exception e) {
+            // roll back
+            userEntity.increaseBudget(pledge.getAmount());
+            userRepository.save(userEntity);
+            throw e;
+        }
 
         log.debug("Project pledged: {}", pledgeEntity);
     }

@@ -2,30 +2,32 @@
     <h1>{{ projectDetails.project.title }}</h1>
 
     <div class="project-status">
-        <div class="creator">
-            <img src="app/user/avatar.png">
-            von <span class="name">{{ projectDetails.project.creator.name }}</span>
+
+        <div class="project-status__creator">
+            <img class="project-status__user-avatar" src="app/user/avatar.png">
+            von <strong class="text--strong">{{ projectDetails.project.creator.name }}</strong>
         </div>
 
-        <div class="funding-status">
+        <div class="project-status__funding">
             <progress-bar value="projectDetails.project.pledgedAmount" maximum="projectDetails.project.pledgeGoal"></progress-bar>
-            <ul>
-                <li class="pledge-info">
-                    <span class="pledged-amount">${{ projectDetails.project.pledgedAmount | number }}</span>
-                    /
-                    <span class="pledge-goal">${{ projectDetails.project.pledgeGoal | number }}</span>
-                    <small>Finanzierung</small>
+
+            <ul class="project-status__funding-list">
+                <li>
+                    <span class="project-status__pledged-amount">${{ projectDetails.project.pledgedAmount | number }}</span> /
+                    <span class="project-status__pledge-goal">${{ projectDetails.project.pledgeGoal | number }}</span>
+                    <span class="project-status__funding-cat">Finanzierung</span>
                 </li>
                 <li>
-                    <span class="backers">{{ projectDetails.project.backers }}</span>
-                    <small>Förderer</small>
+                    <span class="project-status__backers">{{ projectDetails.project.backers }}</span>
+                    <span class="project-status__funding-cat">Förderer</span>
                 </li>
             </ul>
         </div>
 
-        <div class="call-to-action">
-            <button scroll-to="project-pledging-form" class="to-pledging-form-button">Zur&nbsp;Finanzierung</button>
+        <div class="project-status__cta">
+            <button class="project-status__btn  to-pledging-form-button" scroll-to="project-pledging-form">Zur&nbsp;Finanzierung</button>
         </div>
+
     </div>
 
     <h2>{{ projectDetails.project.shortDescription}}</h2>
@@ -37,4 +39,5 @@
     <p class="push-down">
         <a href="#/projects">zurück zur Übersicht</a>
     </p>
+
 </content-row>

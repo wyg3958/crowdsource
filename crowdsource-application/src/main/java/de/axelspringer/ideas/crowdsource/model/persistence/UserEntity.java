@@ -33,6 +33,8 @@ public class UserEntity {
 
     private boolean activated = false;
 
+    private int budget = 0;
+
     @CreatedDate
     private DateTime createdDate;
 
@@ -46,5 +48,17 @@ public class UserEntity {
     public UserEntity(String email, String password) {
         this.email = email;
         this.password = password;
+    }
+
+    public void reduceBudget(int reductionAmount) {
+        if ((budget - reductionAmount) < 0) {
+            throw new IllegalArgumentException("User budget may not drop below 0");
+        }
+
+        budget -= reductionAmount;
+    }
+
+    public void increaseBudget(int increaseAmount) {
+        budget += increaseAmount;
     }
 }

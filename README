@@ -1,14 +1,14 @@
 crowdsource
 ===========
 
-DEVELOPERS! 
+DEVELOPERS!
 
 Enable dev-profile providing "spring.profiles.active=dev" in your run configuration to use a local mail server and a local mongodb.
 
 
 MONGO-DB for local development
 
-docker run -d -p 27000:27017 -p 28000:28017 --name crowdsourcetestdb mongo:2.6.6
+docker run -d -p 27017:27017 --name crowdsourcetestdb mongo:2.6.6
 
 
 MAIL-Server for local development
@@ -40,8 +40,8 @@ CI server. npm will still find the locally installed executables from node_modul
 
 PHANTOMJS/CHROME/FIREFOX
 
-Enable phantomjs-profile (-Pphantomjs) to use phantomjs (will be downloaded). 
-Specifiy path to chromedriver/chrom in test.properties to use chrome (untested). 
+Enable phantomjs-profile (-Pphantomjs) to use phantomjs (will be downloaded).
+Specifiy path to chromedriver/chrom in test.properties to use chrome (untested).
 Firefox is the fallback. Do nothing and use the worst possible browser by default.
 
 
@@ -49,4 +49,3 @@ TEAMCITY
 
 Give this parameter in your build's maven step: clean verify -Pdocker,phantomjs -Dde.axelspringer.ideas.crowdsource.db.host=%env.AGENT_HOST_IP% -DHOST_IP=%env.AGENT_HOST_IP%.
 Note that the parameter AGENT_HOST_IP needs to be available in your environment.
-

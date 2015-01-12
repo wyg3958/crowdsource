@@ -62,8 +62,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <!-- forking might be good for starting the application during integration test phase, but not for local development -->
-                    <fork>false</fork>
+                    <mainClass>de.axelspringer.ideas.crowdsource.CrowdSource</mainClass>
                 </configuration>
             </plugin>
         </plugins>
@@ -134,10 +133,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <!--
+        TODO: https://asideas-crowd.atlassian.net/browse/CROWD-78
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-actuator</artifactId>
-        </dependency>
+             <groupId>org.springframework.boot</groupId>
+             <artifactId>spring-boot-actuator</artifactId>
+         </dependency>-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>

@@ -1,10 +1,10 @@
 <content-row class="project-form box-wide">
-    <form name="projectForm.form" novalidate>
+    <form name="projectForm.form" novalidate foundation-reflow="tooltip">
 
-        <h1>Ihre neue Projektidee</h1>
+        <h1>Deine neue Projektidee</h1>
 
         <div class="general-error alert-box alert" ng-messages="projectForm.generalErrors" ng-if="projectForm.generalErrors">
-            <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.</span>
+            <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuche es erneut.</span>
         </div>
 
         <div class="row">
@@ -14,7 +14,7 @@
                     <span form-label-valid="title">Projekt-Titel (max. 60 Zeichen)</span>
 
                     <span form-label-invalid="title" ng-messages="projectForm.form.title.$error">
-                        <span ng-message="required">Bitte geben Sie einen Titel an</span>
+                        <span ng-message="required">Bitte gib einen Titel an</span>
                         <span ng-message="maxlength">Der Titel darf nur maximal 60 Zeichen lang sein</span>
                     </span>
 
@@ -32,7 +32,7 @@
                     <span form-label-valid="shortDescription">Kurzbeschreibung (max. 140 Zeichen)</span>
 
                     <span form-label-invalid="shortDescription" ng-messages="projectForm.form.shortDescription.$error">
-                        <span ng-message="required">Bitte geben Sie eine Kurzbeschreibung an</span>
+                        <span ng-message="required">Bitte gib eine Kurzbeschreibung an</span>
                         <span ng-message="maxlength">Die Kurzbeschreibung darf nur maximal 140 Zeichen lang sein</span>
                     </span>
 
@@ -50,10 +50,10 @@
                     <span form-label-valid="pledgeGoal">Finanzierungsbedarf</span>
 
                     <span form-label-invalid="pledgeGoal" ng-messages="projectForm.form.pledgeGoal.$error">
-                        <span ng-message="required">Bitte geben Sie den Finanzierungsbedarf an</span>
-                        <span ng-message="number">Bitte geben Sie nur Ziffern ein</span>
-                        <span ng-message="pattern">Bitte geben Sie nur Ziffern ein</span>
-                        <span ng-message="min">Bitte geben Sie einen Wert über Null ein</span>
+                        <span ng-message="required">Bitte gib den Finanzierungsbedarf an</span>
+                        <span ng-message="number">Bitte gib nur Ziffern ein</span>
+                        <span ng-message="pattern">Bitte gib nur Ziffern ein</span>
+                        <span ng-message="min">Bitte gib einen Wert über Null ein</span>
                     </span>
                 </label>
 
@@ -63,7 +63,7 @@
                                required ng-pattern="/^[0-9]+$/i" min="1" reset-remote-validation>
                     </div>
                     <div class="table-cell">
-                        <span class="postfix text-left">AS$</span>
+                        <span data-tooltip class="postfix text-left has-tip tip-right" aria-haspopup="true" title="Ein AS$ entspricht einem Euro">AS$</span>
                     </div>
                 </div>
             </div>
@@ -76,11 +76,11 @@
                     <span form-label-valid="description">Beschreibung</span>
 
                     <span form-label-invalid="description" ng-messages="projectForm.form.description.$error">
-                        <span ng-message="required">Bitte geben Sie eine ausführliche Beschreibung an</span>
+                        <span ng-message="required">Bitte gib eine ausführliche Beschreibung an</span>
                     </span>
 
                     <textarea name="description" ng-model="projectForm.project.description"
-                              placeholder="Beschreiben Sie Ihre Idee ausführlich. Diese Information ist in der Detailansicht sichtbar (keine Zeichenbeschränkung, kein HTML)"
+                              placeholder="Beschreibe Deine Idee ausführlich. Diese Information ist in der Detailansicht sichtbar (keine Zeichenbeschränkung, kein HTML)"
                               required reset-remote-validation></textarea>
                 </label>
             </div>

@@ -1,7 +1,4 @@
 angular.module('crowdsource')
 
-    .controller('FinancingRoundController', function($routeParams, $location, Project) {
-
-
-
+    .controller('FinancingRoundController', function ($scope, $routeParams, $location, Project) {
     });

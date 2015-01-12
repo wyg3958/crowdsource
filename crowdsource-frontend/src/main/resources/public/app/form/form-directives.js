@@ -60,4 +60,12 @@ angular.module('crowdsource')
                 });
             }
         }
+    })
+
+    .directive('mydatepicker', function () {
+        return {
+            link: function (scope, elem, attrs, form) {
+                $(elem).fdatepicker({format: "dd.mm.yyyy"});
+            }
+        }
     });

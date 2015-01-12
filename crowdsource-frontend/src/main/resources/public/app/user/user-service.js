@@ -2,7 +2,7 @@ angular.module('crowdsource')
 
     .factory('User', function ($resource) {
 
-        var userResource = $resource('/user');
+        var userResource = $resource('/user/:id');
 
         var userActivationResource = $resource('/user/:email/activation', { email: '@email' });
 
@@ -12,6 +12,9 @@ angular.module('crowdsource')
             },
             activate: function (user) {
                 return userActivationResource.save(user);
+            },
+            current: function() {
+                return userResource.get({ id: 'current' });
             }
         };
     });

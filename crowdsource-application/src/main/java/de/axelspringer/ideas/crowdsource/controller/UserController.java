@@ -30,7 +30,7 @@ import java.security.Principal;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/user", consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/user")
 public class UserController {
 
     @Autowired
@@ -46,7 +46,7 @@ public class UserController {
     private UserService userService;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public void registerUser(@RequestBody @Valid UserRegistration userRegistration) {
 
         UserEntity userEntity = userRepository.findByEmail(userRegistration.getEmail());
@@ -67,7 +67,7 @@ public class UserController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/{email}/activation", method = RequestMethod.POST)
+    @RequestMapping(value = "/{email}/activation", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public void activateUser(@PathVariable("email") String email, @RequestBody @Valid UserActivation userActivation) {
 
         UserEntity userEntity = userRepository.findByEmail(email);

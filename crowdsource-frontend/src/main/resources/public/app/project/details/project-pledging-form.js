@@ -8,8 +8,10 @@ angular.module('crowdsource')
             scope: {
                 project: '='
             },
-            controller: function(Project, $route) {
+            controller: function(Project, User, $route) {
                 var vm = this;
+
+                vm.user = User.current();
 
                 vm.pledgeProject = function() {
                     Project.pledge(vm.project.id, vm.pledge).$promise
@@ -23,11 +25,12 @@ angular.module('crowdsource')
                 };
 
                 vm.getPledgableAmount = function() {
-                    if (!vm.project.$resolved) {
+                    if (!vm.project.$resolved || !vm.user.$resolved) {
                         return 0;
                     }
 
-                    return vm.project.pledgeGoal - vm.project.pledgedAmount;
+                    var remainingProjectGoal = vm.project.pledgeGoal - vm.project.pledgedAmount;
+                    return Math.min(remainingProjectGoal, vm.user.budget);
                 };
             }
         };

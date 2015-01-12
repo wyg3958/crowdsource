@@ -1,20 +1,35 @@
 angular.module('crowdsource')
 
-    .factory('User', function ($resource) {
+    .factory('User', function (Authentication, $resource) {
 
-        var userResource = $resource('/user/:id');
+        var UserResource = $resource('/user/:id');
 
-        var userActivationResource = $resource('/user/:email/activation', { email: '@email' });
+        var UserActivationResource = $resource('/user/:email/activation', { email: '@email' });
 
         return {
             register: function (user) {
-                return userResource.save(user).$promise;
+                return UserResource.save(user).$promise;
             },
             activate: function (user) {
-                return userActivationResource.save(user);
+                return UserActivationResource.save(user);
             },
             current: function() {
-                return userResource.get({ id: 'current' });
+                if (Authentication.isLoggedIn()) {
+                    var user = UserResource.get({ id: 'current' });
+
+                    user.$promise.then(function(data) {
+                        data.loggedIn = true;
+                    });
+
+                    return user;
+                }
+                else {
+                    return new UserResource({
+                        $resolved: true,
+                        budget: 0,
+                        loggedIn: false
+                    });
+                }
             }
         };
     });

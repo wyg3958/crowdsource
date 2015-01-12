@@ -21,6 +21,14 @@ angular.module('crowdsource')
                             alert('Zu hoher Finanzierungsbetrag oder nicht eingeloggt');
                         });
                 };
+
+                vm.getPledgableAmount = function() {
+                    if (!vm.project.$resolved) {
+                        return 0;
+                    }
+
+                    return vm.project.pledgeGoal - vm.project.pledgedAmount;
+                };
             }
         };
     });

@@ -4,11 +4,24 @@
 
     <div class="row collapse">
         <div class="small-3 columns">
-            <input type="number" min="1" ng-model="pledgingForm.pledge.amount" placeholder="Finanzierungsbetrag" required>
+            <input type="number" min="1" ng-model="pledgingForm.pledge.amount" placeholder="Finanzierungsbetrag" required style="margin-bottom: 0">
+            Dein Investment
+        </div>
+        <div class="small-3 small-offset-6 text-right columns">
+            ${{ pledgingForm.getPledgableAmount() }}
+        </div>
+    </div>
+    <div class="row collapse" style="margin-top: 20px;">
+        <div class="small-3 columns">
+            ${{ pledgingForm.project.pledgedAmount + pledgingForm.pledge.amount }} / ${{ pledgingForm.project.pledgeGoal }}<br/>
+            Finanzierung
+        </div>
+        <div class="small-3 columns">
+            ${{ pledgingForm.user.budget - pledgingForm.pledge.amount }}<br/>
+            Dein Budget
         </div>
         <div class="small-3 columns">
             <button class="success postfix" ng-click="pledgingForm.pledgeProject()" ng-disabled="pledgingForm.form.$invalid">Jetzt finanzieren</button>
         </div>
-        <div class="small-6 columns"></div>
     </div>
 </form>

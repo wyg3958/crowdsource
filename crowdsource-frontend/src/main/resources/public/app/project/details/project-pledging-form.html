@@ -5,7 +5,9 @@
 
     <div class="row collapse">
         <div class="small-3 columns">
-            <input type="number" min="1" ng-model="pledgingForm.pledge.amount" placeholder="Finanzierungsbetrag" required style="margin-bottom: 0">
+            <input type="number" name="amount" ng-model="pledgingForm.pledge.amount" ng-disabled="pledgingForm.getPledgableAmount() == 0"
+                   placeholder="Finanzierungsbetrag"
+                   required min="1" style="margin-bottom: 0">
             Dein Investment
         </div>
         <div class="small-3 small-offset-6 text-right columns">

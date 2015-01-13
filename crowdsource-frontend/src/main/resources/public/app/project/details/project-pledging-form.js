@@ -8,16 +8,29 @@ angular.module('crowdsource')
             scope: {
                 project: '='
             },
-            controller: function(Project, User, $route) {
+            controller: function(Project, User) {
                 var vm = this;
 
                 vm.user = User.current();
 
                 vm.pledgeProject = function() {
+                    vm.success = false;
+
                     Project.pledge(vm.project.id, vm.pledge).$promise
                         .then(function() {
-                            alert('Finanzierung erfolgreich');
-                            $route.reload();
+                            // load the project again to update the project to the new state
+                            // (mainly to update the "backers" property, as this cannot be
+                            // easily identified on the client
+                            return Project.get(vm.project.id).$promise;
+                        })
+                        .then(function(updatedProject) {
+                            angular.copy(updatedProject, vm.project);
+
+                            vm.success = true;
+                            vm.user.budget -= vm.pledge.amount;
+                            vm.pledge.amount = 0;
+
+                            vm.form.$setPristine();
                         })
                         .catch(function() {
                             alert('Zu hoher Finanzierungsbetrag oder nicht eingeloggt');

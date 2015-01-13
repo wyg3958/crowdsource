@@ -9,12 +9,36 @@
                     <span form-label-valid="endDate">Enddatum der Finanzierungsrunde</span>
 
                     <span form-label-invalid="endDate" ng-messages="financingRound.form.endDate.$error">
-                        <span ng-message="required">Bitte wähle ein Enddatum der Finanzierungsrunde</span>
+                        <span ng-message="required">Bitte wähle das Enddatum der Finanzierungsrunde</span>
                     </span>
 
                     <input mydatepicker="" name="endDate" ng-model="financingRound.endDate"
                            placeholder="Bitte klicken..." required readonly>
                 </label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="columns form-controls-budget">
+                <label form-group="budget">
+
+                    <span form-label-valid="budget">Budget</span>
+
+                    <span form-label-invalid="budget" ng-messages="financingRound.form.budget.$error">
+                        <span ng-message="required">Bitte gib das Budget an</span>
+                        <span ng-message="number">Bitte gib nur Ziffern ein</span>
+                        <span ng-message="pattern">Bitte gib nur Ziffern ein</span>
+                        <span ng-message="min">Bitte gib einen Wert über Null ein</span>
+                    </span>
+                </label>
+
+                <div class="table">
+                    <div class="table-cell full-width">
+                        <input type="number" name="budget" ng-model="financingRound.budget" class="text-right"
+                               placeholder="0"
+                               required ng-pattern="/^[0-9]+$/i" min="1">
+                    </div>
+                </div>
             </div>
         </div>
 

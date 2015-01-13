@@ -1,22 +1,26 @@
-<content-row class="financinground-overview box-wide">
-    <form>
+<content-row class="financing-round-overview box-wide">
+    <form name="financingRound.form" novalidate>
         <h1>Administration der Finanzierungsrunden</h1>
-
 
         <div class="row">
             <div class="small-12 columns form-controls-title">
-                <label form-group="title">
+                <label form-group="endDate">
 
-                    <span>Enddatum der Finanzierungsrunde</span>
+                    <span form-label-valid="endDate">Enddatum der Finanzierungsrunde</span>
 
-                    <input mydatepicker="" name="startdate" ng-model="projectForm.project.title"
-                           placeholder="Bitte klicken...">
+                    <span form-label-invalid="endDate" ng-messages="financingRound.form.endDate.$error">
+                        <span ng-message="required">Bitte wähle ein Enddatum der Finanzierungsrunde</span>
+                    </span>
+
+                    <input mydatepicker="" name="endDate" ng-model="financingRound.endDate"
+                           placeholder="Bitte klicken..." required readonly>
                 </label>
             </div>
         </div>
 
-        <button type="submit" class="success margin-top" ng-click="" ng-disabled="">
-            Starten
+        <button type="submit" class="success margin-top" ng-click="financingRound.start()"
+                ng-disabled="financingRound.saving">
+            {{ financingRound.saving ? 'Starten...' : 'Starten!' }}
         </button>
     </form>
 </content-row>

@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .factory('ValidationUtils', function() {
+    .factory('ValidationUtils', function () {
 
         var shouldShowValidationError = function (form, fieldName) {
             if (!form[fieldName]) {
@@ -12,7 +12,7 @@ angular.module('crowdsource')
         };
 
         return {
-            onShowError: function(elem, scope, form, fieldName, action) {
+            onShowError: function (elem, scope, form, fieldName, action) {
                 scope.$watch(function () {
                     var showError = shouldShowValidationError(form, fieldName);
                     action(showError);
@@ -25,47 +25,39 @@ angular.module('crowdsource')
         return {
             require: '^form',
             restrict: 'A',
-            link: function(scope, elem, attrs, form) {
+            link: function (scope, elem, attrs, form) {
 
-                ValidationUtils.onShowError(elem, scope, form, attrs.formGroup, function(showError) {
+                ValidationUtils.onShowError(elem, scope, form, attrs.formGroup, function (showError) {
                     elem.toggleClass('error', showError);
                 });
             }
         };
     })
 
-    .directive('formLabelValid', function(ValidationUtils) {
+    .directive('formLabelValid', function (ValidationUtils) {
         return {
             require: '^form',
             restrict: 'A',
-            link: function(scope, elem, attrs, form) {
+            link: function (scope, elem, attrs, form) {
 
                 elem.addClass('valid-label');
-                ValidationUtils.onShowError(elem, scope, form, attrs.formLabelValid, function(showError) {
+                ValidationUtils.onShowError(elem, scope, form, attrs.formLabelValid, function (showError) {
                     elem.toggleClass('ng-hide', showError);
                 });
             }
         }
     })
 
-    .directive('formLabelInvalid', function(ValidationUtils) {
+    .directive('formLabelInvalid', function (ValidationUtils) {
         return {
             require: '^form',
             restrict: 'A',
-            link: function(scope, elem, attrs, form) {
+            link: function (scope, elem, attrs, form) {
 
                 elem.addClass('invalid-label');
-                ValidationUtils.onShowError(elem, scope, form, attrs.formLabelInvalid, function(showError) {
+                ValidationUtils.onShowError(elem, scope, form, attrs.formLabelInvalid, function (showError) {
                     elem.toggleClass('ng-hide', !showError);
                 });
-            }
-        }
-    })
-
-    .directive('mydatepicker', function () {
-        return {
-            link: function (scope, elem, attrs, form) {
-                $(elem).fdatepicker({format: "dd.mm.yyyy"});
             }
         }
     });

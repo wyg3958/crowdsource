@@ -34,10 +34,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -98,7 +95,7 @@ public class FinancingRoundControllerTest {
     public void testStartFinancingRound() throws Exception {
 
         // create round
-        mockMvc.perform(post("/financingrounds")
+        mockMvc.perform(post("/financinground")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(financingRound(new DateTime().plusDays(1), 99))))
                 .andExpect(status().isCreated());
@@ -112,7 +109,7 @@ public class FinancingRoundControllerTest {
     public void testStartFinancingRoundEndDateNotInFuture() throws Exception {
 
         // attempt to start a round that ends in the past
-        final MvcResult mvcResult = mockMvc.perform(post("/financingrounds")
+        final MvcResult mvcResult = mockMvc.perform(post("/financinground")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(financingRound(new DateTime(), 99))))
                 .andExpect(status().isBadRequest())
@@ -130,7 +127,7 @@ public class FinancingRoundControllerTest {
     public void testStartFinancingRoundBudgetTooLow() throws Exception {
 
         // attempt to create round with 0-budget
-        final MvcResult mvcResult = mockMvc.perform(post("/financingrounds")
+        final MvcResult mvcResult = mockMvc.perform(post("/financinground")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(financingRound(new DateTime().plusDays(1), 0))))
                 .andExpect(status().isBadRequest())
@@ -151,7 +148,7 @@ public class FinancingRoundControllerTest {
         when(financingRoundRepository.findAll()).thenReturn(Collections.singletonList(financingRoundEntity(new DateTime().minusDays(5), new DateTime().plusDays(1))));
 
         // attempt to create a new (otherwise valid) one
-        final MvcResult mvcResult = mockMvc.perform(post("/financingrounds")
+        final MvcResult mvcResult = mockMvc.perform(post("/financinground")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(financingRound(new DateTime().plusDays(1), 99))))
                 .andExpect(status().isBadRequest())

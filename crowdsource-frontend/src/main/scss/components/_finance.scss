@@ -1,0 +1,149 @@
+/***
+* Finance Widget
+*
+*/
+
+// ---
+// Widget
+// ---
+
+.finance {
+  color: $clr-body;
+  border: 1px solid $clr-border;
+  border-radius: $border-radius;
+}
+
+
+.finance__section {
+  padding: 1rem;
+  border-bottom: 1px solid $clr-border;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+
+/*ul*/.finance__ul {
+  @extend .clearfix;
+  margin: 0;
+  list-style: none;
+
+  > li {
+    float: left;
+    margin-right: 2rem;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+
+/*span*/.finance__subtitle {
+  display: block;
+  font-size: $fs-small;
+  color: $clr-body-light;
+}
+
+
+/*li*/.finance__li {
+  font-size: rem-calc(18px);
+  font-weight: $fw-bold;
+}
+
+
+/*li*/.finance__li-important {
+  font-size: $fs-medium;
+  font-weight: $fw-bold;
+}
+
+
+/*button*/.finance__btn {
+  @extend .flush--bottom;
+  background-color: $clr-emerald;
+  color: $white;
+  border-radius: $border-radius;
+
+  &:hover {
+    background-color: lighten($clr-emerald, 10%);
+
+  }
+}
+
+
+/*input*/.finance__input.finance__input {  // Give this class a higher CSS specificity
+// to overrule Foundation's input class
+
+  $finance-input-bg-color: $clr-bg;
+  $finance-input-bg-color-active: darken($finance-input-bg-color, 5%);
+
+  height: auto;
+  margin:  rem-calc(8px) 0;
+  padding: rem-calc(4px) rem-calc(8px);
+  font-size:   $fs-medium;
+  font-weight: $fw-bold;
+  border: 1px solid transparent;
+  border-radius: $border-radius;
+  background-color: $finance-input-bg-color;
+  box-shadow: none;
+
+  background-image:    url('../images/icon-edit.svg');
+  background-position: right rem-calc(8px) center;
+  background-repeat:   no-repeat;
+
+  transition: background-color 0.25s ease;
+
+  // Remove input[type=number] arrows in Chrome, Safari & Firefox
+  -moz-appearance: textfield;
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+  }
+
+  &:hover {
+    background-color: $finance-input-bg-color-active;
+  }
+
+  &:focus {
+    background-color: $finance-input-bg-color-active;
+    box-shadow: none;
+  }
+}
+
+
+
+// ---
+// Range Slider
+// ---
+
+// These classes extend Foundation's range slider
+
+.range-slider {
+  height: rem-calc(4px);
+  background-color: #ddd;
+}
+
+
+.range-slider-active-segment {
+  height: rem-calc(12px);
+  top:    -4px; // Offset (height active slider el - height slider) / 2
+  left:   -1px; // Fix a strange pixel offset
+  border-top-left-radius: rem-calc(6px);
+  border-bottom-left-radius: rem-calc(6px);
+}
+
+
+.range-slider-handle {
+
+  $range-slider-handle-bg: url('../images/range-slider-handle.svg') center center no-repeat;
+  $range-slider-handle-bg-size: rem-calc(28px);
+
+  background: $range-slider-handle-bg;
+  background-size: $range-slider-handle-bg-size;
+
+  &:hover {
+    background: $range-slider-handle-bg;
+    background-size: $range-slider-handle-bg-size;
+  }
+}

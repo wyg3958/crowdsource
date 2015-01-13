@@ -1,27 +1,32 @@
 <form name="pledgingForm.form" class="pledging-form" novalidate>
 
-    <range-slider ng-model="pledgingForm.pledge.amount" start="0" end="{{ pledgingForm.getPledgableAmount() }}"></range-slider>
-
-    <div class="row collapse">
-        <div class="small-3 columns">
-            <input type="number" min="1" ng-model="pledgingForm.pledge.amount" placeholder="Finanzierungsbetrag" required style="margin-bottom: 0">
-            Dein Investment
-        </div>
-        <div class="small-3 small-offset-6 text-right columns">
+    <div class="finance">
+      <div class="finance__section">
+        <range-slider ng-model="pledgingForm.pledge.amount" start="0" end="{{ pledgingForm.getPledgableAmount() }}"></range-slider>
+        <ul class="finance__ul">
+          <li class="finance__li-important">
+            <input class="finance__input" type="number" min="1" ng-model="pledgingForm.pledge.amount" required>
+            <span class="finance__subtitle">Dein Investment</span>
+          </li>
+          <li class="right  finance__li-important">
             ${{ pledgingForm.getPledgableAmount() }}
-        </div>
-    </div>
-    <div class="row collapse" style="margin-top: 20px;">
-        <div class="small-3 columns">
-            ${{ pledgingForm.project.pledgedAmount + pledgingForm.pledge.amount }} / ${{ pledgingForm.project.pledgeGoal }}<br/>
-            Finanzierung
-        </div>
-        <div class="small-3 columns">
-            ${{ pledgingForm.user.budget - pledgingForm.pledge.amount }}<br/>
-            Dein Budget
-        </div>
-        <div class="small-3 columns">
-            <button class="success postfix" ng-click="pledgingForm.pledgeProject()" ng-disabled="pledgingForm.form.$invalid">Jetzt finanzieren</button>
-        </div>
+          </li>
+        </ul>
+      </div>
+      <div class="finance__section">
+        <ul class="finance__ul">
+          <li class="finance__li">
+            ${{ pledgingForm.project.pledgedAmount + pledgingForm.pledge.amount }} / ${{ pledgingForm.project.pledgeGoal }}
+            <span class="finance__subtitle">Finanzierung</span>
+          </li>
+          <li class="finance__li">
+            ${{ pledgingForm.user.budget - pledgingForm.pledge.amount }}
+            <span class="finance__subtitle">Dein Budget</span>
+          </li>
+          <li class="right">
+            <button class="finance__btn success" ng-click="pledgingForm.pledgeProject()" ng-disabled="pledgingForm.form.\$invalid">Jetzt finanzieren</button>
+          </li>
+        </ul>
+      </div>
     </div>
 </form>

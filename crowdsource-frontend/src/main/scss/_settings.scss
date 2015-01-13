@@ -83,6 +83,7 @@ $clr-aquamarine:      #61FFA6;
 $clr-body:            $clr-mine-shaft;
 $clr-body-light:      $clr-boulder;
 $clr-border:          $clr-alto;
+$clr-bg:              $clr-gallery;
 $clr-teaser-start:    $clr-bossanova;
 $clr-teaser-end:      $clr-butterfly;
 
@@ -121,3 +122,14 @@ $fw-black:      800;
 
 
 $border-radius: 3px;
+
+
+
+// ---
+// Range Slider
+// ---
+
+$range-slider-handle-width: rem-calc(28px);
+$range-slider-handle-height: rem-calc(28px);
+$range-slider-handle-position-top: rem-calc(-13px);
+$range-slider-active-segment-bg-color: $clr-emerald;

@@ -25,7 +25,7 @@ angular.module('crowdsource')
                 };
 
                 vm.getPledgableAmount = function() {
-                    if (!vm.project.$resolved || !vm.user.$resolved) {
+                    if (!vm.project.$resolved || !vm.user.$resolved) {
                         return 0;
                     }
 

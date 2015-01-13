@@ -4,6 +4,7 @@
         <div class="finance__section">
             <range-slider ng-model="pledgingForm.pledge.amount" start="0" end="{{ pledgingForm.getPledgableAmount() }}"
                           disabled="pledgingForm.getPledgableAmount() == 0"></range-slider>
+
             <ul class="finance__ul">
                 <li class="finance__li-important form-controls-amount">
                     <label form-group="amount">
@@ -12,13 +13,12 @@
                                required min="1" ng-max="pledgingForm.getPledgableAmount()">
 
                         <span class="finance__subtitle" form-label-valid="amount">Dein Investment</span>
-                <span class="finance__subtitle" form-label-invalid="amount"
-                      ng-messages="pledgingForm.form.amount.$error">
-                    <span ng-message="required">Bitte gib deinen gewünschten Finanzierungsbetrag ein</span>
-                    <span ng-message="min">Der Finanzierungsbetrag muss größer 0 sein</span>
-                    <span ng-message="max">Dein Finanzierungsbetrag ist zu hoch</span>
-                    <span ng-message="number">Bitte gib nur Zahlen ein</span>
-                </span>
+                        <span class="finance__subtitle" form-label-invalid="amount" ng-messages="pledgingForm.form.amount.$error">
+                            <span ng-message="required">Bitte gib deinen gewünschten Finanzierungsbetrag ein</span>
+                            <span ng-message="min">Der Finanzierungsbetrag muss größer 0 sein</span>
+                            <span ng-message="max">Dein Finanzierungsbetrag ist zu hoch</span>
+                            <span ng-message="number">Bitte gib nur Zahlen ein</span>
+                        </span>
                     </label>
                 </li>
                 <li class="right  finance__li-important">
@@ -39,8 +39,7 @@
                 </li>
                 <li class="right">
                     <button class="finance__btn success" ng-click="pledgingForm.pledgeProject()"
-                            ng-disabled="pledgingForm.form.$invalid">Jetzt finanzieren
-                    </button>
+                            ng-disabled="pledgingForm.form.$invalid">Jetzt finanzieren</button>
                 </li>
             </ul>
         </div>

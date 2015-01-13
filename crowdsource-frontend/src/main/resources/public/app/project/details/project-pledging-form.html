@@ -4,6 +4,18 @@
 
         <div class="alert-box success" ng-show="pledgingForm.success">Deine Finanzierung war erflogreich</div>
 
+        <div class="general-error alert-box alert" ng-messages="pledgingForm.generalErrors" ng-if="pledgingForm.generalErrors">
+            <span ng-message="remote_pledge_goal_exceeded">
+                Das Projekt wurde mittlerweile von anderen Benutzern finanziert und deine Finanzierung hätte den Finanzierungsbedarf des Projekts überschritten.
+                Die Projektdaten wurden soeben aktualisiert und wir bitten dich einen neuen Finanzierungsbetrag einzugeben.
+            </span>
+            <span ng-message="remote_project_already_fully_pledged">
+                Das Projekt wurde mittlerweile von anderen Benutzern vollständig finanziert. Ein Finanzieren ist leider nicht mehr möglich.
+            </span>
+            <span ng-message="remote_user_budget_exceeded">Dein Budget reicht nicht aus. Bitte versuche es erneut</span>
+            <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuche es erneut.</span>
+        </div>
+
         <div class="finance__section">
             <range-slider ng-model="pledgingForm.pledge.amount" start="0" end="{{ pledgingForm.getPledgableAmount() }}"
                           disabled="pledgingForm.getPledgableAmount() == 0"></range-slider>

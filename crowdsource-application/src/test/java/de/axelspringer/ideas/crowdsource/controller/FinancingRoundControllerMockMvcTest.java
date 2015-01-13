@@ -98,7 +98,7 @@ public class FinancingRoundControllerMockMvcTest {
     public void testStartFinancingRound() throws Exception {
 
         // create round
-        mockMvc.perform(post("/financingrounds")
+        mockMvc.perform(post("/financinground")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(financingRound(new DateTime().plusDays(1), 99))))
                 .andExpect(status().isCreated());
@@ -112,7 +112,7 @@ public class FinancingRoundControllerMockMvcTest {
     public void testStartFinancingRoundEndDateNotInFuture() throws Exception {
 
         // attempt to start a round that ends in the past
-        final MvcResult mvcResult = mockMvc.perform(post("/financingrounds")
+        final MvcResult mvcResult = mockMvc.perform(post("/financinground")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(financingRound(new DateTime(), 99))))
                 .andExpect(status().isBadRequest())
@@ -130,7 +130,7 @@ public class FinancingRoundControllerMockMvcTest {
     public void testStartFinancingRoundBudgetTooLow() throws Exception {
 
         // attempt to create round with 0-budget
-        final MvcResult mvcResult = mockMvc.perform(post("/financingrounds")
+        final MvcResult mvcResult = mockMvc.perform(post("/financinground")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(financingRound(new DateTime().plusDays(1), 0))))
                 .andExpect(status().isBadRequest())
@@ -151,7 +151,7 @@ public class FinancingRoundControllerMockMvcTest {
         when(financingRoundRepository.findAll()).thenReturn(Collections.singletonList(financingRoundEntity(new DateTime().minusDays(5), new DateTime().plusDays(1))));
 
         // attempt to create a new (otherwise valid) one
-        final MvcResult mvcResult = mockMvc.perform(post("/financingrounds")
+        final MvcResult mvcResult = mockMvc.perform(post("/financinground")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(financingRound(new DateTime().plusDays(1), 99))))
                 .andExpect(status().isBadRequest())

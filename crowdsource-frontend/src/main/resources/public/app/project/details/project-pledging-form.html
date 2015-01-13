@@ -4,16 +4,26 @@
                   disabled="pledgingForm.getPledgableAmount() == 0"></range-slider>
 
     <div class="row collapse">
-        <div class="small-3 columns">
-            <input type="number" name="amount" ng-model="pledgingForm.pledge.amount" ng-disabled="pledgingForm.getPledgableAmount() == 0"
-                   placeholder="Finanzierungsbetrag"
-                   required min="1" style="margin-bottom: 0">
-            Dein Investment
+        <div class="small-3 columns form-controls-amount">
+            <label form-group="amount">
+                <input type="number" name="amount" ng-model="pledgingForm.pledge.amount" ng-disabled="pledgingForm.getPledgableAmount() == 0"
+                       placeholder="Finanzierungsbetrag"
+                       required min="1" ng-max="pledgingForm.getPledgableAmount()" style="margin-bottom: 0">
+
+                <span form-label-valid="amount">Dein Investment</span>
+
+                <span form-label-invalid="amount" ng-messages="pledgingForm.form.amount.$error">
+                    <span ng-message="required">Bitte gib deinen gewünschten Finanzierungsbetrag ein</span>
+                    <span ng-message="min">Der Finanzierungsbetrag muss größer 0 sein</span>
+                    <span ng-message="max">Der Finanzierungsbetrag übersteigt deinem Budget oder der noch zu finanzierenden Höhe</span>
+                </span>
+            </label>
         </div>
         <div class="small-3 small-offset-6 text-right columns">
             ${{ pledgingForm.getPledgableAmount() }}
         </div>
     </div>
+
     <div class="row collapse" style="margin-top: 20px;">
         <div class="small-3 columns">
             ${{ pledgingForm.project.pledgedAmount + pledgingForm.pledge.amount }} / ${{ pledgingForm.project.pledgeGoal }}<br/>

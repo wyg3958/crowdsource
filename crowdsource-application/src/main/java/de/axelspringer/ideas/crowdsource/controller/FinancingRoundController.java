@@ -43,7 +43,7 @@ public class FinancingRoundController {
 
         // flush user budget and set new budget
         final List<UserEntity> userEntities = userRepository.findAll();
-        final int budgetPerUser = userEntities.size() < 1 ? 0 : financingRound.getValue() / userEntities.size() - 1;
+        final int budgetPerUser = budgetPerUser(financingRound.getValue(), userEntities.size());
         userEntities.forEach(userEntity -> {
             userEntity.setBudget(budgetPerUser);
             userRepository.save(userEntity);
@@ -55,5 +55,10 @@ public class FinancingRoundController {
         financingRoundEntity.setEndDate(financingRound.getEnd());
         financingRoundEntity.setValue(financingRound.getValue());
         financingRoundRepository.save(financingRoundEntity);
+    }
+
+    int budgetPerUser(int financingRoundBudget, int userCount) {
+
+        return userCount < 1 ? 0 : Math.floorDiv(financingRoundBudget, userCount);
     }
 }

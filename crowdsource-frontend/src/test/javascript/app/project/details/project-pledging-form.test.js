@@ -217,6 +217,22 @@ describe('project pledging form', function () {
         expect(elements.pledgeButton).toBeDisabled();
     });
 
+    it("should show a validation error message if the entered pledge amount is no even number", function () {
+
+        prepareMocks({
+            project: { $resolved: true, id: 123, pledgeGoal: 500, pledgedAmount: 50 },
+            isLoggedIn: true,
+            userResponse: { statusCode: 200, body: { budget: 200 } }
+        });
+
+        var elements = compileDirective();
+        $httpBackend.flush();
+
+        elements.pledgeAmount.getInputField().val('1.2').trigger('input');
+        expectValidationError(elements.pledgeAmount, 'pattern');
+        expect(elements.pledgeButton).toBeDisabled();
+    });
+
     it("should recover from a over-pledge", function() {
 
         prepareMocks({

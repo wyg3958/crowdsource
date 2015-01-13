@@ -25,7 +25,7 @@
                     <label form-group="amount">
                         <input class="finance__input" type="number" name="amount" ng-model="pledgingForm.pledge.amount"
                                ng-disabled="pledgingForm.getPledgableAmount() == 0"
-                               required min="1" ng-max="pledgingForm.getPledgableAmount()">
+                               required min="1" ng-max="pledgingForm.getPledgableAmount()" ng-pattern="/^[0-9]+$/">
 
                         <span class="finance__subtitle" form-label-valid="amount">Dein Investment</span>
                         <span class="finance__subtitle" form-label-invalid="amount" ng-messages="pledgingForm.form.amount.$error">
@@ -33,6 +33,7 @@
                             <span ng-message="min">Der Finanzierungsbetrag muss größer 0 sein</span>
                             <span ng-message="max">Dein Finanzierungsbetrag ist zu hoch</span>
                             <span ng-message="number">Bitte gib nur Zahlen ein</span>
+                            <span ng-message="pattern">Bitte gib nur Zahlen ein</span>
                         </span>
                     </label>
                 </li>

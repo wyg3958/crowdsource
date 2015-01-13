@@ -1,6 +1,9 @@
 <form name="pledgingForm.form" class="pledging-form" novalidate>
 
     <div class="finance">
+
+        <div class="alert-box success" ng-show="pledgingForm.success">Deine Finanzierung war erflogreich</div>
+
         <div class="finance__section">
             <range-slider ng-model="pledgingForm.pledge.amount" start="0" end="{{ pledgingForm.getPledgableAmount() }}"
                           disabled="pledgingForm.getPledgableAmount() == 0"></range-slider>
@@ -22,19 +25,19 @@
                     </label>
                 </li>
                 <li class="right  finance__li-important">
-                    ${{ pledgingForm.getPledgableAmount() }}
+                    ${{ pledgingForm.getPledgableAmount() | number }}
                 </li>
             </ul>
         </div>
         <div class="finance__section">
             <ul class="finance__ul">
                 <li class="finance__li">
-                    ${{ pledgingForm.project.pledgedAmount + pledgingForm.pledge.amount }} /
-                    ${{ pledgingForm.project.pledgeGoal }}
+                    <span class="pledged-amount">${{ pledgingForm.project.pledgedAmount + pledgingForm.pledge.amount | number }}</span> /
+                    <span class="pledge-goal">${{ pledgingForm.project.pledgeGoal | number }}</span>
                     <span class="finance__subtitle">Finanzierung</span>
                 </li>
                 <li class="finance__li">
-                    ${{ pledgingForm.user.budget - pledgingForm.pledge.amount }}
+                    <span class="budget">${{ pledgingForm.user.budget - pledgingForm.pledge.amount | number }}</span>
                     <span class="finance__subtitle">Dein Budget</span>
                 </li>
                 <li class="right">

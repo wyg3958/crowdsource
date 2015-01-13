@@ -21,7 +21,11 @@ describe('project pledging form', function () {
             root: root,
             slider: root.find('.range-slider'),
             pledgeAmount: new FormGroup(root.find('.form-controls-amount')),
-            pledgeButton: root.find('button')
+            pledgeButton: root.find('button'),
+            successMessage: root.find('.alert-box.success'),
+            pledgedAmount: root.find('.pledged-amount'),
+            pledgeGoal: root.find('.pledge-goal'),
+            budget: root.find('.budget')
         };
     }
 
@@ -56,15 +60,34 @@ describe('project pledging form', function () {
         var elements = compileDirective();
         $httpBackend.flush();
 
-        elements.pledgeAmount.getInputField().val('40').trigger('input');
+        // type in 30
+        elements.pledgeAmount.getInputField().val('30').trigger('input');
+
+        // expect everything to have changed
         expectNoValidationError(elements.pledgeAmount);
         expect(elements.pledgeButton).not.toBeDisabled();
+        expect(elements.successMessage).toHaveClass('ng-hide');
+        expect(elements.pledgedAmount).toHaveText('$90');
+        expect(elements.pledgeGoal).toHaveText('$100');
+        expect(elements.budget).toHaveText('$170');
 
+        // prepare for backend call
+        $httpBackend.expectPOST('/project/123/pledge', { amount: 30 }).respond(200);
+        $httpBackend.expectGET('/project/123').respond(200, { id: 123, pledgeGoal: 100, pledgedAmount: 90 });
 
-        $httpBackend.expectPOST('/project/123/pledge', { amount: 40 }).respond(200);
+        // submit form
         elements.pledgeButton.click();
-
         $httpBackend.flush();
+
+        // expect form to be in pristine state and with new values
+        expect(elements.successMessage).not.toHaveClass('ng-hide');
+        expect(elements.pledgeAmount.getInputField()).toHaveValue("0");
+        expect(elements.pledgedAmount).toHaveText('$90');
+        expect(elements.pledgeGoal).toHaveText('$100');
+        expect(elements.budget).toHaveText('$170');
+
+        expectNoValidationError(elements.pledgeAmount);
+        expect(elements.pledgeButton).toBeDisabled();
     });
 
     it("should disable the form until the user budget is loaded", function() {

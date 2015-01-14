@@ -25,7 +25,8 @@ describe('project pledging form', function () {
             pledgedAmount: root.find('.pledged-amount'),
             pledgeGoal: root.find('.pledge-goal'),
             budget: root.find('.budget'),
-            successMessage: root.find('.alert-box.success')
+            successMessage: root.find('.alert-box.success'),
+            noBudgetNotification: root.find('.no-budget-notification')
         };
     }
 
@@ -106,6 +107,7 @@ describe('project pledging form', function () {
 
         var elements = compileDirective();
 
+        expect(elements.noBudgetNotification).toHaveClass('ng-hide');
         expect(elements.slider).toHaveClass('disabled');
         expect(elements.pledgeButton).toBeDisabled();
         expect(elements.pledgeAmount.getInputField()).toBeDisabled();
@@ -115,6 +117,7 @@ describe('project pledging form', function () {
 
         expect(elements.slider).not.toHaveClass('disabled');
         expect(elements.pledgeAmount.getInputField()).not.toBeDisabled();
+        expect(elements.noBudgetNotification).toHaveClass('ng-hide');
         expectNoValidationError(elements.pledgeAmount);
     });
 
@@ -293,5 +296,18 @@ describe('project pledging form', function () {
 
         expectNoValidationError(elements.pledgeAmount);
         expect(elements.pledgeButton).toBeDisabled();
+    });
+
+    it("should show a message that the user has no budget anymore", function () {
+        prepareMocks({
+            project: { $resolved: true, id: 123, pledgeGoal: 500, pledgedAmount: 50 },
+            isLoggedIn: true,
+            userResponse: { statusCode: 200, body: { budget: 0 } }
+        });
+
+        var elements = compileDirective();
+        $httpBackend.flush();
+
+        expect(elements.noBudgetNotification).not.toHaveClass('ng-hide');
     });
 });

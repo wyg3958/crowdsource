@@ -2,7 +2,12 @@
 
     <div class="finance">
 
-        <div class="alert-box success" ng-show="pledgingForm.success">Deine Finanzierung war erflogreich</div>
+        <div class="alert-box success" ng-show="pledgingForm.success">Deine Finanzierung war erflogreich.</div>
+
+        <div class="no-budget-notification alert-box warning" ng-show="pledgingForm.user.budget == 0">
+            Dein Budget ist leider aufgebraucht. Du kannst dieses Projekt nicht weiter finanzieren. Bitte warte ab, bis die nächste Finanzierungsrunde startet,
+            dann wird der Finanzierungstopf erneut auf alle Benutzer aufgeteilt.
+        </div>
 
         <div class="general-error alert-box alert" ng-messages="pledgingForm.generalErrors" ng-if="pledgingForm.generalErrors">
             <span ng-message="remote_pledge_goal_exceeded">

@@ -28,6 +28,5 @@ public class FinancingRound {
         start = financingRoundEntity.getStartDate();
         end = financingRoundEntity.getEndDate();
         value = financingRoundEntity.getValue();
-        active = financingRoundEntity.isActive();
     }
 }

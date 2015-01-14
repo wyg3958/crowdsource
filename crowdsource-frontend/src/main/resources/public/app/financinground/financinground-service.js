@@ -7,8 +7,8 @@ angular.module('crowdsource')
         var financingRoundsResource = $resource('/financingrounds');
 
         return {
-            start: function () {
-                return financingRoundResource.save().$promise;
+            start: function (financingRound) {
+                return financingRoundResource.save(financingRound).$promise;
             },
             get: function () {
                 return financingRoundsResource.get();

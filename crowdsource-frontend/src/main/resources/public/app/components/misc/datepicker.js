@@ -16,8 +16,7 @@ angular.module('crowdsource')
                     }
 
                 }).on('changeDate', function (ev) {
-                    console.log(ev);
-                    ngModel.$setViewValue(ev.date);
+                    ngModel.$setViewValue(ev.date.valueOf());
                     ngModel.$render();
                 });
             }

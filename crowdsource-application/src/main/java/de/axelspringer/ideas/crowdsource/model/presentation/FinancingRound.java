@@ -22,9 +22,12 @@ public class FinancingRound {
     @Min(value = 1l, message = "at-least-one-dollar")
     private Integer value;
 
+    private boolean active;
+
     public FinancingRound(FinancingRoundEntity financingRoundEntity) {
         start = financingRoundEntity.getStartDate();
         end = financingRoundEntity.getEndDate();
         value = financingRoundEntity.getValue();
+        active = financingRoundEntity.isActive();
     }
 }

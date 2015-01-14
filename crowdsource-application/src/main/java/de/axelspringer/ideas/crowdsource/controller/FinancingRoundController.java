@@ -51,6 +51,7 @@ public class FinancingRoundController {
 
         // create round
         final FinancingRoundEntity financingRoundEntity = new FinancingRoundEntity();
+        financingRoundEntity.setActive(true);
         financingRoundEntity.setStartDate(new DateTime());
         financingRoundEntity.setEndDate(financingRound.getEnd());
         financingRoundEntity.setValue(financingRound.getValue());

@@ -9,23 +9,29 @@ angular.module('crowdsource')
             if (!vm.form.$valid) {
                 return;
             }
-            console.log(vm.endDate);
-            if (vm.endDate == undefined) {
-                vm.form.endDate.$setValidity('valid_date', false);
-                return;
-            }
 
-//            vm.saving = true;
-//
-//            FinancingRound.start().$promise
-//                .then(function() {
-//                    alert("Then");
-//                })
-//                .catch(function (response) {
-//                    alert(response);
-//                })
-//                .finally(function() {
-//                    vm.saving = false;
-//                });
+            //financing round should end at end of day
+            var fullEndDate = new Date(+vm.endDate);
+            fullEndDate.setUTCHours(23);
+            fullEndDate.setUTCMinutes(59);
+            fullEndDate.setUTCSeconds(59);
+
+            vm.financingRound = {
+                end: new Date(fullEndDate),
+                value: vm.budget
+            };
+
+            vm.saving = true;
+
+            FinancingRound.start(vm.financingRound)
+                .then(function () {
+                    alert("Finanzierungsrunde gestartet.");
+                })
+                .catch(function (response) {
+                    alert(response);
+                })
+                .finally(function () {
+                    vm.saving = false;
+                });
         };
     });

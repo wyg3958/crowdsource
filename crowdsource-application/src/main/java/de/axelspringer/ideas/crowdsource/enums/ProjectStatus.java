@@ -1,7 +1,8 @@
 package de.axelspringer.ideas.crowdsource.enums;
 
-public enum PublicationStatus {
+public enum ProjectStatus {
     SAVED,
     PROPOSED,
-    PUBLISHED
+    PUBLISHED,
+    FULLY_PLEDGED
 }

@@ -2,7 +2,28 @@
 
     <div class="finance">
 
-        <div class="alert-box success" ng-show="pledgingForm.success">Deine Finanzierung war erflogreich</div>
+        <div class="alert-box success" ng-show="pledgingForm.success">Deine Finanzierung war erflogreich.</div>
+
+        <div class="not-logged-in-notification alert-box warning" ng-show="pledgingForm.user.$resolved && !pledgingForm.user.loggedIn">
+            Bitte <a href="#/login">logge dich ein</a>, um Projekte finanziell zu unterstützen.
+        </div>
+
+        <div class="no-budget-notification alert-box warning" ng-show="pledgingForm.user.$resolved && pledgingForm.user.loggedIn && pledgingForm.user.budget == 0">
+            Dein Budget ist leider aufgebraucht. Du kannst dieses Projekt nicht weiter finanzieren. Bitte warte ab, bis die nächste Finanzierungsrunde startet,
+            dann wird der Finanzierungstopf erneut auf alle Benutzer aufgeteilt.
+        </div>
+
+        <div class="general-error alert-box alert" ng-messages="pledgingForm.generalErrors" ng-if="pledgingForm.generalErrors">
+            <span ng-message="remote_pledge_goal_exceeded">
+                Das Projekt wurde mittlerweile von anderen Benutzern finanziert und deine Finanzierung hätte den Finanzierungsbedarf des Projekts überschritten.
+                Die Projektdaten wurden soeben aktualisiert und wir bitten dich einen neuen Finanzierungsbetrag einzugeben.
+            </span>
+            <span ng-message="remote_project_already_fully_pledged">
+                Das Projekt wurde mittlerweile von anderen Benutzern vollständig finanziert. Ein Finanzieren ist leider nicht mehr möglich.
+            </span>
+            <span ng-message="remote_user_budget_exceeded">Dein Budget reicht nicht aus. Bitte versuche es erneut</span>
+            <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuche es erneut.</span>
+        </div>
 
         <div class="finance__section">
             <range-slider ng-model="pledgingForm.pledge.amount" start="0" end="{{ pledgingForm.getPledgableAmount() }}"
@@ -13,7 +34,7 @@
                     <label form-group="amount">
                         <input class="finance__input" type="number" name="amount" ng-model="pledgingForm.pledge.amount"
                                ng-disabled="pledgingForm.getPledgableAmount() == 0"
-                               required min="1" ng-max="pledgingForm.getPledgableAmount()">
+                               required min="1" ng-max="pledgingForm.getPledgableAmount()" ng-pattern="/^[0-9]+$/">
 
                         <span class="finance__subtitle" form-label-valid="amount">Dein Investment</span>
                         <span class="finance__subtitle" form-label-invalid="amount" ng-messages="pledgingForm.form.amount.$error">
@@ -21,6 +42,7 @@
                             <span ng-message="min">Der Finanzierungsbetrag muss größer 0 sein</span>
                             <span ng-message="max">Dein Finanzierungsbetrag ist zu hoch</span>
                             <span ng-message="number">Bitte gib nur Zahlen ein</span>
+                            <span ng-message="pattern">Bitte gib nur Zahlen ein</span>
                         </span>
                     </label>
                 </li>

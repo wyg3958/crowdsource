@@ -1,7 +1,7 @@
 package de.axelspringer.ideas.crowdsource.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.axelspringer.ideas.crowdsource.enums.PublicationStatus;
+import de.axelspringer.ideas.crowdsource.enums.ProjectStatus;
 import de.axelspringer.ideas.crowdsource.model.persistence.PledgeEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
@@ -35,9 +35,11 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.IsNot.not;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -53,6 +55,7 @@ public class ProjectControllerTest {
     private static final String EXISTING_USER_MAIL = "existing@mail.com";
     private static final String NON_EXISTING_USER_MAIL = "nonexisting@mail.com";
     private static final String EXISTING_PROJECT_ID = "existingProjectId";
+    private static final String FULLY_PLEDGED_PROJECT_ID = "fullyPledgedProjectId";
     private static final String NON_EXISTING_PROJECT_ID = "nonexistingProjectId";
     private static final int ALREADY_PLEDGED = 3;
 
@@ -72,6 +75,7 @@ public class ProjectControllerTest {
     private ObjectMapper mapper = new ObjectMapper();
     private UserEntity existingUserEntity;
     private ProjectEntity existingProject;
+    private ProjectEntity fullyPledgedProject;
 
     @Before
     public void setup() {
@@ -87,17 +91,22 @@ public class ProjectControllerTest {
         when(userRepository.findByEmail(EXISTING_USER_MAIL)).thenReturn(existingUserEntity);
         when(userRepository.findByEmail(NON_EXISTING_USER_MAIL)).thenReturn(null);
 
-        existingProject = createProjectEntity(EXISTING_PROJECT_ID, "title", 44, "short description", "description");
+        existingProject = createProjectEntity(EXISTING_PROJECT_ID, "title", 44, "short description", "description", ProjectStatus.PUBLISHED);
         when(projectRepository.findOne(EXISTING_PROJECT_ID)).thenReturn(existingProject);
         when(pledgeRepository.findByProject(eq(existingProject))).thenReturn(Arrays.asList(
                 new PledgeEntity(existingProject, existingUserEntity, new Pledge(ALREADY_PLEDGED))));
 
-        ProjectEntity project1 = createProjectEntity("projectId1", "title1", 11, "short description1", "description1");
-        ProjectEntity project2 = createProjectEntity("projectId2", "title2", 22, "short description2", "description2");
-        ProjectEntity project3 = createProjectEntity("projectId3", "title3", 33, "short description3", "description3");
+        fullyPledgedProject = createProjectEntity(FULLY_PLEDGED_PROJECT_ID, "title", ALREADY_PLEDGED, "short description", "description", ProjectStatus.FULLY_PLEDGED);
+        when(projectRepository.findOne(FULLY_PLEDGED_PROJECT_ID)).thenReturn(fullyPledgedProject);
+        when(pledgeRepository.findByProject(eq(fullyPledgedProject))).thenReturn(Arrays.asList(
+                new PledgeEntity(fullyPledgedProject, existingUserEntity, new Pledge(ALREADY_PLEDGED))));
+
+        ProjectEntity project1 = createProjectEntity("projectId1", "title1", 11, "short description1", "description1", ProjectStatus.PUBLISHED);
+        ProjectEntity project2 = createProjectEntity("projectId2", "title2", 22, "short description2", "description2", ProjectStatus.PUBLISHED);
+        ProjectEntity project3 = createProjectEntity("projectId3", "title3", 33, "short description3", "description3", ProjectStatus.PUBLISHED);
         List<ProjectEntity> projects = Arrays.asList(project1, project2, project3);
 
-        when(projectRepository.findByPublicationStatusOrderByCreatedDateDesc(any())).thenReturn(projects);
+        when(projectRepository.findByStatusOrderByCreatedDateDesc(any())).thenReturn(projects);
 
         when(pledgeRepository.findByProject(eq(project1))).thenReturn(Arrays.asList(
                 new PledgeEntity(project1, existingUserEntity, new Pledge(11))));
@@ -186,12 +195,12 @@ public class ProjectControllerTest {
                 "{\"id\":\"projectId2\",\"title\":\"title2\",\"shortDescription\":\"short description2\",\"pledgeGoal\":22,\"pledgedAmount\":22,\"backers\":1}," +
                 "{\"id\":\"projectId3\",\"title\":\"title3\",\"shortDescription\":\"short description3\",\"pledgeGoal\":33,\"pledgedAmount\":0,\"backers\":0}]"));
 
-        verify(projectRepository).findByPublicationStatusOrderByCreatedDateDesc(PublicationStatus.PUBLISHED);
+        verify(projectRepository).findByStatusOrderByCreatedDateDesc(ProjectStatus.PUBLISHED);
     }
 
     @Test
-    public void pledgeProject_shouldCallTheProjectServiceCorrectly() throws Exception {
-        Pledge pledge = new Pledge(existingProject.getPledgeGoal() - ALREADY_PLEDGED);
+    public void pledgeProject_shouldPledgeCorrectly() throws Exception {
+        Pledge pledge = new Pledge(existingProject.getPledgeGoal() - ALREADY_PLEDGED - 1);
 
         int budgetBeforePledge = existingUserEntity.getBudget();
 
@@ -204,8 +213,33 @@ public class ProjectControllerTest {
         PledgeEntity pledgeEntity = new PledgeEntity(existingProject, existingUserEntity, pledge);
         verify(pledgeRepository).save(pledgeEntity);
         verify(userRepository).save(existingUserEntity);
+        verify(projectRepository, never()).save(any(ProjectEntity.class));
 
         assertThat(existingUserEntity.getBudget(), is(budgetBeforePledge - pledge.getAmount()));
+        assertThat(existingProject.getStatus(), is(not(ProjectStatus.FULLY_PLEDGED)));
+    }
+
+    @Test
+    public void pledgeProject_shouldSetTheProjectStatusToFullyPledged() throws Exception {
+        Pledge pledge = new Pledge(existingProject.getPledgeGoal() - ALREADY_PLEDGED);
+
+        int budgetBeforePledge = existingUserEntity.getBudget();
+
+        assertThat(existingProject.getStatus(), is(not(ProjectStatus.FULLY_PLEDGED)));
+
+        mockMvc.perform(post("/project/{projectId}/pledge", EXISTING_PROJECT_ID)
+                .principal(new UsernamePasswordAuthenticationToken(EXISTING_USER_MAIL, "somepassword"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(pledge)))
+                .andExpect(status().isCreated());
+
+        PledgeEntity pledgeEntity = new PledgeEntity(existingProject, existingUserEntity, pledge);
+        verify(pledgeRepository).save(pledgeEntity);
+        verify(userRepository).save(existingUserEntity);
+        verify(projectRepository).save(existingProject);
+
+        assertThat(existingUserEntity.getBudget(), is(budgetBeforePledge - pledge.getAmount()));
+        assertThat(existingProject.getStatus(), is(ProjectStatus.FULLY_PLEDGED));
     }
 
     @Test
@@ -255,6 +289,19 @@ public class ProjectControllerTest {
     }
 
     @Test
+    public void pledgeProject_shouldRespondWith400IfTheProjectIsAlreadyFullyPledged() throws Exception {
+
+        MvcResult mvcResult = mockMvc.perform(post("/project/{projectId}/pledge", FULLY_PLEDGED_PROJECT_ID)
+                .principal(new UsernamePasswordAuthenticationToken(EXISTING_USER_MAIL, "somepassword"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(new Pledge(1))))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"errorCode\":\"project_already_fully_pledged\",\"fieldViolations\":{}}"));
+    }
+
+    @Test
     public void pledgeProject_shouldRespondWith400IfTheUserBudgetIsExceeded() throws Exception {
 
         MvcResult mvcResult = mockMvc.perform(post("/project/{projectId}/pledge", EXISTING_PROJECT_ID)
@@ -267,7 +314,7 @@ public class ProjectControllerTest {
         assertThat(mvcResult.getResponse().getContentAsString(), is("{\"errorCode\":\"user_budget_exceeded\",\"fieldViolations\":{}}"));
     }
 
-    private ProjectEntity createProjectEntity(String id, String title, int pledgeGoal, String shortDescription, String description) {
+    private ProjectEntity createProjectEntity(String id, String title, int pledgeGoal, String shortDescription, String description, ProjectStatus status) {
         ProjectEntity projectEntity = new ProjectEntity();
         projectEntity.setId(id);
         projectEntity.setTitle(title);
@@ -275,6 +322,7 @@ public class ProjectControllerTest {
         projectEntity.setShortDescription(shortDescription);
         projectEntity.setDescription(description);
         projectEntity.setCreator(existingUserEntity);
+        projectEntity.setStatus(status);
         return projectEntity;
     }
 

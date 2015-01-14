@@ -26,7 +26,8 @@ describe('project pledging form', function () {
             pledgeGoal: root.find('.pledge-goal'),
             budget: root.find('.budget'),
             successMessage: root.find('.alert-box.success'),
-            noBudgetNotification: root.find('.no-budget-notification')
+            noBudgetNotification: root.find('.no-budget-notification'),
+            notLoggedInNotification: root.find('.not-logged-in-notification')
         };
     }
 
@@ -107,6 +108,7 @@ describe('project pledging form', function () {
 
         var elements = compileDirective();
 
+        expect(elements.notLoggedInNotification).toHaveClass('ng-hide');
         expect(elements.noBudgetNotification).toHaveClass('ng-hide');
         expect(elements.slider).toHaveClass('disabled');
         expect(elements.pledgeButton).toBeDisabled();
@@ -115,9 +117,10 @@ describe('project pledging form', function () {
 
         $httpBackend.flush();
 
+        expect(elements.notLoggedInNotification).toHaveClass('ng-hide');
+        expect(elements.noBudgetNotification).toHaveClass('ng-hide');
         expect(elements.slider).not.toHaveClass('disabled');
         expect(elements.pledgeAmount.getInputField()).not.toBeDisabled();
-        expect(elements.noBudgetNotification).toHaveClass('ng-hide');
         expectNoValidationError(elements.pledgeAmount);
     });
 
@@ -309,5 +312,16 @@ describe('project pledging form', function () {
         $httpBackend.flush();
 
         expect(elements.noBudgetNotification).not.toHaveClass('ng-hide');
+    });
+
+    it("should show a message that the user is not logged in", function () {
+
+        $scope.project = { $resolved: true, pledgeGoal: 100, pledgedAmount: 50 };
+        spyOn(Authentication, 'isLoggedIn').and.returnValue(false);
+
+        var elements = compileDirective();
+
+        expect(elements.notLoggedInNotification).not.toHaveClass('ng-hide');
+        expect(elements.noBudgetNotification).toHaveClass('ng-hide');
     });
 });

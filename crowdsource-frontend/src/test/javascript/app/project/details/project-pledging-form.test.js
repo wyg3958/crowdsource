@@ -25,9 +25,7 @@ describe('project pledging form', function () {
             pledgedAmount: root.find('.pledged-amount'),
             pledgeGoal: root.find('.pledge-goal'),
             budget: root.find('.budget'),
-            successMessage: root.find('.alert-box.success'),
-            noBudgetNotification: root.find('.no-budget-notification'),
-            notLoggedInNotification: root.find('.not-logged-in-notification')
+            notification: root.find('.notification')
         };
     }
 
@@ -58,7 +56,7 @@ describe('project pledging form', function () {
     it("should add a pledge", function () {
 
         prepareMocks({
-            project: { $resolved: true, id: 123, pledgeGoal: 100, pledgedAmount: 60 },
+            project: { $resolved: true, id: 123, pledgeGoal: 100, pledgedAmount: 60, status: 'PUBLISHED' },
             isLoggedIn: true,
             userResponse: { statusCode: 200, body: { budget: 200 } }
         });
@@ -72,7 +70,7 @@ describe('project pledging form', function () {
         // expect everything to have changed
         expectNoValidationError(elements.pledgeAmount);
         expect(elements.pledgeButton).not.toBeDisabled();
-        expect(elements.successMessage).toHaveClass('ng-hide');
+        expect(elements.notification).toHaveClass('ng-hide');
         expect(elements.pledgedAmount).toHaveText('$90');
         expect(elements.pledgeGoal).toHaveText('$100');
         expect(elements.budget).toHaveText('$170');
@@ -87,7 +85,8 @@ describe('project pledging form', function () {
         $httpBackend.flush();
 
         // expect form to be in pristine state and with new values
-        expect(elements.successMessage).not.toHaveClass('ng-hide');
+        expect(elements.notification).not.toHaveClass('ng-hide');
+        expect(elements.notification).toHaveText('Deine Finanzierung war erflogreich.');
         expect(elements.pledgeAmount.getInputField()).toHaveValue("0");
         expect(elements.pledgedAmount).toHaveText('$90');
         expect(elements.pledgeGoal).toHaveText('$100');
@@ -101,15 +100,14 @@ describe('project pledging form', function () {
     it("should disable the form until the user budget is loaded", function() {
 
         prepareMocks({
-            project: { $resolved: true, id: 123, pledgeGoal: 100, pledgedAmount: 50 },
+            project: { $resolved: true, id: 123, pledgeGoal: 100, pledgedAmount: 50, status: 'PUBLISHED' },
             isLoggedIn: true,
             userResponse: { statusCode: 200, body: { budget: 20 } }
         });
 
         var elements = compileDirective();
 
-        expect(elements.notLoggedInNotification).toHaveClass('ng-hide');
-        expect(elements.noBudgetNotification).toHaveClass('ng-hide');
+        expect(elements.notification).toHaveClass('ng-hide');
         expect(elements.slider).toHaveClass('disabled');
         expect(elements.pledgeButton).toBeDisabled();
         expect(elements.pledgeAmount.getInputField()).toBeDisabled();
@@ -117,8 +115,7 @@ describe('project pledging form', function () {
 
         $httpBackend.flush();
 
-        expect(elements.notLoggedInNotification).toHaveClass('ng-hide');
-        expect(elements.noBudgetNotification).toHaveClass('ng-hide');
+        expect(elements.notification).toHaveClass('ng-hide');
         expect(elements.slider).not.toHaveClass('disabled');
         expect(elements.pledgeAmount.getInputField()).not.toBeDisabled();
         expectNoValidationError(elements.pledgeAmount);
@@ -139,7 +136,7 @@ describe('project pledging form', function () {
         expect(elements.pledgeAmount.getInputField()).toBeDisabled();
         expectNoValidationError(elements.pledgeAmount);
 
-        angular.copy({ $resolved: true, id: 123, pledgeGoal: 100, pledgedAmount: 50 }, $scope.project);
+        angular.copy({ $resolved: true, id: 123, pledgeGoal: 100, pledgedAmount: 50, status: 'PUBLISHED' }, $scope.project);
         $scope.$digest();
 
         expect(elements.slider).not.toHaveClass('disabled');
@@ -150,7 +147,7 @@ describe('project pledging form', function () {
     it("should disable the form if the user has no budget", function () {
 
         prepareMocks({
-            project: { $resolved: true, id: 123, pledgeGoal: 100, pledgedAmount: 50 },
+            project: { $resolved: true, id: 123, pledgeGoal: 100, pledgedAmount: 50, status: 'PUBLISHED' },
             isLoggedIn: true,
             userResponse: { statusCode: 200, body: { budget: 0 } }
         });
@@ -165,7 +162,7 @@ describe('project pledging form', function () {
 
     it("should disable the form if the user is not logged in", function () {
 
-        $scope.project = { $resolved: true, pledgeGoal: 100, pledgedAmount: 50 };
+        $scope.project = { $resolved: true, pledgeGoal: 100, pledgedAmount: 50, status: 'PUBLISHED' };
         spyOn(Authentication, 'isLoggedIn').and.returnValue(false);
 
         var elements = compileDirective();
@@ -178,7 +175,7 @@ describe('project pledging form', function () {
     it("should show a validation error message if a too low amount is entered", function () {
 
         prepareMocks({
-            project: { $resolved: true, id: 123, pledgeGoal: 100, pledgedAmount: 50 },
+            project: { $resolved: true, id: 123, pledgeGoal: 100, pledgedAmount: 50, status: 'PUBLISHED' },
             isLoggedIn: true,
             userResponse: { statusCode: 200, body: { budget: 100 } }
         });
@@ -194,7 +191,7 @@ describe('project pledging form', function () {
     it("should show a validation error message if the entered pledge amount exceeds the pledge goal", function () {
 
         prepareMocks({
-            project: { $resolved: true, id: 123, pledgeGoal: 100, pledgedAmount: 50 },
+            project: { $resolved: true, id: 123, pledgeGoal: 100, pledgedAmount: 50, status: 'PUBLISHED' },
             isLoggedIn: true,
             userResponse: { statusCode: 200, body: { budget: 200 } }
         });
@@ -210,7 +207,7 @@ describe('project pledging form', function () {
     it("should show a validation error message if the entered pledge amount exceeds the user budget", function () {
 
         prepareMocks({
-            project: { $resolved: true, id: 123, pledgeGoal: 500, pledgedAmount: 50 },
+            project: { $resolved: true, id: 123, pledgeGoal: 500, pledgedAmount: 50, status: 'PUBLISHED' },
             isLoggedIn: true,
             userResponse: { statusCode: 200, body: { budget: 200 } }
         });
@@ -226,7 +223,7 @@ describe('project pledging form', function () {
     it("should show a validation error message if the entered pledge amount is no even number", function () {
 
         prepareMocks({
-            project: { $resolved: true, id: 123, pledgeGoal: 500, pledgedAmount: 50 },
+            project: { $resolved: true, id: 123, pledgeGoal: 500, pledgedAmount: 50, status: 'PUBLISHED' },
             isLoggedIn: true,
             userResponse: { statusCode: 200, body: { budget: 200 } }
         });
@@ -242,7 +239,7 @@ describe('project pledging form', function () {
     it("should recover from a over-pledge", function() {
 
         prepareMocks({
-            project: { $resolved: true, id: 123, pledgeGoal: 500, pledgedAmount: 50 },
+            project: { $resolved: true, id: 123, pledgeGoal: 500, pledgedAmount: 50, status: 'PUBLISHED' },
             isLoggedIn: true,
             userResponse: { statusCode: 200, body: { budget: 200 } }
         });
@@ -263,7 +260,7 @@ describe('project pledging form', function () {
         $httpBackend.flush();
 
         // expect form to be updated with the new values from backend
-        expect(elements.successMessage).toHaveClass('ng-hide');
+        expect(elements.notification).toHaveClass('ng-hide');
         expect(elements.pledgeAmount.getInputField()).toHaveValue("30");
         expect(elements.pledgedAmount).toHaveText('$480');
         expect(elements.pledgeGoal).toHaveText('$500');
@@ -291,7 +288,8 @@ describe('project pledging form', function () {
         $httpBackend.flush();
 
         // expect form to be in pristine state and with new values
-        expect(elements.successMessage).not.toHaveClass('ng-hide');
+        expect(elements.notification).not.toHaveClass('ng-hide');
+        expect(elements.notification).toHaveText('Deine Finanzierung war erflogreich.');
         expect(elements.pledgeAmount.getInputField()).toHaveValue("0");
         expect(elements.pledgedAmount).toHaveText('$490');
         expect(elements.pledgeGoal).toHaveText('$500');
@@ -303,7 +301,7 @@ describe('project pledging form', function () {
 
     it("should show a message that the user has no budget anymore", function () {
         prepareMocks({
-            project: { $resolved: true, id: 123, pledgeGoal: 500, pledgedAmount: 50 },
+            project: { $resolved: true, id: 123, pledgeGoal: 500, pledgedAmount: 50, status: 'PUBLISHED' },
             isLoggedIn: true,
             userResponse: { statusCode: 200, body: { budget: 0 } }
         });
@@ -311,17 +309,33 @@ describe('project pledging form', function () {
         var elements = compileDirective();
         $httpBackend.flush();
 
-        expect(elements.noBudgetNotification).not.toHaveClass('ng-hide');
+        expect(elements.notification).not.toHaveClass('ng-hide');
+        expect(elements.notification).toHaveText('Dein Budget ist leider aufgebraucht. Du kannst dieses Projekt nicht weiter finanzieren. Bitte warte ab, bis die nächste Finanzierungsrunde startet, dann wird der Finanzierungstopf erneut auf alle Benutzer aufgeteilt.');
     });
 
     it("should show a message that the user is not logged in", function () {
 
-        $scope.project = { $resolved: true, pledgeGoal: 100, pledgedAmount: 50 };
+        $scope.project = { $resolved: true, pledgeGoal: 100, pledgedAmount: 50, status: 'PUBLISHED' };
         spyOn(Authentication, 'isLoggedIn').and.returnValue(false);
 
         var elements = compileDirective();
 
-        expect(elements.notLoggedInNotification).not.toHaveClass('ng-hide');
-        expect(elements.noBudgetNotification).toHaveClass('ng-hide');
+        expect(elements.notification).not.toHaveClass('ng-hide');
+        expect(elements.notification).toHaveText('Bitte logge dich ein, um Projekte finanziell zu unterstützen.');
+    });
+
+    it("should show a message that the project is fully pledged", function () {
+
+        prepareMocks({
+            project: { $resolved: true, id: 123, pledgeGoal: 500, pledgedAmount: 50, status: 'FULLY_PLEDGED' },
+            isLoggedIn: true,
+            userResponse: { statusCode: 200, body: { budget: 0 } }
+        });
+
+        var elements = compileDirective();
+        $httpBackend.flush();
+
+        expect(elements.notification).not.toHaveClass('ng-hide');
+        expect(elements.notification).toHaveText('Das Project ist zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich.');
     });
 });

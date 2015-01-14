@@ -2,15 +2,8 @@
 
     <div class="finance">
 
-        <div class="alert-box success" ng-show="pledgingForm.success">Deine Finanzierung war erflogreich.</div>
-
-        <div class="not-logged-in-notification alert-box warning" ng-show="pledgingForm.user.$resolved && !pledgingForm.user.loggedIn">
-            Bitte <a href="#/login">logge dich ein</a>, um Projekte finanziell zu unterstützen.
-        </div>
-
-        <div class="no-budget-notification alert-box warning" ng-show="pledgingForm.user.$resolved && pledgingForm.user.loggedIn && pledgingForm.user.budget == 0">
-            Dein Budget ist leider aufgebraucht. Du kannst dieses Projekt nicht weiter finanzieren. Bitte warte ab, bis die nächste Finanzierungsrunde startet,
-            dann wird der Finanzierungstopf erneut auf alle Benutzer aufgeteilt.
+        <div class="alert-box notification" ng-class="pledgingForm.getNotification().type" ng-show="pledgingForm.getNotification() != null">
+            {{ pledgingForm.getNotification().message }}
         </div>
 
         <div class="general-error alert-box alert" ng-messages="pledgingForm.generalErrors" ng-if="pledgingForm.generalErrors">

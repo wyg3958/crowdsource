@@ -28,6 +28,7 @@ describe('project details', function () {
     it("should display the project's details that were retrieved from backend", function () {
 
         $httpBackend.expectGET('/project/xyz').respond(200, {
+            status: 'PUBLISHED',
             title: 'Title',
             shortDescription: 'Short description',
             description: 'Looong description',
@@ -50,6 +51,7 @@ describe('project details', function () {
         expect(projectDetails.find('.project-status__backers')).toHaveText('7');
         expect(projectDetails.find('h2')).toHaveText('Short description');
         expect(projectDetails.find('.project-description')).toHaveText('Looong description');
+        expect(projectDetails.find('.to-pledging-form-button')).toHaveText('Zur Finanzierung');
     });
 
     it("should show a not found page if no project was found", function () {
@@ -72,6 +74,26 @@ describe('project details', function () {
         $httpBackend.flush();
 
         expect($location.path()).toBe('/error/unknown');
+    });
+
+    it("should show a different text on the to-pledging-form-button when the project is fully pledged", function () {
+        $httpBackend.expectGET('/project/xyz').respond(200, {
+            status: 'FULLY_PLEDGED',
+            title: 'Title',
+            shortDescription: 'Short description',
+            description: 'Looong description',
+            creator: { name: 'Foo Bar' },
+            pledgedAmount: 13853,
+            pledgeGoal: 20000,
+            backers: 7
+        });
+
+        $httpBackend.expectGET('/user/current').respond(200, { budget: 500 });
+
+        $scope.$digest();
+        $httpBackend.flush();
+
+        expect(projectDetails.find('.to-pledging-form-button')).toHaveText('Zu 100% finanziert!');
     });
 
 });

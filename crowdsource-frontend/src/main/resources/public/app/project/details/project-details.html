@@ -25,7 +25,13 @@
         </div>
 
         <div class="project-status__cta">
-            <button class="project-status__btn  to-pledging-form-button" scroll-to="project-pledging-form">Zur&nbsp;Finanzierung</button>
+            <button class="project-status__btn  to-pledging-form-button"
+                    scroll-to="project-pledging-form"
+                    ng-disabled="projectDetails.project.status == 'FULLY_PLEDGED'">
+
+                <span ng-if="projectDetails.project.status == 'FULLY_PLEDGED'">Zu 100% finanziert!</span>
+                <span ng-if="projectDetails.project.status != 'FULLY_PLEDGED'">Zur Finanzierung</span>
+            </button>
         </div>
 
     </div>

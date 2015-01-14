@@ -168,6 +168,7 @@ public class ProjectControllerTest {
 
         assertThat(mvcResult.getResponse().getContentAsString(), is("{" +
                 "\"id\":\"existingProjectId\"," +
+                "\"status\":\"PUBLISHED\"," +
                 "\"title\":\"title\"," +
                 "\"shortDescription\":\"short description\"," +
                 "\"description\":\"description\"," +
@@ -191,9 +192,9 @@ public class ProjectControllerTest {
                 .andReturn();
 
         assertThat(mvcResult.getResponse().getContentAsString(), is("[" +
-                "{\"id\":\"projectId1\",\"title\":\"title1\",\"shortDescription\":\"short description1\",\"pledgeGoal\":11,\"pledgedAmount\":11,\"backers\":1}," +
-                "{\"id\":\"projectId2\",\"title\":\"title2\",\"shortDescription\":\"short description2\",\"pledgeGoal\":22,\"pledgedAmount\":22,\"backers\":1}," +
-                "{\"id\":\"projectId3\",\"title\":\"title3\",\"shortDescription\":\"short description3\",\"pledgeGoal\":33,\"pledgedAmount\":0,\"backers\":0}]"));
+                "{\"id\":\"projectId1\",\"status\":\"PUBLISHED\",\"title\":\"title1\",\"shortDescription\":\"short description1\",\"pledgeGoal\":11,\"pledgedAmount\":11,\"backers\":1}," +
+                "{\"id\":\"projectId2\",\"status\":\"PUBLISHED\",\"title\":\"title2\",\"shortDescription\":\"short description2\",\"pledgeGoal\":22,\"pledgedAmount\":22,\"backers\":1}," +
+                "{\"id\":\"projectId3\",\"status\":\"PUBLISHED\",\"title\":\"title3\",\"shortDescription\":\"short description3\",\"pledgeGoal\":33,\"pledgedAmount\":0,\"backers\":0}]"));
 
         verify(projectRepository).findByStatusOrderByCreatedDateDesc(ProjectStatus.PUBLISHED);
     }

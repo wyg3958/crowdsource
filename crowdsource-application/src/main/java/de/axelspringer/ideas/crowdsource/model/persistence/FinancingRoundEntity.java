@@ -18,8 +18,6 @@ public class FinancingRoundEntity {
 
     private DateTime endDate;
 
-    private boolean active;
-
     /**
      * The amount of money available in the financing round
      */

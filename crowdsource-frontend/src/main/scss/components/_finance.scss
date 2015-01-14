@@ -60,15 +60,35 @@
 }
 
 
+/*li*/.finance__li--cta {  // Call to Action
+
+  display: block;
+  margin-top: 1rem;
+  width: 100%;
+
+  @media #{$medium-up} {
+    margin-top: 0;
+    float: right !important;  // Don't like this, but it has to be, overrule
+    // ul > li float: left
+    width: auto;
+  }
+}
+
+
 /*button*/.finance__btn {
   @extend .flush--bottom;
-  background-color: $clr-emerald;
+  width: 100%;
+
   color: $white;
   border-radius: $border-radius;
+  background-color: $clr-emerald;
 
   &:hover {
     background-color: lighten($clr-emerald, 10%);
+  }
 
+  @media #{$medium-up} {
+    width: auto;
   }
 }
 
@@ -108,7 +128,7 @@
   &::-webkit-outer-spin-button {
     -webkit-appearance: none;
   }
-  
+
   // Remove input[type=number] arrows in Firefox
   -moz-appearance: textfield;
 }

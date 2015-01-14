@@ -40,7 +40,7 @@
                     <span class="budget">${{ pledgingForm.user.budget - pledgingForm.pledge.amount | number }}</span>
                     <span class="finance__subtitle">Dein Budget</span>
                 </li>
-                <li class="right">
+                <li class="finance__li--cta">
                     <button class="finance__btn success" ng-click="pledgingForm.pledgeProject()"
                             ng-disabled="pledgingForm.form.$invalid">Jetzt finanzieren</button>
                 </li>

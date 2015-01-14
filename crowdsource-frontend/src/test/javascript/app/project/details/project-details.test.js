@@ -51,6 +51,7 @@ describe('project details', function () {
         expect(projectDetails.find('.project-status__backers')).toHaveText('7');
         expect(projectDetails.find('h2')).toHaveText('Short description');
         expect(projectDetails.find('.project-description')).toHaveText('Looong description');
+        expect(projectDetails.find('.to-pledging-form-button')).not.toBeDisabled();
         expect(projectDetails.find('.to-pledging-form-button')).toHaveText('Zur Finanzierung');
     });
 
@@ -93,6 +94,7 @@ describe('project details', function () {
         $scope.$digest();
         $httpBackend.flush();
 
+        expect(projectDetails.find('.to-pledging-form-button')).toBeDisabled();
         expect(projectDetails.find('.to-pledging-form-button')).toHaveText('Zu 100% finanziert!');
     });
 

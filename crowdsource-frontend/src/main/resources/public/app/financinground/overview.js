@@ -4,6 +4,8 @@ angular.module('crowdsource')
 
         var vm = this;
 
+        vm.allFinancingRounds = FinancingRound.getAll();
+
         vm.start = function () {
 
             if (!vm.form.$valid) {
@@ -17,7 +19,7 @@ angular.module('crowdsource')
             fullEndDate.setUTCSeconds(59);
 
             vm.financingRound = {
-                end: new Date(fullEndDate),
+                end: fullEndDate.valueOf(),
                 value: vm.budget
             };
 
@@ -25,10 +27,12 @@ angular.module('crowdsource')
 
             FinancingRound.start(vm.financingRound)
                 .then(function () {
+                    vm.allFinancingRounds = FinancingRound.getAll();
                     alert("Finanzierungsrunde gestartet.");
                 })
                 .catch(function (response) {
-                    alert(response);
+                    console.log(response);
+                    alert("Fehler beim Starten der Finanzierungsrunde!");
                 })
                 .finally(function () {
                     vm.saving = false;

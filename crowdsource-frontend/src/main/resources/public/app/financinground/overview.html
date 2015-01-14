@@ -2,6 +2,25 @@
     <form name="financingRound.form" novalidate>
         <h1>Administration der Finanzierungsrunden</h1>
 
+        <table>
+            <thead>
+            <tr>
+                <th width="150">Startdatum</th>
+                <th width="150">Enddatum</th>
+                <th width="150">Budget</th>
+                <th width="100">aktiv</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="fr in financingRound.allFinancingRounds">
+                <td>{{ fr.start | date }}</td>
+                <td>{{ fr.end | date}}</td>
+                <td>{{ fr.value }}</td>
+                <td>{{ fr.active }}</td>
+            </tr>
+            </tbody>
+        </table>
+
         <div class="row">
             <div class="columns form-controls-budget">
             <label form-group="endDate">

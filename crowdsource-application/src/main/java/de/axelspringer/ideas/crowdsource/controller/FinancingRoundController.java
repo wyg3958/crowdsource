@@ -11,7 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -39,7 +44,7 @@ public class FinancingRoundController {
 
     @RequestMapping(value = "financinground", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public void startFinancingRound(@Valid @RequestBody FinancingRound financingRound) {
+    public FinancingRound startFinancingRound(@Valid @RequestBody FinancingRound financingRound) {
 
         // flush user budget and set new budget
         final List<UserEntity> userEntities = userRepository.findAll();
@@ -55,7 +60,21 @@ public class FinancingRoundController {
         financingRoundEntity.setEndDate(financingRound.getEnd());
         financingRoundEntity.setValue(financingRound.getValue());
         financingRoundRepository.save(financingRoundEntity);
+
+        return new FinancingRound(financingRoundEntity);
     }
+
+    @RequestMapping(value = "financinground/{id}/cancel", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public FinancingRound stopFinancingRound(@PathVariable String id) {
+
+        // find entity
+        final FinancingRoundEntity financingRoundEntity = financingRoundRepository.findOne(id);
+        financingRoundEntity.setEndDate(new DateTime());
+        financingRoundRepository.save(financingRoundEntity);
+        return new FinancingRound(financingRoundEntity);
+    }
+
 
     int budgetPerUser(int financingRoundBudget, int userCount) {
 

@@ -9,6 +9,7 @@
                 <th width="150">Enddatum</th>
                 <th width="150">Budget</th>
                 <th width="100">aktiv</th>
+                <th width="100">Aktion</th>
             </tr>
             </thead>
             <tbody>
@@ -16,7 +17,12 @@
                 <td>{{ fr.start | date }}</td>
                 <td>{{ fr.end | date}}</td>
                 <td>{{ fr.value }}</td>
-                <td>{{ fr.active }}</td>
+                <td>{{ fr.active ? 'ja' : 'nein'}}</td>
+                <td>
+                    <button ng-if="fr.active" class="fail" ng-click="financingRound.stop(fr)">
+                        beenden
+                    </button>
+                </td>
             </tr>
             </tbody>
         </table>

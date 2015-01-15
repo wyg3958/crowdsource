@@ -35,9 +35,9 @@ angular.module('crowdsource')
 
             //financing round should end at end of day
             var fullEndDate = new Date(+vm.endDate);
-            fullEndDate.setUTCHours(23);
-            fullEndDate.setUTCMinutes(59);
-            fullEndDate.setUTCSeconds(59);
+            fullEndDate.setHours(23);
+            fullEndDate.setMinutes(59);
+            fullEndDate.setSeconds(59);
 
             vm.financingRound = {
                 end: fullEndDate.valueOf(),
@@ -58,6 +58,26 @@ angular.module('crowdsource')
                 })
                 .finally(function () {
                     vm.saving = false;
+                });
+        };
+
+
+        vm.stop = function (financingRound) {
+
+            vm.stopping = true;
+
+            FinancingRound.stop(financingRound)
+                .then(function () {
+                    vm.allFinancingRounds = FinancingRound.getAll();
+                    vm.alreadyActive = false;
+                    alert("Finanzierungsrunde gestoppt.");
+                })
+                .catch(function (response) {
+                    console.log(response);
+                    alert("Fehler beim Stoppen der Finanzierungsrunde!");
+                })
+                .finally(function () {
+                    vm.stopping = false;
                 });
         };
     });

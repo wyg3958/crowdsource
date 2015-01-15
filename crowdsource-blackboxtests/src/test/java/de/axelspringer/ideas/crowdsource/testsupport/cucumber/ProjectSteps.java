@@ -1,17 +1,20 @@
 package de.axelspringer.ideas.crowdsource.testsupport.cucumber;
 
 import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.NavigationBar;
-import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.ProjectDetailPage;
-import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.ProjectsPage;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.AddProjectConfirmationView;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.AddProjectForm;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.ProjectDetailPage;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.ProjectStatusWidget;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.ProjectsPage;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
+import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverUtils;
 import de.axelspringer.ideas.crowdsource.testsupport.util.CrowdSourceClient;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -77,7 +80,7 @@ public class ProjectSteps {
         createdProject.setDescription("This is the project description text." + RandomStringUtils.random(1000, "\nabc"));
 
         CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithDefaultUser();
-        crowdSourceClient.createProject(createdProject, authToken);
+        createdProject = crowdSourceClient.createProject(createdProject, authToken).getBody();
     }
 
     @When("^he clicks on the New Project link in the navigation bar$")
@@ -144,22 +147,23 @@ public class ProjectSteps {
 
     @Then("^the project detail page of this project is displayed$")
     public void the_project_detail_page_of_this_project_is_displayed() throws Throwable {
-        PageFactory.initElements(webDriver, projectDetailPage);
-        projectDetailPage.waitForTitleToBeAvailable(createdProject.getTitle());
-        projectDetailPage.waitForShortDescriptionToBeAvailable(createdProject.getShortDescription());
-        projectDetailPage.waitForDescriptionToBeAvailable(createdProject.getDescription());
-        projectDetailPage.waitForStatusWidgetToBeAvailable();
+        projectDetailPage.waitForDetailsToBeLoaded();
 
-        assertThat(projectDetailPage.getStatusWidgetProgressBarValue(), is("0px"));
-        assertThat(projectDetailPage.getStatusWidgetPledgedAmount(), is("$0"));
-        assertThat(projectDetailPage.getStatusWidgetPledgeGoal(), is("$25"));
-        assertThat(projectDetailPage.getStatusWidgetBackers(), is("0"));
-        assertThat(projectDetailPage.getStatusWidgetUserName(), is("Crowdsource"));
+        assertThat(projectDetailPage.getTitle(), is(createdProject.getTitle()));
+        assertThat(projectDetailPage.getShortDescription(), is(createdProject.getShortDescription()));
+        assertThat(projectDetailPage.getDescription(), is(createdProject.getDescription()));
+
+        ProjectStatusWidget projectStatusWidget = projectDetailPage.getProjectStatusWidget();
+        assertThat(projectStatusWidget.getProgressBarValue(), is("0px"));
+        assertThat(projectStatusWidget.getPledgedAmount(), is("$0"));
+        assertThat(projectStatusWidget.getPledgeGoal(), is("$25"));
+        assertThat(projectStatusWidget.getBackers(), is("0"));
+        assertThat(projectStatusWidget.getUserName(), is("Crowdsource"));
     }
 
     @Given("^the user requests the project detail page with a non existant project id$")
     public void the_user_requests_the_project_detail_page_with_a_non_existant_project_id() throws Throwable {
-        projectDetailPage.open("i-dont-exist-project-id");
+        projectDetailPage.openWithoutWaiting("i-dont-exist-project-id");
     }
 
     @Given("^the user is on a project detail page$")
@@ -174,13 +178,20 @@ public class ProjectSteps {
 
     @When("^the user clicks the funding button in status widget$")
     public void the_user_clicks_the_funding_button_in_status_widget() throws Throwable {
-        PageFactory.initElements(webDriver, projectDetailPage);
-        savedPageYOffset = projectDetailPage.getPageYOffset();
-        projectDetailPage.clickFundingButton();
+        ProjectStatusWidget projectStatusWidget = projectDetailPage.getProjectStatusWidget();
+        PageFactory.initElements(webDriver, projectStatusWidget);
+
+        savedPageYOffset = WebDriverUtils.getPageYOffset(webDriver);
+        projectStatusWidget.clickFundingButton();
     }
 
     @Then("^the browser scrolls to the funding widget$")
     public void the_browser_scrolls_to_the_funding_widget() throws Throwable {
-        assertThat(projectDetailPage.getPageYOffset(), greaterThan(savedPageYOffset));
+        assertThat(WebDriverUtils.getPageYOffset(webDriver), greaterThan(savedPageYOffset));
+    }
+
+    @And("^the project detail page of this project is requested$")
+    public void the_project_detail_page_of_this_project_is_requested() throws Throwable {
+        projectDetailPage.open(createdProject.getId());
     }
 }

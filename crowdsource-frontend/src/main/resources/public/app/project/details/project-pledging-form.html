@@ -57,7 +57,10 @@
                 </li>
                 <li class="finance__li--cta">
                     <button class="finance__btn success" ng-click="pledgingForm.pledgeProject()"
-                            ng-disabled="pledgingForm.form.$invalid">Jetzt finanzieren</button>
+                            ng-disabled="pledgingForm.form.$invalid || pledgingForm.saving">
+
+                        {{ pledgingForm.saving ? 'Bitte warten...' : 'Jetzt finanzieren' }}
+                    </button>
                 </li>
             </ul>
         </div>

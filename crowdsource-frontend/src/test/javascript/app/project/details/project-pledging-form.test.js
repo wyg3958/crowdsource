@@ -70,6 +70,7 @@ describe('project pledging form', function () {
         // expect everything to have changed
         expectNoValidationError(elements.pledgeAmount);
         expect(elements.pledgeButton).not.toBeDisabled();
+        expect(elements.pledgeButton).toHaveText('Jetzt finanzieren');
         expect(elements.notification).toHaveClass('ng-hide');
         expect(elements.pledgedAmount).toHaveText('$90');
         expect(elements.pledgeGoal).toHaveText('$100');
@@ -82,6 +83,8 @@ describe('project pledging form', function () {
 
         // submit form
         elements.pledgeButton.click();
+        expect(elements.pledgeButton).toBeDisabled();
+        expect(elements.pledgeButton).toHaveText('Bitte warten...');
         $httpBackend.flush();
 
         // expect form to be in pristine state and with new values
@@ -94,6 +97,7 @@ describe('project pledging form', function () {
 
         expectNoValidationError(elements.pledgeAmount);
         expect(elements.pledgeButton).toBeDisabled();
+        expect(elements.pledgeButton).toHaveText('Jetzt finanzieren');
         expect(elements.root.find('.general-error')).not.toExist();
     });
 
@@ -257,6 +261,10 @@ describe('project pledging form', function () {
 
         // submit form
         elements.pledgeButton.click();
+
+        expect(elements.pledgeButton).toBeDisabled();
+        expect(elements.pledgeButton).toHaveText('Bitte warten...');
+
         $httpBackend.flush();
 
         // expect form to be updated with the new values from backend
@@ -270,9 +278,12 @@ describe('project pledging form', function () {
         expect(getGeneralError(elements, 'remote_pledge_goal_exceeded')).toExist();
         expectValidationError(elements.pledgeAmount, 'max');
         expect(elements.pledgeButton).toBeDisabled();
+        expect(elements.pledgeButton).toHaveText('Jetzt finanzieren');
 
         // retry with 20
         elements.pledgeAmount.getInputField().val('10').trigger('input');
+
+        expect(elements.pledgeButton).not.toBeDisabled();
 
         // prepare for backend calls
         $httpBackend.expectPOST('/project/123/pledge', { amount: 10 }).respond(200);
@@ -284,6 +295,8 @@ describe('project pledging form', function () {
 
         expect(elements.root.find('.general-error')).not.toExist();
         expect(getGeneralError(elements, 'remote_pledge_goal_exceeded')).not.toExist();
+        expect(elements.pledgeButton).toBeDisabled();
+        expect(elements.pledgeButton).toHaveText('Bitte warten...');
 
         $httpBackend.flush();
 
@@ -297,6 +310,7 @@ describe('project pledging form', function () {
 
         expectNoValidationError(elements.pledgeAmount);
         expect(elements.pledgeButton).toBeDisabled();
+        expect(elements.pledgeButton).toHaveText('Jetzt finanzieren');
     });
 
     it("should show a message that the user has no budget anymore", function () {

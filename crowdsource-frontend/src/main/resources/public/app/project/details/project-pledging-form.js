@@ -15,6 +15,7 @@ angular.module('crowdsource')
 
                 vm.pledgeProject = function() {
                     vm.success = false;
+                    vm.saving = true;
                     RemoteFormValidation.clearRemoteErrors(vm);
 
                     Project.pledge(vm.project.id, vm.pledge).$promise
@@ -36,6 +37,9 @@ angular.module('crowdsource')
                             vm.pledge.amount = 0;
 
                             vm.form.$setPristine();
+                        })
+                        .finally(function() {
+                            vm.saving = false;
                         });
                 };
 

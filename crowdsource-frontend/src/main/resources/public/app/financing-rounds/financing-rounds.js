@@ -4,19 +4,12 @@ angular.module('crowdsource')
 
         var vm = this;
 
-        vm.alreadyActive = true;
-
-        vm.allFinancingRounds = FinancingRound.getAll();
-
+        refreshView(true);
 
         vm.allFinancingRounds.$promise
             .then(function (allRounds) {
 
                 var activeRoundFound = false;
-
-                if (allRounds.length == 0) {
-                    vm.alreadyActive = false;
-                }
 
                 angular.forEach(allRounds, function (round) {
                     if (round.active == true) {
@@ -33,14 +26,8 @@ angular.module('crowdsource')
                 return;
             }
 
-            //financing round should end at end of day
-            var fullEndDate = new Date(+vm.endDate);
-            fullEndDate.setHours(23);
-            fullEndDate.setMinutes(59);
-            fullEndDate.setSeconds(59);
-
             vm.financingRound = {
-                end: fullEndDate.valueOf(),
+                end: +vm.endDate,
                 value: vm.budget
             };
 
@@ -48,12 +35,10 @@ angular.module('crowdsource')
 
             FinancingRound.start(vm.financingRound)
                 .then(function () {
-                    vm.allFinancingRounds = FinancingRound.getAll();
-                    vm.alreadyActive = true;
+                    refreshView(true);
                     alert("Finanzierungsrunde gestartet.");
                 })
-                .catch(function (response) {
-                    console.log(response);
+                .catch(function () {
                     alert("Fehler beim Starten der Finanzierungsrunde!");
                 })
                 .finally(function () {
@@ -68,16 +53,20 @@ angular.module('crowdsource')
 
             FinancingRound.stop(financingRound)
                 .then(function () {
-                    vm.allFinancingRounds = FinancingRound.getAll();
-                    vm.alreadyActive = false;
+                    refreshView(false);
                     alert("Finanzierungsrunde gestoppt.");
                 })
-                .catch(function (response) {
-                    console.log(response);
+                .catch(function () {
                     alert("Fehler beim Stoppen der Finanzierungsrunde!");
                 })
                 .finally(function () {
                     vm.stopping = false;
                 });
         };
+
+        function refreshView(isFinancingRoundActive) {
+            vm.alreadyActive = isFinancingRoundActive;
+            vm.allFinancingRounds = FinancingRound.getAll();
+        }
+
     });

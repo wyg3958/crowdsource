@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .directive('mydatepicker', function () {
+    .directive('datepicker', function () {
         return {
             require: 'ngModel',
             link: function (scope, elem, attrs, ngModel) {

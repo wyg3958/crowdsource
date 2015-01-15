@@ -4,6 +4,7 @@ import de.axelspringer.ideas.crowdsource.model.persistence.FinancingRoundEntity;
 import de.axelspringer.ideas.crowdsource.util.validation.financinground.FinancingRoundNotColliding;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.joda.time.DateTime;
 
 import javax.validation.constraints.Future;
@@ -11,6 +12,7 @@ import javax.validation.constraints.Min;
 
 @NoArgsConstructor
 @Data
+@Setter
 @FinancingRoundNotColliding
 public class FinancingRound {
 

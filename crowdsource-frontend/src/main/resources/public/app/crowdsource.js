@@ -39,7 +39,7 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
                 controller: 'UserActivationController as activation'
             })
             .when('/financingrounds', {
-                templateUrl: 'app/financinground/overview.html',
+                templateUrl: 'app/financinground/financing-rounds.html',
                 controller: 'FinancingRoundController as financingRound',
                 requireLogin: true
             })
@@ -69,4 +69,5 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
                 equalize_on_stack: true
             }
         });
+        console.log(Authentication);
     });

@@ -21,6 +21,7 @@ describe('project pledging form', function () {
             root: root,
             slider: root.find('.range-slider'),
             pledgeAmount: new FormGroup(root.find('.form-controls-amount')),
+            pledgableAmount: root.find('.pledgable-amount'),
             pledgeButton: root.find('button'),
             pledgedAmount: root.find('.pledged-amount'),
             pledgeGoal: root.find('.pledge-goal'),
@@ -75,6 +76,7 @@ describe('project pledging form', function () {
         expect(elements.pledgedAmount).toHaveText('$90');
         expect(elements.pledgeGoal).toHaveText('$100');
         expect(elements.budget).toHaveText('$170');
+        expect(elements.pledgableAmount).toHaveText('$40');
 
         // prepare for backend calls
         $httpBackend.expectPOST('/project/123/pledge', { amount: 30 }).respond(200);
@@ -94,6 +96,7 @@ describe('project pledging form', function () {
         expect(elements.pledgedAmount).toHaveText('$90');
         expect(elements.pledgeGoal).toHaveText('$100');
         expect(elements.budget).toHaveText('$170');
+        expect(elements.pledgableAmount).toHaveText('$10');
 
         expectNoValidationError(elements.pledgeAmount);
         expect(elements.pledgeButton).toBeDisabled();
@@ -161,6 +164,8 @@ describe('project pledging form', function () {
 
         expect(elements.slider).toHaveClass('disabled');
         expect(elements.pledgeAmount.getInputField()).toBeDisabled();
+        expect(elements.pledgableAmount).toHaveText('$0');
+        expect(elements.budget).toHaveText('$0');
         expectNoValidationError(elements.pledgeAmount);
     });
 
@@ -273,6 +278,7 @@ describe('project pledging form', function () {
         expect(elements.pledgedAmount).toHaveText('$480');
         expect(elements.pledgeGoal).toHaveText('$500');
         expect(elements.budget).toHaveText('$200');
+        expect(elements.pledgableAmount).toHaveText('$20');
 
         expect(elements.root.find('.general-error')).toExist();
         expect(getGeneralError(elements, 'remote_pledge_goal_exceeded')).toExist();
@@ -307,6 +313,7 @@ describe('project pledging form', function () {
         expect(elements.pledgedAmount).toHaveText('$490');
         expect(elements.pledgeGoal).toHaveText('$500');
         expect(elements.budget).toHaveText('$190');
+        expect(elements.pledgableAmount).toHaveText('$10');
 
         expectNoValidationError(elements.pledgeAmount);
         expect(elements.pledgeButton).toBeDisabled();

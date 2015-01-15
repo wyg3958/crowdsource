@@ -39,7 +39,7 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
                 controller: 'UserActivationController as activation'
             })
             .when('/financingrounds', {
-                templateUrl: 'app/financinground/financing-rounds.html',
+                templateUrl: 'app/financing-rounds/financing-rounds.html',
                 controller: 'FinancingRoundController as financingRound',
                 requireLogin: true
             })

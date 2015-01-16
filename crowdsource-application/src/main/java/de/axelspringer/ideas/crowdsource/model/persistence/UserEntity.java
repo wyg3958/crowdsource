@@ -57,12 +57,4 @@ public class UserEntity {
 
         budget -= reductionAmount;
     }
-
-    public void increaseBudget(int increaseAmount) {
-        budget += increaseAmount;
-    }
-
-    public void addRole(String role) {
-        roles.add(role);
-    }
 }

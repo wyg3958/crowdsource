@@ -1,4 +1,4 @@
-package de.axelspringer.ideas.crowdsource.testsupport.pageobjects;
+package de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project;
 
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.SeleniumWait;

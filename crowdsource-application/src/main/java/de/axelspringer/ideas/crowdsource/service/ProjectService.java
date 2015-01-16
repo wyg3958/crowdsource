@@ -1,6 +1,6 @@
 package de.axelspringer.ideas.crowdsource.service;
 
-import de.axelspringer.ideas.crowdsource.enums.PublicationStatus;
+import de.axelspringer.ideas.crowdsource.enums.ProjectStatus;
 import de.axelspringer.ideas.crowdsource.exceptions.InvalidRequestException;
 import de.axelspringer.ideas.crowdsource.exceptions.ResourceNotFoundException;
 import de.axelspringer.ideas.crowdsource.model.persistence.PledgeEntity;
@@ -45,16 +45,17 @@ public class ProjectService {
 
     public List<Project> getProjects() {
 
-        final List<ProjectEntity> projects = projectRepository.findByPublicationStatusOrderByCreatedDateDesc(PublicationStatus.PUBLISHED);
+        final List<ProjectEntity> projects = projectRepository.findByStatusOrderByCreatedDateDesc(ProjectStatus.PUBLISHED);
         return projects.stream().map(this::convertProject).collect(toList());
     }
 
-    public void addProject(Project project, UserEntity userEntity) {
+    public Project addProject(Project project, UserEntity userEntity) {
 
         ProjectEntity projectEntity = new ProjectEntity(userEntity, project);
-        projectRepository.save(projectEntity);
+        projectEntity = projectRepository.save(projectEntity);
 
         log.debug("Project added: {}", projectEntity);
+        return convertProject(projectEntity);
     }
 
     public void pledgeProject(String projectId, UserEntity userEntity, Pledge pledge) {
@@ -62,6 +63,11 @@ public class ProjectService {
         ProjectEntity projectEntity = projectRepository.findOne(projectId);
         if (projectEntity == null) {
             throw new ResourceNotFoundException();
+        }
+
+        // potential problem: race condition. Two simultaneous requests could lead to "over-pledging"
+        if (projectEntity.getStatus() == ProjectStatus.FULLY_PLEDGED) {
+            throw InvalidRequestException.projectAlreadyFullyPledged();
         }
 
         if (pledge.getAmount() > userEntity.getBudget()) {
@@ -77,17 +83,14 @@ public class ProjectService {
         PledgeEntity pledgeEntity = new PledgeEntity(projectEntity, userEntity, pledge);
         userEntity.reduceBudget(pledge.getAmount());
 
-        userRepository.save(userEntity);
+        if (newPledgedAmount == project.getPledgeGoal()) {
+            projectEntity.setStatus(ProjectStatus.FULLY_PLEDGED);
+            projectRepository.save(projectEntity);
+        }
 
-        try {
-            pledgeRepository.save(pledgeEntity);
-        }
-        catch (Exception e) {
-            // roll back
-            userEntity.increaseBudget(pledge.getAmount());
-            userRepository.save(userEntity);
-            throw e;
-        }
+        // potential problem: no transaction -> no rollback
+        userRepository.save(userEntity);
+        pledgeRepository.save(pledgeEntity);
 
         log.debug("Project pledged: {}", pledgeEntity);
     }

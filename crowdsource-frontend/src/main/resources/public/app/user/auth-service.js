@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .factory('AuthenticationToken', function($http) {
+    .factory('AuthenticationToken', function($http, $window) {
 
         var TOKENS_LOCAL_STORAGE_KEY = 'tokens';
 
@@ -8,7 +8,7 @@ angular.module('crowdsource')
 
         service.load = function() {
             // browser localStorage
-            var storage = window['localStorage'];
+            var storage = $window['localStorage'];
             if (!storage) {
                 throw "only browsers with local storage are supported";
             }
@@ -30,12 +30,12 @@ angular.module('crowdsource')
          */
         service.use = function(tokens) {
             $http.defaults.headers.common['Authorization'] = tokens.token_type + ' ' + tokens.access_token;
-            window.localStorage[TOKENS_LOCAL_STORAGE_KEY] = JSON.stringify(tokens);
+            $window.localStorage[TOKENS_LOCAL_STORAGE_KEY] = JSON.stringify(tokens);
         };
 
         service.clear = function() {
             $http.defaults.headers.common['Authorization'] = undefined;
-            window.localStorage.removeItem(TOKENS_LOCAL_STORAGE_KEY);
+            $window.localStorage.removeItem(TOKENS_LOCAL_STORAGE_KEY);
         };
 
         /**
@@ -48,7 +48,7 @@ angular.module('crowdsource')
         return service;
     })
 
-    .factory('Authentication', function ($resource, $q, AuthenticationToken) {
+    .factory('Authentication', function ($resource, $q, $rootScope, AuthenticationToken, User) {
 
         var service = {};
 
@@ -60,7 +60,13 @@ angular.module('crowdsource')
             }
         });
 
-        service.init = AuthenticationToken.load;
+        // initialize with anonymouse for now. Will be refreshed on init()
+        service.currentUser = User.anonymous();
+
+        service.init = function () {
+            AuthenticationToken.load();
+            service.reloadUser();
+        };
 
         service.login = function (email, password) {
             // $.param creates a form encoded string, e.g. "username=xyz&password=secret&..."
@@ -84,13 +90,23 @@ angular.module('crowdsource')
                         else {
                             reject('unknown');
                         }
+                    })
+                    .finally(function() {
+                        service.reloadUser();
                     });
             });
         };
 
-        service.isLoggedIn = AuthenticationToken.hasTokenSet;
-        
-        service.logout = AuthenticationToken.clear;
+        service.reloadUser = function() {
+            var user = AuthenticationToken.hasTokenSet() ? User.authenticated() : User.anonymous();
+            angular.copy(user, service.currentUser);
+            return user;
+        };
+
+        service.logout = function() {
+            AuthenticationToken.clear();
+            service.reloadUser();
+        };
 
         return service;
     })

@@ -6,6 +6,8 @@ describe('user activation view', function () {
         module('crowdsource');
         module('crowdsource.templates');
 
+        localStorage.clear(); // reset
+
         inject(function($compile, $rootScope, $templateCache, $controller, _$httpBackend_, _$location_, User, Authentication, RemoteFormValidation) {
             var $scope = $rootScope.$new();
             $httpBackend = _$httpBackend_;
@@ -87,6 +89,7 @@ describe('user activation view', function () {
     it('should POST the data to the server, request an access token and redirect to index page', function() {
         expectBackendActivationCallAndRespond(201);
         expectBackendLoginCallAndRespond(200);
+        $httpBackend.expectGET('/user/current').respond(200, {});
 
         fillAndSubmitForm();
         $httpBackend.flush();
@@ -97,6 +100,7 @@ describe('user activation view', function () {
     it('should disable the submit button and change it\'s text while loading', function() {
         expectBackendActivationCallAndRespond(201);
         expectBackendLoginCallAndRespond(200);
+        $httpBackend.expectGET('/user/current').respond(200, {});
 
         expect(activationForm.getSubmitButton()).toHaveText('Speichern');
         expect(activationForm.getSubmitButton()).not.toBeDisabled();

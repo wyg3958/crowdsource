@@ -1,16 +1,19 @@
 describe('user login view', function () {
 
-    var $httpBackend, $location, loginForm;
+    var $httpBackend, $location, Authentication, loginForm;
 
     beforeEach(function () {
 
         module('crowdsource');
         module('crowdsource.templates');
 
-        inject(function ($compile, $rootScope, $templateCache, $controller, _$httpBackend_, _$location_, Authentication, RemoteFormValidation, Route) {
+        localStorage.clear(); // reset
+
+        inject(function ($compile, $rootScope, $templateCache, $controller, _$httpBackend_, _$location_, _Authentication_, RemoteFormValidation, Route) {
             var $scope = $rootScope.$new();
             $httpBackend = _$httpBackend_;
             $location = _$location_;
+            Authentication = _Authentication_;
 
             $controller('UserLoginController as login', {
                 $scope: $scope,
@@ -61,6 +64,7 @@ describe('user login view', function () {
 
     it('should request an access token from the server and redirect to index page', function () {
         expectBackendCallAndRespond(200);
+        spyOn(Authentication, 'reloadUser');
 
         fillAndSubmitForm();
 
@@ -70,6 +74,8 @@ describe('user login view', function () {
 
     it('should disable the submit button and change it\'s text while loading', function () {
         expectBackendCallAndRespond(201);
+        spyOn(Authentication, 'reloadUser');
+
         expect(loginForm.getSubmitButton()).toHaveText('Login');
         expect(loginForm.getSubmitButton()).not.toBeDisabled();
 

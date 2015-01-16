@@ -19,7 +19,7 @@ angular.module('crowdsource')
                 model: '=',
                 fieldName: '@'
             },
-            templateUrl: 'app/components/form-group/email/email-form-group.html',
+            templateUrl: 'app/components/form/form-group/email/email-form-group.html',
             link: function (scope, element, attributes, form) {
                 scope.form = form;
                 scope.EMAIL_DOMAIN = emailDomain;

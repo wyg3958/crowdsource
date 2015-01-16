@@ -1,6 +1,6 @@
 package de.axelspringer.ideas.crowdsource.model.persistence;
 
-import de.axelspringer.ideas.crowdsource.enums.PublicationStatus;
+import de.axelspringer.ideas.crowdsource.enums.ProjectStatus;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,7 +29,7 @@ public class ProjectEntity {
 
     private String description;
 
-    private PublicationStatus publicationStatus;
+    private ProjectStatus status;
 
     private int pledgeGoal;
 
@@ -46,6 +46,6 @@ public class ProjectEntity {
         this.shortDescription = project.getShortDescription();
         this.description = project.getDescription();
         this.pledgeGoal = project.getPledgeGoal();
-        this.publicationStatus = PublicationStatus.PUBLISHED;
+        this.status = ProjectStatus.PUBLISHED;
     }
 }

@@ -51,10 +51,10 @@ public class ProjectController {
     @Secured(Roles.ROLE_USER)
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/project", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addProject(@RequestBody @Valid Project project, Principal principal) {
+    public Project addProject(@RequestBody @Valid Project project, Principal principal) {
 
         UserEntity userEntity = userService.getUserByName(principal.getName());
-        projectService.addProject(project, userEntity);
+        return projectService.addProject(project, userEntity);
     }
 
     @Secured(Roles.ROLE_USER)

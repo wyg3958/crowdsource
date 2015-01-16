@@ -1,0 +1,21 @@
+/***
+ * Alert Box
+ *
+ * Extends Foundation's Alert Box
+ *
+ */
+
+// ---
+//
+// ---
+
+.alert-box {
+  a {
+    text-decoration: none;
+    font-weight: $fw-bold;
+  }
+
+  &.success {
+    background-color: $clr-green-shade-1;
+  }
+}

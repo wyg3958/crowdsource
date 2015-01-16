@@ -13,23 +13,26 @@
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="fr in financingRound.allFinancingRounds">
-            <td>{{ fr.startDate | date: 'short' }}</td>
-            <td>{{ fr.endDate | date: 'short'}}</td>
-            <td>{{ fr.budget }}</td>
-            <td>{{ fr.active ? 'ja' : 'nein'}}</td>
+            <tr ng-repeat="fr in financingRound.allFinancingRounds">
+                <td>{{ fr.startDate | date: 'short' }}</td>
+                <td>{{ fr.endDate | date: 'short'}}</td>
+                <td>{{ fr.budget }}</td>
+                <td>{{ fr.active ? 'ja' : 'nein'}}</td>
                 <td>
                     <button ng-if="fr.active" class="fail" ng-click="financingRound.stop(fr)">
                         beenden
                     </button>
                 </td>
             </tr>
+            <tr ng-if="financingRound.allFinancingRounds.$resolved && financingRound.allFinancingRounds.length == 0">
+                <td colspan="5">Es wurde noch keine Finanzierungsrunde gestartet</td>
+            </tr>
         </tbody>
     </table>
 
     <form ng-if="financingRound.canStartNewRound()" name="financingRound.form" novalidate>
         <div class="row">
-            <div class="columns form-controls-budget">
+            <div class="small-3 columns form-controls-budget">
                 <label form-group="endDate">
 
                     <span form-label-valid="endDate">Enddatum der Finanzierungsrunde</span>
@@ -37,15 +40,15 @@
                     <span form-label-invalid="endDate" ng-messages="financingRound.form.endDate.$error">
                         <span ng-message="required">Bitte wähle das Enddatum der Finanzierungsrunde</span>
                     </span>
-
-                    <input type="text" datepicker="" name="endDate" ng-model="financingRound.newRound.endDate"
-                           placeholder="Bitte klicken..." required readonly>
                 </label>
+
+                <input type="text" datepicker="" name="endDate" ng-model="financingRound.newRound.endDate"
+                       placeholder="Bitte klicken..." required readonly>
             </div>
         </div>
 
         <div class="row">
-            <div class="columns form-controls-budget">
+            <div class="small-3 columns form-controls-budget">
                 <label form-group="budget">
 
                     <span form-label-valid="budget">Budget</span>
@@ -58,13 +61,9 @@
                     </span>
                 </label>
 
-                <div class="table">
-                    <div class="table-cell full-width">
-                        <input type="number" name="budget" ng-model="financingRound.newRound.budget" class="text-right"
-                               placeholder="0"
-                               required ng-pattern="/^[0-9]+$/i" min="1">
-                    </div>
-                </div>
+                <input type="number" name="budget" ng-model="financingRound.newRound.budget" class="text-right"
+                       placeholder="0"
+                       required ng-pattern="/^[0-9]+$/i" min="1">
             </div>
         </div>
 

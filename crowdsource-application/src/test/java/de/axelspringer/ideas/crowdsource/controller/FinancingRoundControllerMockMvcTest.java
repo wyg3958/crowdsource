@@ -71,7 +71,7 @@ public class FinancingRoundControllerMockMvcTest {
 
         List<FinancingRoundEntity> financingRoundEntities = new ArrayList<>();
 
-        fixedDate = DateTime.parse("2015-01-10");
+        fixedDate = DateTime.parse("2015-01-10T10:10:10Z");
         financingRoundEntities.add(financingRoundEntity(fixedDate.minusDays(100), fixedDate.minusDays(50)));
         financingRoundEntities.add(financingRoundEntity(fixedDate.minusDays(40), fixedDate.minusDays(30)));
         when(financingRoundRepository.findAll()).thenReturn(financingRoundEntities);
@@ -96,8 +96,8 @@ public class FinancingRoundControllerMockMvcTest {
                 .andReturn();
 
         assertThat(mvcResult.getResponse().getContentAsString(), is("[" +
-                "{\"id\":null,\"startDate\":1412200800000,\"endDate\":1416524400000,\"budget\":null,\"active\":false}," +
-                "{\"id\":null,\"startDate\":1417388400000,\"endDate\":1418252400000,\"budget\":null,\"active\":false}]"));
+                "{\"id\":null,\"startDate\":1412244610000,\"endDate\":1416564610000,\"budget\":null,\"active\":false}," +
+                "{\"id\":null,\"startDate\":1417428610000,\"endDate\":1418292610000,\"budget\":null,\"active\":false}]"));
         verify(financingRoundRepository, times(1)).findAll();
     }
 
@@ -112,7 +112,7 @@ public class FinancingRoundControllerMockMvcTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"startDate\":1412200800000,\"endDate\":1416524400000,\"active\":false}"));
+        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"startDate\":1412244610000,\"endDate\":1416564610000,\"active\":false}"));
         verify(financingRoundRepository, times(1)).findActive(any());
     }
 

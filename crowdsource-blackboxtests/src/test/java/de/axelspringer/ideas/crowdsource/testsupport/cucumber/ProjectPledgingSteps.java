@@ -17,6 +17,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
 
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
 public class ProjectPledgingSteps {
@@ -31,6 +32,9 @@ public class ProjectPledgingSteps {
     private CrowdSourceClient crowdSourceClient;
 
     private RemoteWebDriver webDriver;
+    private int budgetBeforeChange;
+    private int pledgedAmountBeforeChange;
+    private int pledgeAmount;
 
 
     @Before
@@ -51,15 +55,55 @@ public class ProjectPledgingSteps {
         assertThat(pledgingForm.getPledgingButton().isEnabled(), is(false));
     }
 
-    @And("^the user budget \"([^\"]*)\" is displayed$")
-    public void the_user_budget_is_displayed(String budget) throws Throwable {
+    @And("^the user budget (\\d+) is displayed$")
+    public void the_user_budget_is_displayed(int budget) throws Throwable {
         assertThat(pledgingForm.getUserBudget(), is(budget));
+    }
+
+    @Then("^there is no notification message$")
+    public void there_is_no_notification_message() throws Throwable {
+        PageFactory.initElements(webDriver, pledgingForm);
+        assertThat(pledgingForm.getNotificationMessage(), is(""));
+    }
+
+    @When("^the user sets his desired pledge amount$")
+    public void the_user_sets_his_desired_pledge_amount() throws Throwable {
+        budgetBeforeChange = pledgingForm.getUserBudget();
+        pledgedAmountBeforeChange = pledgingForm.getPledgedAmount();
+        int amountBeforeChange = pledgingForm.getAmountFromInputField();
+
+        pledgingForm.moveSliderBy(500); //pixels
+
+        int amountFromInputField = pledgingForm.getAmountFromInputField();
+        assertThat(amountBeforeChange, is(lessThan(amountFromInputField)));
+
+        pledgeAmount = amountFromInputField;
+    }
+
+    @Then("^the displayed budget and financing infos are updated$")
+    public void the_displayed_budget_and_financing_infos_are_updated() throws Throwable {
+        assertThat(pledgingForm.getUserBudget(), is(budgetBeforeChange - pledgeAmount));
+        assertThat(pledgingForm.getPledgedAmount(), is(pledgedAmountBeforeChange + pledgeAmount));
+    }
+
+    @When("^the user submits the pledging form$")
+    public void the_user_submits_the_pledging_form() throws Throwable {
+        pledgingForm.submitForm();
+        pledgingForm.waitUntilANotificationMessageIsDisplayed();
     }
 
     @And("^there is (a|no) financing round active$")
     public void there_is_a_financing_round_active(String active) throws Throwable {
         boolean requireActiveFinancingRound = "a".equals(active);
+        prepareFinancingRound(requireActiveFinancingRound);
+    }
 
+    @When("^a financing round is being activated in the meantime$")
+    public void a_financing_round_is_being_activated_in_the_meantime() throws Throwable {
+        prepareFinancingRound(true);
+    }
+
+    private void prepareFinancingRound(boolean requireActiveFinancingRound) {
         CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithAdminUser();
 
         FinancingRound activeFinanceRound = crowdSourceClient.getActiveFinanceRound();
@@ -73,10 +117,5 @@ public class ProjectPledgingSteps {
             financingRound.setBudget(100000);
             crowdSourceClient.startFinancingRound(financingRound, authToken);
         }
-    }
-
-    @When("^a financing round is being activated in the meantime$")
-    public void a_financing_round_is_being_activated_in_the_meantime() throws Throwable {
-        there_is_a_financing_round_active("a");
     }
 }

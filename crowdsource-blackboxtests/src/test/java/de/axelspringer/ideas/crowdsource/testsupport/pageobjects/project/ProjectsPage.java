@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
-import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
 @Component
 public class ProjectsPage {
@@ -24,7 +23,14 @@ public class ProjectsPage {
     private SeleniumWait wait;
 
     public void waitForPageLoad() {
-        wait.until(presenceOfElementLocated(By.cssSelector(".project-tile")));
+        wait.until(driver -> {
+            if (driver.findElements(By.className("project-tile")).size() > 0) {
+                return true;
+            }
+
+            List<WebElement> noProjectDiv = driver.findElements(By.className("no-projects"));
+            return noProjectDiv.size() > 0 && noProjectDiv.get(0).isDisplayed();
+        });
     }
 
     public List<Project> getProjects() {

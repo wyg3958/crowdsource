@@ -22,6 +22,8 @@ describe('project details', function () {
                 Project: Project
             });
 
+            $httpBackend.whenGET('/financinground/current').respond(200, { active: true });
+
             var template = $templateCache.get('app/project/details/project-details.html');
             projectDetails = $compile(template)($scope);
         });

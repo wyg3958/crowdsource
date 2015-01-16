@@ -2,7 +2,7 @@ angular.module('crowdsource')
 
     .factory('FinancingRound', function ($resource) {
 
-        var financingRoundResource = $resource('/financinground');
+        var financingRoundResource = $resource('/financinground/:id');
 
         var stopFinancingRoundRessource = $resource('/financinground/:id/cancel', {}, {
             'update': {
@@ -35,6 +35,9 @@ angular.module('crowdsource')
             },
             getAll: function () {
                 return financingRoundsResource.query();
+            },
+            getActive: function () {
+                return financingRoundResource.get({ id: 'active' })
             }
         };
     });

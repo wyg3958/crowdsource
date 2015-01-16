@@ -8,10 +8,12 @@ import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.model.presentation.Pledge;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
+import de.axelspringer.ideas.crowdsource.repository.FinancingRoundRepository;
 import de.axelspringer.ideas.crowdsource.repository.PledgeRepository;
 import de.axelspringer.ideas.crowdsource.repository.ProjectRepository;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,9 @@ public class ProjectService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private FinancingRoundRepository financingRoundRepository;
 
 
     public Project getProject(String projectId) {
@@ -68,6 +73,10 @@ public class ProjectService {
         // potential problem: race condition. Two simultaneous requests could lead to "over-pledging"
         if (projectEntity.getStatus() == ProjectStatus.FULLY_PLEDGED) {
             throw InvalidRequestException.projectAlreadyFullyPledged();
+        }
+
+        if (financingRoundRepository.findActive(DateTime.now()) == null) {
+            throw InvalidRequestException.noFinancingRoundCurrentlyActive();
         }
 
         if (pledge.getAmount() > userEntity.getBudget()) {

@@ -48,6 +48,7 @@ describe('project pledging form', function () {
     function prepareMocks(data) {
         $scope.project = data.project;
         spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(data.isLoggedIn);
+        $httpBackend.expectGET('/financinground/current').respond(data.financingRoundResponse.statusCode, data.financingRoundResponse.body);
         $httpBackend.expectGET('/user/current').respond(data.userResponse.statusCode, data.userResponse.body);
     }
 
@@ -61,7 +62,8 @@ describe('project pledging form', function () {
         prepareMocks({
             project: { $resolved: true, id: 123, pledgeGoal: 100, pledgedAmount: 60, status: 'PUBLISHED' },
             isLoggedIn: true,
-            userResponse: { statusCode: 200, body: { budget: 200 } }
+            userResponse: { statusCode: 200, body: { budget: 200 } },
+            financingRoundResponse: { statusCode: 200, body: { active: true } }
         });
 
         var elements = compileDirective();
@@ -111,7 +113,8 @@ describe('project pledging form', function () {
         prepareMocks({
             project: { $resolved: true, id: 123, pledgeGoal: 100, pledgedAmount: 50, status: 'PUBLISHED' },
             isLoggedIn: true,
-            userResponse: { statusCode: 200, body: { budget: 20 } }
+            userResponse: { statusCode: 200, body: { budget: 20 } },
+            financingRoundResponse: { statusCode: 200, body: { active: true } }
         });
 
         var elements = compileDirective();
@@ -135,7 +138,8 @@ describe('project pledging form', function () {
         prepareMocks({
             project: { $resolved: false },
             isLoggedIn: true,
-            userResponse: { statusCode: 200, body: { budget: 20 } }
+            userResponse: { statusCode: 200, body: { budget: 20 } },
+            financingRoundResponse: { statusCode: 200, body: { active: true } }
         });
 
         var elements = compileDirective();
@@ -158,7 +162,8 @@ describe('project pledging form', function () {
         prepareMocks({
             project: { $resolved: true, id: 123, pledgeGoal: 100, pledgedAmount: 50, status: 'PUBLISHED' },
             isLoggedIn: true,
-            userResponse: { statusCode: 200, body: { budget: 0 } }
+            userResponse: { statusCode: 200, body: { budget: 0 } },
+            financingRoundResponse: { statusCode: 200, body: { active: true } }
         });
 
         var elements = compileDirective();
@@ -175,6 +180,7 @@ describe('project pledging form', function () {
 
         $scope.project = { $resolved: true, pledgeGoal: 100, pledgedAmount: 50, status: 'PUBLISHED' };
         spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(false);
+        $httpBackend.expectGET('/financinground/current').respond(200, { active: true });
 
         var elements = compileDirective();
 
@@ -188,7 +194,8 @@ describe('project pledging form', function () {
         prepareMocks({
             project: { $resolved: true, id: 123, pledgeGoal: 100, pledgedAmount: 50, status: 'PUBLISHED' },
             isLoggedIn: true,
-            userResponse: { statusCode: 200, body: { budget: 100 } }
+            userResponse: { statusCode: 200, body: { budget: 100 } },
+            financingRoundResponse: { statusCode: 200, body: { active: true } }
         });
 
         var elements = compileDirective();
@@ -204,7 +211,8 @@ describe('project pledging form', function () {
         prepareMocks({
             project: { $resolved: true, id: 123, pledgeGoal: 100, pledgedAmount: 50, status: 'PUBLISHED' },
             isLoggedIn: true,
-            userResponse: { statusCode: 200, body: { budget: 200 } }
+            userResponse: { statusCode: 200, body: { budget: 200 } },
+            financingRoundResponse: { statusCode: 200, body: { active: true } }
         });
 
         var elements = compileDirective();
@@ -220,7 +228,8 @@ describe('project pledging form', function () {
         prepareMocks({
             project: { $resolved: true, id: 123, pledgeGoal: 500, pledgedAmount: 50, status: 'PUBLISHED' },
             isLoggedIn: true,
-            userResponse: { statusCode: 200, body: { budget: 200 } }
+            userResponse: { statusCode: 200, body: { budget: 200 } },
+            financingRoundResponse: { statusCode: 200, body: { active: true } }
         });
 
         var elements = compileDirective();
@@ -236,7 +245,8 @@ describe('project pledging form', function () {
         prepareMocks({
             project: { $resolved: true, id: 123, pledgeGoal: 500, pledgedAmount: 50, status: 'PUBLISHED' },
             isLoggedIn: true,
-            userResponse: { statusCode: 200, body: { budget: 200 } }
+            userResponse: { statusCode: 200, body: { budget: 200 } },
+            financingRoundResponse: { statusCode: 200, body: { active: true } }
         });
 
         var elements = compileDirective();
@@ -252,7 +262,8 @@ describe('project pledging form', function () {
         prepareMocks({
             project: { $resolved: true, id: 123, pledgeGoal: 500, pledgedAmount: 50, status: 'PUBLISHED' },
             isLoggedIn: true,
-            userResponse: { statusCode: 200, body: { budget: 200 } }
+            userResponse: { statusCode: 200, body: { budget: 200 } },
+            financingRoundResponse: { statusCode: 200, body: { active: true } }
         });
 
         var elements = compileDirective();
@@ -322,11 +333,12 @@ describe('project pledging form', function () {
         expect(elements.pledgeButton).toHaveText('Jetzt finanzieren');
     });
 
-    it("should show a message that the user has no budget anymore", function () {
+    it("should show a message saying that the user has no budget anymore", function () {
         prepareMocks({
             project: { $resolved: true, id: 123, pledgeGoal: 500, pledgedAmount: 50, status: 'PUBLISHED' },
             isLoggedIn: true,
-            userResponse: { statusCode: 200, body: { budget: 0 } }
+            userResponse: { statusCode: 200, body: { budget: 0 } },
+            financingRoundResponse: { statusCode: 200, body: { active: true } }
         });
 
         var elements = compileDirective();
@@ -336,29 +348,45 @@ describe('project pledging form', function () {
         expect(elements.notification).toHaveText('Dein Budget ist leider aufgebraucht. Du kannst dieses Projekt nicht weiter finanzieren. Bitte warte ab, bis die nächste Finanzierungsrunde startet, dann wird der Finanzierungstopf erneut auf alle Benutzer aufgeteilt.');
     });
 
-    it("should show a message that the user is not logged in", function () {
+    it("should show a message saying that the user is not logged in", function () {
 
         $scope.project = { $resolved: true, pledgeGoal: 100, pledgedAmount: 50, status: 'PUBLISHED' };
         spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(false);
+        $httpBackend.expectGET('/financinground/current').respond(200, { active: true });
 
         var elements = compileDirective();
+        $httpBackend.flush();
 
         expect(elements.notification).not.toHaveClass('ng-hide');
         expect(elements.notification).toHaveText('Bitte logge dich ein, um Projekte finanziell zu unterstützen.');
     });
 
-    it("should show a message that the project is fully pledged", function () {
+    it("should show a message saying that the project is fully pledged", function () {
 
-        prepareMocks({
-            project: { $resolved: true, id: 123, pledgeGoal: 500, pledgedAmount: 50, status: 'FULLY_PLEDGED' },
-            isLoggedIn: true,
-            userResponse: { statusCode: 200, body: { budget: 0 } }
-        });
+        $scope.project = { $resolved: true, pledgeGoal: 100, pledgedAmount: 50, status: 'FULLY_PLEDGED' };
+        spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(false);
+        $httpBackend.expectGET('/financinground/current').respond(200, { active: true });
 
         var elements = compileDirective();
         $httpBackend.flush();
 
         expect(elements.notification).not.toHaveClass('ng-hide');
         expect(elements.notification).toHaveText('Das Project ist zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich.');
+    });
+
+    it("should show a message saying that there is no financing round active", function () {
+
+        prepareMocks({
+            project: { $resolved: true, id: 123, pledgeGoal: 500, pledgedAmount: 50, status: 'PUBLISHED' },
+            isLoggedIn: true,
+            userResponse: { statusCode: 200, body: { budget: 0 } },
+            financingRoundResponse: { statusCode: 404 }
+        });
+
+        var elements = compileDirective();
+        $httpBackend.flush();
+
+        expect(elements.notification).not.toHaveClass('ng-hide');
+        expect(elements.notification).toHaveText('Momentan läuft keine Finanzierungsrunde. Bitte versuche es nochmal, wenn die Finanzierungsrunde gestartet worden ist.');
     });
 });

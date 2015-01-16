@@ -2,11 +2,13 @@ package de.axelspringer.ideas.crowdsource.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.axelspringer.ideas.crowdsource.enums.ProjectStatus;
+import de.axelspringer.ideas.crowdsource.model.persistence.FinancingRoundEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.PledgeEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.model.presentation.Pledge;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
+import de.axelspringer.ideas.crowdsource.repository.FinancingRoundRepository;
 import de.axelspringer.ideas.crowdsource.repository.PledgeRepository;
 import de.axelspringer.ideas.crowdsource.repository.ProjectRepository;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
@@ -68,6 +70,9 @@ public class ProjectControllerTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private FinancingRoundRepository financingRoundRepository;
+
     @Resource
     private WebApplicationContext webApplicationContext;
 
@@ -83,6 +88,7 @@ public class ProjectControllerTest {
         reset(projectRepository);
         reset(pledgeRepository);
         reset(userRepository);
+        reset(financingRoundRepository);
 
         existingUserEntity = new UserEntity(EXISTING_USER_MAIL);
         existingUserEntity.setId("existingUserId");
@@ -218,6 +224,8 @@ public class ProjectControllerTest {
 
         int budgetBeforePledge = existingUserEntity.getBudget();
 
+        when(financingRoundRepository.findActive(any())).thenReturn(new FinancingRoundEntity());
+
         mockMvc.perform(post("/project/{projectId}/pledge", EXISTING_PROJECT_ID)
                 .principal(new UsernamePasswordAuthenticationToken(EXISTING_USER_MAIL, "somepassword"))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -240,6 +248,8 @@ public class ProjectControllerTest {
         int budgetBeforePledge = existingUserEntity.getBudget();
 
         assertThat(existingProject.getStatus(), is(not(ProjectStatus.FULLY_PLEDGED)));
+
+        when(financingRoundRepository.findActive(any())).thenReturn(new FinancingRoundEntity());
 
         mockMvc.perform(post("/project/{projectId}/pledge", EXISTING_PROJECT_ID)
                 .principal(new UsernamePasswordAuthenticationToken(EXISTING_USER_MAIL, "somepassword"))
@@ -292,6 +302,8 @@ public class ProjectControllerTest {
     @Test
     public void pledgeProject_shouldRespondWith400IfThePledgeGoalIsExceeded() throws Exception {
 
+        when(financingRoundRepository.findActive(any())).thenReturn(new FinancingRoundEntity());
+
         MvcResult mvcResult = mockMvc.perform(post("/project/{projectId}/pledge", EXISTING_PROJECT_ID)
                 .principal(new UsernamePasswordAuthenticationToken(EXISTING_USER_MAIL, "somepassword"))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -318,6 +330,8 @@ public class ProjectControllerTest {
     @Test
     public void pledgeProject_shouldRespondWith400IfTheUserBudgetIsExceeded() throws Exception {
 
+        when(financingRoundRepository.findActive(any())).thenReturn(new FinancingRoundEntity());
+
         MvcResult mvcResult = mockMvc.perform(post("/project/{projectId}/pledge", EXISTING_PROJECT_ID)
                 .principal(new UsernamePasswordAuthenticationToken(EXISTING_USER_MAIL, "somepassword"))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -326,6 +340,21 @@ public class ProjectControllerTest {
                 .andReturn();
 
         assertThat(mvcResult.getResponse().getContentAsString(), is("{\"errorCode\":\"user_budget_exceeded\",\"fieldViolations\":{}}"));
+    }
+
+    @Test
+    public void pledgeProject_shouldRespondWith400IfThereIsNoActiveFinancingRound() throws Exception {
+
+        when(financingRoundRepository.findActive(any())).thenReturn(null);
+
+        MvcResult mvcResult = mockMvc.perform(post("/project/{projectId}/pledge", EXISTING_PROJECT_ID)
+                .principal(new UsernamePasswordAuthenticationToken(EXISTING_USER_MAIL, "somepassword"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(new Pledge(existingUserEntity.getBudget() + 1))))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"errorCode\":\"no_financing_round_currently_active\",\"fieldViolations\":{}}"));
     }
 
     private ProjectEntity createProjectEntity(String id, String title, int pledgeGoal, String shortDescription, String description, ProjectStatus status) {
@@ -372,6 +401,11 @@ public class ProjectControllerTest {
         @Bean
         public UserRepository userRepository() {
             return mock(UserRepository.class);
+        }
+
+        @Bean
+        public FinancingRoundRepository financingRoundRepository() {
+            return mock(FinancingRoundRepository.class);
         }
 
         @Bean

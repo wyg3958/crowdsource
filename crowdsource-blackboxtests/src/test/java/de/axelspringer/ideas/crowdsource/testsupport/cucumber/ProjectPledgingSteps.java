@@ -68,6 +68,8 @@ public class ProjectPledgingSteps {
 
     @When("^the user sets his desired pledge amount via the slider$")
     public void the_user_sets_his_desired_pledge_amount_via_the_slider() throws Throwable {
+        PageFactory.initElements(webDriver, pledgingForm);
+
         budgetBeforeChange = pledgingForm.getUserBudget();
         pledgedAmountBeforeChange = pledgingForm.getPledgedAmount();
         int amountBeforeChange = pledgingForm.getAmountFromInputField();
@@ -82,6 +84,8 @@ public class ProjectPledgingSteps {
 
     @When("^the user sets his desired pledge amount as high as the remaining amount of the project goal$")
     public void the_user_sets_his_desired_pledge_amount_as_high_as_the_remaining_amount_of_the_project_goal() throws Throwable {
+        PageFactory.initElements(webDriver, pledgingForm);
+
         budgetBeforeChange = pledgingForm.getUserBudget();
         pledgedAmountBeforeChange = pledgingForm.getPledgedAmount();
 

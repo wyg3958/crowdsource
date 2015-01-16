@@ -50,7 +50,7 @@ public class AuthenticationIT {
         CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithDefaultUser();
         assertThat(authToken.getAccessToken(), is(notNullValue()));
 
-        ResponseEntity<Void> response = crowdSourceClient.createProject(getPreparedProject(), authToken);
+        ResponseEntity<Project> response = crowdSourceClient.createProject(getPreparedProject(), authToken);
         assertThat(response.getStatusCode(), is(HttpStatus.CREATED));
     }
 

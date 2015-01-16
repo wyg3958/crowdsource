@@ -114,6 +114,8 @@ public class ProjectControllerTest {
                 new PledgeEntity(project2, existingUserEntity, new Pledge(2)),
                 new PledgeEntity(project2, existingUserEntity, new Pledge(20))));
         when(pledgeRepository.findByProject(eq(project3))).thenReturn(Arrays.asList());
+
+        when(projectRepository.save(any(ProjectEntity.class))).thenAnswer(invocationOnMock -> invocationOnMock.getArguments()[0]);
     }
 
     @Test
@@ -124,14 +126,25 @@ public class ProjectControllerTest {
         project.setShortDescription("theShortDescription");
         project.setPledgeGoal(50);
 
-        mockMvc.perform(post("/project")
+        MvcResult mvcResult = mockMvc.perform(post("/project")
                 .principal(new UsernamePasswordAuthenticationToken(EXISTING_USER_MAIL, "somepassword"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(project)))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andReturn();
 
         ProjectEntity projectEntity = new ProjectEntity(existingUserEntity, project);
         verify(projectRepository).save(eq(projectEntity));
+
+        assertThat(mvcResult.getResponse().getContentAsString(), is("{" +
+                "\"id\":null," + // actually this is non null, but the projectRepository is a mock and does not generate an id
+                "\"status\":\"PUBLISHED\"," +
+                "\"title\":\"myTitle\"," +
+                "\"shortDescription\":\"theShortDescription\"," +
+                "\"description\":\"theFullDescription\"," +
+                "\"pledgeGoal\":50,\"pledgedAmount\":0," +
+                "\"backers\":0," +
+                "\"creator\":{\"id\":\"existingUserId\",\"name\":\"Existing\"}}"));
     }
 
     @Test
@@ -168,6 +181,7 @@ public class ProjectControllerTest {
 
         assertThat(mvcResult.getResponse().getContentAsString(), is("{" +
                 "\"id\":\"existingProjectId\"," +
+                "\"status\":\"PUBLISHED\"," +
                 "\"title\":\"title\"," +
                 "\"shortDescription\":\"short description\"," +
                 "\"description\":\"description\"," +
@@ -191,9 +205,9 @@ public class ProjectControllerTest {
                 .andReturn();
 
         assertThat(mvcResult.getResponse().getContentAsString(), is("[" +
-                "{\"id\":\"projectId1\",\"title\":\"title1\",\"shortDescription\":\"short description1\",\"pledgeGoal\":11,\"pledgedAmount\":11,\"backers\":1}," +
-                "{\"id\":\"projectId2\",\"title\":\"title2\",\"shortDescription\":\"short description2\",\"pledgeGoal\":22,\"pledgedAmount\":22,\"backers\":1}," +
-                "{\"id\":\"projectId3\",\"title\":\"title3\",\"shortDescription\":\"short description3\",\"pledgeGoal\":33,\"pledgedAmount\":0,\"backers\":0}]"));
+                "{\"id\":\"projectId1\",\"status\":\"PUBLISHED\",\"title\":\"title1\",\"shortDescription\":\"short description1\",\"pledgeGoal\":11,\"pledgedAmount\":11,\"backers\":1}," +
+                "{\"id\":\"projectId2\",\"status\":\"PUBLISHED\",\"title\":\"title2\",\"shortDescription\":\"short description2\",\"pledgeGoal\":22,\"pledgedAmount\":22,\"backers\":1}," +
+                "{\"id\":\"projectId3\",\"status\":\"PUBLISHED\",\"title\":\"title3\",\"shortDescription\":\"short description3\",\"pledgeGoal\":33,\"pledgedAmount\":0,\"backers\":0}]"));
 
         verify(projectRepository).findByStatusOrderByCreatedDateDesc(ProjectStatus.PUBLISHED);
     }

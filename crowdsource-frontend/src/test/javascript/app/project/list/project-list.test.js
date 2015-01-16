@@ -6,6 +6,8 @@ describe('project list', function () {
         module('crowdsource');
         module('crowdsource.templates');
 
+        localStorage.clear(); // reset
+
         inject(function($compile, $rootScope, $templateCache, $controller, _$httpBackend_, _$location_, Project) {
             $scope = $rootScope.$new();
             $httpBackend = _$httpBackend_;

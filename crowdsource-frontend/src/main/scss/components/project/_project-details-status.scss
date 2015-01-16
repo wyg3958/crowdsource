@@ -51,6 +51,7 @@
 
 .project-status__cta {
   @extend %project-status__cell;
+  white-space: nowrap;
   @media #{$medium-up} {
     @include css-table-cell((width: 180px));
   }

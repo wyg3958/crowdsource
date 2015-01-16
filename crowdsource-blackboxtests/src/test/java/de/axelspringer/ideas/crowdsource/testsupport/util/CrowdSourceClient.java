@@ -39,12 +39,12 @@ public class CrowdSourceClient {
         return restTemplate.postForObject(urlProvider.applicationUrl() + "/oauth/token", tokenRequest, AuthToken.class);
     }
 
-    public ResponseEntity<Void> createProject(Project project, AuthToken authToken) {
+    public ResponseEntity<Project> createProject(Project project, AuthToken authToken) {
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.put("Authorization", Arrays.asList("Bearer " + authToken.accessToken));
 
         HttpEntity<Project> requestEntity = new HttpEntity<>(project, headers);
-        return restTemplate.exchange(urlProvider.applicationUrl() + "/project", HttpMethod.POST, requestEntity, Void.class);
+        return restTemplate.exchange(urlProvider.applicationUrl() + "/project", HttpMethod.POST, requestEntity, Project.class);
     }
 
     public RestTemplate getUnderlyingClient() {

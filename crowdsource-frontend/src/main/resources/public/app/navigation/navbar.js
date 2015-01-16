@@ -1,8 +1,10 @@
 angular.module('crowdsource')
 
-    .controller('NavigationController', function ($scope, $location, Authentication) {
+    .controller('NavigationController', function ($location, Authentication) {
 
-        $scope.getClassForMenuItem = function (location) {
+        var vm = this;
+
+        vm.getClassForMenuItem = function (location) {
             if ($location.path() == location) {
                 return 'active';
             }
@@ -10,7 +12,5 @@ angular.module('crowdsource')
             return '';
         };
 
-        $scope.loggedIn = function () {
-            return Authentication.isLoggedIn();
-        }
+        vm.currentUser = Authentication.currentUser;
     });

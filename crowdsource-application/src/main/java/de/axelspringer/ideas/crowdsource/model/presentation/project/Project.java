@@ -1,6 +1,7 @@
 package de.axelspringer.ideas.crowdsource.model.presentation.project;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import de.axelspringer.ideas.crowdsource.enums.ProjectStatus;
 import de.axelspringer.ideas.crowdsource.model.persistence.PledgeEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.ProjectCreator;
@@ -18,6 +19,10 @@ public class Project {
     // no validation here on purpose, as this is only filled on response and ignored in request.
     @JsonView(ProjectSummaryView.class)
     private String id;
+
+    // no validation here on purpose, as this is only filled on response and ignored in request
+    @JsonView(ProjectSummaryView.class)
+    private ProjectStatus status;
 
     @NotEmpty
     @JsonView(ProjectSummaryView.class)
@@ -48,6 +53,7 @@ public class Project {
 
     public Project(ProjectEntity projectEntity, List<PledgeEntity> pledges) {
         this.id = projectEntity.getId();
+        this.status = projectEntity.getStatus();
         this.title = projectEntity.getTitle();
         this.shortDescription = projectEntity.getShortDescription();
         this.description = projectEntity.getDescription();

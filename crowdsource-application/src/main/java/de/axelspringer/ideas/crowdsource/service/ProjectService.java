@@ -49,12 +49,13 @@ public class ProjectService {
         return projects.stream().map(this::convertProject).collect(toList());
     }
 
-    public void addProject(Project project, UserEntity userEntity) {
+    public Project addProject(Project project, UserEntity userEntity) {
 
         ProjectEntity projectEntity = new ProjectEntity(userEntity, project);
-        projectRepository.save(projectEntity);
+        projectEntity = projectRepository.save(projectEntity);
 
         log.debug("Project added: {}", projectEntity);
+        return convertProject(projectEntity);
     }
 
     public void pledgeProject(String projectId, UserEntity userEntity, Pledge pledge) {

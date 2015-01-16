@@ -6,6 +6,8 @@ describe('project details', function () {
         module('crowdsource');
         module('crowdsource.templates');
 
+        localStorage.clear(); // reset, makes the user not logged in
+
         inject(function($compile, $rootScope, $templateCache, $controller, _$location_, _$httpBackend_, Project) {
             $scope = $rootScope.$new();
             $httpBackend = _$httpBackend_;
@@ -28,6 +30,7 @@ describe('project details', function () {
     it("should display the project's details that were retrieved from backend", function () {
 
         $httpBackend.expectGET('/project/xyz').respond(200, {
+            status: 'PUBLISHED',
             title: 'Title',
             shortDescription: 'Short description',
             description: 'Looong description',
@@ -36,8 +39,6 @@ describe('project details', function () {
             pledgeGoal: 20000,
             backers: 7
         });
-
-        $httpBackend.expectGET('/user/current').respond(200, { budget: 500 });
 
         $scope.$digest();
         $httpBackend.flush();
@@ -50,12 +51,13 @@ describe('project details', function () {
         expect(projectDetails.find('.project-status__backers')).toHaveText('7');
         expect(projectDetails.find('h2')).toHaveText('Short description');
         expect(projectDetails.find('.project-description')).toHaveText('Looong description');
+        expect(projectDetails.find('.to-pledging-form-button')).not.toBeDisabled();
+        expect(projectDetails.find('.to-pledging-form-button')).toHaveText('Zur Finanzierung');
     });
 
     it("should show a not found page if no project was found", function () {
 
         $httpBackend.expectGET('/project/xyz').respond(404);
-        $httpBackend.expectGET('/user/current').respond(200, { budget: 500 });
 
         $scope.$digest();
         $httpBackend.flush();
@@ -66,12 +68,30 @@ describe('project details', function () {
     it("should show a technical failure page if the server responds with an unexpected status code", function () {
 
         $httpBackend.expectGET('/project/xyz').respond(500);
-        $httpBackend.expectGET('/user/current').respond(200, { budget: 500 });
 
         $scope.$digest();
         $httpBackend.flush();
 
         expect($location.path()).toBe('/error/unknown');
+    });
+
+    it("should show a different text on the to-pledging-form-button when the project is fully pledged", function () {
+        $httpBackend.expectGET('/project/xyz').respond(200, {
+            status: 'FULLY_PLEDGED',
+            title: 'Title',
+            shortDescription: 'Short description',
+            description: 'Looong description',
+            creator: { name: 'Foo Bar' },
+            pledgedAmount: 13853,
+            pledgeGoal: 20000,
+            backers: 7
+        });
+
+        $scope.$digest();
+        $httpBackend.flush();
+
+        expect(projectDetails.find('.to-pledging-form-button')).toBeDisabled();
+        expect(projectDetails.find('.to-pledging-form-button')).toHaveText('Zu 100% finanziert!');
     });
 
 });

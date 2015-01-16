@@ -10,7 +10,7 @@ import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.LoginForm;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.LogoutPage;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.NavigationBar;
-import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.ProjectsPage;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.ProjectsPage;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
 import org.openqa.selenium.By;

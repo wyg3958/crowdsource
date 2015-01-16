@@ -12,6 +12,7 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +32,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
@@ -99,6 +101,16 @@ public class FinancingRoundControllerMockMvcTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(financingRound(new DateTime().plusDays(1), 99))))
                 .andExpect(status().isCreated());
+
+
+        ArgumentCaptor<FinancingRoundEntity> entityCaptor = ArgumentCaptor.forClass(FinancingRoundEntity.class);
+        verify(financingRoundRepository).save(entityCaptor.capture());
+
+        final FinancingRoundEntity financingRoundEntity = entityCaptor.getValue();
+
+        assertThat(financingRoundEntity.getEndDate().getHourOfDay(), is(23));
+        assertThat(financingRoundEntity.getEndDate().getMinuteOfHour(), is(59));
+        assertThat(financingRoundEntity.getEndDate().getSecondOfMinute(), is(59));
 
         verify(financingRoundRepository, times(1)).save(any(FinancingRoundEntity.class));
         verify(userRepository, times(1)).findAll();

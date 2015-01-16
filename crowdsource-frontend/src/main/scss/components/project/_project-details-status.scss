@@ -91,9 +91,13 @@
   padding: rem-calc(8px) rem-calc(16px);
   width: 100%;
   font-size: $fs-small;
-  background-color: $clr-butterfly;
+  color: black;
+  border: 1px solid #4BD489;
+  background-color: transparent;
+  box-shadow: 0 2px 0 0 #4BD489;
 
   &:hover {
-    background-color: $clr-bossanova;
+    color: $black;
+    background-color: transparent;
   }
 }

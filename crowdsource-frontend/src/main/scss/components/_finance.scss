@@ -92,15 +92,6 @@ color: $clr-body-light;
   @extend .flush--bottom;
   width: 100%;
 
-  color: $black;
-  border-radius: $border-radius;
-  background-color: $clr-green-shade-1;
-
-  &:hover {
-    color: $black;
-    background-color: $clr-green-shade-2;
-  }
-
   @media #{$medium-up} {
     width: auto;
   }

@@ -3,9 +3,11 @@
 
         <h1>Login</h1>
 
-        <div class="general-error alert-box alert" ng-messages="login.generalErrors" ng-if="login.generalErrors">
-            <span ng-message="remote_bad_credentials">Deine Anmeldeinformationen sind ungültig. Bitte überprüfe die eingegebenen Daten.</span>
-            <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuche es erneut.</span>
+        <div class="small-12 columns">
+            <div class="general-error alert-box alert" ng-messages="login.generalErrors" ng-if="login.generalErrors">
+              <span ng-message="remote_bad_credentials">Deine Anmeldeinformationen sind ungültig. Bitte überprüfe die eingegebenen Daten.</span>
+              <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuche es erneut.</span>
+            </div>
         </div>
 
         <div class="row">
@@ -32,7 +34,7 @@
         <div class="row">
             <div class="small-12 columns text-center">
                 <div>
-                    <button type="submit" class="success margin-top" ng-click="login.login()" ng-disabled="login.loading">
+                    <button type="submit" class="crwd-success radius shadow margin-top" ng-click="login.login()" ng-disabled="login.loading">
                         {{ login.loading ? 'Login...' : 'Login' }}
                     </button>
                 </div>

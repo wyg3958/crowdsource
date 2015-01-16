@@ -18,4 +18,13 @@
   &.success {
     background-color: $clr-green-shade-1;
   }
+
+  &.alert {
+    color: $white;
+  }
+
+  &.info {
+    color: $white;
+    background-color: $clr-blue-shade-2;
+  }
 }

@@ -19,13 +19,16 @@
 // Extends Foundation's global buttons styles
 // ---
 
+
+// Mixins
+
 @mixin box-shadow($options:()) {
   $options: map-merge((
     x:      0,
     y:      2px,
     blur:   0,
     spread: 0,
-    color:  #D8D8D8
+    color:  rgba(0,0,0,0.25)
   ), $options);
 
   box-shadow:
@@ -37,6 +40,21 @@
 }
 
 
+// Extends
+
+%btn-crwd {
+  background-color: $clr-blue-shade-2;
+  &:hover { background-color: $clr-blue-shade-1; }
+}
+
+%btn-crwd-success {
+  background-color: $clr-green-shade-2;
+  &:hover { background-color: #35EA87; }
+}
+
+
+// Extend Foundation's Button
+
 button, .button {
 
   // Change Foundation's default transition, mixin in foundation/global.scss
@@ -45,5 +63,15 @@ button, .button {
   // Add a box-shadow
   &.shadow {
     @include box-shadow;
+  }
+
+  // Our default button
+  &.crwd {
+    @extend %btn-crwd;
+  }
+
+  // Our own success button
+  &.crwd-success {
+    @extend %btn-crwd-success;
   }
 }

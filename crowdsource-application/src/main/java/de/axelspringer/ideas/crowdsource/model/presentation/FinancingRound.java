@@ -1,6 +1,8 @@
 package de.axelspringer.ideas.crowdsource.model.presentation;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import de.axelspringer.ideas.crowdsource.model.persistence.FinancingRoundEntity;
+import de.axelspringer.ideas.crowdsource.model.presentation.project.PublicFinancingRoundInformationView;
 import de.axelspringer.ideas.crowdsource.util.validation.financinground.FinancingRoundNotColliding;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,18 +19,21 @@ import javax.validation.constraints.NotNull;
 @FinancingRoundNotColliding
 public class FinancingRound {
 
+    private String id;
+
+    @JsonView(PublicFinancingRoundInformationView.class)
     private DateTime startDate = new DateTime();
 
     @NotNull
     @Future(message = "end-date-in-future")
+    @JsonView(PublicFinancingRoundInformationView.class)
     private DateTime endDate;
 
     @NotNull
     @Min(value = 1l, message = "at-least-one-dollar")
     private Integer budget;
 
-    private String id;
-
+    @JsonView(PublicFinancingRoundInformationView.class)
     private boolean active;
 
     public FinancingRound(FinancingRoundEntity financingRoundEntity) {

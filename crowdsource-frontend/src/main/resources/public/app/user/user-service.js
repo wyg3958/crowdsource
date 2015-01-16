@@ -2,6 +2,8 @@ angular.module('crowdsource')
 
     .factory('User', function ($resource) {
 
+        var service = {};
+
         var UserResource = $resource('/user/:id', {}, {
             current: {
                 method: 'GET',
@@ -9,33 +11,47 @@ angular.module('crowdsource')
                 transformResponse: function(responseString) {
                     var data = angular.fromJson(responseString);
                     data.loggedIn = true;
-                    return data;
+                    return augmentUser(data);
                 }
             }
         });
 
         var UserActivationResource = $resource('/user/:email/activation', { email: '@email' });
 
-        return {
-            register: function (user) {
-                return UserResource.save(user).$promise;
-            },
-            activate: function (user) {
-                return UserActivationResource.save(user);
-            },
-            authenticated: function() {
-                var user = UserResource.current();
-                // already set the user as logged in, even if the server did not respond yet
-                // we expect this call to be only called if there is an auth token available in the app
-                user.loggedIn = true;
-                return  user;
-            },
-            anonymous: function() {
-                return new UserResource({
-                    $resolved: true,
-                    budget: 0,
-                    loggedIn: false
-                });
-            }
+        service.register = function (user) {
+            return UserResource.save(user).$promise;
         };
+
+        service.activate = function (user) {
+            return UserActivationResource.save(user);
+        };
+
+        service.authenticated = function() {
+            var user = UserResource.current();
+            // already set the user as logged in, even if the server did not respond yet
+            // we expect this call to be only called if there is an auth token available in the app
+            user.loggedIn = true;
+            return  user;
+        };
+
+        service.anonymous = function() {
+            var userData = {
+                loggedIn: false,
+                $resolved: true,
+                budget: 0
+            };
+            return new UserResource(augmentUser(userData));
+        };
+
+        function augmentUser(user) {
+            user.hasRole = function(role) {
+                if (!this.roles) {
+                    return false;
+                }
+                return this.roles.indexOf('ROLE_' + role) >= 0;
+            };
+            return user;
+        }
+
+        return service;
     });

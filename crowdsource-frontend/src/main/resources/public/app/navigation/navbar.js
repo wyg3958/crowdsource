@@ -4,6 +4,8 @@ angular.module('crowdsource')
 
         var vm = this;
 
+        vm.auth = Authentication;
+
         vm.getClassForMenuItem = function (location) {
             if ($location.path() == location) {
                 return 'active';
@@ -11,6 +13,4 @@ angular.module('crowdsource')
 
             return '';
         };
-
-        vm.currentUser = Authentication.currentUser;
     });

@@ -98,9 +98,8 @@ angular.module('crowdsource')
         };
 
         service.reloadUser = function() {
-            var user = AuthenticationToken.hasTokenSet() ? User.authenticated() : User.anonymous();
-            angular.copy(user, service.currentUser);
-            return user;
+            service.currentUser = AuthenticationToken.hasTokenSet() ? User.authenticated() : User.anonymous();
+            return service.currentUser;
         };
 
         service.logout = function() {

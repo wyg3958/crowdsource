@@ -60,6 +60,14 @@ public class LoginLogoutSteps {
         he_is_redirected_to_the_index_page();
     }
 
+    @Given("^an admin is logged in$")
+    public void an_admin_is_logged_in() throws Throwable {
+        the_index_page_is_visited();
+        he_clicks_on_the_Login_link_in_the_navigation_bar();
+        login(MongoUserDetailsService.DEFAULT_ADMIN_EMAIL, MongoUserDetailsService.DEFAULT_ADMIN_PASS);
+        he_is_redirected_to_the_index_page();
+    }
+
     @When("^he clicks on the Login link in the navigation bar$")
     public void he_clicks_on_the_Login_link_in_the_navigation_bar() throws Throwable {
         PageFactory.initElements(webDriver, navigationBar);
@@ -75,17 +83,20 @@ public class LoginLogoutSteps {
 
     @When("^he enters valid credentials$")
     public void he_enters_valid_credentials() throws Throwable {
+        login(MongoUserDetailsService.DEFAULT_USER_EMAIL, MongoUserDetailsService.DEFAULT_USER_PASS);
+    }
 
+    private void login(String email, String password) {
         PageFactory.initElements(webDriver, loginForm);
-        final String email = MongoUserDetailsService.DEFAULT_EMAIL.substring(0, MongoUserDetailsService.DEFAULT_EMAIL.indexOf("@"));
-        loginForm.login(email, MongoUserDetailsService.DEFAULT_PASS);
+        final String email_ = email.substring(0, email.indexOf("@"));
+        loginForm.login(email_, password);
     }
 
     @When("^he enters invalid credentials$")
     public void he_enters_invalid_credentials() throws Throwable {
 
         PageFactory.initElements(webDriver, loginForm);
-        loginForm.login("foooooooaaaahhhh", MongoUserDetailsService.DEFAULT_PASS);
+        loginForm.login("foooooooaaaahhhh", MongoUserDetailsService.DEFAULT_USER_PASS);
     }
 
     @Then("^he is redirected to the index page$")

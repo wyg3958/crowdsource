@@ -50,7 +50,6 @@ angular.module('crowdsource')
         };
 
         vm.canStartNewRound = function () {
-            console.log("canStartNewRound");
             if (!vm.allFinancingRounds.$resolved) {
                 return false;
             }

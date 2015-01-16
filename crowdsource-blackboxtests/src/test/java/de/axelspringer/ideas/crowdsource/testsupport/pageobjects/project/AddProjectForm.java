@@ -1,7 +1,10 @@
 package de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project;
 
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.SeleniumWait;
+import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,6 +14,9 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 @Component
 public class AddProjectForm {
 
+    @Autowired
+    private WebDriverProvider webDriverProvider;
+
     @FindBy(css = ".project-form input[name='title']")
     private WebElement titleInputField;
 
@@ -19,6 +25,9 @@ public class AddProjectForm {
 
     @FindBy(css = ".project-form input[name='pledgeGoal']")
     private WebElement pledgeGoalInputField;
+
+    @FindBy(className = "currency")
+    private WebElement currencyLabel;
 
     @FindBy(css = ".project-form textarea[name='description']")
     private WebElement descriptionInputField;
@@ -51,5 +60,20 @@ public class AddProjectForm {
 
     public void submit() {
         submitButton.click();
+    }
+
+    public boolean currencyConversionTooltipVisible() {
+        final String tooltipSpanId = currencyLabel.getAttribute("data-selector");
+        final WebElement tooltip = webDriverProvider.provideDriver().findElement(By.id(tooltipSpanId));
+        return tooltip.getCssValue("display").equals("block");
+    }
+
+    public void hoverCurrency() {
+        new Actions(webDriverProvider.provideDriver()).moveToElement(currencyLabel).perform();
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            throw new RuntimeException();
+        }
     }
 }

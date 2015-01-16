@@ -93,7 +93,7 @@ describe('project pledging form', function () {
 
         // expect form to be in pristine state and with new values
         expect(elements.notification).not.toHaveClass('ng-hide');
-        expect(elements.notification).toHaveText('Deine Finanzierung war erflogreich.');
+        expect(elements.notification).toHaveText('Deine Finanzierung war erfolgreich.');
         expect(elements.pledgeAmount.getInputField()).toHaveValue("0");
         expect(elements.pledgedAmount).toHaveText('$90');
         expect(elements.pledgeGoal).toHaveText('$100');
@@ -310,7 +310,7 @@ describe('project pledging form', function () {
 
         // expect form to be in pristine state and with new values
         expect(elements.notification).not.toHaveClass('ng-hide');
-        expect(elements.notification).toHaveText('Deine Finanzierung war erflogreich.');
+        expect(elements.notification).toHaveText('Deine Finanzierung war erfolgreich.');
         expect(elements.pledgeAmount.getInputField()).toHaveValue("0");
         expect(elements.pledgedAmount).toHaveText('$490');
         expect(elements.pledgeGoal).toHaveText('$500');

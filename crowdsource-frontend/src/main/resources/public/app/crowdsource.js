@@ -69,5 +69,4 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
                 equalize_on_stack: true
             }
         });
-        console.log(Authentication);
     });

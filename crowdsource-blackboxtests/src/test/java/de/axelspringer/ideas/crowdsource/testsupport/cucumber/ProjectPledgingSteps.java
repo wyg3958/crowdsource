@@ -3,9 +3,12 @@ package de.axelspringer.ideas.crowdsource.testsupport.cucumber;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
+import de.axelspringer.ideas.crowdsource.model.presentation.FinancingRound;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.ProjectPledgingForm;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
+import de.axelspringer.ideas.crowdsource.testsupport.util.CrowdSourceClient;
+import org.joda.time.DateTime;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,9 @@ public class ProjectPledgingSteps {
 
     @Autowired
     private ProjectPledgingForm pledgingForm;
+
+    @Autowired
+    private CrowdSourceClient crowdSourceClient;
 
     private RemoteWebDriver webDriver;
 
@@ -47,5 +53,24 @@ public class ProjectPledgingSteps {
     @And("^the user budget \"([^\"]*)\" is displayed$")
     public void the_user_budget_is_displayed(String budget) throws Throwable {
         assertThat(pledgingForm.getUserBudget(), is(budget));
+    }
+
+    @And("^there is (a|no) financing round active$")
+    public void there_is_a_financing_round_active(String active) throws Throwable {
+        boolean requireActiveFinancingRound = "a".equals(active);
+
+        CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithAdminUser();
+
+        FinancingRound activeFinanceRound = crowdSourceClient.getActiveFinanceRound();
+        if (activeFinanceRound != null) {
+            crowdSourceClient.stopFinancingRound(activeFinanceRound.getId(), authToken);
+        }
+
+        if (requireActiveFinancingRound) {
+            FinancingRound financingRound = new FinancingRound();
+            financingRound.setEndDate(DateTime.now().plusDays(10));
+            financingRound.setBudget(100000);
+            crowdSourceClient.startFinancingRound(financingRound, authToken);
+        }
     }
 }

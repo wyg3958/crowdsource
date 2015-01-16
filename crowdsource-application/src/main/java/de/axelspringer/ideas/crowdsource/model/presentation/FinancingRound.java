@@ -19,6 +19,7 @@ import javax.validation.constraints.NotNull;
 @FinancingRoundNotColliding
 public class FinancingRound {
 
+    @JsonView(PublicFinancingRoundInformationView.class)
     private String id;
 
     @JsonView(PublicFinancingRoundInformationView.class)

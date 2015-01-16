@@ -63,6 +63,10 @@ public class MongoUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("No user with username [" + username + "] found");
         }
 
+        if (!user.isActivated()) {
+            throw new UsernameNotFoundException("User with username [" + username + "] is not activated yet");
+        }
+
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPassword(),

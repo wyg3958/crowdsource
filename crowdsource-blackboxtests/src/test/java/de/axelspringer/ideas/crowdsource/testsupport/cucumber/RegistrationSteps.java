@@ -9,6 +9,7 @@ import de.axelspringer.ideas.crowdsource.model.presentation.user.UserRegistratio
 import de.axelspringer.ideas.crowdsource.service.UserActivationService;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.ActivationForm;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.LoginForm;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.NavigationBar;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.RegistrationConfirmationView;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.RegistrationForm;
@@ -50,6 +51,9 @@ public class RegistrationSteps {
 
     @Autowired
     private RegistrationConfirmationView registrationConfirmationView;
+
+    @Autowired
+    private LoginForm loginForm;
 
     @Autowired
     private MailServerClient mailServerClient;
@@ -193,5 +197,13 @@ public class RegistrationSteps {
     public void the_validation_error_is_displayed(String errorText) throws Throwable {
         PageFactory.initElements(webDriver, activationForm);
         assertThat(activationForm.getErrorText(), containsString(errorText));
+    }
+
+    @And("^he tries to log in with the email address he used in the registration and an imaginary password$")
+    public void he_tries_to_log_in_with_the_email_address_he_used_in_the_registration_and_an_imaginary_password() throws Throwable {
+        PageFactory.initElements(webDriver, loginForm);
+
+        loginForm.waitForPageLoad();
+        loginForm.login(emailName, "xxx");
     }
 }

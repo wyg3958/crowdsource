@@ -76,3 +76,10 @@ Feature: Login and Logout
     Then he is redirected to the login page
     When he enters valid credentials
     Then he is redirected to the project creation page
+
+  Scenario: A user tries to log in but did not activate his account yet
+    Given the user's email address is already registered but not activated
+    Given the index page is visited
+    When he clicks on the Login link in the navigation bar
+    And he tries to log in with the email address he used in the registration and an imaginary password
+    Then the error "Deine Anmeldeinformationen sind ungültig. Bitte überprüfe die eingegebenen Daten." is displayed

@@ -3,6 +3,7 @@ package de.axelspringer.ideas.crowdsource.testsupport.cucumber;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
 import de.axelspringer.ideas.crowdsource.model.presentation.FinancingRound;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.ProjectPledgingForm;
@@ -72,5 +73,10 @@ public class ProjectPledgingSteps {
             financingRound.setBudget(100000);
             crowdSourceClient.startFinancingRound(financingRound, authToken);
         }
+    }
+
+    @When("^a financing round is being activated in the meantime$")
+    public void a_financing_round_is_being_activated_in_the_meantime() throws Throwable {
+        there_is_a_financing_round_active("a");
     }
 }

@@ -20,11 +20,7 @@ angular.module('crowdsource')
                 ngModel.$parsers.push(function (stringValue) {
                     if (stringValue) {
                         var parts = stringValue.split('.');
-                        console.log(parts);
-
-                        var date = new Date(Date.UTC(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]), 0, 0, 0));
-                        console.log(date);
-                        return date;
+                        return new Date(Date.UTC(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]), 0, 0, 0));
                     }
                     return null;
                 });

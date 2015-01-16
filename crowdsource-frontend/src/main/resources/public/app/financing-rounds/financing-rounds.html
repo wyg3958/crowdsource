@@ -27,7 +27,7 @@
         </tbody>
     </table>
 
-    <form ng-if="!financingRound.alreadyActive" name="financingRound.form" novalidate>
+    <form ng-if="financingRound.canStartNewRound()" name="financingRound.form" novalidate>
         <div class="row">
             <div class="columns form-controls-budget">
                 <label form-group="endDate">
@@ -68,13 +68,13 @@
             </div>
         </div>
 
-        <div ng-if="financingRound.alreadyActive">
-            Es läuft bereits eine Finanzierungsrunde. Daher kann keine neue Runde gestartet werden.
+        <div ng-if="!financingRound.canStartNewRound()">
+        Es läuft bereits eine Finanzierungsrunde. Daher kann keine neue Runde gestartet werden.
         </div>
 
         <button type="submit" class="success margin-top" ng-click="financingRound.start()"
-                ng-disabled="financingRound.saving || financingRound.alreadyActive">
-            {{ financingRound.saving ? 'Starten...' : 'Starten!' }}
+                ng-disabled="financingRound.saving || !financingRound.canStartNewRound()">
+        {{ financingRound.saving ? 'Starten...' : 'Starten!' }}
         </button>
     </form>
 </content-row>

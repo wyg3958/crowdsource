@@ -4,21 +4,7 @@ angular.module('crowdsource')
 
         var vm = this;
 
-        refreshView(true);
-
-        vm.allFinancingRounds.$promise
-            .then(function (allRounds) {
-
-                var activeRoundFound = false;
-
-                angular.forEach(allRounds, function (round) {
-                    if (round.active == true) {
-                        activeRoundFound = true;
-                    }
-                });
-                vm.alreadyActive = activeRoundFound;
-            });
-
+        vm.allFinancingRounds = FinancingRound.getAll();
 
         vm.start = function () {
 
@@ -30,7 +16,7 @@ angular.module('crowdsource')
 
             FinancingRound.start(vm.newRound)
                 .then(function () {
-                    refreshView(true);
+                    vm.allFinancingRounds = FinancingRound.getAll();
                     alert("Finanzierungsrunde gestartet.");
                 })
                 .catch(function () {
@@ -52,7 +38,7 @@ angular.module('crowdsource')
 
             FinancingRound.stop(financingRound)
                 .then(function () {
-                    refreshView(false);
+                    vm.allFinancingRounds = FinancingRound.getAll();
                     alert("Finanzierungsrunde gestoppt.");
                 })
                 .catch(function () {
@@ -63,9 +49,22 @@ angular.module('crowdsource')
                 });
         };
 
-        function refreshView(isFinancingRoundActive) {
-            vm.alreadyActive = isFinancingRoundActive;
-            vm.allFinancingRounds = FinancingRound.getAll();
-        }
+        vm.canStartNewRound = function () {
+            console.log("canStartNewRound");
+            if (!vm.allFinancingRounds.$resolved) {
+                return false;
+            }
+
+            var activeRoundFound = false;
+
+            angular.forEach(vm.allFinancingRounds, function (round) {
+                if (round.active == true) {
+                    activeRoundFound = true;
+                    return false;
+                }
+            });
+
+            return !activeRoundFound;
+        };
 
     });

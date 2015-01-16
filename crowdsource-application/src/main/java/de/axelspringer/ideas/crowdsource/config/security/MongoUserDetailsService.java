@@ -41,7 +41,7 @@ public class MongoUserDetailsService implements UserDetailsService {
     @PostConstruct
     public void createUsers() {
 
-        if (!environment.acceptsProfiles(AppProfile.DEV, AppProfile.CI)) {
+        if (!environment.acceptsProfiles(AppProfile.DEV, AppProfile.CONS)) {
             log.info("not creating or updating any users as the application is not running in profile DEV or CI");
             return;
         }

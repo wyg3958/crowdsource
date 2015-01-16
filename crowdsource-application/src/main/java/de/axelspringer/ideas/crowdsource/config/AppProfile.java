@@ -4,6 +4,6 @@ public interface AppProfile {
 
     String NOT = "!";
     String DEV = "dev";
-    String CI = "ci";
+    String CONS = "cons";
     String PROD = "prod";
 }

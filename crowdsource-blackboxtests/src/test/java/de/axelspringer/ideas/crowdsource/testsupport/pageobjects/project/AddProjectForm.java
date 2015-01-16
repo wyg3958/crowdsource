@@ -9,7 +9,7 @@ import org.openqa.selenium.support.FindBy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 
 @Component
 public class AddProjectForm {
@@ -39,7 +39,7 @@ public class AddProjectForm {
     private SeleniumWait wait;
 
     public void waitForPageLoad() {
-        wait.until(visibilityOf(titleInputField));
+        wait.until(visibilityOfElementLocated(By.cssSelector(".project-form input[name='title']")));
     }
 
     public void setTitle(String title) {

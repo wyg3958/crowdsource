@@ -56,6 +56,10 @@ public class ProjectPledgingForm {
         return parseCurrency(pledgedAmountLabel);
     }
 
+    public int getPledgeGoalAmount() {
+        return parseCurrency(pledgeGoalLabel);
+    }
+
     private int parseCurrency(WebElement element) {
         String value = element.getText();
         value = value.substring(1); // cut off currency
@@ -73,6 +77,11 @@ public class ProjectPledgingForm {
 
     public WebElement getAmountInputField() {
         return amountInputField;
+    }
+
+    public void setAmountInputValue(int value) {
+        amountInputField.clear();
+        amountInputField.sendKeys(Integer.toString(value));
     }
 
     public int getAmountFromInputField() {

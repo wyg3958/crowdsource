@@ -66,8 +66,8 @@ public class ProjectPledgingSteps {
         assertThat(pledgingForm.getNotificationMessage(), is(""));
     }
 
-    @When("^the user sets his desired pledge amount$")
-    public void the_user_sets_his_desired_pledge_amount() throws Throwable {
+    @When("^the user sets his desired pledge amount via the slider$")
+    public void the_user_sets_his_desired_pledge_amount_via_the_slider() throws Throwable {
         budgetBeforeChange = pledgingForm.getUserBudget();
         pledgedAmountBeforeChange = pledgingForm.getPledgedAmount();
         int amountBeforeChange = pledgingForm.getAmountFromInputField();
@@ -78,6 +78,20 @@ public class ProjectPledgingSteps {
         assertThat(amountBeforeChange, is(lessThan(amountFromInputField)));
 
         pledgeAmount = amountFromInputField;
+    }
+
+    @When("^the user sets his desired pledge amount as high as the remaining amount of the project goal$")
+    public void the_user_sets_his_desired_pledge_amount_as_high_as_the_remaining_amount_of_the_project_goal() throws Throwable {
+        budgetBeforeChange = pledgingForm.getUserBudget();
+        pledgedAmountBeforeChange = pledgingForm.getPledgedAmount();
+
+        pledgeAmount = pledgingForm.getPledgeGoalAmount() - pledgedAmountBeforeChange;
+        if (pledgeAmount > budgetBeforeChange) {
+            // if this happens, then the financing round was started with a too low budget
+            throw new IllegalStateException("User budget (" + budgetBeforeChange + ") is too low to fully pledge the project");
+        }
+
+        pledgingForm.setAmountInputValue(pledgeAmount);
     }
 
     @Then("^the displayed budget and financing infos are updated$")

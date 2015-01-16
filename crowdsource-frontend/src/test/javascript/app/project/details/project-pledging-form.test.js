@@ -1,16 +1,18 @@
 describe('project pledging form', function () {
 
-    var $scope, $compile, $httpBackend, Authentication;
+    var $scope, $compile, $httpBackend, AuthenticationToken;
 
     beforeEach(function() {
         module('crowdsource');
         module('crowdsource.templates');
 
-        inject(function($rootScope, _$compile_, _$httpBackend_, _Authentication_) {
+        localStorage.clear(); // reset
+
+        inject(function($rootScope, _$compile_, _$httpBackend_, _AuthenticationToken_) {
             $scope = $rootScope.$new();
             $compile = _$compile_;
             $httpBackend = _$httpBackend_;
-            Authentication = _Authentication_;
+            AuthenticationToken = _AuthenticationToken_;
         });
     });
 
@@ -45,7 +47,7 @@ describe('project pledging form', function () {
 
     function prepareMocks(data) {
         $scope.project = data.project;
-        spyOn(Authentication, 'isLoggedIn').and.returnValue(data.isLoggedIn);
+        spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(data.isLoggedIn);
         $httpBackend.expectGET('/user/current').respond(data.userResponse.statusCode, data.userResponse.body);
     }
 
@@ -172,7 +174,7 @@ describe('project pledging form', function () {
     it("should disable the form if the user is not logged in", function () {
 
         $scope.project = { $resolved: true, pledgeGoal: 100, pledgedAmount: 50, status: 'PUBLISHED' };
-        spyOn(Authentication, 'isLoggedIn').and.returnValue(false);
+        spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(false);
 
         var elements = compileDirective();
 
@@ -337,7 +339,7 @@ describe('project pledging form', function () {
     it("should show a message that the user is not logged in", function () {
 
         $scope.project = { $resolved: true, pledgeGoal: 100, pledgedAmount: 50, status: 'PUBLISHED' };
-        spyOn(Authentication, 'isLoggedIn').and.returnValue(false);
+        spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(false);
 
         var elements = compileDirective();
 

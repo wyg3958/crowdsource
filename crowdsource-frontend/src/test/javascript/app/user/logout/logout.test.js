@@ -6,6 +6,8 @@ describe('user logout view', function () {
         module('crowdsource');
         module('crowdsource.templates');
 
+        localStorage.clear(); // reset
+
         inject(function ($compile, $rootScope, $templateCache, $controller, _Authentication_) {
 
             Authentication = _Authentication_;

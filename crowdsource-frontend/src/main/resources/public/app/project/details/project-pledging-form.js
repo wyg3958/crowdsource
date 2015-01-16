@@ -8,10 +8,11 @@ angular.module('crowdsource')
             scope: {
                 project: '='
             },
-            controller: function(Project, User, RemoteFormValidation, $q) {
+            controller: function(Project, Authentication, RemoteFormValidation, $q) {
                 var vm = this;
 
-                vm.user = User.current();
+                // to get the current user's budget
+                vm.user = Authentication.reloadUser();
 
                 vm.pledgeProject = function() {
                     vm.success = false;
@@ -79,7 +80,7 @@ angular.module('crowdsource')
                     // parallel execution of backend calls
                     var promises = $q.all({
                         project: Project.get(vm.project.id).$promise,
-                        user: User.current().$promise
+                        user: Authentication.reloadUser().$promise
                     });
 
                     // will be resolved when both calls are completed

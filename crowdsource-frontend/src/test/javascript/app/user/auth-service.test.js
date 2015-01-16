@@ -1,15 +1,18 @@
 describe('authentication service', function () {
 
-    var $httpBackend, $http, Authentication;
+    var $rootScope, $httpBackend, $http, Authentication;
 
     beforeEach(function () {
         module('crowdsource');
 
-        inject(function (_$httpBackend_, _$http_, _Authentication_) {
+        inject(function (_$rootScope_, _$httpBackend_, _$http_, _Authentication_) {
+            $rootScope = _$rootScope_;
             $httpBackend = _$httpBackend_;
             $http = _$http_;
             Authentication = _Authentication_;
         });
+
+        $httpBackend.whenGET('/user/current').respond(200, {});
 
         localStorage.clear(); // reset
     });
@@ -45,7 +48,6 @@ describe('authentication service', function () {
 
     it('should not use any token if the logout-method was called', function () {
 
-
         // logged-in...
         storeTokenInLocalStorage('xxxx');
         init();
@@ -69,6 +71,8 @@ describe('authentication service', function () {
     function login(token) {
         $httpBackend.expectPOST('/oauth/token', 'username=username&password=password&client_id=web&grant_type=password')
             .respond(200, {token_type: 'bearer', access_token: token});
+
+        $httpBackend.expectGET('/user/current').respond(200, {});
 
         Authentication.login('username', 'password');
         $httpBackend.flush();
@@ -95,10 +99,10 @@ describe('authentication service', function () {
     }
 
     function expectLoggedIn() {
-        expect(Authentication.isLoggedIn()).toBe(true);
+        expect(Authentication.currentUser.loggedIn).toBe(true);
     }
 
     function expectLoggedOut() {
-        expect(Authentication.isLoggedIn()).toBe(false);
+        expect(Authentication.currentUser.loggedIn).toBe(false);
     }
 });

@@ -12,3 +12,38 @@
 .invalid-label {
   color: #f04124 !important;
 }
+
+
+
+// ---
+// Extends Foundation's global buttons styles
+// ---
+
+@mixin box-shadow($options:()) {
+  $options: map-merge((
+    x:      0,
+    y:      2px,
+    blur:   0,
+    spread: 0,
+    color:  #D8D8D8
+  ), $options);
+
+  box-shadow:
+    map-get($options, x)
+    map-get($options, y)
+    map-get($options, blur)
+    map-get($options, spread)
+    map-get($options, color);
+}
+
+
+button, .button {
+
+  // Change Foundation's default transition, mixin in foundation/global.scss
+  @include single-transition(background-color, 100ms);
+
+  // Add a box-shadow
+  &.shadow {
+    @include box-shadow;
+  }
+}

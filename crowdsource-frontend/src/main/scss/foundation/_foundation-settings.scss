@@ -327,18 +327,18 @@ $anchor-font-color-hover: $crowd-color-purple;
 // 02. Alert Boxes
 // - - - - - - - - - - - - - - - - - - - - - - - - -
 
-// $include-html-alert-classes: $include-html-classes;
+$include-html-alert-classes: $include-html-classes;
 
 // We use this to control alert padding.
-// $alert-padding-top: rem-calc(14);
+$alert-padding-top: rem-calc(20);
 // $alert-padding-default-float: $alert-padding-top;
 // $alert-padding-opposite-direction: $alert-padding-top + rem-calc(10);
-// $alert-padding-bottom: $alert-padding-top;
+$alert-padding-bottom: $alert-padding-top;
 
 // We use these to control text style.
 // $alert-font-weight: $font-weight-normal;
-// $alert-font-size: rem-calc(13);
-// $alert-font-color: $white;
+$alert-font-size: rem-calc(16);
+$alert-font-color: $black;
 // $alert-font-color-alt: scale-color($secondary-color, $lightness: -66%);
 
 // We use this for close hover effect.
@@ -346,7 +346,7 @@ $anchor-font-color-hover: $crowd-color-purple;
 
 // We use these to control border styles.
 // $alert-border-style: solid;
-// $alert-border-width: 1px;
+$alert-border-width: 0;
 // $alert-border-color: scale-color($primary-color, $lightness: $alert-function-factor);
 // $alert-bottom-margin: rem-calc(20);
 
@@ -360,7 +360,7 @@ $anchor-font-color-hover: $crowd-color-purple;
 // $alert-close-padding: 9px 6px 4px;
 
 // We use this to control border radius
-// $alert-radius: $global-radius;
+$alert-radius: 3px;
 
 // We use this to control transition effects
 // $alert-transition-speed: 300ms;
@@ -1023,7 +1023,7 @@ $anchor-font-color-hover: $crowd-color-purple;
 // $include-html-media-classes: $include-html-classes;
 
 // We use this to set the progress bar height
-$progress-bar-height: rem-calc(10);
+$progress-bar-height: rem-calc(12);
 // $progress-bar-color: $vapor  ;
 
 // We use these to control the border styles
@@ -1037,9 +1037,9 @@ $progress-bar-height: rem-calc(10);
 // $progress-bar-margin-bottom: rem-calc(10);
 
 // We use these to set the meter colors
-// $progress-meter-color: $primary-color;
+$progress-meter-color: #4BD489;
 // $progress-meter-secondary-color: $secondary-color;
-// $progress-meter-success-color: $success-color;
+$progress-meter-success-color: #4BD489;
 // $progress-meter-alert-color: $alert-color;
 
 // 24. Range Slider

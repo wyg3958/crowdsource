@@ -56,15 +56,79 @@ $su-dble: rem-calc($crowd-font-size * 2);
 // Color Definitions, see other color settings in foundation settings
 // ---
 
-// Colors by name
-// Greys
+// Base Colors
 
-$clr-mine-shaft: #2D2D2D;  // bodycopy
-$clr-boulder:    #787878;  // bodycopy light
-$clr-gallery:    #F0F0F0;  // use for very light bg's
-$clr-alto:       #D8D8D8;  // outlines
+$clr-indigo:          #4B51D4;  // Some kind of blue
+$clr-cranberry:       #D44B95;  // Pink or Red
+$clr-wattle:          #D4CE4B;  // Dirty Yellow
+$clr-emerald:         #4BD489;  // Mint Green
+
+$clr-base-blue:       $clr-indigo;
+$clr-base-red:        $clr-cranberry;
+$clr-base-yellow:     $clr-wattle;
+$clr-base-green:      $clr-emerald;
 
 
+// Shades Blue
+
+$clr-blue-shade-1:    #5A61FE;
+$clr-blue-shade-2:    #4B51D4;
+$clr-blue-shade-3:    #3C41A9;
+$clr-blue-shade-4:    #2D317F;
+$clr-blue-shade-5:    #1E2054;
+$clr-blue-shade-6:    #0F102A;
+
+
+// Shades Red
+
+$clr-red-shade-1:     #FE5AB3;
+$clr-red-shade-2:     #D44B95;
+$clr-red-shade-3:     #A93C77;
+$clr-red-shade-4:     #7F2D59;
+$clr-red-shade-5:     #541E3B;
+$clr-red-shade-6:     #2A0F1E;
+
+
+// Shades Yellow
+
+$clr-yellow-shade-1:  #FEF75A;
+$clr-yellow-shade-2:  #D4CE4B;
+$clr-yellow-shade-3:  #A9A53C;
+$clr-yellow-shade-4:  #7F7B2D;
+$clr-yellow-shade-5:  #54521E;
+$clr-yellow-shade-6:  #2A290F;
+
+
+// Shades Green
+
+$clr-green-shade-1:   #5AFEA4;
+$clr-green-shade-2:   #4BD489;
+$clr-green-shade-3:   #3CA96E;
+$clr-green-shade-4:   #2D7F52;
+$clr-green-shade-5:   #1E5437;
+$clr-green-shade-6:   #0F2A1B;
+
+
+// Black Shades
+
+$clr-mine-shaft:      #2D2D2D;  // Bodycopy
+$clr-boulder:         #787878;  // Lighter Bodycopy
+$clr-gallery:         #F0F0F0;  // Very Light BG's
+$clr-alto:            #D8D8D8;  // Outlines
+$clr-white:           #FFFFFF;  // Pure White
+
+
+// Colors by function
+
+$clr-body:            $clr-mine-shaft;
+$clr-body-light:      $clr-boulder;
+$clr-border:          $clr-alto;
+$clr-bg:              $clr-gallery;
+$clr-teaser-start:    $clr-red-shade-4;
+$clr-teaser-end:      $clr-blue-shade-5;
+
+
+// REMOVE this old Stuff
 // Shades of blue
 
 $clr-bossanova:       #532054;
@@ -76,16 +140,10 @@ $clr-butterfly:       #5D568C;
 $clr-emerald:         #56BF84;
 $clr-emerald-lighter: #35BF72;
 $clr-aquamarine:      #61FFA6;
+$clr-chateau-green:   #43AC6A;
 
 
-// Colors by function
 
-$clr-body:            $clr-mine-shaft;
-$clr-body-light:      $clr-boulder;
-$clr-border:          $clr-alto;
-$clr-bg:              $clr-gallery;
-$clr-teaser-start:    $clr-bossanova;
-$clr-teaser-end:      $clr-butterfly;
 
 
 

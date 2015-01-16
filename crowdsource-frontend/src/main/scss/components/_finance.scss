@@ -3,9 +3,14 @@
 *
 */
 
+
+
 // ---
-// Widget
+// Finance Widget
 // ---
+
+
+// Finance Container
 
 .finance {
   color: $clr-body;
@@ -13,6 +18,8 @@
   border-radius: $border-radius;
 }
 
+
+// Sections
 
 .finance__section {
   padding: 1rem;
@@ -23,6 +30,8 @@
   }
 }
 
+
+// List items
 
 /*ul*/.finance__ul {
   @extend .clearfix;
@@ -37,14 +46,6 @@
       margin-right: 0;
     }
   }
-}
-
-
-/*span*/.finance__subtitle {
-  display: block;
-  font-size: $fs-small;
-  font-weight: $fw-bold;
-  color: $clr-body-light;
 }
 
 
@@ -75,16 +76,29 @@
 }
 
 
+// Type
+
+/*span*/.finance__subtitle {
+display: block;
+font-size: $fs-small;
+font-weight: $fw-bold;
+color: $clr-body-light;
+}
+
+
+// Button, extends Foundation's button styles
+
 /*button*/.finance__btn {
   @extend .flush--bottom;
   width: 100%;
 
-  color: $white;
+  color: $black;
   border-radius: $border-radius;
-  background-color: $clr-emerald;
+  background-color: $clr-green-shade-1;
 
   &:hover {
-    background-color: lighten($clr-emerald, 10%);
+    color: $black;
+    background-color: $clr-green-shade-2;
   }
 
   @media #{$medium-up} {
@@ -93,13 +107,23 @@
 }
 
 
+// Add a disabled style, otherwise Foundation trumps
+
+.finance__btn[disabled] {
+  background-color: $clr-alto;
+  &:hover { background-color: $clr-alto; }
+}
+
+
+// Fields
+
 /*input*/.finance__input.finance__input {  // Give this class a higher CSS specificity
 // to overrule Foundation's input class
 
   width:   140px;
   height:  auto;
   margin:  rem-calc(2px) 0;
-  padding: rem-calc(0px);
+  padding: 0;
   padding-right: rem-calc(38px);
 
   font-size:   $fs-medium;
@@ -123,6 +147,15 @@
     box-shadow:          none;
   }
 
+
+  &[disabled] {
+    background-color: transparent;
+
+    &:hover {
+      background-image: none;
+    }
+  }
+
   // Remove input[type=number] arrows in Chrome, Safari
   &::-webkit-inner-spin-button,
   &::-webkit-outer-spin-button {
@@ -143,7 +176,7 @@
 
 .range-slider {
   height: rem-calc(4px);
-  background-color: #ddd;
+  background-color: #000;
 }
 
 
@@ -153,19 +186,21 @@
   left:   -1px; // Fix a strange pixel offset
   border-top-left-radius: rem-calc(6px);
   border-bottom-left-radius: rem-calc(6px);
+  background: $clr-green-shade-2;
 }
 
 
 .range-slider-handle {
+  $range-slider-handle-bg:   url('../images/range-slider-handle.svg') center center no-repeat;
+  $range-slider-handle-size: rem-calc(28px);
 
-  $range-slider-handle-bg: url('../images/range-slider-handle.svg') center center no-repeat;
-  $range-slider-handle-bg-size: rem-calc(28px);
-
-  background: $range-slider-handle-bg;
-  background-size: $range-slider-handle-bg-size;
+  background:      $range-slider-handle-bg;
+  background-size: $range-slider-handle-size;
 
   &:hover {
-    background: $range-slider-handle-bg;
-    background-size: $range-slider-handle-bg-size;
+    background:      $range-slider-handle-bg;
+    background-size: $range-slider-handle-size;
   }
+
+  .range-slider.disabled & { display: none; }
 }

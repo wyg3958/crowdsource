@@ -2,9 +2,11 @@
 
     <div class="finance">
 
-        <div class="alert-box success" ng-show="pledgingForm.success">Deine Finanzierung war erflogreich.</div>
+        <div class="alert-box push success" ng-show="pledgingForm.success">
+          Deine Finanzierung war erfolgreich.
+        </div>
 
-        <div class="not-logged-in-notification alert-box warning" ng-show="pledgingForm.user.$resolved && !pledgingForm.user.loggedIn">
+        <div class="not-logged-in-notification alert-box push warning" ng-show="pledgingForm.user.$resolved && !pledgingForm.user.loggedIn">
             Bitte <a href="#/login">logge dich ein</a>, um Projekte finanziell zu unterstützen.
         </div>
 
@@ -63,7 +65,7 @@
                     <span class="finance__subtitle">Dein Budget</span>
                 </li>
                 <li class="finance__li--cta">
-                    <button class="finance__btn success" ng-click="pledgingForm.pledgeProject()"
+                    <button class="finance__btn  shadow" ng-click="pledgingForm.pledgeProject()"
                             ng-disabled="pledgingForm.form.$invalid">Jetzt finanzieren</button>
                 </li>
             </ul>

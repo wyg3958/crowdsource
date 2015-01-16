@@ -38,6 +38,11 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
                 templateUrl: 'app/user/activation/user-activation.html',
                 controller: 'UserActivationController as activation'
             })
+            .when('/financingrounds', {
+                templateUrl: 'app/financing-rounds/financing-rounds.html',
+                controller: 'FinancingRoundController as financingRound',
+                requireLogin: true
+            })
             .when('/logout', {
                 templateUrl: 'app/user/logout/user-logout.html',
                 controller: 'UserLogoutController as logout'
@@ -64,4 +69,5 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
                 equalize_on_stack: true
             }
         });
+        console.log(Authentication);
     });

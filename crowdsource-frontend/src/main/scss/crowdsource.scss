@@ -14,48 +14,49 @@
 @import "components/teaser";
 @import "components/main-nav";
 @import "components/footer";
+@import "components/_foundation-datepicker";
 
 .button, button {
-    text-transform: uppercase;
+  text-transform: uppercase;
 }
 
 button:focus {
-    outline: 0;
+  outline: 0;
 }
 
 body {
-    background-color: $crowd-color-light-grey;
+  background-color: $crowd-color-light-grey;
 }
 
 .page-wrapper {
-    min-height: 100%;
-    position: relative;
+  min-height: 100%;
+  position: relative;
 }
 
 .content {
-    padding-bottom: 300px; // Height of sticky footer
-    color: $crowd-color-dark-grey;
+  padding-bottom: 300px; // Height of sticky footer
+  color: $crowd-color-dark-grey;
 }
 
 content-row {
-    display: block;
-    padding: 10px;
+  display: block;
+  padding: 10px;
 
-    @media #{$medium-up} {
-        padding: 40px;
-    }
+  @media #{$medium-up} {
+    padding: 40px;
+  }
 
-    .container {
-        margin: 0 auto;
-        max-width: $row-width;
-    }
+  .container {
+    margin: 0 auto;
+    max-width: $row-width;
+  }
 
-    &.box .container {
-        @extend %box;
-        max-width: rem-calc(500);
-    }
+  &.box .container {
+    @extend %box;
+    max-width: rem-calc(500);
+  }
 
-    &.box-wide .container {
-        @extend %box;
-    }
+  &.box-wide .container {
+    @extend %box;
+  }
 }

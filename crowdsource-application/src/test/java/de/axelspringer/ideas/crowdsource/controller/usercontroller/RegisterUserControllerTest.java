@@ -1,4 +1,4 @@
-package de.axelspringer.ideas.crowdsource.controller;
+package de.axelspringer.ideas.crowdsource.controller.usercontroller;
 
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import org.junit.Test;

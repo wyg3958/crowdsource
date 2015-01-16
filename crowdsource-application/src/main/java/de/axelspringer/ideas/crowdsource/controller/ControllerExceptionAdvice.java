@@ -25,10 +25,12 @@ public class ControllerExceptionAdvice {
     public ErrorResponse handleConstraintViolations(MethodArgumentNotValidException e) {
 
         ErrorResponse errorResponse = new ErrorResponse("field_errors");
-        e.getBindingResult().getFieldErrors().stream()
-                .forEach(fieldError -> errorResponse
-                        .addConstraintViolation(fieldError.getField(), fieldError.getDefaultMessage()));
+        // field errors
+        e.getBindingResult()
+                .getFieldErrors()
+                .forEach(fieldError -> errorResponse.addConstraintViolation(fieldError.getField(), fieldError.getDefaultMessage()));
+        // class level errors
+        e.getBindingResult().getGlobalErrors().forEach(globalError -> errorResponse.addConstraintViolation("global", globalError.getDefaultMessage()));
         return errorResponse;
     }
-
 }

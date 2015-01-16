@@ -62,7 +62,7 @@
             <ul class="footer__ul-heading">
                 <li class="footer__list-item-heading">Axel Springer Crowd</li>
                 <li class="footer__list-item-heading">Hilfe</li>
-                <li class="footer__list-item-heading" ng-if="nav.auth.currentUser.hasRole('ADMIN')">Admin</li>
+                <li class="admin footer__list-item-heading" ng-if="nav.auth.currentUser.hasRole('ADMIN')">Admin</li>
                 <li class="right">Axel Springer SE</li>
             </ul>
 
@@ -84,7 +84,7 @@
                 </li>
                 <li>
                     <ul class="footer__ul-content-secondary" ng-if="nav.auth.currentUser.hasRole('ADMIN')">
-                        <li><a href="#/financingrounds">Finanzierungsrunden</a></li>
+                        <li class="admin"><a href="#/financingrounds">Finanzierungsrunden</a></li>
                     </ul>
                 </li>
             </ul>

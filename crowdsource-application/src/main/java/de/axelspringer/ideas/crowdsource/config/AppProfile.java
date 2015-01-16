@@ -6,5 +6,4 @@ public interface AppProfile {
     String DEV = "dev";
     String CI = "ci";
     String PROD = "prod";
-
 }

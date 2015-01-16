@@ -77,15 +77,15 @@ public class LoginLogoutSteps {
     public void he_enters_valid_credentials() throws Throwable {
 
         PageFactory.initElements(webDriver, loginForm);
-        final String email = MongoUserDetailsService.DEFAULT_EMAIL.substring(0, MongoUserDetailsService.DEFAULT_EMAIL.indexOf("@"));
-        loginForm.login(email, MongoUserDetailsService.DEFAULT_PASS);
+        final String email = MongoUserDetailsService.DEFAULT_USER_EMAIL.substring(0, MongoUserDetailsService.DEFAULT_USER_EMAIL.indexOf("@"));
+        loginForm.login(email, MongoUserDetailsService.DEFAULT_USER_PASS);
     }
 
     @When("^he enters invalid credentials$")
     public void he_enters_invalid_credentials() throws Throwable {
 
         PageFactory.initElements(webDriver, loginForm);
-        loginForm.login("foooooooaaaahhhh", MongoUserDetailsService.DEFAULT_PASS);
+        loginForm.login("foooooooaaaahhhh", MongoUserDetailsService.DEFAULT_USER_PASS);
     }
 
     @Then("^he is redirected to the index page$")

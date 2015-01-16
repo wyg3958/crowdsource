@@ -26,7 +26,7 @@ public class CrowdSourceClient {
     private UrlProvider urlProvider;
 
     public AuthToken authorizeWithDefaultUser() {
-        return authorize(MongoUserDetailsService.DEFAULT_EMAIL, MongoUserDetailsService.DEFAULT_PASS);
+        return authorize(MongoUserDetailsService.DEFAULT_USER_EMAIL, MongoUserDetailsService.DEFAULT_USER_PASS);
     }
 
     public AuthToken authorize(String email, String password) {

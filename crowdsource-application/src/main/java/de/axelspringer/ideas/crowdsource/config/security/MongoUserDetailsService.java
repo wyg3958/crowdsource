@@ -1,10 +1,11 @@
 package de.axelspringer.ideas.crowdsource.config.security;
 
+import de.axelspringer.ideas.crowdsource.config.AppProfile;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.Arrays;
+import java.util.Collections;
 
 import static java.util.stream.Collectors.toList;
 
@@ -20,14 +23,11 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class MongoUserDetailsService implements UserDetailsService {
 
-    public final static String DEFAULT_EMAIL = "crowdsource@axelspringer.de";
-    public final static String DEFAULT_PASS = "einEselGehtZumBaecker!";
+    public final static String DEFAULT_USER_EMAIL = "crowdsource@axelspringer.de";
+    public final static String DEFAULT_USER_PASS = "einEselGehtZumBaecker!";
 
-    @Value("${de.axelspringer.ideas.crowdsource.defaultUser:" + DEFAULT_EMAIL + "}")
-    private String defaultEmailAddress;
-
-    @Value("${de.axelspringer.ideas.crowdsource.defaultPassword:" + DEFAULT_PASS + "}")
-    private String defaultPassword;
+    public final static String DEFAULT_ADMIN_EMAIL = "cs_admin@axelspringer.de";
+    public final static String DEFAULT_ADMIN_PASS = "einAdminGehtZumBaecker!";
 
     @Autowired
     private UserRepository userRepository;
@@ -35,24 +35,38 @@ public class MongoUserDetailsService implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @PostConstruct
-    public void createDefaultUserIfNeeded() {
+    @Autowired
+    private Environment environment;
 
-        long existingUserCount = userRepository.count();
-        if (existingUserCount > 0) {
-            log.debug("There are already {} users in the database - a default user will not be created", existingUserCount);
+    @PostConstruct
+    public void createUsers() {
+
+        if (!environment.acceptsProfiles(AppProfile.DEV, AppProfile.CI)) {
+            log.info("not creating or updating any users as the application is not running in profile DEV or CI");
             return;
         }
 
-        log.info("Creating default user {} with password {}", defaultEmailAddress, defaultPassword);
+        log.info("creating or updating users: {}:{} and {}:{}", DEFAULT_USER_EMAIL, DEFAULT_USER_PASS, DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_PASS);
 
-        String encodedPassword = passwordEncoder.encode(defaultPassword);
+        // default user
+        UserEntity defaultUser = userRepository.findByEmail(DEFAULT_USER_EMAIL);
+        if (defaultUser == null) {
+            defaultUser = new UserEntity(DEFAULT_USER_EMAIL);
+        }
+        defaultUser.setPassword(passwordEncoder.encode(DEFAULT_USER_PASS));
+        defaultUser.setActivated(true);
+        defaultUser.setRoles(Collections.singletonList(Roles.ROLE_USER));
+        userRepository.save(defaultUser);
 
-        UserEntity user = new UserEntity(defaultEmailAddress, encodedPassword);
-        //user.addRole(Roles.ROLE_ADMIN);
-        user.setActivated(true);
-
-        userRepository.save(user);
+        // admin
+        UserEntity admin = userRepository.findByEmail(DEFAULT_ADMIN_EMAIL);
+        if (admin == null) {
+            admin = new UserEntity(DEFAULT_ADMIN_EMAIL);
+        }
+        admin.setPassword(passwordEncoder.encode(DEFAULT_ADMIN_PASS));
+        admin.setActivated(true);
+        admin.setRoles(Arrays.asList(Roles.ROLE_USER, Roles.ROLE_ADMIN));
+        userRepository.save(admin);
     }
 
     @Override

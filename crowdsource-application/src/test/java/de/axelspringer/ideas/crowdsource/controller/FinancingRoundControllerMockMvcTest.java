@@ -1,6 +1,5 @@
 package de.axelspringer.ideas.crowdsource.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import de.axelspringer.ideas.crowdsource.model.persistence.FinancingRoundEntity;
@@ -33,10 +32,10 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -61,15 +60,20 @@ public class FinancingRoundControllerMockMvcTest {
     private WebApplicationContext webApplicationContext;
 
     private MockMvc mockMvc;
+    private DateTime fixedDate;
 
     @Before
     public void init() {
 
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        reset(financingRoundRepository);
+        reset(userRepository);
 
         List<FinancingRoundEntity> financingRoundEntities = new ArrayList<>();
-        financingRoundEntities.add(financingRoundEntity(new DateTime().minusDays(100), new DateTime().minusDays(50)));
-        financingRoundEntities.add(financingRoundEntity(new DateTime().minusDays(40), new DateTime().minusDays(30)));
+
+        fixedDate = DateTime.parse("2015-01-10");
+        financingRoundEntities.add(financingRoundEntity(fixedDate.minusDays(100), fixedDate.minusDays(50)));
+        financingRoundEntities.add(financingRoundEntity(fixedDate.minusDays(40), fixedDate.minusDays(30)));
         when(financingRoundRepository.findAll()).thenReturn(financingRoundEntities);
 
         List<UserEntity> userEntities = new ArrayList<>();
@@ -81,19 +85,46 @@ public class FinancingRoundControllerMockMvcTest {
     }
 
     @Test
-    public void testFinancingRounds() throws Exception {
+     public void testFinancingRounds() throws Exception {
+
+        when(financingRoundRepository.findActive(any()))
+                .thenReturn(financingRoundEntity(fixedDate.minusDays(100), fixedDate.minusDays(50)));
 
         final MvcResult mvcResult = mockMvc
                 .perform(get("/financingrounds"))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        final String contentAsString = mvcResult.getResponse().getContentAsString();
-        final List<FinancingRound> financingRounds = objectMapper.readValue(contentAsString, new TypeReference<List<FinancingRound>>() {
-        });
-
-        assertEquals(2, financingRounds.size());
+        assertThat(mvcResult.getResponse().getContentAsString(), is("[" +
+                "{\"id\":null,\"startDate\":1412200800000,\"endDate\":1416524400000,\"budget\":null,\"active\":false}," +
+                "{\"id\":null,\"startDate\":1417388400000,\"endDate\":1418252400000,\"budget\":null,\"active\":false}]"));
         verify(financingRoundRepository, times(1)).findAll();
+    }
+
+    @Test
+    public void testGetActiveFinancingRound() throws Exception {
+
+        when(financingRoundRepository.findActive(any()))
+                .thenReturn(financingRoundEntity(fixedDate.minusDays(100), fixedDate.minusDays(50)));
+
+        final MvcResult mvcResult = mockMvc
+                .perform(get("/financinground/active"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"startDate\":1412200800000,\"endDate\":1416524400000,\"active\":false}"));
+        verify(financingRoundRepository, times(1)).findActive(any());
+    }
+
+    @Test
+    public void testGetActiveFinancingRoundShouldReturn404IfNoneIsActive() throws Exception {
+
+        when(financingRoundRepository.findActive(any())).thenReturn(null);
+
+        mockMvc.perform(get("/financinground/active"))
+                .andExpect(status().isNotFound());
+
+        verify(financingRoundRepository, times(1)).findActive(any());
     }
 
     @Test

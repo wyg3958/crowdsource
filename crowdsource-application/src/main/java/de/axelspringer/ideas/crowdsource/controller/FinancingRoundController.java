@@ -1,9 +1,12 @@
 package de.axelspringer.ideas.crowdsource.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import de.axelspringer.ideas.crowdsource.config.security.Roles;
+import de.axelspringer.ideas.crowdsource.exceptions.ResourceNotFoundException;
 import de.axelspringer.ideas.crowdsource.model.persistence.FinancingRoundEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.model.presentation.FinancingRound;
+import de.axelspringer.ideas.crowdsource.model.presentation.project.PublicFinancingRoundInformationView;
 import de.axelspringer.ideas.crowdsource.repository.FinancingRoundRepository;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import org.joda.time.DateTime;
@@ -23,7 +26,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@Secured(Roles.ROLE_ADMIN)
 public class FinancingRoundController {
 
     @Autowired
@@ -32,7 +34,8 @@ public class FinancingRoundController {
     @Autowired
     private UserRepository userRepository;
 
-    @RequestMapping(value = "/financingrounds", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Secured(Roles.ROLE_ADMIN)
+    @RequestMapping(value = "/financingrounds", method = RequestMethod.GET)
     public List<FinancingRound> financingRounds() {
 
         return financingRoundRepository
@@ -42,6 +45,19 @@ public class FinancingRoundController {
                 .collect(Collectors.toList());
     }
 
+    @JsonView(PublicFinancingRoundInformationView.class)
+    @RequestMapping(value = "/financinground/active", method = RequestMethod.GET)
+    public FinancingRound getActive() {
+
+        final FinancingRoundEntity financingRoundEntity = financingRoundRepository.findActive(DateTime.now());
+        if (financingRoundEntity == null) {
+            throw new ResourceNotFoundException();
+        }
+
+        return new FinancingRound(financingRoundEntity);
+    }
+
+    @Secured(Roles.ROLE_ADMIN)
     @RequestMapping(value = "financinground", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public FinancingRound startFinancingRound(@Valid @RequestBody FinancingRound financingRound) {
@@ -64,11 +80,14 @@ public class FinancingRoundController {
         financingRoundEntity.setStartDate(new DateTime());
         financingRoundEntity.setEndDate(financingRound.getEndDate());
         financingRoundEntity.setBudget(financingRound.getBudget());
+        financingRoundEntity.setBudgetPerUser(budgetPerUser);
+        financingRoundEntity.setUserCount(userEntities.size());
         financingRoundRepository.save(financingRoundEntity);
 
         return new FinancingRound(financingRoundEntity);
     }
 
+    @Secured(Roles.ROLE_ADMIN)
     @RequestMapping(value = "financinground/{id}/cancel", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
     public FinancingRound stopFinancingRound(@PathVariable String id) {

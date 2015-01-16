@@ -21,7 +21,7 @@ public class FinancingRoundEntity {
     /**
      * The amount of money available in the financing round
      */
-    private Integer value;
+    private Integer budget;
 
     @CreatedDate
     private DateTime createdDate;

@@ -42,13 +42,13 @@ public class FinancingRoundController {
     public FinancingRound startFinancingRound(@Valid @RequestBody FinancingRound financingRound) {
 
         //the round should end at the end of the day
-        final DateTime end = financingRound.getEnd();
+        final DateTime end = financingRound.getEndDate();
         final DateTime modifiedEnd = new DateTime(end.getYear(), end.getMonthOfYear(), end.getDayOfMonth(), 23, 59, 59);
-        financingRound.setEnd(modifiedEnd);
+        financingRound.setEndDate(modifiedEnd);
 
         // flush user budget and set new budget
         final List<UserEntity> userEntities = userRepository.findAll();
-        final int budgetPerUser = budgetPerUser(financingRound.getValue(), userEntities.size());
+        final int budgetPerUser = budgetPerUser(financingRound.getBudget(), userEntities.size());
         userEntities.forEach(userEntity -> {
             userEntity.setBudget(budgetPerUser);
             userRepository.save(userEntity);
@@ -57,8 +57,8 @@ public class FinancingRoundController {
         // create round
         final FinancingRoundEntity financingRoundEntity = new FinancingRoundEntity();
         financingRoundEntity.setStartDate(new DateTime());
-        financingRoundEntity.setEndDate(financingRound.getEnd());
-        financingRoundEntity.setValue(financingRound.getValue());
+        financingRoundEntity.setEndDate(financingRound.getEndDate());
+        financingRoundEntity.setBudget(financingRound.getBudget());
         financingRoundRepository.save(financingRoundEntity);
 
         return new FinancingRound(financingRoundEntity);

@@ -2,11 +2,11 @@ describe('user activation view', function () {
 
     var $httpBackend, $location, activationForm;
 
-    beforeEach(function() {
+    beforeEach(function () {
         module('crowdsource');
         module('crowdsource.templates');
 
-        inject(function($compile, $rootScope, $templateCache, $controller, _$httpBackend_, _$location_, User, Authentication, RemoteFormValidation) {
+        inject(function ($compile, $rootScope, $templateCache, $controller, _$httpBackend_, _$location_, User, Authentication, RemoteFormValidation) {
             var $scope = $rootScope.$new();
             $httpBackend = _$httpBackend_;
             $location = _$location_;
@@ -58,7 +58,7 @@ describe('user activation view', function () {
             "repeatedPassword": "secret!!!", // actually not needed for the backend, but will be ignored by the backend
             "activationToken": "12345"
         })
-        .respond(statusCode, responseBody);
+            .respond(statusCode, responseBody);
     }
 
     function expectBackendLoginCallAndRespond(statusCode, responseBody) {
@@ -84,7 +84,7 @@ describe('user activation view', function () {
         expectNoValidationError('repeatedPassword');
     });
 
-    it('should POST the data to the server, request an access token and redirect to index page', function() {
+    it('should POST the data to the server, request an access token and redirect to index page', function () {
         expectBackendActivationCallAndRespond(201);
         expectBackendLoginCallAndRespond(200);
 
@@ -94,7 +94,7 @@ describe('user activation view', function () {
         expect($location.path()).toBe('/');
     });
 
-    it('should disable the submit button and change it\'s text while loading', function() {
+    it('should disable the submit button and change it\'s text while loading', function () {
         expectBackendActivationCallAndRespond(201);
         expectBackendLoginCallAndRespond(200);
 
@@ -112,7 +112,7 @@ describe('user activation view', function () {
         expect(activationForm.getSubmitButton()).not.toBeDisabled();
     });
 
-    it('should show an unknown error when the activation call results in 500', function() {
+    it('should show an unknown error when the activation call results in 500', function () {
         expectBackendActivationCallAndRespond(500);
         spyOn($location, 'path');
 
@@ -124,7 +124,7 @@ describe('user activation view', function () {
         expect($location.path).not.toHaveBeenCalled();
     });
 
-    it('should show an unknown error when the token call results in 500', function() {
+    it('should show an unknown error when the token call results in 500', function () {
         expectBackendActivationCallAndRespond(201);
         expectBackendLoginCallAndRespond(500);
         spyOn($location, 'path');
@@ -194,7 +194,7 @@ describe('user activation view', function () {
         expectValidationError('repeatedPassword', 'remote_equal');
     });
 
-    it('should show an appropriate error message if the server responds with "already_activated"', function() {
+    it('should show an appropriate error message if the server responds with "already_activated"', function () {
         expectBackendActivationCallAndRespond(400, { "errorCode": "already_activated" });
 
         fillAndSubmitForm();
@@ -204,7 +204,7 @@ describe('user activation view', function () {
         expect(activationForm.getGeneralError('remote_already_activated')).toExist();
     });
 
-    it('should show an appropriate error message if the server responds with "activation_token_invalid"', function() {
+    it('should show an appropriate error message if the server responds with "activation_token_invalid"', function () {
         expectBackendActivationCallAndRespond(400, { "errorCode": "activation_token_invalid" });
 
         fillAndSubmitForm();
@@ -214,7 +214,7 @@ describe('user activation view', function () {
         expect(activationForm.getGeneralError('remote_activation_token_invalid')).toExist();
     });
 
-    it('should show an appropriate error message if the server responds with 404', function() {
+    it('should show an appropriate error message if the server responds with 404', function () {
         expectBackendActivationCallAndRespond(404);
 
         fillAndSubmitForm();
@@ -224,7 +224,7 @@ describe('user activation view', function () {
         expect(activationForm.getGeneralError('remote_not_found')).toExist();
     });
 
-    it('should clear the remote_equal validation error once the user starts typing again', function() {
+    it('should clear the remote_equal validation error once the user starts typing again', function () {
         activationForm.password.getInputField().val('secret!!!').trigger('input');
         activationForm.repeatedPassword.getInputField().val('something else!').trigger('input');
 

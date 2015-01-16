@@ -26,14 +26,9 @@ angular.module('crowdsource')
                 return;
             }
 
-            vm.financingRound = {
-                end: +vm.endDate,
-                value: vm.budget
-            };
-
             vm.saving = true;
 
-            FinancingRound.start(vm.financingRound)
+            FinancingRound.start(vm.newRound)
                 .then(function () {
                     refreshView(true);
                     alert("Finanzierungsrunde gestartet.");
@@ -48,6 +43,10 @@ angular.module('crowdsource')
 
 
         vm.stop = function (financingRound) {
+
+            if (!confirm("Wilst Du diese Runde wirklich vorzeitig beenden?")) {
+                return;
+            }
 
             vm.stopping = true;
 

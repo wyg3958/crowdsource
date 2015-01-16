@@ -14,10 +14,10 @@
         </thead>
         <tbody>
         <tr ng-repeat="fr in financingRound.allFinancingRounds">
-                <td>{{ fr.start | date }}</td>
-                <td>{{ fr.end | date}}</td>
-                <td>{{ fr.value }}</td>
-                <td>{{ fr.active ? 'ja' : 'nein'}}</td>
+            <td>{{ fr.startDate | date: 'short' }}</td>
+            <td>{{ fr.endDate | date: 'short'}}</td>
+            <td>{{ fr.budget }}</td>
+            <td>{{ fr.active ? 'ja' : 'nein'}}</td>
                 <td>
                     <button ng-if="fr.active" class="fail" ng-click="financingRound.stop(fr)">
                         beenden
@@ -38,7 +38,7 @@
                         <span ng-message="required">Bitte wähle das Enddatum der Finanzierungsrunde</span>
                     </span>
 
-                    <input datepicker="" name="endDate" ng-model="financingRound.endDate"
+                    <input type="text" datepicker="" name="endDate" ng-model="financingRound.newRound.endDate"
                            placeholder="Bitte klicken..." required readonly>
                 </label>
             </div>
@@ -60,7 +60,7 @@
 
                 <div class="table">
                     <div class="table-cell full-width">
-                        <input type="number" name="budget" ng-model="financingRound.budget" class="text-right"
+                        <input type="number" name="budget" ng-model="financingRound.newRound.budget" class="text-right"
                                placeholder="0"
                                required ng-pattern="/^[0-9]+$/i" min="1">
                     </div>

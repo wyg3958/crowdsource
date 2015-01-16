@@ -9,6 +9,7 @@ import org.joda.time.DateTime;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor
 @Data
@@ -16,24 +17,26 @@ import javax.validation.constraints.Min;
 @FinancingRoundNotColliding
 public class FinancingRound {
 
-    private DateTime start = new DateTime();
+    private DateTime startDate = new DateTime();
 
+    @NotNull
     @Future(message = "end-date-in-future")
-    private DateTime end;
+    private DateTime endDate;
 
+    @NotNull
     @Min(value = 1l, message = "at-least-one-dollar")
-    private Integer value;
+    private Integer budget;
 
     private String id;
 
     private boolean active;
 
     public FinancingRound(FinancingRoundEntity financingRoundEntity) {
-        start = financingRoundEntity.getStartDate();
-        end = financingRoundEntity.getEndDate();
-        value = financingRoundEntity.getValue();
+        startDate = financingRoundEntity.getStartDate();
+        endDate = financingRoundEntity.getEndDate();
+        budget = financingRoundEntity.getBudget();
         id = financingRoundEntity.getId();
         long now = DateTime.now().getMillis();
-        active = start.getMillis() < now && end.getMillis() > now;
+        active = startDate.getMillis() < now && endDate.getMillis() > now;
     }
 }

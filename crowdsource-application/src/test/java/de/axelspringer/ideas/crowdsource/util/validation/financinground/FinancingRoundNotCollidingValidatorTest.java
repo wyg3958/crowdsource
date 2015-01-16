@@ -72,8 +72,8 @@ public class FinancingRoundNotCollidingValidatorTest {
 
     FinancingRound financingRound(int startDay, int endDay) {
         FinancingRound financingRound = new FinancingRound();
-        financingRound.setStart(new DateTime(2015, 1, startDay, 0, 0, 0, 0));
-        financingRound.setEnd(new DateTime(2015, 1, endDay, 0, 0, 0, 0));
+        financingRound.setStartDate(new DateTime(2015, 1, startDay, 0, 0, 0, 0));
+        financingRound.setEndDate(new DateTime(2015, 1, endDay, 0, 0, 0, 0));
         return financingRound;
     }
 }

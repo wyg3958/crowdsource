@@ -118,30 +118,26 @@ $clr-alto:            #D8D8D8;  // Outlines
 $clr-white:           #FFFFFF;  // Pure White
 
 
+// Legacy Colors
+
+$clr-bossanova:       #532054;
+$clr-butterfly:       #5D568C;
+$clr-emerald:         #56BF84;
+$clr-emerald-lighter: #35BF72;
+$clr-aquamarine:      #61FFA6;
+$clr-chateau-green:   #43AC6A;
+$clr-blue-bell:       #8C82C8;
+
+
 // Colors by function
 
 $clr-body:            $clr-mine-shaft;
 $clr-body-light:      $clr-boulder;
 $clr-border:          $clr-alto;
 $clr-bg:              $clr-gallery;
-$clr-teaser-start:    $clr-red-shade-4;
+$clr-teaser-start:    $clr-bossanova;
 $clr-teaser-end:      $clr-blue-shade-5;
 
-
-// REMOVE this old Stuff
-// Shades of blue
-
-$clr-bossanova:       #532054;
-$clr-butterfly:       #5D568C;
-$clr-blue-bell:       #8C82C8;
-
-
-// Shades of green
-
-$clr-emerald:         #56BF84;
-$clr-emerald-lighter: #35BF72;
-$clr-aquamarine:      #61FFA6;
-$clr-chateau-green:   #43AC6A;
 
 // Gradient for divider
 $clr-solar-light-start:  $clr-butterfly;

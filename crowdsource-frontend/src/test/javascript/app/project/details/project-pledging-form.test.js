@@ -48,7 +48,7 @@ describe('project pledging form', function () {
     function prepareMocks(data) {
         $scope.project = data.project;
         spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(data.isLoggedIn);
-        $httpBackend.expectGET('/financinground/current').respond(data.financingRoundResponse.statusCode, data.financingRoundResponse.body);
+        $httpBackend.expectGET('/financinground/active').respond(data.financingRoundResponse.statusCode, data.financingRoundResponse.body);
         $httpBackend.expectGET('/user/current').respond(data.userResponse.statusCode, data.userResponse.body);
     }
 
@@ -180,7 +180,7 @@ describe('project pledging form', function () {
 
         $scope.project = { $resolved: true, pledgeGoal: 100, pledgedAmount: 50, status: 'PUBLISHED' };
         spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(false);
-        $httpBackend.expectGET('/financinground/current').respond(200, { active: true });
+        $httpBackend.expectGET('/financinground/active').respond(200, { active: true });
 
         var elements = compileDirective();
 
@@ -352,7 +352,7 @@ describe('project pledging form', function () {
 
         $scope.project = { $resolved: true, pledgeGoal: 100, pledgedAmount: 50, status: 'PUBLISHED' };
         spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(false);
-        $httpBackend.expectGET('/financinground/current').respond(200, { active: true });
+        $httpBackend.expectGET('/financinground/active').respond(200, { active: true });
 
         var elements = compileDirective();
         $httpBackend.flush();
@@ -365,7 +365,7 @@ describe('project pledging form', function () {
 
         $scope.project = { $resolved: true, pledgeGoal: 100, pledgedAmount: 50, status: 'FULLY_PLEDGED' };
         spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(false);
-        $httpBackend.expectGET('/financinground/current').respond(200, { active: true });
+        $httpBackend.expectGET('/financinground/active').respond(200, { active: true });
 
         var elements = compileDirective();
         $httpBackend.flush();

@@ -1,6 +1,8 @@
-package de.axelspringer.ideas.crowdsource.controller;
+package de.axelspringer.ideas.crowdsource.controller.usercontroller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.axelspringer.ideas.crowdsource.controller.ControllerExceptionAdvice;
+import de.axelspringer.ideas.crowdsource.controller.UserController;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.UserRegistration;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
@@ -28,7 +30,9 @@ import javax.annotation.Resource;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @RunWith(SpringJUnit4ClassRunner.class)

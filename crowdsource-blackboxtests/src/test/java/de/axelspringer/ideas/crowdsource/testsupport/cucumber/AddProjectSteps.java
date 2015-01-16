@@ -1,6 +1,7 @@
 package de.axelspringer.ideas.crowdsource.testsupport.cucumber;
 
 import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
@@ -21,6 +22,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.startsWith;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class AddProjectSteps {
 
@@ -106,4 +109,18 @@ public class AddProjectSteps {
         assertThat(projects, hasItem(Matchers.<Project>hasProperty("shortDescription", endsWith("\u2026"))));
     }
 
+    @And("^the tooltip for currency conversion is not visible$")
+    public void the_tooltip_for_currency_conversion_is_not_visible() throws Throwable {
+        assertFalse(addProjectForm.currencyConversionTooltipVisible());
+    }
+
+    @When("^he hovers the currency element$")
+    public void he_hovers_the_currency_element() throws Throwable {
+        addProjectForm.hoverCurrency();
+    }
+
+    @Then("^the tooltip for currency conversion is visible$")
+    public void the_tooltip_for_currency_conversion_is_visible() throws Throwable {
+        assertTrue(addProjectForm.currencyConversionTooltipVisible());
+    }
 }

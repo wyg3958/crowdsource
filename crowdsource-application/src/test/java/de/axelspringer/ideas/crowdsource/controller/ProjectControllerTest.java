@@ -79,7 +79,7 @@ public class ProjectControllerTest {
 
     @Before
     public void setup() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         reset(projectRepository);
         reset(pledgeRepository);
         reset(userRepository);

@@ -49,10 +49,15 @@
 
                 <p ellipsis ng-bind="project.shortDescription"></p>
 
-                <div>
+                <div class="metrics">
                     <progress-bar value="project.pledgedAmount" maximum="project.pledgeGoal"></progress-bar>
-                    <span class="label backers-count">{{ project.backers }}</span><span class="backers-text">{{project.backers == 1 ? "Backer" : "Backers"}}</span>
-                    <span class="label pledged-amount">{{ project.pledgedAmount | number }} $</span> Investment
+
+                    <div class="metrics-numbers">
+                        <span class="label radius backers-count">{{ project.backers }}</span>
+                        <span class="backers-text">{{project.backers == 1 ? "Backer" : "Backers"}}</span>
+
+                        <span class="label radius pledged-amount">${{ project.pledgedAmount | number }}</span> Investment
+                    </div>
                 </div>
             </div>
         </li>

@@ -52,11 +52,16 @@
     }
 
     .project-tile {
+        $project-tile-padding: 20px;
+        $project-tile-metrics-height: 50px;
+
         @extend .panel;
         @extend %light;
         @extend .radius;
         margin-bottom: 0;
+        padding-bottom: $project-tile-metrics-height + 20px;
         cursor: pointer;
+        position: relative; // for positioning the metrics absolutely
 
         h1 {
             @include limit-lines(2, 20px, 1.5);
@@ -65,6 +70,24 @@
 
         p {
             @include limit-lines(4, 16px, 1.5);
+        }
+
+        .metrics {
+            height: $project-tile-metrics-height;
+            position: absolute;
+            bottom: $project-tile-padding;
+
+            // because of absolute positioning, the width 100% is
+            // as wide as the tile, ignoring the tile's padding -> substract the padding
+            width: calc(100% - (#{$project-tile-padding} * 2));
+
+            .label {
+                margin: 0 5px 0 15px;
+            }
+
+            .label:first-child {
+                margin-left: 1px;
+            }
         }
     }
 }

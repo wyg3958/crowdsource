@@ -29,17 +29,17 @@ public class CommentSteps {
 
     private String testComment;
 
-    @And("^a comment for the project was submitted$")
-    public void a_comment_for_the_project_was_submitted() throws Throwable {
+    @And("^a comment for the project was submitted in the meantime$")
+    public void a_comment_for_the_project_was_submitted_in_the_meantime() throws Throwable {
 
         final CrowdSourceClient.AuthToken token = crowdSourceClient.authorizeWithDefaultUser();
         crowdSourceClient.comment(projectDetailSteps.getCreatedProject(), "some valid comment is a good thing for a test", token);
     }
 
-    @And("^a comment is visible$")
-    public void a_comment_is_visible() throws Throwable {
+    @And("^(\\d) comments are visible$")
+    public void a_comment_is_visible(int commentCount) throws Throwable {
 
-        assertTrue(projectDetailPage.comments().size() > 0);
+        assertTrue(projectDetailPage.comments().size() == commentCount);
     }
 
     @When("^the user submits a comment$")
@@ -47,6 +47,7 @@ public class CommentSteps {
 
         testComment = "this is a test comment and was created at: " + System.currentTimeMillis();
         projectDetailPage.submitComment(testComment);
+        projectDetailPage.waitForDetailsToBeLoaded();
     }
 
     @Then("^The comment is visible as the last in the comments-list$")

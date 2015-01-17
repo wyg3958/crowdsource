@@ -37,12 +37,11 @@ angular.module('crowdsource')
                         })
                         .then(function() {
                             vm.success = true;
-
-                            vm.form.$setPristine();
                         })
                         .finally(function() {
                             vm.pledge.amount = 0;
                             vm.saving = false;
+                            vm.form.$setPristine();
                         });
                 };
 

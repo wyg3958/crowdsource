@@ -20,4 +20,25 @@
         white-space: pre-wrap;
         line-height: rem-calc(24);
     }
+
+    .comments {
+        .comment-user {
+            color: $crowd-color-purple;
+        }
+
+        .comment-date {
+            font-size: $fs-small;
+        }
+
+        .comment-comment {
+            margin-top: 10px;
+            white-space: pre-wrap;
+        }
+    }
+
+    .new-comment {
+        textarea {
+            height: 100px;
+        }
+    }
 }

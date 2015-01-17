@@ -22,6 +22,10 @@
     }
 
     .comments {
+        .comment {
+            background-color: $white;
+        }
+
         .comment-user {
             color: $crowd-color-purple;
         }

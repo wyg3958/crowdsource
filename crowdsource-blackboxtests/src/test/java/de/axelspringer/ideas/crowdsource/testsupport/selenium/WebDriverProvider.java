@@ -70,6 +70,8 @@ public class WebDriverProvider {
             DesiredCapabilities capabilities = DesiredCapabilities.phantomjs();
             capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, phantomBinaryPath);
             DRIVER_INSTANCE = new PhantomJSDriver(capabilities);
+            // "disable" alerts
+            DRIVER_INSTANCE.executeScript("window.alert = function () {}");
         } else if (new File(chromeBinaryPath).exists()) {
             LOG.info("providing chromedriver");
             System.setProperty("webdriver.chrome.driver", chromeBinaryPath);

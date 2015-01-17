@@ -24,7 +24,7 @@
             <textarea class="newcomment-comment" name="comment" ng-model="projectComments.newComment.comment" required></textarea>
         </label>
 
-        <button type="submit" class="success margin-top"
+        <button type="submit" class="success margin-top newcomment-submit"
                 ng-click="projectComments.storeComment(projectComments.newComment)"
                 ng-disabled="projectComments.form.$invalid || projectComments.loading">
 

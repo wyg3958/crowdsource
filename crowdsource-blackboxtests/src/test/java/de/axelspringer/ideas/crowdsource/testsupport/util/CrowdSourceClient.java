@@ -3,6 +3,7 @@ package de.axelspringer.ideas.crowdsource.testsupport.util;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.axelspringer.ideas.crowdsource.config.security.MongoUserDetailsService;
+import de.axelspringer.ideas.crowdsource.model.presentation.Comment;
 import de.axelspringer.ideas.crowdsource.model.presentation.FinancingRound;
 import de.axelspringer.ideas.crowdsource.model.presentation.Pledge;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
@@ -18,7 +19,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import sun.security.util.PendingException;
 
 import java.util.Arrays;
 
@@ -61,8 +61,7 @@ public class CrowdSourceClient {
     public FinancingRound getActiveFinanceRound() {
         try {
             return restTemplate.getForObject(urlProvider.applicationUrl() + "/financinground/active", FinancingRound.class);
-        }
-        catch (HttpClientErrorException e) {
+        } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 return null;
             }
@@ -80,6 +79,10 @@ public class CrowdSourceClient {
         return restTemplate.exchange(urlProvider.applicationUrl() + "/project/{id}/pledge", HttpMethod.POST, requestEntity, Void.class, project.getId());
     }
 
+    public void comment(Project project, String comment, AuthToken token) {
+        final String commentUrl = urlProvider.applicationUrl() + "/project/{id}/comment";
+        restTemplate.exchange(commentUrl, HttpMethod.POST, createRequestEntity(new Comment(null, null, comment), token), Void.class, project.getId());
+    }
 
     private <T> HttpEntity<T> createRequestEntity(T body, AuthToken authToken) {
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
@@ -90,11 +93,6 @@ public class CrowdSourceClient {
 
     public RestTemplate getUnderlyingClient() {
         return restTemplate;
-    }
-
-    public void comment(Project project, String comment) {
-        // TODO
-        throw new PendingException();
     }
 
     @Data

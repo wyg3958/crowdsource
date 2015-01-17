@@ -42,7 +42,7 @@ public class CommentController {
     public List<Comment> comments(@PathVariable String projectId) {
 
         final ProjectEntity projectEntity = project(projectId);
-        return commentRepository.findByProject(projectEntity).stream().map(this::comment).collect(Collectors.toList());
+        return commentRepository.findByProject(projectEntity).stream().map(Comment::new).collect(Collectors.toList());
     }
 
     @RequestMapping(value = "/comment", method = RequestMethod.POST)
@@ -64,9 +64,5 @@ public class CommentController {
             throw new ResourceNotFoundException();
         }
         return projectEntity;
-    }
-
-    private Comment comment(CommentEntity commentEntity) {
-        return new Comment(commentEntity.getCreatedDate(), commentEntity.getUser().getEmail(), commentEntity.getComment());
     }
 }

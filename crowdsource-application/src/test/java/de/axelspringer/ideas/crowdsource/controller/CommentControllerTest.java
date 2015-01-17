@@ -73,7 +73,7 @@ public class CommentControllerTest {
 
         reset(projectRepository);
 
-        final UserEntity userEntity = new UserEntity("test@test.de", "password");
+        final UserEntity userEntity = new UserEntity("test.name@test.de", "password");
         final ProjectEntity projectEntity = new ProjectEntity(userEntity, new Project());
         when(userRepository.findByEmail(anyString())).thenReturn(userEntity);
         when(projectRepository.findOne(TEST_PROJECT_ID)).thenReturn(projectEntity);
@@ -87,7 +87,7 @@ public class CommentControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        assertThat(mvcResult.getResponse().getContentAsString(), is("[{\"created\":null,\"userName\":\"test@test.de\",\"comment\":\"some comment\"}]"));
+        assertThat(mvcResult.getResponse().getContentAsString(), is("[{\"created\":null,\"userName\":\"Test Name\",\"comment\":\"some comment\"}]"));
 
         verify(projectRepository).findOne(TEST_PROJECT_ID);
         verify(commentRepository).findByProject(any(ProjectEntity.class));

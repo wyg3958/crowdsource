@@ -8,6 +8,8 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +21,12 @@ import static de.axelspringer.ideas.crowdsource.testsupport.selenium.AngularJsUt
 @Component
 public class FinancingRoundsPage {
 
-    private final DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.yy HH:mm");
     @Autowired
     private WebDriverProvider webDriverProvider;
+
     @Autowired
     private UrlProvider urlProvider;
+
     @Autowired
     private SeleniumWait seleniumWait;
 
@@ -32,27 +35,84 @@ public class FinancingRoundsPage {
     }
 
     public void confirmErrorAlert() {
-        webDriverProvider.provideDriver().switchTo().alert().accept();
+        seleniumWait.waitForAlert().accept();
     }
 
     public void waitForPageLoad() {
-        seleniumWait.until(interpolationCompletedOfElementLocated(By.className("financingrounds")));
+        seleniumWait.until(interpolationCompletedOfElementLocated(By.className("financingRounds")));
     }
 
     public List<FinancingRound> getFinancingRounds() {
 
         final List<FinancingRound> financingRounds = new ArrayList<>();
-        webDriverProvider.provideDriver().findElementsByClassName("financinground").forEach(financingRoundElement -> {
-            FinancingRound financingRound = new FinancingRound();
-            // format: 16.01.15 13:35
-            final String startDateString = financingRoundElement.findElement(By.className("startDate")).getText();
-            financingRound.setStartDate(DateTime.parse(startDateString, formatter));
-            final String endDateString = financingRoundElement.findElement(By.className("endDate")).getText();
-            financingRound.setEndDate(DateTime.parse(endDateString, formatter));
-            financingRound.setBudget(Integer.valueOf(financingRoundElement.findElement(By.className("budget")).getText()));
-            financingRound.setActive("ja".equals(financingRoundElement.findElement(By.className("active")).getText()));
-            financingRounds.add(financingRound);
+        webDriverProvider.provideDriver().findElementsByClassName("financingRound").forEach(financingRoundElement -> {
+            financingRounds.add(financingRound(financingRoundElement));
         });
         return financingRounds;
+    }
+
+    public void cancelFinancingRound(FinancingRound financingRound) {
+
+        final RemoteWebDriver webDriver = webDriverProvider.provideDriver();
+        webDriver.findElementsByClassName("financingRound").forEach(financingRoundElement -> {
+            if (financingRound.getId().equals(financingRoundElement.getAttribute("fr_id"))) {
+                financingRoundElement.findElement(By.className("cancel")).click();
+                // confirm that we want to cancel
+                seleniumWait.waitForAlert().accept();
+                // click-away the info dialog
+                seleniumWait.waitForAlert().accept();
+            }
+        });
+    }
+
+    public void startFinancingRound(DateTime endDate, int budget) {
+
+        final RemoteWebDriver webDriver = webDriverProvider.provideDriver();
+
+        webDriver.findElement(By.className("newRoundBudget")).sendKeys(Integer.toString(budget));
+
+        final DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.yyyy");
+        webDriver.executeScript("$('.newRoundEndDate').val('" + endDate.toString(formatter) + "')");
+        webDriver.executeScript("$('.newRoundEndDate').trigger('input')");
+
+        webDriver.findElement(By.className("newRoundStart")).click();
+        seleniumWait.waitForAlert().accept();
+    }
+
+    public FinancingRound findFinancingRound(DateTime endDate, int budget) {
+
+        for (WebElement financingRoundElement : webDriverProvider.provideDriver().findElements(By.className("financingRound"))) {
+            FinancingRound financingRound = financingRound(financingRoundElement);
+            if (sameDate(financingRound.getEndDate(), endDate) && financingRound.getBudget().equals(budget)) {
+                return financingRound;
+            }
+        }
+        return null;
+    }
+
+    public boolean canStartFinancingRound() {
+
+        final RemoteWebDriver webDriver = webDriverProvider.provideDriver();
+        return webDriver.findElements(By.className("newRoundStart")).size() > 0;
+    }
+
+    private boolean sameDate(DateTime a, DateTime b) {
+        return a.getYear() == b.getYear() && a.getMonthOfYear() == b.getMonthOfYear() && a.getDayOfMonth() == b.getDayOfMonth();
+    }
+
+    private FinancingRound financingRound(WebElement financingRoundElement) {
+
+        // format: 16.01.15 13:35
+        final DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.yy HH:mm");
+
+        FinancingRound financingRound = new FinancingRound();
+        final String startDateString = financingRoundElement.findElement(By.className("startDate")).getText();
+        financingRound.setStartDate(DateTime.parse(startDateString, formatter));
+        final String endDateString = financingRoundElement.findElement(By.className("endDate")).getText();
+        financingRound.setEndDate(DateTime.parse(endDateString, formatter));
+        financingRound.setBudget(Integer.valueOf(financingRoundElement.findElement(By.className("budget")).getText()));
+        financingRound.setActive("ja".equals(financingRoundElement.findElement(By.className("active")).getText()));
+        financingRound.setId(financingRoundElement.getAttribute("fr_id"));
+        return financingRound;
     }
 }

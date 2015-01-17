@@ -45,13 +45,13 @@ public class ProjectService {
             throw new ResourceNotFoundException();
         }
 
-        return convertProject(projectEntity);
+        return project(projectEntity);
     }
 
     public List<Project> getProjects() {
 
         final List<ProjectEntity> projects = projectRepository.findByStatusOrderByCreatedDateDesc(ProjectStatus.PUBLISHED);
-        return projects.stream().map(this::convertProject).collect(toList());
+        return projects.stream().map(this::project).collect(toList());
     }
 
     public Project addProject(Project project, UserEntity userEntity) {
@@ -60,10 +60,10 @@ public class ProjectService {
         projectEntity = projectRepository.save(projectEntity);
 
         log.debug("Project added: {}", projectEntity);
-        return convertProject(projectEntity);
+        return project(projectEntity);
     }
 
-    public void pledgeProject(String projectId, UserEntity userEntity, Pledge pledge) {
+    public void pledge(String projectId, UserEntity userEntity, Pledge pledge) {
 
         ProjectEntity projectEntity = projectRepository.findOne(projectId);
         if (projectEntity == null) {
@@ -83,7 +83,7 @@ public class ProjectService {
             throw InvalidRequestException.userBudgetExceeded();
         }
 
-        Project project = convertProject(projectEntity);
+        Project project = project(projectEntity);
         int newPledgedAmount = pledge.getAmount() + project.getPledgedAmount();
         if (newPledgedAmount > project.getPledgeGoal()) {
             throw InvalidRequestException.pledgeGoalExceeded();
@@ -105,7 +105,7 @@ public class ProjectService {
     }
 
 
-    private Project convertProject(ProjectEntity projectEntity) {
+    private Project project(ProjectEntity projectEntity) {
 
         List<PledgeEntity> pledges = pledgeRepository.findByProject(projectEntity);
         return new Project(projectEntity, pledges);

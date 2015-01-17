@@ -63,6 +63,6 @@ public class ProjectController {
     public void pledgeProject(@PathVariable String projectId, @RequestBody @Valid Pledge pledge, Principal principal) {
 
         UserEntity userEntity = userService.getUserByName(principal.getName());
-        projectService.pledgeProject(projectId, userEntity, pledge);
+        projectService.pledge(projectId, userEntity, pledge);
     }
 }

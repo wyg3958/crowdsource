@@ -39,13 +39,6 @@ describe('authentication service', function () {
         expectLoggedIn();
     });
 
-    it('should include no access token in every following request if there was none in localStorage', function () {
-
-        init();
-        expectNoTokenInRequestHeader();
-        expectLoggedOut();
-    });
-
     it('should not use any token if the logout-method was called', function () {
 
         // logged-in...
@@ -56,6 +49,13 @@ describe('authentication service', function () {
 
         // log-out
         logout();
+        expectNoTokenInRequestHeader();
+        expectLoggedOut();
+    });
+
+    it('should include no access token in every following request if there was none in localStorage', function () {
+
+        init();
         expectNoTokenInRequestHeader();
         expectLoggedOut();
     });

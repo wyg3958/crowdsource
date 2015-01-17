@@ -1,0 +1,19 @@
+status-bar {
+    display: block;
+    border-bottom: 1px solid $crowd-color-dark-grey;
+
+    // atm, the .row is hidden when the user is not logged in
+    // once this is removed, the padding can be applied to the status-bar directly
+    .row {
+        padding: 10px;
+
+        .budget {
+            text-align: right;
+
+            .label {
+                background-color: $clr-green-shade-1;
+                color: $black;
+            }
+        }
+    }
+}

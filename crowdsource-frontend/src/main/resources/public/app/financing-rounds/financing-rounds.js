@@ -5,6 +5,9 @@ angular.module('crowdsource')
         var vm = this;
 
         vm.allFinancingRounds = FinancingRound.getAll();
+        vm.allFinancingRounds.$promise.catch(function () {
+            alert("Fehler beim Abrufen der Finanzierungsrunden");
+        });
 
         vm.start = function () {
 

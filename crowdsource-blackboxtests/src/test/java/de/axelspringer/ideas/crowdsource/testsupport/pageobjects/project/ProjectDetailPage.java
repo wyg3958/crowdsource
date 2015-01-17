@@ -48,8 +48,8 @@ public class ProjectDetailPage {
     }
 
     public void waitForDetailsToBeLoaded() {
-        wait.until(interpolationCompletedOfElementLocated(By.cssSelector(".project-details h1")));
 
+        wait.until(interpolationCompletedOfElementLocated(By.cssSelector(".project-details h1")));
         RemoteWebDriver webDriver = webDriverProvider.provideDriver();
         PageFactory.initElements(webDriver, this);
         PageFactory.initElements(webDriver, projectStatusWidget);

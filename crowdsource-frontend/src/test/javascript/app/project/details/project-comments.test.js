@@ -30,10 +30,13 @@ describe('project comments directive', function () {
 
     it("should show the comments of the project", function () {
 
+        var date1 = moment();
+        var date2 = date1.add(5, 'days');
+
         $scope.project = {id: 'xxyyzz'};
         $httpBackend.expectGET('/project/xxyyzz/comments').respond(200, [
-            {"created": "2015-01-17T18:21:04.351Z", "userName": "User Name", "comment": "aa"},
-            {"created": "2015-01-17T18:34:57.167Z", "userName": "Foo Bart", "comment": "foooaaah text\n\naargh"}]);
+            {"created": date1.toISOString(), "userName": "User Name", "comment": "aa"},
+            {"created": date2.toISOString(), "userName": "Foo Bart", "comment": "foooaaah text\n\naargh"}]);
 
         var elements = compileDirective();
 
@@ -47,11 +50,11 @@ describe('project comments directive', function () {
         expect(comments).toHaveLength(2);
 
         expect($(comments[0]).find('.comment-user')).toHaveText('User Name');
-        expect($(comments[0]).find('.comment-date')).toHaveText('17.01.15 18:21');
+        expect($(comments[0]).find('.comment-date').text()).toBe(date1.format('DD.MM.YY HH:mm'));
         expect($(comments[0]).find('.comment-comment')).toHaveText('aa');
 
         expect($(comments[1]).find('.comment-user')).toHaveText('Foo Bart');
-        expect($(comments[1]).find('.comment-date')).toHaveText('17.01.15 18:34');
+        expect($(comments[1]).find('.comment-date').text()).toBe(date2.format('DD.MM.YY HH:mm'));
         expect($(comments[1]).find('.comment-comment')).toHaveText('foooaaah text\n\naargh');
     });
 

@@ -42,6 +42,10 @@
 
     <project-pledging-form id="project-pledging-form" project="projectDetails.project"></project-pledging-form>
 
+    <p class="push-down">
+        <a href="#/projects">zurück zur Übersicht</a>
+    </p>
+
     <div class="panel comments">
         <div ng-repeat="comment in projectDetails.comments" class="panel comment">
             <div>
@@ -52,8 +56,8 @@
     </div>
 
     <div class="panel new-comment">
-        <input class="newcomment-comment" ng-model="projectDetails.newcomment.comment">
-        <button type="submit" class="success margin-top" ng-click="projectDetails.storeComment(projectDetails.newcomment.comment)" ng-disabled="projectDetails.loading">
+        <textarea class="newcomment-comment" ng-model="projectDetails.newComment.comment"></textarea>
+        <button type="submit" class="success margin-top" ng-click="projectDetails.storeComment(projectDetails.newComment)" ng-disabled="projectDetails.loading">
             {{ projectDetails.loading ? 'Kommentieren...' : 'Kommentieren' }}
         </button>
     </div>

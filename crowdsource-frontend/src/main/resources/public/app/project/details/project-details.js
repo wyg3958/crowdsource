@@ -18,15 +18,14 @@ angular.module('crowdsource')
         vm.comments = Comment.getAll(vm.project.id);
 
         vm.storeComment = function (comment) {
+            vm.loading = true;
 
-            Comment.add(vm.project.id, comment).$promise.catch(function (response) {
-                if (response.status == 404) {
-                    $location.path('/error/notfound');
-                }
-                // TODO: validation errors
-                else {
-                    $location.path('/error/unknown');
-                }
-            });
+            Comment.add(vm.project.id, comment).$promise
+                .then(function() {
+                    vm.comments = Comment.getAll(vm.project.id);
+                })
+                .finally(function() {
+                    vm.loading = false;
+                });
         }
     });

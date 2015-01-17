@@ -2,18 +2,18 @@ describe('project comments directive', function () {
 
     var $scope, $compile, $httpBackend;
 
-    beforeEach(function() {
+    beforeEach(function () {
         module('crowdsource');
         module('crowdsource.templates');
 
         localStorage.clear(); // reset
 
-        inject(function($rootScope, _$compile_, _$httpBackend_, Authentication) {
+        inject(function ($rootScope, _$compile_, _$httpBackend_, Authentication) {
             $scope = $rootScope.$new();
             $compile = _$compile_;
             $httpBackend = _$httpBackend_;
 
-            Authentication.currentUser = { name: 'Current User' };
+            Authentication.currentUser = {name: 'Current User'};
         });
     });
 
@@ -30,10 +30,10 @@ describe('project comments directive', function () {
 
     it("should show the comments of the project", function () {
 
-        $scope.project = { id: 'xxyyzz' };
+        $scope.project = {id: 'xxyyzz'};
         $httpBackend.expectGET('/project/xxyyzz/comments').respond(200, [
-            {"created":"2015-01-17T18:21:04.351Z","userName":"User Name","comment":"aa"},
-            {"created":"2015-01-17T18:34:57.167Z","userName":"Foo Bart","comment":"foooaaah text\n\naargh"}]);
+            {"created": "2015-01-17T18:21:04.351Z", "userName": "User Name", "comment": "aa"},
+            {"created": "2015-01-17T18:34:57.167Z", "userName": "Foo Bart", "comment": "foooaaah text\n\naargh"}]);
 
         var elements = compileDirective();
 
@@ -47,17 +47,17 @@ describe('project comments directive', function () {
         expect(comments).toHaveLength(2);
 
         expect($(comments[0]).find('.comment-user')).toHaveText('User Name');
-        expect($(comments[0]).find('.comment-date')).toHaveText('17.01.15 19:21');
+        expect($(comments[0]).find('.comment-date')).toHaveText('17.01.15 18:21');
         expect($(comments[0]).find('.comment-comment')).toHaveText('aa');
 
         expect($(comments[1]).find('.comment-user')).toHaveText('Foo Bart');
-        expect($(comments[1]).find('.comment-date')).toHaveText('17.01.15 19:34');
+        expect($(comments[1]).find('.comment-date')).toHaveText('17.01.15 18:34');
         expect($(comments[1]).find('.comment-comment')).toHaveText('foooaaah text\n\naargh');
     });
 
     it("should not show the comments panel if there are no comments for this project", function () {
 
-        $scope.project = { id: 'xxyyzz' };
+        $scope.project = {id: 'xxyyzz'};
         $httpBackend.expectGET('/project/xxyyzz/comments').respond(200, []);
 
         var elements = compileDirective();
@@ -67,7 +67,7 @@ describe('project comments directive', function () {
     });
 
     it("should add a comment", function () {
-        $scope.project = { id: 'xxyyzz' };
+        $scope.project = {id: 'xxyyzz'};
         $httpBackend.expectGET('/project/xxyyzz/comments').respond(200, []);
 
         var elements = compileDirective();
@@ -79,8 +79,8 @@ describe('project comments directive', function () {
         elements.commentControls.getInputField().val('new comment').trigger('input');
         expect(elements.submitButton).not.toBeDisabled();
 
-        $httpBackend.expectPOST('/project/xxyyzz/comment', {"comment":"new comment"}).respond(201);
-        $httpBackend.expectGET('/project/xxyyzz/comments').respond(200, [{ comment: 'new comment', userName: 'Current User' }]);
+        $httpBackend.expectPOST('/project/xxyyzz/comment', {"comment": "new comment"}).respond(201);
+        $httpBackend.expectGET('/project/xxyyzz/comments').respond(200, [{comment: 'new comment', userName: 'Current User'}]);
 
         elements.submitButton.click();
         expect(elements.submitButton).toBeDisabled();
@@ -98,7 +98,7 @@ describe('project comments directive', function () {
     });
 
     it("should show a required error if the comment field is filled and cleared again", function () {
-        $scope.project = { id: 'xxyyzz' };
+        $scope.project = {id: 'xxyyzz'};
         $httpBackend.expectGET('/project/xxyyzz/comments').respond(200, []);
 
         var elements = compileDirective();
@@ -113,7 +113,7 @@ describe('project comments directive', function () {
     });
 
     it("should show a remote_unknown error if an unknown error occurred", function () {
-        $scope.project = { id: 'xxyyzz' };
+        $scope.project = {id: 'xxyyzz'};
         $httpBackend.expectGET('/project/xxyyzz/comments').respond(200, []);
 
         var elements = compileDirective();
@@ -121,7 +121,7 @@ describe('project comments directive', function () {
 
         elements.commentControls.getInputField().val('new comment').trigger('input');
 
-        $httpBackend.expectPOST('/project/xxyyzz/comment', {"comment":"new comment"}).respond(500);
+        $httpBackend.expectPOST('/project/xxyyzz/comment', {"comment": "new comment"}).respond(500);
 
         elements.submitButton.click();
         $httpBackend.flush();

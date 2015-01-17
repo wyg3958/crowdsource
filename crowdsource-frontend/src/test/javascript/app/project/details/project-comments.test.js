@@ -23,7 +23,6 @@ describe('project comments directive', function () {
         return {
             root: root,
             commentsPanel: root.find('.comments'),
-            generalErrorContainer: root.find('.general-error'),
             commentControls: new FormGroup(root.find('.new-comment .form-controls-comment'), 'textarea'),
             submitButton: root.find('.new-comment button[type="submit"]')
         };
@@ -95,7 +94,7 @@ describe('project comments directive', function () {
         // expect the form to be in pristine state, without validation errors
         expect(elements.commentControls.getInputField()).toHaveValue('');
         expectNoValidationError(elements.commentControls);
-        expect(elements.generalErrorContainer).not.toExist();
+        expect(elements.root.find('.general-error')).not.toExist();
     });
 
     it("should show a required error if the comment field is filled and cleared again", function () {
@@ -128,7 +127,7 @@ describe('project comments directive', function () {
         $httpBackend.flush();
 
         expectNoValidationError(elements.commentControls);
-        expect(elements.generalErrorContainer).toExist();
+        expect(elements.root.find('.general-error')).toExist();
         expect(getGeneralError(elements, 'remote_unknown')).toExist();
     });
 

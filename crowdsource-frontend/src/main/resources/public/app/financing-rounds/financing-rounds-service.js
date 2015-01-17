@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .factory('FinancingRound', function ($resource) {
+    .factory('FinancingRound', function ($resource, $q) {
 
         var financingRoundResource = $resource('/financinground/:id');
 
@@ -37,7 +37,27 @@ angular.module('crowdsource')
                 return financingRoundsResource.query();
             },
             getActive: function () {
-                return financingRoundResource.get({ id: 'active' })
+                var deferred = $q.defer();
+
+                var activeRound = financingRoundResource.get({ id: 'active' });
+                activeRound.$promise
+                    .then(function() {
+                        deferred.resolve(activeRound);
+                    })
+                    .catch(function(response) {
+                        // also resolve the deferred when a 404 is returned
+                        // (this means that there is no active financing round atm)
+                        if (response.status == 404) {
+                            activeRound.active = false;
+                            deferred.resolve(activeRound);
+                        }
+                        else {
+                            deferred.reject(response);
+                        }
+                    });
+
+                activeRound.$promise = deferred.promise;
+                return activeRound;
             }
         };
     });

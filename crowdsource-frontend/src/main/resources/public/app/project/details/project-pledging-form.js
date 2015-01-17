@@ -11,7 +11,7 @@ angular.module('crowdsource')
             controller: function(Project, Authentication, RemoteFormValidation, FinancingRound, $q) {
                 var vm = this;
 
-                var activeFinancingRound = FinancingRound.getActive();
+                vm.activeFinancingRound = FinancingRound.getActive();
 
                 // to get the current user's budget
                 vm.user = Authentication.reloadUser();
@@ -37,17 +37,21 @@ angular.module('crowdsource')
                         })
                         .then(function() {
                             vm.success = true;
-                            vm.pledge.amount = 0;
 
                             vm.form.$setPristine();
                         })
                         .finally(function() {
+                            vm.pledge.amount = 0;
                             vm.saving = false;
                         });
                 };
 
                 vm.getPledgableAmount = function() {
                     if (isLoading()) {
+                        return 0;
+                    }
+
+                    if (!vm.activeFinancingRound.active) {
                         return 0;
                     }
 
@@ -66,7 +70,7 @@ angular.module('crowdsource')
                     if (vm.project.status == 'FULLY_PLEDGED') {
                         return { type: 'info', message: 'Das Project ist zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich.' };
                     }
-                    if (!activeFinancingRound.active) {
+                    if (!vm.activeFinancingRound.active) {
                         return { type: 'info', message: 'Momentan läuft keine Finanzierungsrunde. Bitte versuche es nochmal, wenn die Finanzierungsrunde gestartet worden ist.' };
                     }
                     if (!vm.user.loggedIn) {
@@ -81,20 +85,22 @@ angular.module('crowdsource')
 
 
                 function isLoading() {
-                    return !vm.project.$resolved || !vm.user.$resolved || !activeFinancingRound.$resolved;
+                    return !vm.project.$resolved || !vm.user.$resolved || !vm.activeFinancingRound.$resolved;
                 }
 
                 function reloadUserAndProject() {
                     // parallel execution of backend calls
                     var promises = $q.all({
                         project: Project.get(vm.project.id).$promise,
-                        user: Authentication.reloadUser().$promise
+                        user: Authentication.reloadUser().$promise,
+                        financingRound: FinancingRound.getActive().$promise
                     });
 
-                    // will be resolved when both calls are completed
+                    // will be resolved when all calls are completed
                     promises.then(function(resolvedPromises) {
                         angular.copy(resolvedPromises.project, vm.project);
                         angular.copy(resolvedPromises.user, vm.user);
+                        angular.copy(resolvedPromises.financingRound, vm.activeFinancingRound);
                     });
 
                     return promises;

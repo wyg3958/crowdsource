@@ -1,8 +1,11 @@
 package de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project;
 
+import de.axelspringer.ideas.crowdsource.model.presentation.Comment;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.SeleniumWait;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -10,6 +13,9 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.axelspringer.ideas.crowdsource.testsupport.selenium.AngularJsUtils.interpolationCompletedOfElementLocated;
 
@@ -33,6 +39,15 @@ public class ProjectDetailPage {
 
     @FindBy(css = ".project-details .project-description")
     private WebElement description;
+
+    @FindBy(className = "comments")
+    private WebElement comments;
+
+    @FindBy(className = "newcomment-comment")
+    private WebElement newCommentField;
+
+    @FindBy(className = "newcomment-submit")
+    private WebElement newCommentSubmitButton;
 
     @Autowired
     private ProjectStatusWidget projectStatusWidget;
@@ -69,5 +84,30 @@ public class ProjectDetailPage {
 
     public ProjectStatusWidget getProjectStatusWidget() {
         return projectStatusWidget;
+    }
+
+    public List<Comment> comments() {
+
+        final org.joda.time.format.DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.yy HH:mm");
+        return comments.findElements(By.className("comment")).stream().map(commentElement -> {
+            final String userName = commentElement.findElement(By.className("comment-user")).getText();
+            final String commentText = commentElement.findElement(By.className("comment-comment")).getText();
+            final DateTime createdDate = DateTime.parse(commentElement.findElement(By.className("comment-date")).getText(), formatter);
+            return new Comment(createdDate, userName, commentText);
+        }).collect(Collectors.toList());
+    }
+
+    public void submitComment(String comment) {
+
+        newCommentField.clear();
+        newCommentField.sendKeys(comment);
+        newCommentSubmitButton.click();
+        // TODO: replace this sleep with something more senseful. problem here: an element will be created but right afterwards the comments get reloaded
+        // and then its gone
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

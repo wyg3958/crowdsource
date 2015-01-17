@@ -33,8 +33,7 @@ public class ProjectController {
 
     @Autowired
     private UserService userService;
-
-
+    
     @RequestMapping(value = "/projects", method = RequestMethod.GET)
     @JsonView(ProjectSummaryView.class)
     public List<Project> getProjects() {

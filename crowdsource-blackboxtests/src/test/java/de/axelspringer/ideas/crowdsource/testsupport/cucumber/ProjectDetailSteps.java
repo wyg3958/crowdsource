@@ -42,6 +42,7 @@ public class ProjectDetailSteps {
     @Autowired
     private UrlProvider urlProvider;
 
+
     private WebDriver webDriver;
     private Project createdProject;
     private int savedPageYOffset;

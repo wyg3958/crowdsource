@@ -1,0 +1,15 @@
+<div class="panel comments">
+    <div ng-repeat="comment in projectComments.comments" class="panel comment">
+        <div>
+            <span class="comment-user">{{comment.userName}}</span> - <span class="comment-date">{{comment.created | date: 'short'}}</span>
+        </div>
+        <div class="comment-comment">{{comment.comment}}</div>
+    </div>
+</div>
+
+<div class="panel new-comment">
+    <textarea class="newcomment-comment" ng-model="projectComments.newComment.comment"></textarea>
+    <button type="submit" class="success margin-top" ng-click="projectComments.storeComment(projectComments.newComment)" ng-disabled="projectComments.loading">
+        {{ projectComments.loading ? 'Kommentieren...' : 'Kommentieren' }}
+    </button>
+</div>

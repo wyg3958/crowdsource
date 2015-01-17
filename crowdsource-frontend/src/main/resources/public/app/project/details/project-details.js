@@ -1,10 +1,15 @@
 angular.module('crowdsource')
 
-    .controller('ProjectDetailsController', function ($routeParams, $location, Project, Comment) {
+    .controller('ProjectDetailsController', function ($routeParams, $location, Project) {
 
         var vm = this;
 
         vm.project = Project.get($routeParams.projectId);
+
+        // set the project id beforehand to allow the project-comments directive
+        // to already load the comments for this project, else it must wait until
+        // the GET /project/:id response is finished
+        vm.project.id = $routeParams.projectId;
 
         vm.project.$promise.catch(function (response) {
             if (response.status == 404) {
@@ -14,18 +19,4 @@ angular.module('crowdsource')
                 $location.path('/error/unknown');
             }
         });
-
-        vm.comments = Comment.getAll(vm.project.id);
-
-        vm.storeComment = function (comment) {
-            vm.loading = true;
-
-            Comment.add(vm.project.id, comment).$promise
-                .then(function() {
-                    vm.comments = Comment.getAll(vm.project.id);
-                })
-                .finally(function() {
-                    vm.loading = false;
-                });
-        }
     });

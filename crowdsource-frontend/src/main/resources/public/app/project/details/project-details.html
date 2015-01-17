@@ -46,21 +46,7 @@
         <a href="#/projects">zurück zur Übersicht</a>
     </p>
 
-    <div class="panel comments">
-        <div ng-repeat="comment in projectDetails.comments" class="panel comment">
-            <div>
-                <span class="comment-user">{{comment.userName}}</span> - <span class="comment-date">{{comment.created | date: 'short'}}</span>
-            </div>
-            <div class="comment-comment">{{comment.comment}}</div>
-        </div>
-    </div>
-
-    <div class="panel new-comment">
-        <textarea class="newcomment-comment" ng-model="projectDetails.newComment.comment"></textarea>
-        <button type="submit" class="success margin-top" ng-click="projectDetails.storeComment(projectDetails.newComment)" ng-disabled="projectDetails.loading">
-            {{ projectDetails.loading ? 'Kommentieren...' : 'Kommentieren' }}
-        </button>
-    </div>
+    <project-comments project="projectDetails.project"></project-comments>
 
     <p class="push-down">
         <a href="#/projects">zurück zur Übersicht</a>

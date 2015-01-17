@@ -23,6 +23,7 @@ Feature: Pledge project
     Then the displayed budget and financing infos are updated
     When the user submits the pledging form
     Then the notification message "Deine Finanzierung war erfolgreich." is displayed on the project pledging form
+    And the project pledging form is enabled
 
   Scenario: A user fully pledges a project
     Given a published project is available
@@ -39,3 +40,15 @@ Feature: Pledge project
     And the project detail page of this project is reloaded
     # an anonymous user should not get the message "Bitte logge dich ein, um Projekte finanziell zu unterstützen." in this state
     Then the notification message "Das Project ist zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich." is displayed on the project pledging form
+
+  Scenario: The finance round is stopped while a user pledges a project
+    Given a published project is available
+    And there is a financing round active
+    And a user is logged in
+    When the project detail page of this project is requested
+    And there is no financing round active
+    When the user sets his desired pledge amount via the slider
+    Then the displayed budget and financing infos are updated
+    When the user submits the pledging form
+    Then the error message "Die Finanzierungsrunde ist mittlerweile leider beendet. Das Finanzieren ist erst wieder möglich, wenn die nächste Runde gestartet wurde." is displayed on the project pledging form
+    And the project pledging form is disabled

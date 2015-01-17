@@ -14,6 +14,9 @@ public class ProjectPledgingForm {
     @FindBy(css = ".pledging-form .notification")
     private WebElement notificationBox;
 
+    @FindBy(css = ".pledging-form .general-error")
+    private WebElement errorMessageBox;
+
     @FindBy(css = ".pledging-form .range-slider")
     private WebElement slider;
 
@@ -46,6 +49,10 @@ public class ProjectPledgingForm {
 
     public String getNotificationMessage() {
         return notificationBox.getText();
+    }
+
+    public String getErrorMessage() {
+        return errorMessageBox.getText();
     }
 
     public int getUserBudget() {
@@ -98,7 +105,7 @@ public class ProjectPledgingForm {
         submitButton.click();
     }
 
-    public void waitUntilANotificationMessageIsDisplayed() {
-        wait.until(driver -> getNotificationMessage().length() > 0);
+    public void waitUntilANotificationOrEerrorMessageIsDisplayed() {
+        wait.until(driver -> getNotificationMessage().length() > 0 || getErrorMessage().length() > 0);
     }
 }

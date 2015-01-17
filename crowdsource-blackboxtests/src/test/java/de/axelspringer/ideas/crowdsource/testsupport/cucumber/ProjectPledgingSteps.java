@@ -48,11 +48,18 @@ public class ProjectPledgingSteps {
         assertThat(pledgingForm.getNotificationMessage(), is(expectedNotification));
     }
 
-    @And("^the project pledging form is disabled$")
-    public void the_project_pledging_form_is_disabled() throws Throwable {
-        assertThat(pledgingForm.isSliderEnabled(), is(false));
-        assertThat(pledgingForm.getAmountInputField().isEnabled(), is(false));
-        assertThat(pledgingForm.getPledgingButton().isEnabled(), is(false));
+    @Then("^the error message \"([^\"]*)\" is displayed on the project pledging form$")
+    public void the_error_message_is_displayed_on_the_project_pledging_form(String expectedErrorMessage) throws Throwable {
+        PageFactory.initElements(webDriver, pledgingForm);
+        assertThat(pledgingForm.getErrorMessage(), is(expectedErrorMessage));
+    }
+
+    @And("^the project pledging form is (enabled|disabled)$")
+    public void the_project_pledging_form_is_disabled(String enabledString) throws Throwable {
+        boolean enabled = "enabled".equals(enabledString);
+
+        assertThat(pledgingForm.isSliderEnabled(), is(enabled));
+        assertThat(pledgingForm.getAmountInputField().isEnabled(), is(enabled));
     }
 
     @And("^the user budget (\\d+) is displayed$")
@@ -107,7 +114,7 @@ public class ProjectPledgingSteps {
     @When("^the user submits the pledging form$")
     public void the_user_submits_the_pledging_form() throws Throwable {
         pledgingForm.submitForm();
-        pledgingForm.waitUntilANotificationMessageIsDisplayed();
+        pledgingForm.waitUntilANotificationOrEerrorMessageIsDisplayed();
     }
 
     @And("^there is (a|no) financing round active$")

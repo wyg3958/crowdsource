@@ -358,6 +358,7 @@ describe('project pledging form', function () {
 
         expect(elements.root.find('.general-error')).toExist();
         expect(getGeneralError(elements, 'remote_no_financing_round_currently_active')).toExist();
+        expect(elements.notification).toHaveClass('ng-hide');
         expect(elements.pledgeButton).toBeDisabled();
         expect(elements.pledgeAmount.getInputField()).toBeDisabled();
         expect(elements.slider).toHaveClass('disabled');

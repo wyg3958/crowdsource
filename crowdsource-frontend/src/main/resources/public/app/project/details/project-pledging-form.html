@@ -2,7 +2,7 @@
 
     <div class="finance">
 
-        <div class="alert-box notification push" ng-class="pledgingForm.getNotification().type" ng-show="pledgingForm.getNotification() != null">
+        <div class="alert-box notification push" ng-class="pledgingForm.getNotification().type" ng-show="!pledgingForm.generalErrors && pledgingForm.getNotification() != null">
             {{ pledgingForm.getNotification().message }}
         </div>
 

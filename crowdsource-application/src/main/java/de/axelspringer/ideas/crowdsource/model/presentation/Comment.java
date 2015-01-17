@@ -5,9 +5,8 @@ import de.axelspringer.ideas.crowdsource.model.presentation.user.UserHelper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
-
-import javax.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor
@@ -18,7 +17,7 @@ public class Comment {
 
     private String userName;
 
-    @NotNull
+    @NotEmpty
     private String comment;
 
     public Comment(CommentEntity commentEntity) {

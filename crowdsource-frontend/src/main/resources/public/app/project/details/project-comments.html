@@ -8,10 +8,27 @@
 </div>
 
 <div class="panel new-comment">
-    Gefällt dir dieses Projekt? Hast du Verbesserungsvorschläge? Dann schreibe hier deinen Kommentar!
+    <form name="projectComments.form">
 
-    <textarea class="newcomment-comment" ng-model="projectComments.newComment.comment"></textarea>
-    <button type="submit" class="success margin-top" ng-click="projectComments.storeComment(projectComments.newComment)" ng-disabled="projectComments.loading">
-        {{ projectComments.loading ? 'Kommentieren...' : 'Kommentieren' }}
-    </button>
+        <div class="general-error alert-box alert" ng-messages="projectComments.generalErrors" ng-if="projectComments.generalErrors">
+            <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuche es erneut.</span>
+        </div>
+
+        <label form-group="comment">
+            <span form-label-valid="comment">Gefällt dir dieses Projekt? Hast du Verbesserungsvorschläge? Dann schreibe hier deinen Kommentar:</span>
+
+            <span form-label-invalid="comment" ng-messages="projectComments.form.comment.$error">
+                <span ng-message="required">Bitte gib einen Kommentar ein</span>
+            </span>
+
+            <textarea class="newcomment-comment" name="comment" ng-model="projectComments.newComment.comment" required></textarea>
+        </label>
+
+        <button type="submit" class="success margin-top"
+                ng-click="projectComments.storeComment(projectComments.newComment)"
+                ng-disabled="projectComments.form.$invalid || projectComments.loading">
+
+            {{ projectComments.loading ? 'Kommentieren...' : 'Kommentieren' }}
+        </button>
+    </form>
 </div>

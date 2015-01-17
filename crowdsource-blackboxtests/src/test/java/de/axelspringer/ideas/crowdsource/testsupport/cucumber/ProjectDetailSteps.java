@@ -53,10 +53,15 @@ public class ProjectDetailSteps {
 
     @Given("^a published project is available$")
     public void a_published_project_is_available() throws Throwable {
+        a_published_project_is_available(25);
+    }
+
+    @Given("^a published project with a pledge goal of (\\d+) is available$")
+    public void a_published_project_is_available(int pledgeGoal) throws Throwable {
         createdProject = new Project();
         createdProject.setTitle("T" + RandomStringUtils.randomAlphanumeric(6));
         createdProject.setShortDescription("Short description " + RandomStringUtils.randomAlphanumeric(16));
-        createdProject.setPledgeGoal(25);
+        createdProject.setPledgeGoal(pledgeGoal);
         createdProject.setDescription("This is the project description text." + RandomStringUtils.random(1000, "\nabc").trim());
 
         CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithDefaultUser();
@@ -118,5 +123,9 @@ public class ProjectDetailSteps {
     @And("^the project detail page of this project is (requested|reloaded)$")
     public void the_project_detail_page_of_this_project_is_requested(String dummy) throws Throwable {
         projectDetailPage.open(createdProject.getId());
+    }
+
+    public Project getCreatedProject() {
+        return createdProject;
     }
 }

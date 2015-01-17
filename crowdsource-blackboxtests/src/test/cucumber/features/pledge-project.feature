@@ -52,3 +52,17 @@ Feature: Pledge project
     When the user submits the pledging form
     Then the error message "Die Finanzierungsrunde ist mittlerweile leider beendet. Das Finanzieren ist erst wieder möglich, wenn die nächste Runde gestartet wurde." is displayed on the project pledging form
     And the project pledging form is disabled
+
+  Scenario: A user over-pledges a project
+    Given a published project with a pledge goal of 25 is available
+    And there is a financing round active
+    And a user is logged in
+    When the project detail page of this project is requested
+    And another user pledges the same project with 20 in the meantime
+    When the user enters 10 as his desired pledge amount
+    And the user submits the pledging form
+    Then the error message "Das Projekt wurde mittlerweile von anderen Benutzern finanziert und deine Finanzierung hätte den Finanzierungsbedarf des Projekts überschritten. Die Projektdaten wurden soeben aktualisiert und wir bitten dich einen neuen Finanzierungsbetrag einzugeben." is displayed on the project pledging form
+    And the project pledging form is enabled
+    When the user enters 5 as his desired pledge amount
+    And the user submits the pledging form
+    Then the notification message "Deine Finanzierung war erfolgreich." is displayed on the project pledging form

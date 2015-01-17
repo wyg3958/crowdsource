@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.axelspringer.ideas.crowdsource.config.security.MongoUserDetailsService;
 import de.axelspringer.ideas.crowdsource.model.presentation.FinancingRound;
+import de.axelspringer.ideas.crowdsource.model.presentation.Pledge;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +73,12 @@ public class CrowdSourceClient {
         HttpEntity<FinancingRound> requestEntity = createRequestEntity(null, authToken);
         return restTemplate.exchange(urlProvider.applicationUrl() + "/financinground/{id}/cancel", HttpMethod.PUT, requestEntity, FinancingRound.class, id);
     }
+
+    public ResponseEntity<Void> pledgeProject(Project project, Pledge pledge, AuthToken authToken) {
+        HttpEntity<Pledge> requestEntity = createRequestEntity(pledge, authToken);
+        return restTemplate.exchange(urlProvider.applicationUrl() + "/project/{id}/pledge", HttpMethod.POST, requestEntity, Void.class, project.getId());
+    }
+
 
     private <T> HttpEntity<T> createRequestEntity(T body, AuthToken authToken) {
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();

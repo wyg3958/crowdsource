@@ -5,6 +5,7 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import de.axelspringer.ideas.crowdsource.model.presentation.FinancingRound;
+import de.axelspringer.ideas.crowdsource.model.presentation.Pledge;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.ProjectPledgingForm;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
@@ -30,6 +31,9 @@ public class ProjectPledgingSteps {
 
     @Autowired
     private CrowdSourceClient crowdSourceClient;
+
+    @Autowired
+    private ProjectDetailSteps projectDetailSteps;
 
     private RemoteWebDriver webDriver;
     private int budgetBeforeChange;
@@ -105,6 +109,12 @@ public class ProjectPledgingSteps {
         pledgingForm.setAmountInputValue(pledgeAmount);
     }
 
+    @When("^the user enters (\\d+) as his desired pledge amount$")
+    public void the_user_enters_as_his_desired_pledge_amount(int pledgeAmount) throws Throwable {
+        PageFactory.initElements(webDriver, pledgingForm);
+        pledgingForm.setAmountInputValue(pledgeAmount);
+    }
+
     @Then("^the displayed budget and financing infos are updated$")
     public void the_displayed_budget_and_financing_infos_are_updated() throws Throwable {
         assertThat(pledgingForm.getUserBudget(), is(budgetBeforeChange - pledgeAmount));
@@ -142,5 +152,13 @@ public class ProjectPledgingSteps {
             financingRound.setBudget(100000);
             crowdSourceClient.startFinancingRound(financingRound, authToken);
         }
+    }
+
+    @And("^another user pledges the same project with (\\d+) in the meantime$")
+    public void another_user_pledges_the_project_with_in_the_meantime(int pledgeAmount) throws Throwable {
+        CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithDefaultUser();
+
+        Pledge pledge = new Pledge(pledgeAmount);
+        crowdSourceClient.pledgeProject(projectDetailSteps.getCreatedProject(), pledge, authToken);
     }
 }

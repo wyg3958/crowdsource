@@ -95,7 +95,7 @@ public class FinancingRoundsPage {
     public boolean canStartFinancingRound() {
 
         final RemoteWebDriver webDriver = webDriverProvider.provideDriver();
-        return webDriver.findElements(By.className("newRoundStart")).size() > 0;
+        return webDriver.findElements(By.className("newround-start")).size() > 0;
     }
 
     private boolean sameDate(DateTime a, DateTime b) {

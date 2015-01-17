@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static de.axelspringer.ideas.crowdsource.testsupport.selenium.AngularJsUtils.interpolationCompletedOfElementLocated;
@@ -90,14 +89,11 @@ public class ProjectDetailPage {
     public List<Comment> comments() {
 
         final org.joda.time.format.DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.yy HH:mm");
-        return comments.findElements(By.className("comment")).stream().map(new Function<WebElement, Comment>() {
-            @Override
-            public Comment apply(WebElement commentElement) {
-                final String userName = commentElement.findElement(By.className("comment-user")).getText();
-                final String commentText = commentElement.findElement(By.className("comment-comment")).getText();
-                final DateTime createdDate = DateTime.parse(commentElement.findElement(By.className("comment-date")).getText(), formatter);
-                return new Comment(createdDate, userName, commentText);
-            }
+        return comments.findElements(By.className("comment")).stream().map(commentElement -> {
+            final String userName = commentElement.findElement(By.className("comment-user")).getText();
+            final String commentText = commentElement.findElement(By.className("comment-comment")).getText();
+            final DateTime createdDate = DateTime.parse(commentElement.findElement(By.className("comment-date")).getText(), formatter);
+            return new Comment(createdDate, userName, commentText);
         }).collect(Collectors.toList());
     }
 

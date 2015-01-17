@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project;
 
+import de.axelspringer.ideas.crowdsource.testsupport.selenium.ElementUtils;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.SeleniumWait;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import org.openqa.selenium.WebElement;
@@ -56,22 +57,15 @@ public class ProjectPledgingForm {
     }
 
     public int getUserBudget() {
-        return parseCurrency(budgetLabel);
+        return ElementUtils.parseCurrency(budgetLabel);
     }
 
     public int getPledgedAmount() {
-        return parseCurrency(pledgedAmountLabel);
+        return ElementUtils.parseCurrency(pledgedAmountLabel);
     }
 
     public int getPledgeGoalAmount() {
-        return parseCurrency(pledgeGoalLabel);
-    }
-
-    private int parseCurrency(WebElement element) {
-        String value = element.getText();
-        value = value.substring(1); // cut off currency
-        value = value.replaceAll("\\.", "");
-        return Integer.parseInt(value);
+        return ElementUtils.parseCurrency(pledgeGoalLabel);
     }
 
     public WebElement getPledgingButton() {

@@ -1,36 +1,39 @@
 <content-row class="intro-section">
     <h1>Axel Springer Crowd</h1>
 
-    <p>Die Axel Springer Crowd ist die Crowdfunding Plattform der AS IT. Hier kannst Du Deine - oder andere - innovativen Ideen pitchen und in die Tat umsetzen.</p>
+    <p>Die Axel Springer Crowd ist die Crowdfunding Plattform der AS IT. Hier kannst Du innovative Ideen pitchen und in die Tat umsetzen.</p>
 
     <ul class="info-boxes" data-equalizer>
         <li>
-            <div class="panel" data-equalizer-watch >
+            <div class="panel" data-equalizer-watch>
                 <h2>Dein Budget</h2>
+
                 <div class="divider"></div>
 
-                Nutze Dein Budget und verteile es auf die aktuell eingereichten Ideen. Gefällt Dir keines der vorgestellten Projekte? Dann starte Dein eigenes!
+                Nutze Dein Budget und verteile es auf eingereichten Ideen. Gefällt Dir keines der vorgestellten Projekte? Dann starte Dein eigenes!
             </div>
         </li>
         <li>
-            <div class="panel" data-equalizer-watch >
+            <div class="panel" data-equalizer-watch>
                 <h2>Du</h2>
+
                 <div class="divider"></div>
 
                 Ohne Dich geht nichts. Stelle uns Deine coolen Ideen vor oder nutze Dein Budget, um die innovativsten Crowd-Projekte zu fördern
             </div>
         </li>
         <li>
-            <div class="panel" data-equalizer-watch >
+            <div class="panel" data-equalizer-watch>
                 <h2>Dein Zeitrahmen</h2>
+
                 <div class="divider"></div>
 
-                Die Uhr tickt. Mindestens einmal im Quartal schütten wir an alle Nutzer xxx AS$ aus. Nutze diese Zeit, denn sonst verfällt Dein Budget!
+                Die Uhr tickt. Mindestens einmal im Quartal schütten wir AS$ an alle Nutzer aus. Nutze diese innerhalb der aktuellen Finanzierungsrunde, denn sonst verfällt Dein Budget!
             </div>
         </li>
     </ul>
 
-    <p>Hast Du noch Fragen? Dann überfliege unseren FAQ.<br/>Oder registriere Dich, alternativ melde Dich an, und leg los!</p>
+    <p>Hast Du noch Fragen? Dann überfliege unseren FAQ.<br/>Registriere Dich, melde Dich an, und leg los!</p>
 
 </content-row>
 
@@ -43,7 +46,14 @@
 
                 <!-- when using ellipsis directive, the value must come from ng-bind -->
                 <h1 ellipsis ng-bind="project.title"></h1>
+
                 <p ellipsis ng-bind="project.shortDescription"></p>
+
+                <div>
+                    <progress-bar value="project.pledgedAmount" maximum="project.pledgeGoal"></progress-bar>
+                    <span class="label backers-count">{{ project.backers }}</span><span class="backers-text">{{project.backers == 1 ? "Backer" : "Backers"}}</span>
+                    <span class="label pledged-amount">{{ project.pledgedAmount | number }} $</span> Investment
+                </div>
             </div>
         </li>
     </ul>

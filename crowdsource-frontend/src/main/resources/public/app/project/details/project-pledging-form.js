@@ -98,8 +98,8 @@ angular.module('crowdsource')
                     // will be resolved when all calls are completed
                     promises.then(function(resolvedPromises) {
                         angular.copy(resolvedPromises.project, vm.project);
-                        angular.copy(resolvedPromises.user, vm.user);
                         angular.copy(resolvedPromises.financingRound, vm.activeFinancingRound);
+                        // the user is already copied over from Authentication.reloadUser
                     });
 
                     return promises;

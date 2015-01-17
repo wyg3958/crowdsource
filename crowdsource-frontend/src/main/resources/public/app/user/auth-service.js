@@ -98,7 +98,20 @@ angular.module('crowdsource')
         };
 
         service.reloadUser = function() {
-            service.currentUser = AuthenticationToken.hasTokenSet() ? User.authenticated() : User.anonymous();
+            service.currentUser.$resolved = false;
+
+            if (AuthenticationToken.hasTokenSet()) {
+                service.currentUser.loggedIn = true;
+
+                // prevents the user's details to be set to undefined while loading
+                // and therefore flickering of e.g. the user budget in the status-bar
+                User.authenticated().$promise.then(function(user) {
+                    angular.copy(user, service.currentUser);
+                });
+            }
+            else {
+                service.currentUser = User.anonymous();
+            }
             return service.currentUser;
         };
 

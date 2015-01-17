@@ -1,8 +1,10 @@
 angular.module('crowdsource')
 
-    .controller('ProjectDetailsController', function ($routeParams, $location, Project) {
+    .controller('ProjectDetailsController', function ($routeParams, $location, Project, Authentication) {
 
         var vm = this;
+
+        vm.auth = Authentication;
 
         vm.project = Project.get($routeParams.projectId);
 

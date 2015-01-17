@@ -47,7 +47,6 @@ public class CommentSteps {
 
         testComment = "this is a test comment and was created at: " + System.currentTimeMillis();
         projectDetailPage.submitComment(testComment);
-        projectDetailPage.waitForDetailsToBeLoaded();
     }
 
     @Then("^The comment is visible as the last in the comments-list$")

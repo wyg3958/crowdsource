@@ -14,15 +14,17 @@
             <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuche es erneut.</span>
         </div>
 
-        <label form-group="comment">
-            <span form-label-valid="comment">Gefällt dir dieses Projekt? Hast du Verbesserungsvorschläge? Dann schreibe hier deinen Kommentar:</span>
+        <div class="form-controls-comment">
+            <label form-group="comment">
+                <span form-label-valid="comment">Gefällt dir dieses Projekt? Hast du Verbesserungsvorschläge? Dann schreibe hier deinen Kommentar:</span>
 
-            <span form-label-invalid="comment" ng-messages="projectComments.form.comment.$error">
-                <span ng-message="required">Bitte gib einen Kommentar ein</span>
-            </span>
+                <span form-label-invalid="comment" ng-messages="projectComments.form.comment.$error">
+                    <span ng-message="required">Bitte gib einen Kommentar ein</span>
+                </span>
 
-            <textarea class="newcomment-comment" name="comment" ng-model="projectComments.newComment.comment" required></textarea>
-        </label>
+                <textarea class="newcomment-comment" name="comment" ng-model="projectComments.newComment.comment" required></textarea>
+            </label>
+        </div>
 
         <button type="submit" class="success margin-top newcomment-submit"
                 ng-click="projectComments.storeComment(projectComments.newComment)"

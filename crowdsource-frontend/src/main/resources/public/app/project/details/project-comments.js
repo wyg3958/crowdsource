@@ -22,14 +22,14 @@ angular.module('crowdsource')
 
                     RemoteFormValidation.clearRemoteErrors(vm);
 
-                    // work on a copy, or the message in the comment-list
-                    // will be cleared in the .then() callback
-                    var commentCopy = angular.copy(comment);
-                    commentCopy.created = new Date();
-                    commentCopy.userName = Authentication.currentUser.name;
-
-                    Comment.add(vm.project.id, commentCopy).$promise
+                    Comment.add(vm.project.id, comment).$promise
                         .then(function() {
+
+                            // add a copy to the list of comments, or the displayed message
+                            // will be cleared because the comment is set to an empty string
+                            var commentCopy = angular.copy(comment);
+                            commentCopy.created = new Date();
+                            commentCopy.userName = Authentication.currentUser.name;
                             vm.comments.push(commentCopy);
 
                             // clear the text area

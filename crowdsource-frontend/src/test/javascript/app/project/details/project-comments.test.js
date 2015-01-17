@@ -1,6 +1,6 @@
 describe('project comments directive', function () {
 
-    var $scope, $compile, $httpBackend, AuthenticationToken;
+    var $scope, $compile, $httpBackend;
 
     beforeEach(function() {
         module('crowdsource');
@@ -8,11 +8,12 @@ describe('project comments directive', function () {
 
         localStorage.clear(); // reset
 
-        inject(function($rootScope, _$compile_, _$httpBackend_, _AuthenticationToken_) {
+        inject(function($rootScope, _$compile_, _$httpBackend_, Authentication) {
             $scope = $rootScope.$new();
             $compile = _$compile_;
             $httpBackend = _$httpBackend_;
-            AuthenticationToken = _AuthenticationToken_;
+
+            Authentication.currentUser = { name: 'Current User' };
         });
     });
 
@@ -20,9 +21,117 @@ describe('project comments directive', function () {
         var root = $compile('<project-comments project="project"></project-comments>')($scope);
         $scope.$digest();
         return {
-            root: root
+            root: root,
+            commentsPanel: root.find('.comments'),
+            generalErrorContainer: root.find('.general-error'),
+            commentControls: new FormGroup(root.find('.new-comment .form-controls-comment'), 'textarea'),
+            submitButton: root.find('.new-comment button[type="submit"]')
         };
     }
+
+    it("should show the comments of the project", function () {
+
+        $scope.project = { id: 'xxyyzz' };
+        $httpBackend.expectGET('/project/xxyyzz/comments').respond(200, [
+            {"created":"2015-01-17T18:21:04.351Z","userName":"User Name","comment":"aa"},
+            {"created":"2015-01-17T18:34:57.167Z","userName":"Foo Bart","comment":"foooaaah text\n\naargh"}]);
+
+        var elements = compileDirective();
+
+        expect(elements.commentsPanel).toHaveClass('ng-hide');
+
+        $httpBackend.flush();
+
+        expect(elements.commentsPanel).not.toHaveClass('ng-hide');
+
+        var comments = elements.commentsPanel.find('.comment');
+        expect(comments).toHaveLength(2);
+
+        expect($(comments[0]).find('.comment-user')).toHaveText('User Name');
+        expect($(comments[0]).find('.comment-date')).toHaveText('17.01.15 19:21');
+        expect($(comments[0]).find('.comment-comment')).toHaveText('aa');
+
+        expect($(comments[1]).find('.comment-user')).toHaveText('Foo Bart');
+        expect($(comments[1]).find('.comment-date')).toHaveText('17.01.15 19:34');
+        expect($(comments[1]).find('.comment-comment')).toHaveText('foooaaah text\n\naargh');
+    });
+
+    it("should not show the comments panel if there are no comments for this project", function () {
+
+        $scope.project = { id: 'xxyyzz' };
+        $httpBackend.expectGET('/project/xxyyzz/comments').respond(200, []);
+
+        var elements = compileDirective();
+        $httpBackend.flush();
+
+        expect(elements.commentsPanel).toHaveClass('ng-hide');
+    });
+
+    it("should add a comment", function () {
+        $scope.project = { id: 'xxyyzz' };
+        $httpBackend.expectGET('/project/xxyyzz/comments').respond(200, []);
+
+        var elements = compileDirective();
+        $httpBackend.flush();
+
+        expect(elements.submitButton).toBeDisabled();
+        expect(elements.submitButton).toHaveText('Kommentieren');
+
+        elements.commentControls.getInputField().val('new comment').trigger('input');
+        expect(elements.submitButton).not.toBeDisabled();
+
+        $httpBackend.expectPOST('/project/xxyyzz/comment', {"comment":"new comment"}).respond(201);
+        $httpBackend.expectGET('/project/xxyyzz/comments').respond(200, [{ comment: 'new comment', userName: 'Current User' }]);
+
+        elements.submitButton.click();
+        expect(elements.submitButton).toBeDisabled();
+        expect(elements.submitButton).toHaveText('Kommentieren...');
+
+        $httpBackend.flush();
+
+        expect(elements.submitButton).toHaveText('Kommentieren');
+        expect(elements.submitButton).toBeDisabled();
+
+        // expect the form to be in pristine state, without validation errors
+        expect(elements.commentControls.getInputField()).toHaveValue('');
+        expectNoValidationError(elements.commentControls);
+        expect(elements.generalErrorContainer).not.toExist();
+    });
+
+    it("should show a required error if the comment field is filled and cleared again", function () {
+        $scope.project = { id: 'xxyyzz' };
+        $httpBackend.expectGET('/project/xxyyzz/comments').respond(200, []);
+
+        var elements = compileDirective();
+        $httpBackend.flush();
+
+        expectNoValidationError(elements.commentControls);
+
+        elements.commentControls.getInputField().val('new comment').trigger('input');
+        elements.commentControls.getInputField().val('').trigger('input');
+
+        expectValidationError(elements.commentControls, 'required');
+    });
+
+    it("should show a remote_unknown error if an unknown error occurred", function () {
+        $scope.project = { id: 'xxyyzz' };
+        $httpBackend.expectGET('/project/xxyyzz/comments').respond(200, []);
+
+        var elements = compileDirective();
+        $httpBackend.flush();
+
+        elements.commentControls.getInputField().val('new comment').trigger('input');
+
+        $httpBackend.expectPOST('/project/xxyyzz/comment', {"comment":"new comment"}).respond(500);
+
+        elements.submitButton.click();
+        $httpBackend.flush();
+
+        expectNoValidationError(elements.commentControls);
+        expect(elements.generalErrorContainer).toExist();
+        expect(getGeneralError(elements, 'remote_unknown')).toExist();
+    });
+
 
     function expectValidationError(formGroup, violatedRule) {
         expect(formGroup.getLabelContainer()).toHaveClass('error');
@@ -40,48 +149,4 @@ describe('project comments directive', function () {
     function getGeneralError(elements, errorCode) {
         return elements.root.find('[ng-message="' + errorCode + '"]');
     }
-
-
-    it("should show the comments of the project", function () {
-
-        $scope.project = { id: 'xxyyzz' };
-
-        $httpBackend.expectGET('/project/xxyyzz/comments').respond(200, [
-            {"created":"2015-01-17T18:21:04.351Z","userName":"User Name","comment":"aa"},
-            {"created":"2015-01-17T18:34:57.167Z","userName":"Foo Bart","comment":"foooaaah text\n\naargh"}]);
-
-        var elements = compileDirective();
-        $httpBackend.flush();
-
-        var comments = elements.root.find('.comment');
-        expect(comments).toHaveLength(2);
-
-        expect($(comments[0]).find('.comment-user')).toHaveText('User Name');
-        expect($(comments[0]).find('.comment-date')).toHaveText('17.01.15 19:21');
-        expect($(comments[0]).find('.comment-comment')).toHaveText('aa');
-
-        expect($(comments[1]).find('.comment-user')).toHaveText('Foo Bart');
-        expect($(comments[1]).find('.comment-date')).toHaveText('17.01.15 19:34');
-        expect($(comments[1]).find('.comment-comment')).toHaveText('foooaaah text\n\naargh');
-    });
-
-    it("should not show the comments panel while loading and if there are no comments for this project", function () {
-        // TODO
-        expect(true).toBe(false);
-    });
-
-    it("should add a comment", function () {
-        // TODO
-        expect(true).toBe(false);
-    });
-
-    it("should show a required error if the comment field is filled and cleared again", function () {
-        // TODO
-        expect(true).toBe(false);
-    });
-
-    it("should show a remote_unknown error if an unknown error occurred", function () {
-        // TODO
-        expect(true).toBe(false);
-    });
 });

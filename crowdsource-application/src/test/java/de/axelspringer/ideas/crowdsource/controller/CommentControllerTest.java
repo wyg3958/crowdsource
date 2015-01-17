@@ -36,7 +36,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -48,11 +47,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = CommentControllerTest.Config.class)
 public class CommentControllerTest {
 
-    private final static String EXISTING_PROJECT_ID = "TEST_PROJECT_ID";
-    private final static String NON_EXISTING_PROJECT_ID = "I_DONT_EXIST";
     public static final String EXISTING_USER_MAIL = "test.name@test.de";
     public static final String NON_EXISTING_USER_MAIL = "i_dont_exist@test.de";
-
+    private final static String EXISTING_PROJECT_ID = "TEST_PROJECT_ID";
+    private final static String NON_EXISTING_PROJECT_ID = "I_DONT_EXIST";
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
@@ -128,9 +126,9 @@ public class CommentControllerTest {
 
         assertThat(mvcResult.getResponse().getContentAsString(), is("{\"errorCode\":\"field_errors\",\"fieldViolations\":{\"comment\":\"may not be empty\"}}"));
 
-        verify(projectRepository, times(0)).findOne(EXISTING_PROJECT_ID);
-        verify(userRepository, times(0)).findByEmail(EXISTING_USER_MAIL);
-        verify(commentRepository, times(0)).save(any(CommentEntity.class));
+        verify(projectRepository, never()).findOne(EXISTING_PROJECT_ID);
+        verify(userRepository, never()).findByEmail(EXISTING_USER_MAIL);
+        verify(commentRepository, never()).save(any(CommentEntity.class));
     }
 
     @Test

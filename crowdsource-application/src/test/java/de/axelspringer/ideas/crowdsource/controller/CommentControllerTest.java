@@ -33,8 +33,8 @@ import java.util.Arrays;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -48,7 +48,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = CommentControllerTest.Config.class)
 public class CommentControllerTest {
 
-    private final static String TEST_PROJECT_ID = "TEST_PROJECT_ID";
+    private final static String EXISTING_PROJECT_ID = "TEST_PROJECT_ID";
+    private final static String NON_EXISTING_PROJECT_ID = "I_DONT_EXIST";
+    public static final String EXISTING_USER_MAIL = "test.name@test.de";
+    public static final String NON_EXISTING_USER_MAIL = "i_dont_exist@test.de";
 
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -72,24 +75,26 @@ public class CommentControllerTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
         reset(projectRepository);
+        reset(commentRepository);
+        reset(userRepository);
 
         final UserEntity userEntity = new UserEntity("test.name@test.de", "password");
         final ProjectEntity projectEntity = new ProjectEntity(userEntity, new Project());
-        when(userRepository.findByEmail(anyString())).thenReturn(userEntity);
-        when(projectRepository.findOne(TEST_PROJECT_ID)).thenReturn(projectEntity);
+        when(userRepository.findByEmail(EXISTING_USER_MAIL)).thenReturn(userEntity);
+        when(projectRepository.findOne(EXISTING_PROJECT_ID)).thenReturn(projectEntity);
         when(commentRepository.findByProject(projectEntity)).thenReturn(Arrays.asList(new CommentEntity(projectEntity, userEntity, "some comment")));
     }
 
     @Test
     public void testComments() throws Exception {
 
-        final MvcResult mvcResult = mockMvc.perform(get("/project/" + TEST_PROJECT_ID + "/comments"))
+        final MvcResult mvcResult = mockMvc.perform(get("/project/" + EXISTING_PROJECT_ID + "/comments"))
                 .andExpect(status().isOk())
                 .andReturn();
 
         assertThat(mvcResult.getResponse().getContentAsString(), is("[{\"created\":null,\"userName\":\"Test Name\",\"comment\":\"some comment\"}]"));
 
-        verify(projectRepository).findOne(TEST_PROJECT_ID);
+        verify(projectRepository).findOne(EXISTING_PROJECT_ID);
         verify(commentRepository).findByProject(any(ProjectEntity.class));
     }
 
@@ -97,60 +102,67 @@ public class CommentControllerTest {
     public void testStoreCommentValidComment() throws Exception {
 
         Comment comment = new Comment();
-        comment.setComment("this is an example comment that respects the length constraint");
-        mockMvc.perform(post("/project/" + TEST_PROJECT_ID + "/comment")
-                .principal(new UsernamePasswordAuthenticationToken("test@test.de", "password"))
+        comment.setComment("message");
+        mockMvc.perform(post("/project/" + EXISTING_PROJECT_ID + "/comment")
+                .principal(new UsernamePasswordAuthenticationToken(EXISTING_USER_MAIL, "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(comment)))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
-        verify(projectRepository).findOne(TEST_PROJECT_ID);
-        verify(userRepository).findByEmail("test@test.de");
+        verify(projectRepository).findOne(EXISTING_PROJECT_ID);
+        verify(userRepository).findByEmail(EXISTING_USER_MAIL);
         verify(commentRepository).save(any(CommentEntity.class));
     }
 
     @Test
-    public void testStoreCommentCommentTooShort() throws Exception {
+    public void testStoreInvalidComment() throws Exception {
 
         Comment comment = new Comment();
-        comment.setComment("this is too short");
+        comment.setComment("");
 
-        final MvcResult mvcResult = mockMvc.perform(post("/project/" + TEST_PROJECT_ID + "/comment")
-                .principal(new UsernamePasswordAuthenticationToken("test@test.de", "password"))
+        final MvcResult mvcResult = mockMvc.perform(post("/project/" + EXISTING_PROJECT_ID + "/comment")
+                .principal(new UsernamePasswordAuthenticationToken(EXISTING_USER_MAIL, "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(comment)))
                 .andExpect(status().isBadRequest()).andReturn();
 
-        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"errorCode\":\"field_errors\",\"fieldViolations\":{\"comment\":\"length-constraint-respected\"}}"));
+        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"errorCode\":\"field_errors\",\"fieldViolations\":{\"comment\":\"may not be empty\"}}"));
 
-        verify(projectRepository, times(0)).findOne(TEST_PROJECT_ID);
-        verify(userRepository, times(0)).findByEmail("test@test.de");
+        verify(projectRepository, times(0)).findOne(EXISTING_PROJECT_ID);
+        verify(userRepository, times(0)).findByEmail(EXISTING_USER_MAIL);
         verify(commentRepository, times(0)).save(any(CommentEntity.class));
     }
 
     @Test
-    public void testStoreCommentCommentTooLong() throws Exception {
+    public void testStoreCommentInvalidProjectId() throws Exception {
 
         Comment comment = new Comment();
-
-        StringBuilder tooLong = new StringBuilder();
-        String myComment = "this is too long";
-        for (int i = 0; i < 1100 / myComment.length(); i++) {
-            tooLong.append(myComment);
-        }
-        comment.setComment(tooLong.toString());
-
-        final MvcResult mvcResult = mockMvc.perform(post("/project/" + TEST_PROJECT_ID + "/comment")
-                .principal(new UsernamePasswordAuthenticationToken("test@test.de", "password"))
+        comment.setComment("this is an example comment that respects the length constraint");
+        mockMvc.perform(post("/project/" + NON_EXISTING_PROJECT_ID + "/comment")
+                .principal(new UsernamePasswordAuthenticationToken(EXISTING_USER_MAIL, "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(comment)))
-                .andExpect(status().isBadRequest()).andReturn();
+                .andExpect(status().isNotFound());
 
-        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"errorCode\":\"field_errors\",\"fieldViolations\":{\"comment\":\"length-constraint-respected\"}}"));
+        verify(projectRepository).findOne(NON_EXISTING_PROJECT_ID);
+        verify(userRepository, never()).findByEmail(EXISTING_USER_MAIL);
+        verify(commentRepository, never()).save(any(CommentEntity.class));
+    }
 
-        verify(projectRepository, times(0)).findOne(TEST_PROJECT_ID);
-        verify(userRepository, times(0)).findByEmail("test@test.de");
-        verify(commentRepository, times(0)).save(any(CommentEntity.class));
+    @Test
+    public void testStoreCommentUserNotFound() throws Exception {
+
+        Comment comment = new Comment();
+        comment.setComment("this is an example comment that respects the length constraint");
+        mockMvc.perform(post("/project/" + EXISTING_PROJECT_ID + "/comment")
+                .principal(new UsernamePasswordAuthenticationToken(NON_EXISTING_USER_MAIL, "password"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(comment)))
+                .andExpect(status().isUnauthorized());
+
+        verify(projectRepository).findOne(EXISTING_PROJECT_ID);
+        verify(userRepository).findByEmail(NON_EXISTING_USER_MAIL);
+        verify(commentRepository, never()).save(any(CommentEntity.class));
     }
 
 

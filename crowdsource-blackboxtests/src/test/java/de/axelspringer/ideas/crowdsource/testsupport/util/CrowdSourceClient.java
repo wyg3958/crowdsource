@@ -18,6 +18,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import sun.security.util.PendingException;
 
 import java.util.Arrays;
 
@@ -89,6 +90,11 @@ public class CrowdSourceClient {
 
     public RestTemplate getUnderlyingClient() {
         return restTemplate;
+    }
+
+    public void comment(Project project, String comment) {
+        // TODO
+        throw new PendingException();
     }
 
     @Data

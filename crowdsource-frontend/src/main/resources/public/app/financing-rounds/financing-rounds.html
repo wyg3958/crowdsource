@@ -2,7 +2,7 @@
 
     <h1>Administration der Finanzierungsrunden</h1>
 
-    <table class="financingRounds">
+    <table class="financingrounds">
         <thead>
         <tr>
             <th width="150">Startdatum</th>
@@ -13,9 +13,9 @@
         </tr>
         </thead>
         <tbody>
-        <tr class="financingRound" fr_id="{{fr.id}}" ng-repeat="fr in financingRound.allFinancingRounds">
-            <td class="startDate">{{ fr.startDate | date: 'short' }}</td>
-            <td class="endDate">{{ fr.endDate | date: 'short'}}</td>
+        <tr class="financinground" fr_id="{{fr.id}}" ng-repeat="fr in financingRound.allFinancingRounds">
+            <td class="startdate">{{ fr.startDate | date: 'short' }}</td>
+            <td class="enddate">{{ fr.endDate | date: 'short'}}</td>
             <td class="budget">{{ fr.budget }}</td>
             <td class="active">{{ fr.active ? 'ja' : 'nein'}}</td>
             <td>
@@ -43,7 +43,7 @@
                     </span>
                 </label>
 
-                <input class="newRoundEndDate" type="text" datepicker="" name="endDate" ng-model="financingRound.newRound.endDate"
+                <input class="newround-enddate" type="text" datepicker="" name="endDate" ng-model="financingRound.newRound.endDate"
                        placeholder="Bitte klicken..." required readonly>
             </div>
         </div>
@@ -62,7 +62,7 @@
                     </span>
                 </label>
 
-                <input type="number" name="budget" ng-model="financingRound.newRound.budget" class="text-right newRoundBudget"
+                <input type="number" name="budget" ng-model="financingRound.newRound.budget" class="text-right newround-budget"
                        placeholder="0"
                        required ng-pattern="/^[0-9]+$/i" min="1">
             </div>
@@ -72,7 +72,7 @@
             Es läuft bereits eine Finanzierungsrunde. Daher kann keine neue Runde gestartet werden.
         </div>
 
-        <button type="submit" class="newRoundStart success margin-top" ng-click="financingRound.start()"
+        <button type="submit" class="newround-start success margin-top" ng-click="financingRound.start()"
                 ng-disabled="financingRound.saving || !financingRound.canStartNewRound()">
             {{ financingRound.saving ? 'Starten...' : 'Starten!' }}
         </button>

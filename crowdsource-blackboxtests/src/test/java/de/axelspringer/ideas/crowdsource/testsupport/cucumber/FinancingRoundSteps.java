@@ -33,7 +33,7 @@ public class FinancingRoundSteps {
 
     @And("^he visits the financingrounds-page$")
     public void he_visits_the_financingrounds_page() throws Throwable {
-        financingRoundsPage.visitPage();
+        financingRoundsPage.open();
     }
 
     @Then("^he gets displayed an error message$")
@@ -102,5 +102,11 @@ public class FinancingRoundSteps {
     public void the_option_to_start_a_new_financing_round_is_not_available() throws Throwable {
 
         assertFalse(financingRoundsPage.canStartFinancingRound());
+    }
+
+    @And("^the option to start a new financing round is available$")
+    public void the_option_to_start_a_new_financing_round_is_available() throws Throwable {
+
+        assertTrue(financingRoundsPage.canStartFinancingRound());
     }
 }

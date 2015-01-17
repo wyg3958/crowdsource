@@ -26,3 +26,4 @@ Feature: Administer financing rounds
     And he starts a new financing round
     And he stops the financing round
     Then the financing round is not marked active any more
+    And the option to start a new financing round is available

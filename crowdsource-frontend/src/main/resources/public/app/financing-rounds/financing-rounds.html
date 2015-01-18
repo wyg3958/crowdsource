@@ -2,6 +2,11 @@
 
     <h1>Administration der Finanzierungsrunden</h1>
 
+    <div class="alert-box info" ng-if="financingRound.info">
+        {{ financingRound.info }}
+        <span class="close" ng-click="financingRound.info = undefined">&times;</span>
+    </div>
+
     <table class="financingrounds">
         <thead>
         <tr>

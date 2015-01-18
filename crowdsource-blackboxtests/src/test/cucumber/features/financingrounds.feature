@@ -3,7 +3,7 @@ Feature: Administer financing rounds
   Scenario: A normal user tries to view the financingrounds-page
     Given a user is logged in
     And he visits the financingrounds-page
-    Then he gets displayed an error message
+    Then he gets displayed the message "Fehler beim Abrufen der Finanzierungsrunden"
 
   Scenario: An admin views the financingrounds-page
     Given an admin is logged in
@@ -16,7 +16,8 @@ Feature: Administer financing rounds
     And no financing round is currently active
     Then the option to start a new financing round is available
     When he starts a new financing round
-    Then he sees the new financing round in the list of financing rounds
+    Then he gets displayed the message "Finanzierungsrunde gestartet."
+    And he sees the new financing round in the list of financing rounds
     And the new financing round is marked active
     And the option to start a new financing round is not available
 
@@ -26,6 +27,8 @@ Feature: Administer financing rounds
     And no financing round is currently active
     Then the option to start a new financing round is available
     When he starts a new financing round
-    And he stops the financing round
-    Then the financing round is not marked active any more
+    Then he gets displayed the message "Finanzierungsrunde gestartet."
+    When he stops the financing round
+    Then he gets displayed the message "Finanzierungsrunde gestoppt."
+    And the financing round is not marked active any more
     And the option to start a new financing round is available

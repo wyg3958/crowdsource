@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.axelspringer.ideas.crowdsource.testsupport.selenium.AngularJsUtils.interpolationCompletedOfElementLocated;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfAllElementsLocatedBy;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
 @Component
 public class FinancingRoundsPage {
@@ -32,10 +34,6 @@ public class FinancingRoundsPage {
 
     public void open() {
         webDriverProvider.provideDriver().get(urlProvider.applicationUrl() + "/#/financingrounds");
-    }
-
-    public void confirmErrorAlert() {
-        seleniumWait.waitForAlert().accept();
     }
 
     public void waitForPageLoad() {
@@ -57,10 +55,6 @@ public class FinancingRoundsPage {
         webDriver.findElementsByClassName("financinground").forEach(financingRoundElement -> {
             if (financingRound.getId().equals(financingRoundElement.getAttribute("fr_id"))) {
                 financingRoundElement.findElement(By.className("cancel")).click();
-                // confirm that we want to cancel
-                seleniumWait.waitForAlert().accept();
-                // click-away the info dialog
-                seleniumWait.waitForAlert().accept();
             }
         });
     }
@@ -78,7 +72,6 @@ public class FinancingRoundsPage {
         webDriver.executeScript("$('.newround-enddate').trigger('input')");
 
         webDriver.findElement(By.className("newround-start")).click();
-        seleniumWait.waitForAlert().accept();
     }
 
     public FinancingRound findFinancingRound(DateTime endDate, int budget) {
@@ -92,9 +85,12 @@ public class FinancingRoundsPage {
         return null;
     }
 
-    public boolean canStartFinancingRound() {
+    public boolean canStartFinancingRound(boolean wait) {
 
         final RemoteWebDriver webDriver = webDriverProvider.provideDriver();
+        if (wait) {
+            seleniumWait.until(presenceOfAllElementsLocatedBy(By.className("newround-start")));
+        }
         return webDriver.findElements(By.className("newround-start")).size() > 0;
     }
 
@@ -116,5 +112,11 @@ public class FinancingRoundsPage {
         financingRound.setActive("ja".equals(financingRoundElement.findElement(By.className("active")).getText()));
         financingRound.setId(financingRoundElement.getAttribute("fr_id"));
         return financingRound;
+    }
+
+    public String infoText() {
+
+        seleniumWait.until(presenceOfElementLocated(By.className("info")));
+        return webDriverProvider.provideDriver().findElement(By.className("info")).getText();
     }
 }

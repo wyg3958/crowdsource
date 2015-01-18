@@ -1,9 +1,6 @@
 package de.axelspringer.ideas.crowdsource.testsupport.selenium;
 
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.NoAlertPresentException;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,27 +17,5 @@ public class SeleniumWait {
 
     public void until(ExpectedCondition<?> isTrue) {
         new WebDriverWait(webDriverProvider.provideDriver(), TIME_OUT_IN_SECONDS).until(isTrue);
-    }
-
-    public Alert waitForAlert() {
-
-        final RemoteWebDriver webDriver = webDriverProvider.provideDriver();
-
-        int i = 0;
-        while (true) {
-            try {
-                return webDriver.switchTo().alert();
-            } catch (NoAlertPresentException e) {
-                if (i == 10) {
-                    throw e;
-                }
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e1) {
-                    throw new RuntimeException(e);
-                }
-                i++;
-            }
-        }
     }
 }

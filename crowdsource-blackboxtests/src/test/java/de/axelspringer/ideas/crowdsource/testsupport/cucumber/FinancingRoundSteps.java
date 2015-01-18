@@ -36,11 +36,6 @@ public class FinancingRoundSteps {
         financingRoundsPage.open();
     }
 
-    @Then("^he gets displayed an error message$")
-    public void he_gets_displayed_an_error_message() throws Throwable {
-        financingRoundsPage.confirmErrorAlert();
-    }
-
     @Then("^he sees a list of financing rounds$")
     public void he_sees_a_list_of_financing_rounds() throws Throwable {
         financingRoundsPage.waitForPageLoad();
@@ -101,12 +96,17 @@ public class FinancingRoundSteps {
     @And("^the option to start a new financing round is not available$")
     public void the_option_to_start_a_new_financing_round_is_not_available() throws Throwable {
 
-        assertFalse(financingRoundsPage.canStartFinancingRound());
+        assertFalse(financingRoundsPage.canStartFinancingRound(false));
     }
 
     @And("^the option to start a new financing round is available$")
     public void the_option_to_start_a_new_financing_round_is_available() throws Throwable {
 
-        assertTrue(financingRoundsPage.canStartFinancingRound());
+        assertTrue(financingRoundsPage.canStartFinancingRound(true));
+    }
+
+    @Then("^he gets displayed the message \"([^\"]*)\"$")
+    public void he_gets_displayed_the_message(String message) throws Throwable {
+        assertTrue(financingRoundsPage.infoText().contains(message));
     }
 }

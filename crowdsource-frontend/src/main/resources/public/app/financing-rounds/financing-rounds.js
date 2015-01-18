@@ -6,7 +6,7 @@ angular.module('crowdsource')
 
         vm.allFinancingRounds = FinancingRound.getAll();
         vm.allFinancingRounds.$promise.catch(function () {
-            alert("Fehler beim Abrufen der Finanzierungsrunden");
+            vm.info = "Fehler beim Abrufen der Finanzierungsrunden";
         });
 
         vm.start = function () {
@@ -20,10 +20,10 @@ angular.module('crowdsource')
             FinancingRound.start(vm.newRound)
                 .then(function () {
                     vm.allFinancingRounds = FinancingRound.getAll();
-                    alert("Finanzierungsrunde gestartet.");
+                    vm.info = "Finanzierungsrunde gestartet.";
                 })
                 .catch(function () {
-                    alert("Fehler beim Starten der Finanzierungsrunde!");
+                    vm.info = "Fehler beim Starten der Finanzierungsrunde!";
                 })
                 .finally(function () {
                     vm.saving = false;
@@ -33,19 +33,20 @@ angular.module('crowdsource')
 
         vm.stop = function (financingRound) {
 
-            if (!confirm("Wilst Du diese Runde wirklich vorzeitig beenden?")) {
-                return;
-            }
+            // TODO: confirm dialog (if really needed. this is an admin tool)
+            //if (!confirm("Wilst Du diese Runde wirklich vorzeitig beenden?")) {
+            //    return;
+            //}
 
             vm.stopping = true;
 
             FinancingRound.stop(financingRound)
                 .then(function () {
                     vm.allFinancingRounds = FinancingRound.getAll();
-                    alert("Finanzierungsrunde gestoppt.");
+                    vm.info = "Finanzierungsrunde gestoppt.";
                 })
                 .catch(function () {
-                    alert("Fehler beim Stoppen der Finanzierungsrunde!");
+                    vm.info = "Fehler beim Stoppen der Finanzierungsrunde!";
                 })
                 .finally(function () {
                     vm.stopping = false;
@@ -68,5 +69,4 @@ angular.module('crowdsource')
 
             return !activeRoundFound;
         };
-
     });

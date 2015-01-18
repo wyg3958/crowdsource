@@ -15,7 +15,7 @@ public class MailConfig {
     @Value("${de.axelspringer.ideas.crowdsource.mail.host:axelspringerideas.de}")
     private String host;
 
-    @Value("${de.axelspringer.ideas.crowdsource.mail.port:587}")
+    @Value("${de.axelspringer.ideas.crowdsource.mail.port:25}")
     private Integer port;
 
     @Value("${de.axelspringer.ideas.crowdsource.mail.username:crowd@axelspringerideas.de}")

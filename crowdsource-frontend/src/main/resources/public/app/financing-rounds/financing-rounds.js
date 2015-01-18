@@ -33,11 +33,12 @@ angular.module('crowdsource')
 
         vm.stop = function (financingRound) {
 
-            // TODO: confirm dialog (if really needed. this is an admin tool)
-            //if (!confirm("Wilst Du diese Runde wirklich vorzeitig beenden?")) {
-            //    return;
-            //}
+            if (!vm.confirmStop) {
+                vm.confirmStop = true;
+                return;
+            }
 
+            vm.confirmStop = false;
             vm.stopping = true;
 
             FinancingRound.stop(financingRound)
@@ -51,6 +52,18 @@ angular.module('crowdsource')
                 .finally(function () {
                     vm.stopping = false;
                 });
+        };
+
+        vm.getStopButtonText = function () {
+            if (vm.stopping) {
+                return "Beenden...";
+            }
+            else if (vm.confirmStop) {
+                return "Ja";
+            }
+            else {
+                return "Beenden";
+            }
         };
 
         vm.canStartNewRound = function () {

@@ -2,17 +2,24 @@ package de.axelspringer.ideas.crowdsource.testsupport.cucumber;
 
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
 import de.axelspringer.ideas.crowdsource.model.presentation.FinancingRound;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.FinancingRoundsPage;
 import org.joda.time.DateTime;
+import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Random;
 
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
@@ -34,21 +41,12 @@ public class FinancingRoundSteps {
     @And("^he visits the financingrounds-page$")
     public void he_visits_the_financingrounds_page() throws Throwable {
         financingRoundsPage.open();
+        financingRoundsPage.waitForPageLoad();
     }
 
     @Then("^he sees a list of financing rounds$")
     public void he_sees_a_list_of_financing_rounds() throws Throwable {
         financingRoundsPage.waitForPageLoad();
-    }
-
-    @And("^no financing round is currently active$")
-    public void no_financing_round_is_currently_active() throws Throwable {
-        financingRoundsPage.waitForPageLoad();
-        financingRoundsPage.getFinancingRounds().forEach(financingRound -> {
-            if (financingRound.isActive()) {
-                financingRoundsPage.cancelFinancingRound(financingRound);
-            }
-        });
     }
 
     @And("^he starts a new financing round$")
@@ -64,25 +62,71 @@ public class FinancingRoundSteps {
         financingRoundsPage.startFinancingRound(endDate, budget);
     }
 
-    @Then("^he sees the new financing round in the list of financing rounds$")
-    public void he_sees_the_new_financing_round_in_the_list_of_financing_rounds() throws Throwable {
-
-        assertNotNull(financingRoundsPage.findFinancingRound(endDate, budget));
+    @And("^he sees the new financing round as the first item in the list of financing rounds$")
+    public void he_sees_the_new_financing_round_as_the_first_item_in_the_list_of_financing_rounds() throws Throwable {
+        FinancingRound financingRound = financingRoundsPage.getFinancingRoundAt(0);
+        assertThat(financingRound, is(notNullValue()));
+        assertThat(financingRound.getBudget(), is(budget));
+        assertThat(financingRound.getEndDate().toLocalDate(), is(endDate.toLocalDate()));
+        assertThat(financingRound.getEndDate().getHourOfDay(), is(23));
+        assertThat(financingRound.getEndDate().getMinuteOfHour(), is(59));
+        assertThat(financingRound.getEndDate().getSecondOfMinute(), is(0));
     }
 
-    @And("^the new financing round is marked active$")
-    public void the_new_financing_round_is_marked_active() throws Throwable {
-
+    @And("^the new financing round can be stopped$")
+    public void the_new_financing_round_can_be_stopped() throws Throwable {
         FinancingRound financingRound = financingRoundsPage.findFinancingRound(endDate, budget);
         assertTrue(financingRound.isActive());
+
+        the_stop_button_is_displayed();
     }
 
-    @And("^he stops the financing round$")
-    public void he_stops_the_financing_round() throws Throwable {
+    @When("^he clicks the stop button of the financing round$")
+    public void he_clicks_the_stop_button_of_the_financing_round() throws Throwable {
+        WebElement button = getActionElementOfFinancingRoundAt(0, FinancingRoundsPage.ACTION_BUTTON_STOP);
+        assertNotNull(button);
+        button.click();
+    }
 
-        final FinancingRound financingRound = financingRoundsPage.findFinancingRound(endDate, budget);
-        assertNotNull(financingRound);
-        financingRoundsPage.cancelFinancingRound(financingRound);
+    @When("^he clicks the no button$")
+    public void he_clicks_the_no_button() throws Throwable {
+        WebElement button = getActionElementOfFinancingRoundAt(0, FinancingRoundsPage.ACTION_BUTTON_CANCEL);
+        assertNotNull(button);
+        button.click();
+    }
+
+    @When("^he clicks the yes button$")
+    public void he_clicks_the_yes_button() throws Throwable {
+        WebElement button = getActionElementOfFinancingRoundAt(0, FinancingRoundsPage.ACTION_BUTTON_STOP);
+        assertNotNull(button);
+        button.click();
+    }
+
+    @Then("^the stop button changed to two confirm buttons$")
+    public void the_stop_button_changed_to_two_confirm_buttons() throws Throwable {
+        WebElement stopButton = getActionElementOfFinancingRoundAt(0, FinancingRoundsPage.ACTION_BUTTON_STOP);
+        assertNotNull(stopButton);
+        assertThat(stopButton.getText(), is("JA"));
+
+        WebElement cancelButton = getActionElementOfFinancingRoundAt(0, FinancingRoundsPage.ACTION_BUTTON_CANCEL);
+        assertNotNull(cancelButton);
+        assertThat(cancelButton.getText(), is("NEIN"));
+
+        WebElement confirmMessage = getActionElementOfFinancingRoundAt(0, FinancingRoundsPage.ACTION_CONFIRM_MESSAGE);
+        assertNotNull(confirmMessage);
+    }
+
+    @Then("^the stop button is displayed again$")
+    public void the_stop_button_is_displayed() throws Throwable {
+        WebElement stopButton = getActionElementOfFinancingRoundAt(0, FinancingRoundsPage.ACTION_BUTTON_STOP);
+        assertNotNull(stopButton);
+        assertThat(stopButton.getText(), is("BEENDEN"));
+
+        WebElement cancelButton = getActionElementOfFinancingRoundAt(0, FinancingRoundsPage.ACTION_BUTTON_CANCEL);
+        assertNull(cancelButton);
+
+        WebElement confirmMessage = getActionElementOfFinancingRoundAt(0, FinancingRoundsPage.ACTION_CONFIRM_MESSAGE);
+        assertNull(confirmMessage);
     }
 
     @Then("^the financing round is not marked active any more$")
@@ -108,5 +152,21 @@ public class FinancingRoundSteps {
     @Then("^he gets displayed the message \"([^\"]*)\"$")
     public void he_gets_displayed_the_message(String message) throws Throwable {
         assertTrue(financingRoundsPage.infoText().contains(message));
+    }
+
+    @And("^no notification message is displayed in the start financeround form$")
+    public void no_notification_message_is_displayed_in_the_start_financeround_form() throws Throwable {
+        assertNull(financingRoundsPage.getNewRoundNotificationText());
+    }
+
+    @And("^the notification message \"([^\"]*)\" is displayed in the start financeround form$")
+    public void the_notification_message_is_displayed_in_the_start_financeround_form(String expectedMessage) throws Throwable {
+        assertEquals(expectedMessage, financingRoundsPage.getNewRoundNotificationText());
+    }
+
+    private WebElement getActionElementOfFinancingRoundAt(int pos, String type) {
+        final FinancingRound financingRound = financingRoundsPage.getFinancingRoundAt(pos);
+        assertNotNull(financingRound);
+        return financingRoundsPage.getActionElementOfFinancingRound(financingRound, type);
     }
 }

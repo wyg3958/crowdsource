@@ -50,7 +50,7 @@ gulp.task('js', function() {
     return gulp.src(config.jsFiles)
         .pipe(sourcemaps.init())
             .pipe(ngAnnotate())
-            .pipe(uglify())
+            //.pipe(uglify())
             .pipe(concat('crowdsource.min.js'))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(config.baseDestDir + '/app'));

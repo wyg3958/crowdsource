@@ -56,6 +56,7 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
             .otherwise({redirectTo: '/projects'});
 
         $httpProvider.interceptors.push('UnauthorizedInterceptor');
+        $httpProvider.interceptors.push('LoggingInterceptor');
     })
 
     .run(function (Authentication, Route) {

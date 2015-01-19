@@ -3,8 +3,11 @@ package de.axelspringer.ideas.crowdsource.testsupport.selenium;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
@@ -13,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.util.logging.Level;
 
 /**
  * Stateful! Holds WebDriver-Instance
@@ -67,20 +71,37 @@ public class WebDriverProvider {
 
         if (new File(phantomBinaryPath).exists()) {
             LOG.info("providing phantomjs driver");
+
             DesiredCapabilities capabilities = DesiredCapabilities.phantomjs();
             capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, phantomBinaryPath);
+            enableLogging(capabilities);
+
             DRIVER_INSTANCE = new PhantomJSDriver(capabilities);
         } else if (new File(chromeBinaryPath).exists()) {
             LOG.info("providing chromedriver");
             System.setProperty("webdriver.chrome.driver", chromeBinaryPath);
-            DRIVER_INSTANCE = new ChromeDriver();
+
+            DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+            enableLogging(capabilities);
+
+            DRIVER_INSTANCE = new ChromeDriver(capabilities);
         } else {
             LOG.info("providing firefox driver as phantomjs-binary was not specified or does not resolve in file system.");
-            DRIVER_INSTANCE = new FirefoxDriver();
+
+            DesiredCapabilities capabilities = DesiredCapabilities.firefox();
+            enableLogging(capabilities);
+
+            DRIVER_INSTANCE = new FirefoxDriver(capabilities);
         }
 
         DRIVER_INSTANCE.manage().window().setSize(new Dimension(1280, 800));
         return DRIVER_INSTANCE;
+    }
+
+    private void enableLogging(DesiredCapabilities capabilities) {
+        LoggingPreferences loggingPreferences = new LoggingPreferences();
+        loggingPreferences.enable(LogType.BROWSER, Level.ALL);
+        capabilities.setCapability(CapabilityType.LOGGING_PREFS, loggingPreferences);
     }
 
     public boolean hasActiveWebDriver() {

@@ -114,7 +114,7 @@ public class ActivateUserControllerTest extends AbstractUserControllerTest {
     }
 
     @Test
-    public void testActivateAlreadyActivateUser() throws Exception {
+    public void testActivateAlreadyActivatedUser() throws Exception {
 
         final UserActivation userActivation = new UserActivation();
         userActivation.setActivationToken(activatedUser.getActivationToken());
@@ -129,6 +129,21 @@ public class ActivateUserControllerTest extends AbstractUserControllerTest {
                 .andReturn();
 
         assertEquals("{\"errorCode\":\"already_activated\",\"fieldViolations\":{}}", mvcResult.getResponse().getContentAsString());
+    }
+
+    @Test
+    public void testAssignNewPassword() throws Exception {
+
+        final UserActivation userActivation = new UserActivation();
+        userActivation.setActivationToken(activatedUser.getActivationToken());
+        userActivation.setPassword("1234567!");
+
+        final String email = activatedUser.getEmail();
+
+        mockMvc.perform(post("/user/" + email + "/activation?checkIfActive=false")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(userActivation)))
+                .andExpect(status().isOk());
     }
 
 }

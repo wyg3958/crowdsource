@@ -6,7 +6,7 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.UserRegistration;
-import de.axelspringer.ideas.crowdsource.service.UserActivationService;
+import de.axelspringer.ideas.crowdsource.service.UserNotificationService;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.ActivationForm;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.LoginForm;
@@ -144,10 +144,10 @@ public class RegistrationSteps {
         assertThat(mailServerClient.messages(), hasSize(mailCount));
         // check last received mail
         final MailServerClient.Message message = mailServerClient.messages().get(mailCount - 1);
-        assertThat(message.from, is(UserActivationService.FROM_ADDRESS));
+        assertThat(message.from, is(UserNotificationService.FROM_ADDRESS));
         assertThat(message.to, is(emailName + EligibleEmailValidator.ELIGIBLE_EMAIL_DOMAIN));
-        assertThat(message.subject, is(UserActivationService.REGISTRATION_SUBJECT));
-        assertThat(message.message, startsWith(UserActivationService.MAIL_CONTENT));
+        assertThat(message.subject, is(UserNotificationService.REGISTRATION_SUBJECT));
+        assertThat(message.message, startsWith(UserNotificationService.ACTIVATION_MAIL_CONTENT));
     }
 
     @When("^the user clicks the email's activation link$")

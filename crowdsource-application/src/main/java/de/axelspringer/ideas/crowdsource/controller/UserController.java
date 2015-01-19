@@ -8,10 +8,8 @@ import de.axelspringer.ideas.crowdsource.model.presentation.user.User;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.UserActivation;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.UserRegistration;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
-import de.axelspringer.ideas.crowdsource.service.UserActivationService;
 import de.axelspringer.ideas.crowdsource.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,9 +34,6 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private UserActivationService userActivationService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -56,19 +52,14 @@ public class UserController {
             log.debug("A user with the address {} already exists, assigning a new activation token", userRegistration.getEmail());
         }
 
-        userEntity.setActivationToken(RandomStringUtils.randomAlphanumeric(32));
-
-        // This is a blocking call, may last long and throw exceptions if the mail server does not want to talk to us
-        // maybe make this asynchronous (+ retry) if this causes problems.
-        userActivationService.sendActivationMail(userEntity);
-
-        userRepository.save(userEntity);
-        log.debug("User saved: {}", userEntity);
+        userService.assignActivationTokenForRegistration(userEntity);
     }
 
-    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/{email}/activation", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void activateUser(@PathVariable("email") String email, @RequestBody @Valid UserActivation userActivation) {
+    public void activateUser(
+            @PathVariable String email,
+            @RequestParam(required = false, defaultValue = "true") boolean checkIfActive,
+            @RequestBody @Valid UserActivation userActivation) {
 
         UserEntity userEntity = userRepository.findByEmail(email);
         if (userEntity == null) {
@@ -76,7 +67,11 @@ public class UserController {
             throw new ResourceNotFoundException();
         }
 
-        if (userEntity.isActivated()) {
+        // The isActivated check is only a convenience check to let the client know that the
+        // user is already activated instead of returning activationTokenInvalid error.
+        // This check is disabled when using the password recovery feature, because the user is already activated,
+        // but the password should be reset.
+        if (checkIfActive && userEntity.isActivated()) {
             log.debug("user {} is already activated", userEntity);
             throw InvalidRequestException.userAlreadyActivated();
         }
@@ -95,6 +90,19 @@ public class UserController {
 
         userRepository.save(userEntity);
         log.debug("User activated: {}", userEntity);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @RequestMapping(value = "/{email}/password-recovery", method = RequestMethod.GET)
+    public void recoverPassword(@PathVariable String email) {
+
+        UserEntity userEntity = userRepository.findByEmail(email);
+        if (userEntity == null) {
+            log.debug("userentity with id {} does not exist and a password can therefore not be recovered.", email);
+            throw new ResourceNotFoundException();
+        }
+
+        userService.assignActivationTokenForPasswordRecovery(userEntity);
     }
 
     @Secured(Roles.ROLE_USER)

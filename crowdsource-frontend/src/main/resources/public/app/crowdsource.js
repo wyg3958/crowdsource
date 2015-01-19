@@ -38,6 +38,14 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
                 templateUrl: 'app/user/activation/user-activation.html',
                 controller: 'UserActivationController as activation'
             })
+            .when('/login/password-recovery', {
+                templateUrl: 'app/user/password-recovery/password-recovery.html',
+                controller: 'PasswordRecoveryController as passwordRecovery'
+            })
+            .when('/login/password-recovery/:email/success', {
+                templateUrl: 'app/user/password-recovery/password-recovery-success.html',
+                controller: 'PasswordRecoverySuccessController as passwordRecoverySuccess'
+            })
             .when('/financingrounds', {
                 templateUrl: 'app/financing-rounds/financing-rounds.html',
                 controller: 'FinancingRoundController as financingRound',

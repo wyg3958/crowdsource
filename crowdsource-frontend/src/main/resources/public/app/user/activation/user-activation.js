@@ -9,6 +9,9 @@ angular.module('crowdsource')
             activationToken: $routeParams.activationToken
         };
 
+        vm.isPasswordRecoveryFlow = ($location.path().indexOf('password-recovery') !== -1);
+        vm.isRegistrationFlow = ! vm.isPasswordRecoveryFlow;
+
         vm.activate = function() {
             if (!vm.form.$valid) {
                 return;

@@ -2,11 +2,11 @@
 
     <div class="finance">
 
-        <div class="alert-box notification push" ng-class="pledgingForm.getNotification().type" ng-show="pledgingForm.getNotification() != null">
+        <div class="alert-box notification push" ng-class="pledgingForm.getNotification().type" ng-show="!pledgingForm.generalErrors && pledgingForm.getNotification() != null">
             {{ pledgingForm.getNotification().message }}
         </div>
 
-        <div class="general-error alert-box alert" ng-messages="pledgingForm.generalErrors" ng-if="pledgingForm.generalErrors">
+        <div class="general-error alert-box alert push" ng-messages="pledgingForm.generalErrors" ng-if="pledgingForm.generalErrors">
             <span ng-message="remote_pledge_goal_exceeded">
                 Das Projekt wurde mittlerweile von anderen Benutzern finanziert und deine Finanzierung hätte den Finanzierungsbedarf des Projekts überschritten.
                 Die Projektdaten wurden soeben aktualisiert und wir bitten dich einen neuen Finanzierungsbetrag einzugeben.
@@ -15,6 +15,10 @@
                 Das Projekt wurde mittlerweile von anderen Benutzern vollständig finanziert. Ein Finanzieren ist leider nicht mehr möglich.
             </span>
             <span ng-message="remote_user_budget_exceeded">Dein Budget reicht nicht aus. Bitte versuche es erneut</span>
+            <span ng-message="remote_no_financing_round_currently_active">
+                Die Finanzierungsrunde ist mittlerweile leider beendet.
+                Das Finanzieren ist erst wieder möglich, wenn die nächste Runde gestartet wurde.
+            </span>
             <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuche es erneut.</span>
         </div>
 

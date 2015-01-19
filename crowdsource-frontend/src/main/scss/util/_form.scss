@@ -75,3 +75,11 @@ button, .button {
     @extend %btn-crwd-success;
   }
 }
+
+.form-horizontal {
+    button {
+        margin-top: 21px;
+        padding: 9px 20px;
+        font-size: $fs-small;
+    }
+}

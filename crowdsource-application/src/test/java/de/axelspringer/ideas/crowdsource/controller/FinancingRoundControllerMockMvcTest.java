@@ -112,7 +112,7 @@ public class FinancingRoundControllerMockMvcTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"startDate\":1412244610000,\"endDate\":1416564610000,\"active\":false}"));
+        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"id\":null,\"startDate\":1412244610000,\"endDate\":1416564610000,\"active\":false}"));
         verify(financingRoundRepository, times(1)).findActive(any());
     }
 

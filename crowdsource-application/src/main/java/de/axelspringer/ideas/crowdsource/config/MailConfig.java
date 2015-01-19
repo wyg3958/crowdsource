@@ -12,16 +12,16 @@ import java.util.Properties;
 @Configuration
 public class MailConfig {
 
-    @Value("${de.axelspringer.ideas.crowdsource.mail.host:smtp.googlemail.com}")
+    @Value("${de.axelspringer.ideas.crowdsource.mail.host:axelspringerideas.de}")
     private String host;
 
-    @Value("${de.axelspringer.ideas.crowdsource.mail.port:587}")
+    @Value("${de.axelspringer.ideas.crowdsource.mail.port:25}")
     private Integer port;
 
-    @Value("${de.axelspringer.ideas.crowdsource.mail.username:ascrowdsource@gmail.com}")
+    @Value("${de.axelspringer.ideas.crowdsource.mail.username:crowd@axelspringerideas.de}")
     private String username;
 
-    @Value("${de.axelspringer.ideas.crowdsource.mail.password:test123test}")
+    @Value("${de.axelspringer.ideas.crowdsource.mail.password:WpMqtXoh9b8dPhfBZhxU#}")
     private String password;
 
     @Value("${de.axelspringer.ideas.crowdsource.mail.starttls:true}")

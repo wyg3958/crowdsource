@@ -1,0 +1,36 @@
+<div class="panel comments" ng-show="projectComments.comments.length > 0">
+    <div ng-repeat="comment in projectComments.comments" class="panel comment">
+        <div>
+            <span class="comment-user">{{comment.userName}}</span> - <span class="comment-date">{{comment.created | date: 'short'}}</span>
+        </div>
+        <div class="comment-comment">{{comment.comment}}</div>
+    </div>
+</div>
+
+<div class="panel new-comment">
+    <form name="projectComments.form">
+
+        <div class="general-error alert-box alert" ng-messages="projectComments.generalErrors" ng-if="projectComments.generalErrors">
+            <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuche es erneut.</span>
+        </div>
+
+        <div class="form-controls-comment">
+            <label form-group="comment">
+                <span form-label-valid="comment">Gefällt dir dieses Projekt? Hast du Verbesserungsvorschläge? Dann schreibe hier deinen Kommentar:</span>
+
+                <span form-label-invalid="comment" ng-messages="projectComments.form.comment.$error">
+                    <span ng-message="required">Bitte gib einen Kommentar ein</span>
+                </span>
+
+                <textarea class="newcomment-comment" name="comment" ng-model="projectComments.newComment.comment" required></textarea>
+            </label>
+        </div>
+
+        <button type="submit" class="success margin-top newcomment-submit"
+                ng-click="projectComments.storeComment(projectComments.newComment)"
+                ng-disabled="projectComments.form.$invalid || projectComments.loading">
+
+            {{ projectComments.loading ? 'Kommentieren...' : 'Kommentieren' }}
+        </button>
+    </form>
+</div>

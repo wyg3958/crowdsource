@@ -5,6 +5,9 @@ angular.module('crowdsource')
         var vm = this;
 
         vm.allFinancingRounds = FinancingRound.getAll();
+        vm.allFinancingRounds.$promise.catch(function () {
+            vm.info = "Fehler beim Abrufen der Finanzierungsrunden";
+        });
 
         vm.start = function () {
 
@@ -17,10 +20,10 @@ angular.module('crowdsource')
             FinancingRound.start(vm.newRound)
                 .then(function () {
                     vm.allFinancingRounds = FinancingRound.getAll();
-                    alert("Finanzierungsrunde gestartet.");
+                    vm.info = "Finanzierungsrunde gestartet.";
                 })
                 .catch(function () {
-                    alert("Fehler beim Starten der Finanzierungsrunde!");
+                    vm.info = "Fehler beim Starten der Finanzierungsrunde!";
                 })
                 .finally(function () {
                     vm.saving = false;
@@ -30,23 +33,37 @@ angular.module('crowdsource')
 
         vm.stop = function (financingRound) {
 
-            if (!confirm("Wilst Du diese Runde wirklich vorzeitig beenden?")) {
+            if (!vm.confirmStop) {
+                vm.confirmStop = true;
                 return;
             }
 
+            vm.confirmStop = false;
             vm.stopping = true;
 
             FinancingRound.stop(financingRound)
                 .then(function () {
                     vm.allFinancingRounds = FinancingRound.getAll();
-                    alert("Finanzierungsrunde gestoppt.");
+                    vm.info = "Finanzierungsrunde gestoppt.";
                 })
                 .catch(function () {
-                    alert("Fehler beim Stoppen der Finanzierungsrunde!");
+                    vm.info = "Fehler beim Stoppen der Finanzierungsrunde!";
                 })
                 .finally(function () {
                     vm.stopping = false;
                 });
+        };
+
+        vm.getStopButtonText = function () {
+            if (vm.stopping) {
+                return "Beenden...";
+            }
+            else if (vm.confirmStop) {
+                return "Ja";
+            }
+            else {
+                return "Beenden";
+            }
         };
 
         vm.canStartNewRound = function () {
@@ -65,5 +82,4 @@ angular.module('crowdsource')
 
             return !activeRoundFound;
         };
-
     });

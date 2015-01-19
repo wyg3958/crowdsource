@@ -77,6 +77,15 @@ Feature: Login and Logout
     When he enters valid credentials
     Then he is redirected to the project creation page
 
+  # regression test
+  Scenario: A user is redirected to the originally requested page after logging in, even if he already was on the login page
+    Given the index page is visited
+    When he clicks on the Login link in the navigation bar
+    When he clicks on the New Project link in the navigation bar
+    Then he is redirected to the login page
+    When he enters valid credentials
+    Then he is redirected to the project creation page
+
   Scenario: A user tries to log in but did not activate his account yet
     Given the user's email address is already registered but not activated
     Given the index page is visited

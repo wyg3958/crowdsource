@@ -22,6 +22,10 @@ public class InvalidRequestException extends RuntimeException {
         return new InvalidRequestException("project_already_fully_pledged");
     }
 
+    public static InvalidRequestException noFinancingRoundCurrentlyActive() {
+        return new InvalidRequestException("no_financing_round_currently_active");
+    }
+
     public InvalidRequestException(String message) {
         super(message);
     }

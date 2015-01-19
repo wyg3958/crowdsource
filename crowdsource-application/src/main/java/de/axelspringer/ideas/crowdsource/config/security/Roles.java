@@ -5,7 +5,7 @@ public interface Roles {
     /**
      * Anonymous user. An user that is neither logged in nor in a trusted network.
      */
-    String ROLE_UNTRUSTED_ANONYMOUS = "ROLE_UNTRUSTED_ANONYMOUS";
+    String ROLE_UNTRUSTED_ANONYMOUS = "ROLE_ANONYMOUS";
 
     /**
      * User that is not logged in but in a trusted network.

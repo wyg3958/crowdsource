@@ -33,7 +33,8 @@ public class ProjectController {
 
     @Autowired
     private UserService userService;
-    
+
+    @Secured({Roles.ROLE_TRUSTED_ANONYMOUS, Roles.ROLE_USER, Roles.ROLE_ADMIN})
     @RequestMapping(value = "/projects", method = RequestMethod.GET)
     @JsonView(ProjectSummaryView.class)
     public List<Project> getProjects() {

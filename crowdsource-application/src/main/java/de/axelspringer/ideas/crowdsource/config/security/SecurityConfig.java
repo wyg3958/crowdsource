@@ -73,7 +73,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     // even if there are controllers secured with the help of @EnableGlobalMethodSecurity
                     // -> we define some dummy value to hopefully never match a real url
                     // (haven't found the right way to configure spring security yet ...)
-                    .and().authorizeRequests().antMatchers("/some-pattern-to-make-spring-security-happy").authenticated();
+                    .and().authorizeRequests().antMatchers("/some-pattern-to-make-spring-security-happy").authenticated()
+                    .and().anonymous().authenticationFilter(new IPBasedAnonymousAuthenticationFilter());
         }
     }
 

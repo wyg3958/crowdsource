@@ -47,6 +47,7 @@ public class FinancingRoundController {
 
     @JsonView(PublicFinancingRoundInformationView.class)
     @RequestMapping(value = "/financinground/active", method = RequestMethod.GET)
+    @Secured({Roles.ROLE_TRUSTED_ANONYMOUS, Roles.ROLE_USER, Roles.ROLE_ADMIN})
     public FinancingRound getActive() {
 
         final FinancingRoundEntity financingRoundEntity = financingRoundRepository.findActive(DateTime.now());

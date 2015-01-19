@@ -98,6 +98,8 @@
 
   &:hover {
     color: $black;
-    background-color: transparent;
+    background-color: $clr-bg;
+    box-shadow: 0 2px 0 0 #35EA87;
+    border: 1px solid #35EA87;
   }
 }

@@ -6,6 +6,7 @@ import cucumber.api.java.en.When;
 import de.axelspringer.ideas.crowdsource.model.presentation.FinancingRound;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.FinancingRoundsPage;
+import de.axelspringer.ideas.crowdsource.testsupport.selenium.SeleniumWait;
 import org.joda.time.DateTime;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class FinancingRoundSteps {
     @Autowired
     private FinancingRoundsPage financingRoundsPage;
 
+    @Autowired
+    private SeleniumWait wait;
+
     /**
      * will be set by create step and read right after for the assertion
      */
@@ -37,6 +41,12 @@ public class FinancingRoundSteps {
      * will be set by create step and read right after for the assertion
      */
     private DateTime endDate;
+
+    /**
+     * will be set by create step to identify when the list was reloaded
+     */
+    private int numberOfFinancingRoundsBeforeStart;
+
 
     @And("^he visits the financingrounds-page$")
     public void he_visits_the_financingrounds_page() throws Throwable {
@@ -60,10 +70,14 @@ public class FinancingRoundSteps {
 
         // start round
         financingRoundsPage.startFinancingRound(endDate, budget);
+
+        numberOfFinancingRoundsBeforeStart = financingRoundsPage.getFinancingRoundsCount();
     }
 
     @And("^he sees the new financing round as the first item in the list of financing rounds$")
     public void he_sees_the_new_financing_round_as_the_first_item_in_the_list_of_financing_rounds() throws Throwable {
+        wait.until(driver -> numberOfFinancingRoundsBeforeStart < financingRoundsPage.getFinancingRoundsCount());
+
         FinancingRound financingRound = financingRoundsPage.getFinancingRoundAt(0);
         assertThat(financingRound, is(notNullValue()));
         assertThat(financingRound.getBudget(), is(budget));

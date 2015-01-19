@@ -107,13 +107,13 @@ describe('password recovery view', function () {
         expectValidationError('email', 'non_external_email');
     });
 
-    it('should show a validation error if the server responds with the error code "not_registered"', function() {
-        expectBackendCallAndRespond(400, { "errorCode": "not_registered", "fieldViolations": {} });
+    it('should show the remote_not_found error if the server responds with 404', function() {
+        expectBackendCallAndRespond(404);
 
         fillAndSubmitForm('test');
         $httpBackend.flush();
         expect(form.getGeneralErrorsContainer()).toExist();
-        expect(form.getGeneralError('remote_not_registered')).toExist();
+        expect(form.getGeneralError('remote_not_found')).toExist();
     });
 
 

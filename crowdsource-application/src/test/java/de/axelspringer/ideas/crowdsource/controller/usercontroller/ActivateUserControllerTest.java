@@ -117,7 +117,7 @@ public class ActivateUserControllerTest extends AbstractUserControllerTest {
     public void testActivateAlreadyActivatedUser() throws Exception {
 
         final UserActivation userActivation = new UserActivation();
-        userActivation.setActivationToken(activatedUser.getActivationToken());
+        userActivation.setActivationToken("xyz");
         userActivation.setPassword("1234567!");
 
         final String email = activatedUser.getEmail();
@@ -132,7 +132,9 @@ public class ActivateUserControllerTest extends AbstractUserControllerTest {
     }
 
     @Test
-    public void testAssignNewPassword() throws Exception {
+    public void testActivateFromPasswordRecovery() throws Exception {
+
+        activatedUser.setActivationToken("xyz");
 
         final UserActivation userActivation = new UserActivation();
         userActivation.setActivationToken(activatedUser.getActivationToken());
@@ -140,7 +142,7 @@ public class ActivateUserControllerTest extends AbstractUserControllerTest {
 
         final String email = activatedUser.getEmail();
 
-        mockMvc.perform(post("/user/" + email + "/activation?checkIfActive=false")
+        mockMvc.perform(post("/user/" + email + "/activation")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(userActivation)))
                 .andExpect(status().isOk());

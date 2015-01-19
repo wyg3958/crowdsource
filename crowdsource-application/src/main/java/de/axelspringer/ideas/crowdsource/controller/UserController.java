@@ -10,7 +10,6 @@ import de.axelspringer.ideas.crowdsource.model.presentation.user.UserRegistratio
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import de.axelspringer.ideas.crowdsource.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,12 +19,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.security.Principal;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @RestController
@@ -58,7 +58,6 @@ public class UserController {
     @RequestMapping(value = "/{email}/activation", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public void activateUser(
             @PathVariable String email,
-            @RequestParam(required = false, defaultValue = "true") boolean checkIfActive,
             @RequestBody @Valid UserActivation userActivation) {
 
         UserEntity userEntity = userRepository.findByEmail(email);
@@ -67,16 +66,14 @@ public class UserController {
             throw new ResourceNotFoundException();
         }
 
-        // The isActivated check is only a convenience check to let the client know that the
-        // user is already activated instead of returning activationTokenInvalid error.
-        // This check is disabled when using the password recovery feature, because the user is already activated,
-        // but the password should be reset.
-        if (checkIfActive && userEntity.isActivated()) {
+        // The activation token may be set to non blank when using password recovery.
+        // In this case, the user is still activated but has a token set.
+        if (isBlank(userEntity.getActivationToken()) && userEntity.isActivated()) {
             log.debug("user {} is already activated", userEntity);
             throw InvalidRequestException.userAlreadyActivated();
         }
 
-        if (StringUtils.isBlank(userEntity.getActivationToken())
+        if (isBlank(userEntity.getActivationToken())
             ||!userEntity.getActivationToken().equals(userActivation.getActivationToken())) {
             log.debug("token mismatch on activation request for user with email: {} (was {}, expected: {})",
                     email, userActivation.getActivationToken(), userEntity.getActivationToken());

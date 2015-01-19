@@ -75,7 +75,7 @@ public abstract class AbstractUserControllerTest {
 
         activatedUser = new UserEntity(ACTIVATED_USER_MAIL_ADDRESS);
         activatedUser.setActivated(true);
-        activatedUser.setActivationToken("activationToken2");
+        activatedUser.setActivationToken("");
         when(userRepository.findByEmail(eq(ACTIVATED_USER_MAIL_ADDRESS))).thenReturn(activatedUser);
 
         reset(passwordEncoder);

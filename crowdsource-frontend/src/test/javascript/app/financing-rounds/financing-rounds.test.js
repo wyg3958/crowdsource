@@ -27,12 +27,24 @@ describe('financing rounds', function () {
 
 
     it("should display correct elements when active round is present", function () {
-        prepareBackendGetWithActiveRoundMock();
+
+        var startDate = moment();
+        var endDate = startDate.add(5, 'days');
+
+        $httpBackend.expectGET('/financingrounds').respond(200, [
+            {
+                "budget": "5555",
+                "startDate": startDate.toISOString(),
+                "endDate": endDate.toISOString(),
+                "active": true
+            }
+        ]);
+
         $httpBackend.flush();
         $scope.$digest();
 
-        expect(financingRounds.find('tbody .startdate')).toHaveText('01.01.10 01:00');
-        expect(financingRounds.find('tbody .enddate')).toHaveText('31.12.20 01:00');
+        expect(financingRounds.find('tbody .startdate')).toHaveText(startDate.format('DD.MM.YY HH:mm'));
+        expect(financingRounds.find('tbody .enddate')).toHaveText(endDate.format('DD.MM.YY HH:mm'));
         expect(financingRounds.find('tbody .budget')).toHaveText('5.555');
         expect(financingRounds.find('.stop-button')).not.toBeDisabled();
         expect(financingRounds.find('.newround-start')).not.toExist();

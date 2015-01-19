@@ -48,7 +48,7 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
             })
             .when('/financingrounds', {
                 templateUrl: 'app/financing-rounds/financing-rounds.html',
-                controller: 'FinancingRoundController as financingRound',
+                controller: 'FinancingRoundsController as financingRounds',
                 requireLogin: true
             })
             .when('/logout', {

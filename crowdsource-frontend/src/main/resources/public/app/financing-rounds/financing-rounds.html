@@ -2,31 +2,32 @@
 
     <h1>Administration der Finanzierungsrunden</h1>
 
-    <div class="alert-box info" ng-if="financingRound.info">
-        {{ financingRound.info }}
-        <span class="close" ng-click="financingRound.info = undefined">&times;</span>
+    <div class="alert-box info" ng-if="financingRounds.info">
+        {{ financingRounds.info }}
+        <span class="close" ng-click="financingRounds.info = undefined">&times;</span>
     </div>
 
-    <form name="financingRound.form" class="newround-form form-horizontal" novalidate>
+    <form name="financingRounds.form" class="newround-form form-horizontal" novalidate>
         <div class="panel">
             <h2>Neue Finanzierungsrunde starten</h2>
 
-            <div class="notification" ng-if="!financingRound.canStartNewRound()">
+            <div class="notification" ng-if="!financingRounds.canStartNewRound()">
                 Es läuft bereits eine Finanzierungsrunde. Daher kann keine neue Runde gestartet werden.
             </div>
 
-            <div class="row" ng-if="financingRound.canStartNewRound()">
+            <div class="row" ng-if="financingRounds.canStartNewRound()">
                 <div class="small-3 columns form-controls-budget">
                     <label form-group="endDate">
 
                         <span form-label-valid="endDate">Enddatum</span>
 
-                        <span form-label-invalid="endDate" ng-messages="financingRound.form.endDate.$error">
+                        <span form-label-invalid="endDate" ng-messages="financingRounds.form.endDate.$error">
                             <span ng-message="required">Bitte gib das Enddatum an</span>
                         </span>
                     </label>
 
-                    <input class="newround-enddate" type="text" datepicker="" name="endDate" ng-model="financingRound.newRound.endDate"
+                    <input class="newround-enddate" type="text" datepicker="" name="endDate"
+                           ng-model="financingRounds.newRound.endDate"
                            placeholder="Bitte klicken..." required readonly>
                 </div>
                 <div class="small-3 columns form-controls-budget">
@@ -34,22 +35,24 @@
 
                         <span form-label-valid="budget">Budget</span>
 
-                        <span form-label-invalid="budget" ng-messages="financingRound.form.budget.$error">
+                        <span form-label-invalid="budget" ng-messages="financingRounds.form.budget.$error">
                             <span ng-message="required">Bitte gib das Budget an</span>
                             <span ng-message="number">Bitte gib nur Ziffern ein</span>
                             <span ng-message="pattern">Bitte gib nur Ziffern ein</span>
                             <span ng-message="min">Bitte gib einen Wert über Null ein</span>
                         </span>
 
-                        <input type="number" name="budget" ng-model="financingRound.newRound.budget" class="text-right newround-budget"
+                        <input type="number" name="budget" ng-model="financingRounds.newRound.budget"
+                               class="budget text-right newround-budget"
                                placeholder="0"
                                required ng-pattern="/^[0-9]+$/i" min="1">
                     </label>
                 </div>
                 <div class="small-3 columns">
-                    <button type="submit" class="newround-start success flush--bottom" ng-click="financingRound.start()"
-                            ng-disabled="financingRound.form.$invalid || financingRound.saving || !financingRound.canStartNewRound()">
-                        {{ financingRound.saving ? 'Starten...' : 'Starten!' }}
+                    <button type="submit" class="newround-start success flush--bottom"
+                            ng-click="financingRounds.start()"
+                            ng-disabled="financingRounds.form.$invalid || financingRounds.saving || !financingRounds.canStartNewRound()">
+                        {{ financingRounds.saving ? 'Starten...' : 'Starten!' }}
                     </button>
                 </div>
                 <div class="small-3 columns"></div>
@@ -57,7 +60,7 @@
         </div>
     </form>
 
-    <table class="financingrounds">
+    <table class="financinground">
         <thead>
         <tr>
             <th class="startdate">Startdatum</th>
@@ -67,22 +70,25 @@
         </tr>
         </thead>
         <tbody>
-        <tr class="financinground" fr_id="{{fr.id}}" ng-repeat="fr in financingRound.allFinancingRounds | orderBy:'startDate':true">
+        <tr class="financinground" fr_id="{{fr.id}}"
+            ng-repeat="fr in financingRounds.allFinancingRounds | orderBy:'startDate':true">
             <td class="startdate">{{ fr.startDate | date: 'short' }}</td>
             <td class="enddate">{{ fr.endDate | date: 'short'}}</td>
             <td class="budget">{{ fr.budget | number }}</td>
             <td class="action">
                 <div ng-if="fr.active">
-                    <span class="confirm-message" ng-if="financingRound.confirmStop">Wirklich beenden?</span>
-                    <button class="stop-button alert flush--bottom" ng-click="financingRound.stop(fr)">
-                        {{ financingRound.getStopButtonText() }}
+                    <span class="confirm-message" ng-if="financingRounds.confirmStop">Wirklich beenden?</span>
+                    <button class="stop-button alert flush--bottom" ng-click="financingRounds.stop(fr)">
+                        {{ financingRounds.getStopButtonText() }}
                     </button>
-                    <button class="cancel-button flush--bottom" ng-if="financingRound.confirmStop" ng-click="financingRound.confirmStop = false;">Nein</button>
+                    <button class="cancel-button flush--bottom" ng-if="financingRounds.confirmStop"
+                            ng-click="financingRounds.confirmStop = false;">Nein
+                    </button>
                 </div>
             </td>
 
         </tr>
-        <tr ng-if="financingRound.allFinancingRounds.$resolved && financingRound.allFinancingRounds.length == 0">
+        <tr ng-if="financingRounds.allFinancingRounds.$resolved && financingRounds.allFinancingRounds.length == 0">
             <td colspan="5">Es wurde noch keine Finanzierungsrunde gestartet</td>
         </tr>
         </tbody>

@@ -41,10 +41,10 @@ angular.module('crowdsource')
 
                 var activeRound = financingRoundResource.get({ id: 'active' });
                 activeRound.$promise
-                    .then(function() {
+                    .then(function () {
                         deferred.resolve(activeRound);
                     })
-                    .catch(function(response) {
+                    .catch(function (response) {
                         // also resolve the deferred when a 404 is returned
                         // (this means that there is no active financing round atm)
                         if (response.status == 404) {

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class IPBasedAnonymousAuthenticationFilter extends AnonymousAuthenticationFilter {
 
     @Value("${de.axelspringer.ideas.crowdsource.trustedips:none}")
-    private String trustedips;
+    private String trustedIps;
 
     public IPBasedAnonymousAuthenticationFilter() {
         super("ANONYMOUS");
@@ -35,11 +35,10 @@ public class IPBasedAnonymousAuthenticationFilter extends AnonymousAuthenticatio
 
     private boolean ipWhiteListed(String remoteAddr) {
 
-        if ("*".equals(trustedips)) {
+        if ("*".equals(trustedIps)) {
             return true;
         }
-        final String[] trustedIps = trustedips.split(",");
-        for (String ip : trustedIps) {
+        for (String ip : trustedIps.split(",")) {
             if (ip.equals(remoteAddr)) {
                 return true;
             }

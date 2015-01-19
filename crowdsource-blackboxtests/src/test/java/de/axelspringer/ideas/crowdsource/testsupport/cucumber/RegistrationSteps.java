@@ -17,6 +17,7 @@ import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.axelspringer.ideas.crowdsource.testsupport.util.MailServerClient;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
 import de.axelspringer.ideas.crowdsource.util.validation.email.EligibleEmailValidator;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
@@ -31,6 +32,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 
+@Slf4j
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
 public class RegistrationSteps {
 
@@ -157,6 +159,9 @@ public class RegistrationSteps {
         String messageContent = message.message;
         String link = messageContent.substring(messageContent.indexOf("http")).trim();
         activationLink = link;
+
+        log.debug("Email activation link: {}", activationLink);
+
         webDriver.get(link);
     }
 

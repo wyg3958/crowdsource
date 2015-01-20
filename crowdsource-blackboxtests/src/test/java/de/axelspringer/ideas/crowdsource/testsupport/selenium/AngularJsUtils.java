@@ -7,6 +7,8 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 
 import java.util.List;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 public class AngularJsUtils {
 
     /**
@@ -16,7 +18,7 @@ public class AngularJsUtils {
      *
      * <some-element>{{ variable }}</some-element>
      *
-     * This method waits until the given element is found in DOM and it does not start with "{{" and end with "}}"
+     * This method waits until the given element is found in DOM, does not start with "{{" and end with "}}" and is not blank
      */
     public static ExpectedCondition<Boolean> interpolationCompletedOfElementLocated(final By locator) {
         return new ExpectedCondition<Boolean>() {
@@ -31,6 +33,11 @@ public class AngularJsUtils {
                 if (webElement.getText().startsWith("{{") && webElement.getText().endsWith("}}")) {
                     return false;
                 }
+
+                if (isBlank(webElement.getText())) {
+                    return false;
+                }
+
                 return true;
             }
 

@@ -68,10 +68,10 @@ public class FinancingRoundSteps {
         // set end date some value between tomorrow and next year
         endDate = new DateTime().plusDays(new Random().nextInt(364) + 1);
 
+        numberOfFinancingRoundsBeforeStart = financingRoundsPage.getFinancingRoundsCount();
+
         // start round
         financingRoundsPage.startFinancingRound(endDate, budget);
-
-        numberOfFinancingRoundsBeforeStart = financingRoundsPage.getFinancingRoundsCount();
     }
 
     @And("^he sees the new financing round as the first item in the list of financing rounds$")

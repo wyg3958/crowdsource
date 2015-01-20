@@ -25,6 +25,7 @@
 nav.top-bar {
     a {
         text-decoration: none;
+        letter-spacing: 0.25px;
     }
 
     .top-bar-section {
@@ -53,15 +54,18 @@ nav.top-bar {
 
             li.border a {
                 // Calculate offset between ouline and menu item to keep element
-                // on a line with non-bordered elements 
+                // on a line with non-bordered elements
                 $padding-offset: rem-calc(4px);
 
                 position: relative;
-                top: -#{$padding-offset};
-                padding: $padding-offset rem-calc(16px);
-                border-radius: 3px;
-                border: 1px solid $black;
+                top:      -#{$padding-offset};
+                padding:  $padding-offset rem-calc(16px);
+                border-radius:    2px;
+                background-color: gainsboro;
 
+                &:hover {
+                  background-color: darken(gainsboro, 5%);
+                }
             }
         }
     }

@@ -46,6 +46,7 @@ public class ActivationSteps {
 
     private WebDriver webDriver;
     private String emailName;
+    private String initialPassword;
     private String newPassword;
 
 
@@ -61,8 +62,8 @@ public class ActivationSteps {
         activationLink = getActivationLinkFromFirstEmail();
 
         String activationToken = activationLink.substring(activationLink.lastIndexOf('/') + 1);
-        String password = RandomStringUtils.randomAlphanumeric(10) + "!";
-        crowdSourceClient.activateUser(emailName, new UserActivation(activationToken, password));
+        initialPassword = RandomStringUtils.randomAlphanumeric(10) + "!";
+        crowdSourceClient.activateUser(emailName, new UserActivation(activationToken, initialPassword));
 
         mailServerClient.clearMails();
     }
@@ -146,6 +147,11 @@ public class ActivationSteps {
     @And("^he can request an access token with his newly set password$")
     public void he_can_request_an_access_token_with_his_newly_set_password() throws Throwable {
         crowdSourceClient.authorize(getGeneratedEmail(), newPassword);
+    }
+
+    @And("^he can still request an access token with his old password$")
+    public void he_can_still_request_an_access_token_with_his_old_password() throws Throwable {
+        crowdSourceClient.authorize(getGeneratedEmail(), initialPassword);
     }
 
     private String getActivationLinkFromFirstEmail() {

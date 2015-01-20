@@ -69,4 +69,11 @@ public class PasswordRecoverySteps {
         assertThat(confirmationView.getHeadline(), is("Passwort vergessen"));
         assertThat(confirmationView.getConfirmedEmailAddress(), is(activationSteps.getGeneratedEmail()));
     }
+
+    @And("^the user requests a password recovery$")
+    public void the_user_requests_a_password_recovery() throws Throwable {
+        the_user_is_on_the_password_recovery_page();
+        the_user_enters_his_email_address_in_the_password_recovery_form();
+        submits_the_password_recovery_form();
+    }
 }

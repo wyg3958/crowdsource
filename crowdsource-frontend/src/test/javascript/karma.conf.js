@@ -14,7 +14,8 @@ module.exports = function (config) {
             'bower_components/angular-mocks/angular-mocks.js',
             'bower_components/angular-ellipsis/src/angular-ellipsis.js',
             'bower_components/ngScrollTo/ng-scrollto.js',
-            'bower_components/momentjs/moment.js',
+            'bower_components/moment/moment.js',
+            'bower_components/moment-timezone/builds/moment-timezone-with-data.js',
 
             // actually, this file would have been picked up by the wildcard pattern app/**/*.js
             // but maybe in a wrong order. crowdsource.js defines the single crowdsource angular module and

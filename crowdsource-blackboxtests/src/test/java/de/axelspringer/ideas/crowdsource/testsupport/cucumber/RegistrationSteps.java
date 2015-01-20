@@ -5,7 +5,7 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import de.axelspringer.ideas.crowdsource.model.presentation.user.UserRegistration;
+import de.axelspringer.ideas.crowdsource.model.presentation.user.UserActivation;
 import de.axelspringer.ideas.crowdsource.service.UserNotificationService;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.ActivationForm;
@@ -14,6 +14,7 @@ import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.NavigationBar;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.RegistrationConfirmationView;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.RegistrationForm;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
+import de.axelspringer.ideas.crowdsource.testsupport.util.CrowdSourceClient;
 import de.axelspringer.ideas.crowdsource.testsupport.util.MailServerClient;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
 import de.axelspringer.ideas.crowdsource.util.validation.email.EligibleEmailValidator;
@@ -23,7 +24,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.web.client.RestTemplate;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
@@ -60,6 +60,9 @@ public class RegistrationSteps {
     @Autowired
     private MailServerClient mailServerClient;
 
+    @Autowired
+    private CrowdSourceClient crowdSourceClient;
+
     private WebDriver webDriver;
 
     private String emailName;
@@ -80,19 +83,17 @@ public class RegistrationSteps {
 
     @Given("^the user's email address is already registered but not activated$")
     public void the_user_s_email_address_is_already_registered_but_not_activated() throws Throwable {
-        // create a user via the REST API
-        UserRegistration userRegistration = new UserRegistration();
-        userRegistration.setEmail(emailName + EligibleEmailValidator.ELIGIBLE_EMAIL_DOMAIN);
-        userRegistration.setTermsOfServiceAccepted(true);
-
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.postForObject(urlProvider.applicationUrl() + "/user", userRegistration, Void.class);
+        crowdSourceClient.registerUser(emailName);
     }
 
-    @Given("^the user's email address is already registered and activated$")
-    public void the_user_s_email_address_is_already_registered_and_activated() throws Throwable {
-        // TODO: Replace this once we can activate accounts via the REST interface
-        emailName = "crowdsource";
+    @Given("^the user's email address is already activated$")
+    public void the_user_s_email_address_is_already_activated() throws Throwable {
+        crowdSourceClient.registerUser(emailName);
+        activationLink = getActivationLinkFromFirstEmail();
+
+        String activationToken = activationLink.substring(activationLink.lastIndexOf('/') + 1);
+        String password = RandomStringUtils.randomAlphanumeric(10) + "!";
+        crowdSourceClient.activateUser(emailName, new UserActivation(activationToken, password));
     }
 
     @Given("^a user is on the registration page$")
@@ -153,16 +154,19 @@ public class RegistrationSteps {
     @When("^the user clicks the email's activation link$")
     public void the_user_clicks_the_email_s_activation_link() throws Throwable {
 
+        activationLink = getActivationLinkFromFirstEmail();
+
+        log.debug("Email activation link: {}", activationLink);
+
+        webDriver.get(activationLink);
+    }
+
+    private String getActivationLinkFromFirstEmail() {
         mailServerClient.waitForMails(1, 5000);
 
         final MailServerClient.Message message = mailServerClient.messages().get(0);
         String messageContent = message.message;
-        String link = messageContent.substring(messageContent.indexOf("http")).trim();
-        activationLink = link;
-
-        log.debug("Email activation link: {}", activationLink);
-
-        webDriver.get(link);
+        return messageContent.substring(messageContent.indexOf("http")).trim();
     }
 
     @When("^the user changes the activation token in the URL$")
@@ -183,14 +187,6 @@ public class RegistrationSteps {
     public void the_user_submits_the_activation_form() throws Throwable {
         PageFactory.initElements(webDriver, activationForm);
         activationForm.submit();
-    }
-
-    @Given("^the user's email address is already activated$")
-    public void the_user_s_email_address_is_already_activated() throws Throwable {
-        the_user_s_email_address_is_already_registered_but_not_activated();
-        the_user_clicks_the_email_s_activation_link();
-        the_user_enters_a_valid_password_twice_on_activation_page();
-        the_user_submits_the_activation_form();
     }
 
     @When("^the user clicks the email's activation link for the second time$")

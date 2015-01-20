@@ -19,8 +19,9 @@ Feature: Registration
     Then the user receives 2 activation mails
     And a registration success message is shown that includes the user's email
 
+  @ClearMailServer
   Scenario: A user tries to register an already activated account
-    Given the user's email address is already registered and activated
+    Given the user's email address is already activated
     Given a user is on the registration page
     When the user enters his email address
     And the user accepts the terms of service
@@ -52,4 +53,4 @@ Feature: Registration
     When the user changes the activation token in the URL
     And the user enters a valid password twice on activation page
     And the user submits the activation form
-    Then the validation error 'Der Aktivierungslink ist ungültig. Bitte registriere Dich erneut um einen neuen Aktivierungslink zugesendet zu bekommen.' is displayed
+    Then the validation error 'Der Aktivierungslink ist ungültig.' is displayed

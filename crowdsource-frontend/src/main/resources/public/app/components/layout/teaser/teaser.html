@@ -4,19 +4,19 @@
     <div class="metrics">
         <div class="metrics--item">
             <div class="metrics__divider capital"></div>
-            <p class="metrics__heading">88.888 $</p>
+            <p class="metrics__heading">{{ teaser.userMetrics.remainingBudget | number }} $</p>
             <p class="metrics__subhead">Gesamtes Kapital im Umlauf</p>
         </div>
 
         <div class="metrics--item">
             <div class="metrics__divider time"></div>
-            <p class="metrics__heading">30 Tage</p>
+            <p class="metrics__heading">{{ teaser.remainingTime }}</p>
             <p class="metrics__subhead">Noch in dieser Runde</p>
         </div>
 
         <div class="metrics--item">
             <div class="metrics__divider user"></div>
-            <p class="metrics__heading">20</p>
+            <p class="metrics__heading">{{ teaser.userMetrics.count | number }}</p>
             <p class="metrics__subhead">Aktive Nutzer</p>
         </div>
     </div>

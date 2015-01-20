@@ -89,6 +89,10 @@ public class FinancingRoundsPage {
         }
     }
 
+    public int getFinancingRoundsCount() {
+        return webDriverProvider.provideDriver().findElements(By.className("financinground")).size();
+    }
+
     public boolean canStartFinancingRound(boolean wait) {
 
         final RemoteWebDriver webDriver = webDriverProvider.provideDriver();

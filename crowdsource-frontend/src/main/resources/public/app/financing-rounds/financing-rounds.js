@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .controller('FinancingRoundController', function ($routeParams, $location, FinancingRound) {
+    .controller('FinancingRoundsController', function ($routeParams, $location, FinancingRound) {
 
         var vm = this;
 

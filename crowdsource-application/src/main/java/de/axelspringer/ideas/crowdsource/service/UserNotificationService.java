@@ -19,7 +19,7 @@ public class UserNotificationService {
 
     public static final String FROM_ADDRESS = "ascrowdsource@gmail.com";
     public static final String REGISTRATION_SUBJECT = "CrowdSource Registrierung";
-    public static final String PASSWORD_RECOVERY_SUBJECT = "CrowdSource Password Vergessen";
+    public static final String PASSWORD_RECOVERY_SUBJECT = "CrowdSource Passwort Vergessen";
 
     public static final String ACTIVATION_LINK_PATTERN = "/signup/{emailAddress}/activation/{activationToken}";
     public static final String PASSWORD_RECOVERY_LINK_PATTERN = "/login/password-recovery/{emailAddress}/activation/{activationToken}";

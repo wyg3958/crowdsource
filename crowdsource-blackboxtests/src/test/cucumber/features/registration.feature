@@ -6,7 +6,7 @@ Feature: Registration
     When the user enters his email address
     And the user accepts the terms of service
     And submits the registration form
-    Then the user receives 1 activation mails
+    Then the user has 1 activation mails in his inbox with the last mail being a registration confirmation mail
     And a registration success message is shown that includes the user's email
 
   @ClearMailServer
@@ -16,7 +16,7 @@ Feature: Registration
     When the user enters his email address
     And the user accepts the terms of service
     And submits the registration form
-    Then the user receives 2 activation mails
+    Then the user has 2 activation mails in his inbox with the last mail being a registration confirmation mail
     And a registration success message is shown that includes the user's email
 
   @ClearMailServer
@@ -32,9 +32,11 @@ Feature: Registration
   Scenario: A user activates a freshly registered account
     Given the user's email address is already registered but not activated
     When the user clicks the email's activation link
+    Then the activation form for the registration flow is displayed
     And the user enters a valid password twice on activation page
     And the user submits the activation form
     Then he is redirected to the index page
+    And he can request an access token with his newly set password
     When he clicks on the New Project link in the navigation bar
     Then he is redirected to the project creation page
 

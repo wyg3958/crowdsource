@@ -1,15 +1,23 @@
 package de.axelspringer.ideas.crowdsource.testsupport.pageobjects;
 
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.SeleniumWait;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 @Component
 public class ActivationForm {
+
+    @FindBy(css = ".activation-form h1")
+    private WebElement headline;
+
+    @FindBy(css = ".activation-form .info-text")
+    private WebElement infoText;
 
     @FindBy(css = ".activation-form .form-controls-password input[type='password']")
     private WebElement passwordInputField;
@@ -25,6 +33,10 @@ public class ActivationForm {
 
     @Autowired
     private SeleniumWait wait;
+
+    public void waitForPageLoad() {
+        wait.until(presenceOfElementLocated(By.cssSelector(".activation-form")));
+    }
 
     public void setPasswordText(String text) {
         wait.until(visibilityOf(passwordInputField));
@@ -45,4 +57,13 @@ public class ActivationForm {
         wait.until(visibilityOf(errorText));
         return errorText.getText();
     }
+
+    public String getHeadline() {
+        return headline.getText();
+    }
+
+    public String getInfoText() {
+        return infoText.getText();
+    }
+
 }

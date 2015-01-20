@@ -1,4 +1,4 @@
-package de.axelspringer.ideas.crowdsource.model.presentation.user;
+package de.axelspringer.ideas.crowdsource.util;
 
 import org.apache.commons.lang3.StringUtils;
 

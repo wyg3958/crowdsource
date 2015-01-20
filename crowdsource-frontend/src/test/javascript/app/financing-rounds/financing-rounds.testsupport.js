@@ -44,4 +44,8 @@ function FinancingRounds(element) {
     this.getTableText = function () {
         return element.find('tbody td');
     }
+
+    this.getAlertBox = function () {
+        return element.find('.alert-box');
+    }
 }

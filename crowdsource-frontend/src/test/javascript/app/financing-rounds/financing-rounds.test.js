@@ -87,7 +87,7 @@ describe('financing rounds', function () {
 
 
     it("should post round data to backend when valid data is submitted", function () {
-        var startDate = moment();
+        var startDate = moment().tz('Europe/Berlin');
         var endDate = startDate.add(5, 'days');
         var budget = 320;
 
@@ -116,6 +116,8 @@ describe('financing rounds', function () {
         expect(financingRounds.getStartRoundButton()).not.toBeDisabled();
 
         financingRounds.getStartRoundButton().click();
+//        expect(financingRounds.getAlertBox()).toContainText('Finanzierungsrunde gestartet.');
+//        console.log(view);
     });
 
 

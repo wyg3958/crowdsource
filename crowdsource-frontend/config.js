@@ -13,7 +13,10 @@ var config = {
     resourceFiles: [appDir + '/**/*', '!' + jsFiles],
 
     jsLibFiles: {
-        minified: ['bower_components/angular-ellipsis/src/angular-ellipsis.min.js'],
+        minified: [
+            'bower_components/angular-ellipsis/src/angular-ellipsis.min.js',
+            'bower_components/moment/min/moment.min.js',
+            'bower_components/moment-timezone/builds/moment-timezone-with-data.min.js'],
         unminified: [
             'bower_components/angular-i18n/angular-locale_de.js',
             'bower_components/ngScrollTo/ng-scrollto.js',

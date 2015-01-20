@@ -13,6 +13,6 @@
     "angular-ellipsis": "dibari/angular-ellipsis#05de0ebe8947e01ac9137767c732246b5c29fff7",
     "ngScrollTo": "iameugenejo/ngScrollTo#4da64c7a99ce412342332ac19ca530d32da97ed5",
     "foundation-datepicker": "najlepsiwebdesigner/foundation-datepicker#db75f5bfc107ec05a88c13c5150be149480adc12",
-    "momentjs": "~2.9.0"
+      "moment-timezone": "~0.3.0"
   }
 }

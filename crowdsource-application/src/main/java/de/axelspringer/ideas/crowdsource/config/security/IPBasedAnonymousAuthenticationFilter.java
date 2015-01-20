@@ -30,7 +30,7 @@ public class IPBasedAnonymousAuthenticationFilter extends AnonymousAuthenticatio
         if (ipWhiteListed(request.getRemoteAddr())) {
             authorities.add(new SimpleGrantedAuthority(Roles.ROLE_TRUSTED_ANONYMOUS));
         }
-        return new AnonymousAuthenticationToken("ANONYMOUS", Roles.ROLE_TRUSTED_ANONYMOUS, authorities);
+        return new AnonymousAuthenticationToken("ANONYMOUS", "ANONYMOUS", authorities);
     }
 
     private boolean ipWhiteListed(String remoteAddr) {
@@ -39,7 +39,7 @@ public class IPBasedAnonymousAuthenticationFilter extends AnonymousAuthenticatio
             return true;
         }
         for (String ip : trustedIps.split(",")) {
-            if (ip.equals(remoteAddr)) {
+            if (ip.trim().equals(remoteAddr)) {
                 return true;
             }
         }

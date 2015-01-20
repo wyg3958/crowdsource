@@ -43,6 +43,14 @@ public class IPBasedAnonymousAuthenticationFilterTest {
         assertTrue(trustedAnonymousGranted(authentication));
     }
 
+    @Test
+    public void testCreateAuthenticationTrustedIps() throws Exception {
+
+        trust("10.5.4.8, 10.5.4.9");
+        assertTrue(trustedAnonymousGranted(ipBasedAnonymousAuthenticationFilter.createAuthentication(mockRequest("10.5.4.8"))));
+        assertTrue(trustedAnonymousGranted(ipBasedAnonymousAuthenticationFilter.createAuthentication(mockRequest("10.5.4.9"))));
+    }
+
     private boolean trustedAnonymousGranted(Authentication authentication) {
         for (GrantedAuthority grantedAuthority : authentication.getAuthorities()) {
             if (Roles.ROLE_TRUSTED_ANONYMOUS.equals(grantedAuthority.getAuthority())) {

@@ -27,10 +27,7 @@ angular.module('crowdsource')
                         date.minute(59);
                         date.second(59);
 
-                        console.log(date.toDate());
-
                         return date.toDate();
-
                     }
                     return null;
                 });

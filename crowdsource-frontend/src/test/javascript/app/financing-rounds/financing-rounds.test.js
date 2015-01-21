@@ -155,7 +155,7 @@ describe('financing rounds', function () {
         $httpBackend.flush();
         $scope.$digest();
 
-        $httpBackend.expectPUT('/financinground/cancel', {})
+        $httpBackend.expectPUT('/financinground/4711/cancel', {})
             .respond(200, {
                 "id": "4711",
                 "startDate": startDate.toISOString(),
@@ -199,6 +199,60 @@ describe('financing rounds', function () {
     });
 
 
+    it("should display alert message when backend not responding on round start", function () {
+        var startDate = moment().tz('Europe/Berlin');
+        var endDate = startDate.add(5, 'days');
+        var budget = 320;
+
+        var modifiedEndDate = endDate.hour(23);
+        modifiedEndDate = modifiedEndDate.minute(59);
+        modifiedEndDate = modifiedEndDate.second(59);
+        modifiedEndDate = modifiedEndDate.millisecond(0);
+
+        prepareViewWithNoRunningRound();
+
+        $httpBackend.expectPOST('/financinground', {
+            "budget": budget,
+            "endDate": modifiedEndDate.toISOString()
+        }).respond(500, null);
+
+        expect(financingRounds.getStartRoundButton()).toBeDisabled();
+
+        financingRounds.getEndDate().getInputField().val(endDate.format('DD.MM.YYYY')).trigger('input');
+        financingRounds.getBudget().getInputField().val('320').trigger('input');
+        expect(financingRounds.getStartRoundButton()).not.toBeDisabled();
+
+        financingRounds.getStartRoundButton().click();
+        $httpBackend.flush();
+        expect(financingRounds.getAlertBox()).toContainText('Fehler beim Starten der Finanzierungsrunde!');
+    });
+
+    it("should display alert message when backend not responding on round end", function () {
+        var startDate = moment().tz('Europe/Berlin');
+        var endDate = startDate.add(5, 'days');
+
+        prepareBackendGetWithOneRoundMock(startDate, endDate);
+        $httpBackend.flush();
+        $scope.$digest();
+
+        $httpBackend.expectPUT('/financinground/4711/cancel', {}).respond(500, null);
+
+        financingRounds.getTableEndRoundButton().click();
+        financingRounds.getTableEndRoundButton().click();
+        $httpBackend.flush();
+
+        expect(financingRounds.getAlertBox()).toContainText('Fehler beim Stoppen der Finanzierungsrunde!');
+    });
+
+    it("should display alert message when backend not responding on get rounds", function () {
+        $httpBackend.expectGET('/financingrounds').respond(500, null);
+        $httpBackend.flush();
+        $scope.$digest();
+
+        expect(financingRounds.getAlertBox()).toContainText('Fehler beim Abrufen der Finanzierungsrunden');
+        console.log(view);
+    });
+
     function prepareViewWithNoRunningRound() {
         prepareBackendGetWithNoRoundMock();
 
@@ -209,6 +263,7 @@ describe('financing rounds', function () {
     function prepareBackendGetWithOneRoundMock(startDate, endDate) {
         $httpBackend.expectGET('/financingrounds').respond(200, [
             {
+                "id": "4711",
                 "budget": "5555",
                 "startDate": startDate.toISOString(),
                 "endDate": endDate.toISOString(),

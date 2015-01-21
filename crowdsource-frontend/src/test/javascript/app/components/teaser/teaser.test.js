@@ -23,9 +23,11 @@ describe('teaser metrics service', function () {
             teaser = {
                 root: root,
                 container: root.find('> div'),
-                remainingBudget: root.find('.remaining-budget'),
-                remainingTime: root.find('.remaining-time'),
-                userCount: root.find('.user-count')
+                remainingBudgetItem: root.find('.remaining-budget'),
+                remainingBudget: root.find('.remaining-budget .metrics__heading'),
+                remainingTime: root.find('.remaining-time .metrics__heading'),
+                remainingTimeLabel: root.find('.remaining-time .metrics__subhead'),
+                userCount: root.find('.user-count .metrics__heading')
             }
         });
     });
@@ -41,12 +43,20 @@ describe('teaser metrics service', function () {
         expectFinancingRoundBECall().respond(200, financingRound('2015-01-22T22:59:59.000Z'));
 
         changeRouteWithTeaserWanted(true);
+
+        expect(teaser.remainingBudgetItem).not.toHaveClass('ng-hide');
+        expect(teaser.remainingBudget.text()).toBe(' $');
+        expect(teaser.remainingTime.text()).toBe(' ');
+        expect(teaser.remainingTimeLabel.text()).toBe('Noch in dieser Runde');
+
         $httpBackend.flush();
 
         expect(teaser.container).toHaveClass('teaser--hero');
+        expect(teaser.remainingBudgetItem).not.toHaveClass('ng-hide');
         expect(teaser.remainingBudget.text()).toBe('54.321 $');
         expect(teaser.remainingTime.text()).toBe('1d 7h 55m 35s');
-        expect(teaser.userCount.text()).toBe('33');
+        expect(teaser.remainingTimeLabel.text()).toBe('Noch in dieser Runde');
+        expect(teaser.userCount.text()).toBe('33 aktive Nutzer');
     });
 
     it("should show count down the remaining time", function () {
@@ -65,6 +75,37 @@ describe('teaser metrics service', function () {
         $interval.flush('1000');
 
         expect(teaser.remainingTime.text()).toBe('1d 7h 55m 34s');
+    });
+
+    it("should a different information if no financing round is currently active", function () {
+        expectMetricsBECall().respond(200, { remainingBudget: 54321, count: 33 });
+        expectFinancingRoundBECall().respond(404);
+
+        changeRouteWithTeaserWanted(true);
+        $httpBackend.flush();
+
+        expect(teaser.container).toHaveClass('teaser--hero');
+        expect(teaser.remainingBudgetItem).toHaveClass('ng-hide');
+        expect(teaser.remainingTime.text()).toBe('Keine aktive Runde');
+        expect(teaser.remainingTimeLabel.text()).toBe("Bald geht's los mit einer neuen Runde.");
+        expect(teaser.userCount.text()).toBe('33 aktive Nutzer');
+    });
+
+    it("should update the metrics when the route changes", function () {
+        expectMetricsBECall().respond(200, { remainingBudget: 54321, count: 33 });
+        expectFinancingRoundBECall().respond(200, financingRound('2015-01-22T22:59:59.000Z'));
+        changeRouteWithTeaserWanted(true);
+        $httpBackend.flush();
+
+        expect(teaser.remainingBudget.text()).toBe('54.321 $');
+
+        expectMetricsBECall().respond(200, { remainingBudget: 123, count: 33 });
+        expectFinancingRoundBECall().respond(200, financingRound('2015-01-23T22:59:59.000Z'));
+        changeRouteWithTeaserWanted(true);
+        $httpBackend.flush();
+
+        expect(teaser.remainingBudget.text()).toBe('123 $');
+        expect(teaser.remainingTime.text()).toBe('2d 7h 55m 35s');
     });
 
 

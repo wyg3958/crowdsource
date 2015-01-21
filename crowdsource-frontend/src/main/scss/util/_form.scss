@@ -48,17 +48,17 @@
 }
 
 
-%btn-crwd {
+%btn-crwd-success {
+  background-color: $clr-green-shade-2;
+  &:hover { background-color: #35EA87; }
+}
+
+
+%btn-dark {
   font-weight: 200;
   letter-spacing: 0.25px;
   background-color: #3C3C3C;
   &:hover { background-color: darken(#3C3C3C, 10%); }
-}
-
-
-%btn-crwd-success {
-  background-color: $clr-green-shade-2;
-  &:hover { background-color: #35EA87; }
 }
 
 
@@ -83,7 +83,13 @@ button, .button {
   &.crwd-success {
     @extend %btn-crwd-success;
   }
+
+  // Dark button
+  &.dark {
+    @extend %btn-dark;
+  }
 }
+
 
 .form-horizontal {
     button {

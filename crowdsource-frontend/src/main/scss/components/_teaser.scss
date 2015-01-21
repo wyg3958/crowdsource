@@ -10,11 +10,13 @@
 // ---
 
 %teaser {
-  background-color: #39c277;
   text-align: center;
+  background-color: #39c277;
+  padding: 2rem 1rem;
 
   @media #{$medium-up} {
     background: url('../images/teaser-bg.png') #39c277 center center no-repeat;
+    padding: 2rem;
   }
 }
 
@@ -23,7 +25,9 @@
 
 .teaser--hero {
   @extend  %teaser;
-  padding: 2rem;
+
+
+
 }
 
 
@@ -50,6 +54,7 @@
   margin:      0;
   font-size:   $fs-medium;
   font-weight: 400;
+  line-height: 1.33;
   color:       $white;
 
   @media #{$medium-up} {
@@ -87,22 +92,28 @@
   left:  0;
   width:  100%;
   height: 100%;
+
+  background-position: center center;
+  background-repeat:   no-repeat;
+  background-size:     18px;
+
+  @media #{$medium-up} {
+    background-size: 26px;
+  }
 }
 
 
 .metrics__divider {
   height: 26px;
   margin-bottom: rem-calc(4px);
-  background: url('../images/icon-div.svg')
-              center center no-repeat;
+  background: url('../images/icon-div.svg') center center no-repeat;
 
   &.capital {
     @extend %m-div-icon;
 
     &:before {
       @extend %m-div-before;
-      background: url('../images/icon-$$.svg')
-                  center center no-repeat;
+      background-image: url('../images/icon-$$.svg');
     }
   }
 
@@ -111,8 +122,7 @@
 
     &:before {
       @extend %m-div-before;
-      background: url('../images/icon-clock.svg')
-                  center center no-repeat;
+      background-image: url('../images/icon-clock.svg');
     }
   }
 
@@ -121,8 +131,7 @@
 
     &:before {
       @extend %m-div-before;
-      background: url('../images/icon-user.svg')
-                  center center no-repeat;
+      background-image: url('../images/icon-user.svg')
     }
   }
 }
@@ -135,8 +144,12 @@
 
 .metrics__heading {
   @extend %metrics-text-layout;
-  font-size: $fs-hero;
+  font-size: $fs-medium;
   color: $white;
+
+  @media #{$medium-up} {
+    font-size: $fs-hero;
+  }
 }
 
 
@@ -147,18 +160,27 @@
 
 
 .metrics {
-  display: table;
-  table-layout: fixed;
-  margin: 2rem auto;
-  width:  100%;
-  max-width: 1040px;
 
+  margin: 1rem auto;
+
+  @media #{$medium-up} {
+    display: table;
+    table-layout: fixed;
+    margin: 2rem auto;
+    width:  100%;
+    max-width: 1040px;
+  }
 }
 
 
 .metrics--item {
-  display: table-cell;
-  vertical-align: top;
+
+  margin: 1rem 0;
+
+  @media #{$medium-up} {
+    display: table-cell;
+    vertical-align: top;
+  }
 }
 
 

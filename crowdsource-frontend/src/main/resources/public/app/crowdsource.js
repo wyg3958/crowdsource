@@ -7,51 +7,63 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
         $routeProvider
             .when('/projects', {
                 templateUrl: 'app/project/list/project-list.html',
-                controller: 'ProjectListController as projectList'
+                controller: 'ProjectListController as projectList',
+                title: 'Projekte'
             })
             .when('/project/new', {
                 templateUrl: 'app/project/form/project-form.html',
                 controller: 'ProjectFormController as projectForm',
+                title: 'Neues Projekt',
                 requireLogin: true
             })
             .when('/project/:projectId', {
                 templateUrl: 'app/project/details/project-details.html',
-                controller: 'ProjectDetailsController as projectDetails'
+                controller: 'ProjectDetailsController as projectDetails',
+                title: 'Projektdetails'
             })
             .when('/project/new/success', {
                 templateUrl: 'app/project/form/project-form-success.html',
-                requireLogin: true
+                requireLogin: true,
+                title: 'Neues Projekt angelegt'
             })
             .when('/login', {
                 templateUrl: 'app/user/login/user-login.html',
-                controller: 'UserLoginController as login'
+                controller: 'UserLoginController as login',
+                title: 'Login'
             })
             .when('/signup', {
                 templateUrl: 'app/user/signup/user-signup.html',
-                controller: 'UserSignupController as signup'
+                controller: 'UserSignupController as signup',
+                title: 'Registrierung'
             })
             .when('/signup/:email/success', {
                 templateUrl: 'app/user/signup/user-signup-success.html',
-                controller: 'UserSignupSuccessController as signupSuccess'
+                controller: 'UserSignupSuccessController as signupSuccess',
+                title: 'Registrierung erfolgreich'
             })
             .when('/signup/:email/activation/:activationToken', {
                 templateUrl: 'app/user/activation/user-activation.html',
-                controller: 'UserActivationController as activation'
+                controller: 'UserActivationController as activation',
+                title: 'Aktivierung'
             })
             .when('/financingrounds', {
                 templateUrl: 'app/financing-rounds/financing-rounds.html',
                 controller: 'FinancingRoundsController as financingRounds',
+                title: 'Finanzierungsrunden',
                 requireLogin: true
             })
             .when('/logout', {
                 templateUrl: 'app/user/logout/user-logout.html',
-                controller: 'UserLogoutController as logout'
+                controller: 'UserLogoutController as logout',
+                title: 'Logout'
             })
             .when('/error/notfound', {
-                templateUrl: 'app/error/error-notfound.html'
+                templateUrl: 'app/error/error-notfound.html',
+                title: 'Seite nicht gefunden'
             })
             .when('/error/unknown', {
-                templateUrl: 'app/error/error-unknown.html'
+                templateUrl: 'app/error/error-unknown.html',
+                title: 'Technischer Fehler'
             })
             .otherwise({redirectTo: '/projects'});
 

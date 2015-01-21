@@ -1,5 +1,8 @@
 <div class="row" ng-show="status.auth.currentUser.loggedIn">
-    <div class="budget">
+    <div class="small-6 columns breadcrump">
+        {{ status.breadcrump }}
+    </div>
+    <div class="small-6 columns budget">
         Budget: <span class="label radius">${{ status.auth.currentUser.budget | number }}</span>
     </div>
 </div>

@@ -34,7 +34,7 @@ angular.module('crowdsource')
         return service;
     })
 
-    .directive('teaser', function ($interval, Metrics, User, FinancingRound) {
+    .directive('teaser', function ($rootScope, $interval, Metrics, User, FinancingRound) {
         var directive = {};
 
         directive.controllerAs = 'teaser';
@@ -43,6 +43,12 @@ angular.module('crowdsource')
 
         directive.controller = function () {
             var vm = this;
+
+            vm.show = false;
+
+            $rootScope.$on('$routeChangeSuccess', function (event, current) {
+                vm.show = current.showTeaser;
+            });
 
             vm.userMetrics = User.getMetrics();
 

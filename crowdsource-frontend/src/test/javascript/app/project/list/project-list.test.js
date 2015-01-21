@@ -41,14 +41,12 @@ describe('project list', function () {
         expect($(listItems[0]).find('p')).toHaveText('Short Description');
         expect($(listItems[0]).find('.meter').css("width")).toBe("10%");
         expect($(listItems[0]).find('.backers-count')).toHaveText('1');
-        expect($(listItems[0]).find('.backers-text').text()).toBe('Backer');
         expect($(listItems[0]).find('.pledged-amount').text()).toBe('$10');
 
         expect($(listItems[1]).find('h1')).toHaveText('Title 2');
         expect($(listItems[1]).find('p')).toHaveText('Short Description 2');
         expect($(listItems[1]).find('.meter').css("width")).toBe("20%");
         expect($(listItems[1]).find('.backers-count')).toHaveText('2');
-        expect($(listItems[1]).find('.backers-text').text()).toBe('Backers');
         expect($(listItems[1]).find('.pledged-amount').text()).toBe('$20');
 
         expect(projectList.find('.no-projects')).toHaveClass('ng-hide');

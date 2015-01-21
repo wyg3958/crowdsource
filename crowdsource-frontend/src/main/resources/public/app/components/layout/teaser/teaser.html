@@ -1,7 +1,7 @@
 <div ng-class="teaser.show ? 'teaser--hero' : 'teaser--slim'">
     <h1 class="teaser__heading">Axel Springer Crowdfunding</h1>
     <p class="teaser__intro">Deine Innovation startet hier.</p>
-    <div class="metrics">
+    <div ng-class="teaser.remainingTime? 'metrics' : 'metrics--slim'">
         <div class="metrics--item" ng-show="teaser.remainingTime">
             <div class="metrics__divider capital"></div>
             <p class="metrics__heading remaining-budget">{{ teaser.userMetrics.remainingBudget | number }} $</p>

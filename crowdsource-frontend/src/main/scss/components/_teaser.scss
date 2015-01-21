@@ -135,6 +135,8 @@
 // Metrics container
 //
 
+// Default container for displaying 3 items
+
 .metrics {
   margin: 1rem auto;
 
@@ -144,6 +146,17 @@
     margin: 2rem auto;
     width:  100%;
     max-width: 1040px;
+  }
+}
+
+
+// Slim container for displaying 2 items
+
+.metrics--slim {
+  @extend .metrics;
+
+  @media #{$medium-up} {
+    max-width: 700px;
   }
 }
 
@@ -174,8 +187,12 @@
 
 .metrics__heading {
   @extend %metrics-text-layout;
-  font-size: $fs-medium;
+  font-size: 1.25rem;
   color: $white;
+
+  @media #{$medium-up} {
+    font-size: 1.5rem;
+  }
 }
 
 

@@ -7,7 +7,8 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
         $routeProvider
             .when('/projects', {
                 templateUrl: 'app/project/list/project-list.html',
-                controller: 'ProjectListController as projectList'
+                controller: 'ProjectListController as projectList',
+                showTeaser: true
             })
             .when('/project/new', {
                 templateUrl: 'app/project/form/project-form.html',

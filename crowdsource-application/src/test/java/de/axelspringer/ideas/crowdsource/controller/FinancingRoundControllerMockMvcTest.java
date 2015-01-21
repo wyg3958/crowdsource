@@ -34,11 +34,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -85,7 +81,7 @@ public class FinancingRoundControllerMockMvcTest {
     }
 
     @Test
-     public void testFinancingRounds() throws Exception {
+    public void testFinancingRounds() throws Exception {
 
         when(financingRoundRepository.findActive(any()))
                 .thenReturn(financingRoundEntity(fixedDate.minusDays(100), fixedDate.minusDays(50)));
@@ -141,10 +137,6 @@ public class FinancingRoundControllerMockMvcTest {
         verify(financingRoundRepository).save(entityCaptor.capture());
 
         final FinancingRoundEntity financingRoundEntity = entityCaptor.getValue();
-
-        assertThat(financingRoundEntity.getEndDate().getHourOfDay(), is(23));
-        assertThat(financingRoundEntity.getEndDate().getMinuteOfHour(), is(59));
-        assertThat(financingRoundEntity.getEndDate().getSecondOfMinute(), is(59));
 
         verify(financingRoundRepository, times(1)).save(any(FinancingRoundEntity.class));
         verify(userRepository, times(1)).findAll();

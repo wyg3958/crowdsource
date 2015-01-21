@@ -19,8 +19,18 @@ angular.module('crowdsource')
 
                 ngModel.$parsers.push(function (stringValue) {
                     if (stringValue) {
-                        var parts = stringValue.split('.');
-                        return new Date(Date.UTC(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]), 0, 0, 0));
+
+                        var date = moment(stringValue, "DD.MM.YYYY");
+                        date = date.tz('Europe/Berlin');
+
+                        date.hour(23);
+                        date.minute(59);
+                        date.second(59);
+
+                        console.log(date.toDate());
+
+                        return date.toDate();
+
                     }
                     return null;
                 });

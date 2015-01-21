@@ -14,12 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -61,11 +56,6 @@ public class FinancingRoundController {
     @RequestMapping(value = "financinground", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public FinancingRound startFinancingRound(@Valid @RequestBody FinancingRound financingRound) {
-
-        //the round should end at the end of the day
-        final DateTime end = financingRound.getEndDate();
-        final DateTime modifiedEnd = new DateTime(end.getYear(), end.getMonthOfYear(), end.getDayOfMonth(), 23, 59, 59);
-        financingRound.setEndDate(modifiedEnd);
 
         // flush user budget and set new budget
         final List<UserEntity> userEntities = userRepository.findAll();

@@ -18,6 +18,8 @@ angular.module('crowdsource')
 
         var UserActivationResource = $resource('/user/:email/activation', { email: '@email' });
 
+        var UserMetricsResource = $resource('/users/metrics');
+
         service.register = function (user) {
             return UserResource.save(user).$promise;
         };
@@ -41,6 +43,10 @@ angular.module('crowdsource')
                 budget: 0
             };
             return new UserResource(augmentUser(userData));
+        };
+
+        service.getMetrics = function() {
+            return UserMetricsResource.get();
         };
 
         function augmentUser(user) {

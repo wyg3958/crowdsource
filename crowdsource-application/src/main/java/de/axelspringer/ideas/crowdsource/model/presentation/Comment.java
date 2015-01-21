@@ -1,7 +1,7 @@
 package de.axelspringer.ideas.crowdsource.model.presentation;
 
 import de.axelspringer.ideas.crowdsource.model.persistence.CommentEntity;
-import de.axelspringer.ideas.crowdsource.model.presentation.user.UserHelper;
+import de.axelspringer.ideas.crowdsource.util.UserHelper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

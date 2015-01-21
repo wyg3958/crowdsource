@@ -78,7 +78,7 @@ angular.module('crowdsource')
                     return;
                 }
 
-                vm.remainingTime = Metrics.formatRemainingTime(activeRound.endDate);
+                vm.remainingTime = TeaserMetrics.formatRemainingTime(activeRound.endDate);
             }
         };
 

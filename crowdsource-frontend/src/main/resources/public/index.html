@@ -54,37 +54,29 @@
     <div class="content" ng-view></div>
 
     <div class="footer" ng-controller="NavigationController as nav">
-        <div class="footer__l-inner">
-            <ul class="footer__ul-heading">
-                <li class="footer__list-item-heading">Axel Springer Crowd</li>
-                <li class="footer__list-item-heading">Hilfe</li>
-                <li class="admin footer__list-item-heading" ng-if="nav.auth.currentUser.hasRole('ADMIN')">Admin</li>
-                <li class="right">Axel Springer SE</li>
+        <div class="row">
+            <ul class="footer__col">
+              <li class="footer__item-head">AS Crowd</li>
+              <li>Log In</li>
+              <li>Registrieren</li>
+              <li>Entdecken</li>
             </ul>
-
-            <div class="divider--solar-light"></div>
-
-            <ul class="footer__ul-content">
-                <li>
-                    <ul class="footer__ul-content-secondary">
-                        <li><a href="#">Login</a></li>
-                        <li>Registrieren</li>
-                        <li>Entdecken</li>
-                    </ul>
-                </li>
-                <li>
-                    <ul class="footer__ul-content-secondary">
-                        <li>Über uns</li>
-                        <li>FAQ</li>
-                    </ul>
-                </li>
-                <li>
-                    <ul class="footer__ul-content-secondary" ng-if="nav.auth.currentUser.hasRole('ADMIN')">
-                        <li class="admin"><a href="#/financingrounds">Finanzierungsrunden</a></li>
-                    </ul>
+            <ul class="footer__col">
+                <li class="footer__item-head">Hilfe</li>
+                <li>Über uns</li>
+                <li>FAQ</li>
+            </ul>
+            <ul class="footer__col"  ng-if="nav.auth.currentUser.hasRole('ADMIN')">
+                <li class="footer__item-head">Admin</li>
+                <li class="admin"><a href="#/financingrounds">Finanzierungsrunden</a></li>
+            </ul>
+            <ul class="footer__col-brand">
+                <li class="footer__item-head-se">
+                  Axel Springer SE
                 </li>
             </ul>
         </div>
+      </div>
     </div>
 </div>
 </body>

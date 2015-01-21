@@ -9,83 +9,80 @@
 // ---
 
 .footer {
-  position: absolute;
-  bottom: 0;
-  height: 300px;
-  width: 100%;
+  // position: absolute;
+  // top: 0;
+  // height: 600px;
+  // width: 100%;
+  padding: 3rem 1rem;
   color: $white;
-  background-color: $black;
-}
-
-
-// Inner container layout box
-.footer__l-inner {
-  width: 100%;
-  max-width: 62.5rem;
-  margin: 0 auto;
-  padding: 3rem 0;
-}
-
-
-// Heading list: first footer list that acts as a heading
-.footer__ul-heading {
-  @extend .clearfix;
-
-  margin: 1rem 0;
-  list-style-type: none;
-
-  > li {
-    float: left;
-    margin-right: 2rem;
-    width: 20%;
-
-    &:last-child {
-      margin-right: 0;
-      width: auto;
-    }
-  }
-}
-
-
-.footer__list-item-heading {
-  color: $clr-blue-bell;
-  font-weight: $fw-extrabold;
-}
-
-
-// Content list: List with content items
-.footer__ul-content {
-  @extend .clearfix; // Foundation clearfix
-  margin: 1rem 0;
-  list-style-type: none;
-
-  > li {
-    float: left;
-    width: 20%;
-    margin-right: 2rem;
-
-    &:last-child {
-      margin-right: 0;
-    }
-  }
-}
-
-
-// 2nd level list in content footer
-.footer__ul-content-secondary {
-  margin: 1rem 0;
-  list-style-type: none;
+  background-color: #3C3C3C;
 
   a {
-    color: $white;
+    color: darken($white, 20%);
     text-decoration: none;
+    transition: color 100ms ease-out;
+
+    &:hover {
+      color: darken($white, 10%);
+    }
   }
 }
 
 
-// Divider
-.divider--solar-light {
-  height: 1px;
-  background-color: $clr-solar-light-start;
-  background-image: linear-gradient(to right, $clr-solar-light-start, $clr-solar-light-end);
+/*ul*/.footer__col {
+
+  margin: 3rem 0;
+  line-height: 2rem;
+  list-style-type: none;
+
+  > li {
+    font-weight: 300;
+  }
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  @media #{$medium-up} {
+    float: left;
+    margin: 0 2rem;
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+
+/*ul*/.footer__col-brand {
+  @extend .footer__col;
+
+  @media #{$medium-up} {
+    float: right;
+  }
+}
+
+
+%footer__item-head {
+  margin-bottom: 1rem;
+}
+
+
+/*li*/.footer__item-head {
+  @extend %footer__item-head;
+  color: #4BD489;
+}
+
+
+/*li*/.footer__item-head-sec {
+  @extend %footer__item-head;
+  margin-bottom: 0;
 }

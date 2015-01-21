@@ -5,6 +5,13 @@
  *
  */
 
+
+%font-smoothing {
+  -webkit-font-smoothing: antialiased;
+}
+
+
+
 // ---
 // Teaser Widgets
 // ---
@@ -49,6 +56,8 @@
 // ---
 
 /*h1*/.teaser__heading {
+  @extend %font-smoothing;
+
   margin:      0;
   font-size:   $fs-medium;
   line-height: 1.33;
@@ -61,6 +70,8 @@
 
 
 /*p*/.teaser__intro {
+  @extend %font-smoothing;
+
   margin-bottom: 0;
   font-weight:   400;
   color:         $clr-body;
@@ -137,6 +148,8 @@
 // Default container for displaying 3 items
 
 .metrics {
+  @extend %font-smoothing;
+  
   margin: 2rem auto;
 
   @media #{$medium-up} {

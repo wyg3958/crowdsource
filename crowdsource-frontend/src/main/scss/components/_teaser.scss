@@ -38,7 +38,7 @@
 
   & * {
     display: none !important; // Needs this because .metrics (below) has a
-    // media query that is more specific than 'teaser--slim *'
+    // media query that is more specific than 'teaser--slim *' here
   }
 }
 
@@ -51,7 +51,6 @@
 /*h1*/.teaser__heading {
   margin:      0;
   font-size:   $fs-medium;
-  font-weight: 400;
   line-height: 1.33;
   color:       $white;
 
@@ -138,12 +137,11 @@
 // Default container for displaying 3 items
 
 .metrics {
-  margin: 1rem auto;
+  margin: 2rem auto;
 
   @media #{$medium-up} {
     display: table;
     table-layout: fixed;
-    margin: 2rem auto;
     width:  100%;
     max-width: 1040px;
   }
@@ -156,7 +154,7 @@
   @extend .metrics;
 
   @media #{$medium-up} {
-    max-width: 700px;
+    max-width: 750px;
   }
 }
 
@@ -188,6 +186,8 @@
 .metrics__heading {
   @extend %metrics-text-layout;
   font-size: 1.25rem;
+  line-height: 1.33;
+  font-weight: 600;
   color: $white;
 
   @media #{$medium-up} {

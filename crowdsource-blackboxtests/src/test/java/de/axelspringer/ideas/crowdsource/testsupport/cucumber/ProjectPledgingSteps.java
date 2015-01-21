@@ -148,7 +148,7 @@ public class ProjectPledgingSteps {
 
         if (requireActiveFinancingRound) {
             FinancingRound financingRound = new FinancingRound();
-            financingRound.setEndDate(DateTime.now().plusDays(10));
+            financingRound.setEndDate(DateTime.now().plusDays(5));
             financingRound.setBudget(100000);
             crowdSourceClient.startFinancingRound(financingRound, authToken);
         }
@@ -160,5 +160,12 @@ public class ProjectPledgingSteps {
 
         Pledge pledge = new Pledge(pledgeAmount);
         crowdSourceClient.pledgeProject(projectDetailSteps.getCreatedProject(), pledge, authToken);
+    }
+
+    @And("^the project is pledged with and amount of (\\d+)$")
+    public void the_project_is_pledged_with_and_amount_of(int amount) throws Throwable {
+        the_user_enters_as_his_desired_pledge_amount(amount);
+        the_user_submits_the_pledging_form();
+        the_notification_message_is_displayed_on_the_project_pledging_form("Deine Finanzierung war erfolgreich.");
     }
 }

@@ -250,7 +250,6 @@ describe('financing rounds', function () {
         $scope.$digest();
 
         expect(financingRounds.getAlertBox()).toContainText('Fehler beim Abrufen der Finanzierungsrunden');
-        console.log(view);
     });
 
     function prepareViewWithNoRunningRound() {

@@ -31,15 +31,14 @@
 // Slim class
 
 .teaser--slim {
-  //@extend  %teaser;
   height:  1rem;
-  padding: 0;
   background-color: #39c277;
 
   // Remove all HTML inside our slim teaser
 
-  * {
-    display: none;
+  & * {
+    display: none !important; // Needs this because .metrics (below) has a
+    // media query that is more specific than 'teaser--slim *'
   }
 }
 

@@ -46,6 +46,10 @@ angular.module('crowdsource')
 
             vm.show = false;
 
+            // initialize to a string that evaluates to true to show the
+            // 3 metrics items while loading instead of only two
+            vm.remainingTime = " ";
+
             var activeRound = { $resolved: false };
 
             $rootScope.$on('$routeChangeSuccess', function (event, current) {

@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .factory('Metrics', function() {
+    .factory('TeaserMetrics', function() {
         var service = {};
 
         service.formatRemainingTime = function(untilDate) {
@@ -9,7 +9,7 @@ angular.module('crowdsource')
 
             var diff = moment.duration(end.diff(now));
             if (diff.asSeconds() < 1) {
-                return 'beendet';
+                return null;
             }
 
             var remainingTime = '';
@@ -26,7 +26,7 @@ angular.module('crowdsource')
             if (remainingTime || diff.minutes() > 0) {
                 remainingTime += diff.minutes() + 'm ';
             }
-            remainingTime += diff.seconds() + 's ';
+            remainingTime += diff.seconds() + 's';
 
             return remainingTime;
         };
@@ -34,7 +34,7 @@ angular.module('crowdsource')
         return service;
     })
 
-    .directive('teaser', function ($rootScope, $interval, Metrics, User, FinancingRound) {
+    .directive('teaser', function ($rootScope, $interval, TeaserMetrics, User, FinancingRound) {
         var directive = {};
 
         directive.controllerAs = 'teaser';

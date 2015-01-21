@@ -46,24 +46,39 @@ angular.module('crowdsource')
 
             vm.show = false;
 
+            var activeRound = { $resolved: false };
+
             $rootScope.$on('$routeChangeSuccess', function (event, current) {
                 vm.show = current.showTeaser;
+
+                if (current.showTeaser) {
+                    // refresh the data every time a route is changed and
+                    // the teaser should be shown
+                    loadData();
+                }
             });
 
-            vm.userMetrics = User.getMetrics();
+            $interval(applyRemainingTime, 1000);
 
-            vm.activeRound = FinancingRound.getActive();
-            vm.activeRound.$promise.then(function() {
-                applyRemainingTime();
-                $interval(applyRemainingTime, 1000);
-            });
+            function loadData() {
+                User.getMetrics().$promise.then(function(metrics) {
+                    vm.userMetrics = metrics;
+                });
+
+                activeRound = FinancingRound.getActive();
+                activeRound.$promise.then(function() {
+                    // recalculate the remaining time right when the data is available,
+                    // else it is first updated when the next $interval kicks in
+                    applyRemainingTime();
+                });
+            }
 
             function applyRemainingTime() {
-                if (!vm.activeRound.$resolved) {
+                if (!activeRound.$resolved) {
                     return;
                 }
 
-                vm.remainingTime = Metrics.formatRemainingTime(vm.activeRound.endDate);
+                vm.remainingTime = Metrics.formatRemainingTime(activeRound.endDate);
             }
         };
 

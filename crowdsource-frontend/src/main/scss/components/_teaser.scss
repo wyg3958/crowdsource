@@ -10,9 +10,9 @@
 // ---
 
 %teaser {
+  padding: 2rem 1rem;
   text-align: center;
   background-color: #39c277;
-  padding: 2rem 1rem;
 
   @media #{$medium-up} {
     background: url('../images/teaser-bg.png') #39c277 center center no-repeat;
@@ -25,17 +25,16 @@
 
 .teaser--hero {
   @extend  %teaser;
-
-
-
 }
 
 
 // Slim class
 
 .teaser--slim {
- @extend %teaser;
- height: 1rem;
+  //@extend  %teaser;
+  height:  1rem;
+  padding: 0;
+  background-color: #39c277;
 
   // Remove all HTML inside our slim teaser
 
@@ -79,88 +78,65 @@
 // Metrics
 // ---
 
-%m-div-icon {
-  position: relative;
-}
 
+//
+// Metrics divider
+//
 
-%m-div-before {
-  content: '';
-  position: absolute;
-
-  top:   0;
-  left:  0;
-  width:  100%;
-  height: 100%;
-
-  background-position: center center;
-  background-repeat:   no-repeat;
-  background-size:     18px;
-
-  @media #{$medium-up} {
-    background-size: 26px;
-  }
-}
-
+// Metrics divider icon' styles
 
 .metrics__divider {
-  height: 26px;
+  position: relative;
+  height:   26px;
   margin-bottom: rem-calc(4px);
   background: url('../images/icon-div.svg') center center no-repeat;
 
-  &.capital {
-    @extend %m-div-icon;
+  &::before {
+    content: '';
+    position: absolute;
 
+    top:   0;
+    left:  0;
+    width:  100%;
+    height: 100%;
+
+    background-position: center center;
+    background-repeat:   no-repeat;
+    background-size:     18px;
+
+    @media #{$medium-up} {
+      background-size: 26px;
+    }
+  }
+
+  // Extend divider with classes, that show specific icons for
+  // our sections: floating capital, remaining time, active users
+
+  &.capital {
     &:before {
-      @extend %m-div-before;
       background-image: url('../images/icon-$$.svg');
     }
   }
 
   &.time {
-    @extend %m-div-icon;
-
     &:before {
-      @extend %m-div-before;
       background-image: url('../images/icon-clock.svg');
     }
   }
 
   &.user {
-    @extend %m-div-icon;
-
     &:before {
-      @extend %m-div-before;
       background-image: url('../images/icon-user.svg')
     }
   }
 }
 
 
-%metrics-text-layout {
-  margin: 0;
-}
-
-
-.metrics__heading {
-  @extend %metrics-text-layout;
-  font-size: $fs-medium;
-  color: $white;
-
-  @media #{$medium-up} {
-    font-size: $fs-hero;
-  }
-}
-
-
-.metrics__subhead {
-  @extend %metrics-text-layout;
-  color: #3c3c3c;
-}
-
+//
+// Metrics container
+//
 
 .metrics {
-
   margin: 1rem auto;
 
   @media #{$medium-up} {
@@ -173,6 +149,10 @@
 }
 
 
+//
+// Metrics items in container
+//
+
 .metrics--item {
 
   margin: 1rem 0;
@@ -184,7 +164,35 @@
 }
 
 
-/*button*/.teaser__button {
+//
+// Metrics text styles
+//
+
+%metrics-text-layout {
+  margin: 0;
+}
+
+
+.metrics__heading {
+  @extend %metrics-text-layout;
+  font-size: $fs-medium;
+  color: $white;
+}
+
+
+.metrics__subhead {
+  @extend %metrics-text-layout;
+  color: #3c3c3c;
+}
+
+
+//
+// Teaser button
+//
+
+/*a*/.teaser__btn {
+  @extend .button; // Foundation' styles
+  @extend .round;  // Foundation' styles
+  @extend .dark;
   @extend .flush--bottom;
-  @extend .round;  // Foundation class
 }

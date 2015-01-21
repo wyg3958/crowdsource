@@ -70,7 +70,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr class="financinground" fr_id="{{fr.id}}"
+        <tr class="financinground row-{{$index}}" fr_id="{{fr.id}}"
             ng-repeat="fr in financingRounds.allFinancingRounds | orderBy:'startDate':true">
             <td class="startdate">{{ fr.startDate | date: 'short' }}</td>
             <td class="enddate">{{ fr.endDate | date: 'short'}}</td>

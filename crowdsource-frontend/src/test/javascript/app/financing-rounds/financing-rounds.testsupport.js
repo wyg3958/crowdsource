@@ -1,5 +1,7 @@
 function FinancingRounds(element) {
 
+    var defaultRow = '.row-0';
+
     this.getGeneralErrorsContainer = function () {
         return element.find('.general-error');
     };
@@ -17,21 +19,35 @@ function FinancingRounds(element) {
         return new FormGroup(element.find('.form-controls-enddate'));
     };
 
-    this.getTableStartDate = function () {
-        return element.find('tbody .startdate');
+    this.getTableStartDate = function (row) {
+        row = row || defaultRow;
+        return element.find(row + ' .startdate');
     };
 
-    this.getTableEndtDate = function () {
-        return element.find('tbody .enddate');
+    this.getTableEndDate = function (row) {
+        row = row || defaultRow;
+        return element.find(row + ' .enddate');
     };
 
-    this.getTableBudget = function () {
-        return element.find('tbody .budget');
+    this.getTableBudget = function (row) {
+        row = row || defaultRow;
+        return element.find(row + ' .budget');
     };
 
-    this.getTableEndRoundButton = function () {
-        return element.find('.stop-button');
+    this.getTableEndRoundButton = function (row) {
+        row = row || defaultRow;
+        return element.find(row + ' .stop-button');
     };
+
+    this.getTableEndRoundCancelButton = function (row) {
+        row = row || defaultRow;
+        return element.find(row + ' .cancel-button');
+    }
+
+    this.getTableEndRoundConfirmMessage = function (row) {
+        row = row || defaultRow;
+        return element.find(row + ' .confirm-message');
+    }
 
     this.getStartRoundButton = function () {
         return element.find('.newround-start');
@@ -43,7 +59,7 @@ function FinancingRounds(element) {
 
     this.getTableText = function () {
         return element.find('tbody td');
-    }
+    };
 
     this.getAlertBox = function () {
         return element.find('.alert-box');

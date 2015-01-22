@@ -19,7 +19,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <coreos-maven-plugin.version>0.1.46</coreos-maven-plugin.version>
+        <coreos-maven-plugin.version>0.1.47</coreos-maven-plugin.version>
     </properties>
 
     <modules>

@@ -1,6 +1,6 @@
 describe('financing rounds', function () {
 
-    var $scope, $httpBackend, $location, financingRounds;
+    var $scope, $httpBackend, $location, financingRounds, view;
 
     beforeEach(function () {
         module('crowdsource');
@@ -49,10 +49,13 @@ describe('financing rounds', function () {
         var startDate = moment().tz('Europe/Berlin');
         var endDate = startDate.add(5, 'days');
 
-        prepareBackendGetWithOneRoundMock(startDate, endDate);
+        prepareBackendGetFinancingRoundsMock([
+            { "id": "4711", "budget": "5555", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "active": true }
+        ]);
         $httpBackend.flush();
         $scope.$digest();
 
+        expect(financingRounds.getTableRowCount()).toBe(1);
         expect(financingRounds.getTableStartDate()).toHaveText(startDate.format('DD.MM.YY HH:mm'));
         expect(financingRounds.getTableEndDate()).toHaveText(endDate.format('DD.MM.YY HH:mm'));
         expect(financingRounds.getTableBudget()).toHaveText('5.555');
@@ -63,21 +66,29 @@ describe('financing rounds', function () {
 
 
     it("should display two finished rounds", function () {
-        var date = moment().tz('Europe/Berlin');
-        var startDate = date.subtract(10, 'days');
-        var endDate = startDate.add(5, 'days');
+        var now = moment().tz('Europe/Berlin');
+        var startDate1 = now.subtract(10, 'days');
+        var endDate1 = startDate1.add(5, 'days');
+        var startDate2 = now.subtract(20, 'days');
+        var endDate2 = startDate2.add(10, 'days');
+
         var row = '.row-1';
 
-        prepareBackendGetWithTwoRoundsMock(startDate, endDate);
+        prepareBackendGetFinancingRoundsMock([
+            { "budget": "1111", "startDate": startDate1.toISOString(), "endDate": endDate1.toISOString(), "active": false },
+            { "budget": "2222", "startDate": startDate2.toISOString(), "endDate": endDate2.toISOString(), "active": false }
+        ]);
         $httpBackend.flush();
         $scope.$digest();
 
-        expect(financingRounds.getTableStartDate()).toHaveText(startDate.format('DD.MM.YY HH:mm'));
-        expect(financingRounds.getTableEndDate()).toHaveText(endDate.format('DD.MM.YY HH:mm'));
+        expect(financingRounds.getTableRowCount()).toBe(2);
+
+        expect(financingRounds.getTableStartDate()).toHaveText(startDate1.format('DD.MM.YY HH:mm'));
+        expect(financingRounds.getTableEndDate()).toHaveText(endDate1.format('DD.MM.YY HH:mm'));
         expect(financingRounds.getTableBudget()).toHaveText('1.111');
 
-        expect(financingRounds.getTableStartDate(row)).toHaveText(startDate.format('DD.MM.YY HH:mm'));
-        expect(financingRounds.getTableEndDate(row)).toHaveText(endDate.format('DD.MM.YY HH:mm'));
+        expect(financingRounds.getTableStartDate(row)).toHaveText(startDate2.format('DD.MM.YY HH:mm'));
+        expect(financingRounds.getTableEndDate(row)).toHaveText(endDate2.format('DD.MM.YY HH:mm'));
         expect(financingRounds.getTableBudget(row)).toHaveText('2.222');
 
         expect(financingRounds.getTableEndRoundButton()).not.toExist();
@@ -85,6 +96,32 @@ describe('financing rounds', function () {
 
         expect(financingRounds.getStartRoundButton()).toExist();
         expect(financingRounds.getNotification()).not.toContainText('Es läuft bereits eine Finanzierungsrunde. Daher kann keine neue Runde gestartet werden.');
+    });
+
+
+    it("should display two rounds where one of them is active", function () {
+        var now = moment().tz('Europe/Berlin');
+        var startDate1 = now.subtract(10, 'days');
+        var endDate1 = now.add(5, 'days');
+        var startDate2 = now.subtract(20, 'days');
+        var endDate2 = startDate2.add(10, 'days');
+
+        var row = '.row-1';
+
+        prepareBackendGetFinancingRoundsMock([
+            { "budget": "1111", "startDate": startDate1.toISOString(), "endDate": endDate1.toISOString(), "active": true },
+            { "budget": "2222", "startDate": startDate2.toISOString(), "endDate": endDate2.toISOString(), "active": false }
+        ]);
+
+        $httpBackend.flush();
+        $scope.$digest();
+
+        expect(financingRounds.getTableRowCount()).toBe(2);
+        expect(financingRounds.getTableEndRoundButton()).toExist();
+        expect(financingRounds.getTableEndRoundButton(row)).not.toExist();
+
+        expect(financingRounds.getStartRoundButton()).not.toExist();
+        expect(financingRounds.getNotification()).toContainText('Es läuft bereits eine Finanzierungsrunde. Daher kann keine neue Runde gestartet werden.');
     });
 
 
@@ -114,36 +151,25 @@ describe('financing rounds', function () {
 
         prepareViewWithNoRunningRound();
 
-        $httpBackend.expectPOST('/financinground', {
-            "budget": budget,
-            "endDate": endDate.toISOString()
-        })
-            .respond(200, {
-                "id": "4711",
-                "startDate": startDate.toISOString(),
-                "endDate": modifiedEndDate.toISOString(),
-                "budget": budget,
-                "active": true
-            });
         expect(financingRounds.getStartRoundButton()).toBeDisabled();
 
         financingRounds.getEndDate().getInputField().val(endDate.format('DD.MM.YYYY')).trigger('input');
         financingRounds.getBudget().getInputField().val('320').trigger('input');
         expect(financingRounds.getStartRoundButton()).not.toBeDisabled();
+        expect(financingRounds.getStartRoundButton()).toHaveText('Starten!');
 
+        $httpBackend.expectPOST('/financinground', { "budget": budget, "endDate": endDate.toISOString() }).respond(200,
+            { "id": "4711", "startDate": startDate.toISOString(), "endDate": modifiedEndDate.toISOString(), "budget": budget, "active": true });
 
         $httpBackend.expectGET('/financingrounds').respond(200, [
-            {
-                "budget": "5555",
-                "startDate": startDate.toISOString(),
-                "endDate": endDate.toISOString(),
-                "active": true
-            }
+            { "budget": "5555", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "active": true }
         ]);
 
         financingRounds.getStartRoundButton().click();
+        expect(financingRounds.getStartRoundButton()).toHaveText('Starten...');
         $httpBackend.flush();
         expect(financingRounds.getAlertBox()).toContainText('Finanzierungsrunde gestartet.');
+        expect(financingRounds.getStartRoundButton()).not.toExist();
     });
 
 
@@ -151,19 +177,12 @@ describe('financing rounds', function () {
         var startDate = moment().tz('Europe/Berlin');
         var endDate = startDate.add(5, 'days');
 
-        prepareBackendGetWithOneRoundMock(startDate, endDate);
+        prepareBackendGetFinancingRoundsMock([
+            { "id": "4711", "budget": "5555", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "active": true }
+        ]);
+
         $httpBackend.flush();
         $scope.$digest();
-
-        $httpBackend.expectPUT('/financinground/4711/cancel', {})
-            .respond(200, {
-                "id": "4711",
-                "startDate": startDate.toISOString(),
-                "endDate": endDate.toISOString(),
-                "budget": 4444,
-                "active": false
-            });
-        prepareBackendGetWithOneRoundMock(startDate, endDate);
 
         expect(financingRounds.getTableEndRoundCancelButton()).not.toExist();
 
@@ -171,9 +190,18 @@ describe('financing rounds', function () {
         expect(financingRounds.getTableEndRoundCancelButton()).toExist();
         expect(financingRounds.getTableEndRoundConfirmMessage()).toContainText('Wirklich beenden?');
 
+        $httpBackend.expectPUT('/financinground/4711/cancel', {})
+            .respond(200, { "id": "4711", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "budget": 4444, "active": false });
+
+        prepareBackendGetFinancingRoundsMock([
+            { "id": "4711", "budget": "5555", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "active": false }
+        ]);
+
         financingRounds.getTableEndRoundButton().click();
+        expect(financingRounds.getTableEndRoundButton()).toHaveText('Beenden...');
         $httpBackend.flush();
         expect(financingRounds.getAlertBox()).toContainText('Finanzierungsrunde gestoppt.');
+        expect(financingRounds.getTableEndRoundButton()).not.toExist();
     });
 
 
@@ -181,7 +209,10 @@ describe('financing rounds', function () {
         var startDate = moment().tz('Europe/Berlin');
         var endDate = startDate.add(5, 'days');
 
-        prepareBackendGetWithOneRoundMock(startDate, endDate);
+        prepareBackendGetFinancingRoundsMock([
+            { "id": "4711", "budget": "5555", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "active": true }
+        ]);
+
         $httpBackend.flush();
         $scope.$digest();
 
@@ -211,11 +242,7 @@ describe('financing rounds', function () {
 
         prepareViewWithNoRunningRound();
 
-        $httpBackend.expectPOST('/financinground', {
-            "budget": budget,
-            "endDate": modifiedEndDate.toISOString()
-        }).respond(500, null);
-
+        $httpBackend.expectPOST('/financinground', { "budget": budget, "endDate": modifiedEndDate.toISOString() }).respond(500);
         expect(financingRounds.getStartRoundButton()).toBeDisabled();
 
         financingRounds.getEndDate().getInputField().val(endDate.format('DD.MM.YYYY')).trigger('input');
@@ -231,11 +258,14 @@ describe('financing rounds', function () {
         var startDate = moment().tz('Europe/Berlin');
         var endDate = startDate.add(5, 'days');
 
-        prepareBackendGetWithOneRoundMock(startDate, endDate);
+        prepareBackendGetFinancingRoundsMock([
+            { "id": "4711", "budget": "5555", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "active": true }
+        ]);
+
         $httpBackend.flush();
         $scope.$digest();
 
-        $httpBackend.expectPUT('/financinground/4711/cancel', {}).respond(500, null);
+        $httpBackend.expectPUT('/financinground/4711/cancel', {}).respond(500);
 
         financingRounds.getTableEndRoundButton().click();
         financingRounds.getTableEndRoundButton().click();
@@ -245,7 +275,7 @@ describe('financing rounds', function () {
     });
 
     it("should display alert message when backend not responding on get rounds", function () {
-        $httpBackend.expectGET('/financingrounds').respond(500, null);
+        $httpBackend.expectGET('/financingrounds').respond(500);
         $httpBackend.flush();
         $scope.$digest();
 
@@ -253,43 +283,14 @@ describe('financing rounds', function () {
     });
 
     function prepareViewWithNoRunningRound() {
-        prepareBackendGetWithNoRoundMock();
+        prepareBackendGetFinancingRoundsMock([]);
 
         $httpBackend.flush();
         $scope.$digest();
     }
 
-    function prepareBackendGetWithOneRoundMock(startDate, endDate) {
-        $httpBackend.expectGET('/financingrounds').respond(200, [
-            {
-                "id": "4711",
-                "budget": "5555",
-                "startDate": startDate.toISOString(),
-                "endDate": endDate.toISOString(),
-                "active": true
-            }
-        ]);
-    }
-
-    function prepareBackendGetWithTwoRoundsMock(startDate, endDate) {
-        $httpBackend.expectGET('/financingrounds').respond(200, [
-            {
-                "budget": "1111",
-                "startDate": startDate.toISOString(),
-                "endDate": endDate.toISOString(),
-                "active": false
-            },
-            {
-                "budget": "2222",
-                "startDate": startDate.toISOString(),
-                "endDate": endDate.toISOString(),
-                "active": false
-            }
-        ]);
-    }
-
-    function prepareBackendGetWithNoRoundMock() {
-        $httpBackend.expectGET('/financingrounds').respond(200, []);
+    function prepareBackendGetFinancingRoundsMock(response) {
+        $httpBackend.expectGET('/financingrounds').respond(200, response);
     }
 
     function expectBudgetValidationError(violatedRule) {

@@ -15,8 +15,11 @@ function FinancingRounds(element) {
     };
 
     this.getEndDate = function () {
-
         return new FormGroup(element.find('.form-controls-enddate'));
+    };
+
+    this.getTableRowCount = function () {
+        return element.find('tbody tr').length;
     };
 
     this.getTableStartDate = function (row) {
@@ -42,12 +45,12 @@ function FinancingRounds(element) {
     this.getTableEndRoundCancelButton = function (row) {
         row = row || defaultRow;
         return element.find(row + ' .cancel-button');
-    }
+    };
 
     this.getTableEndRoundConfirmMessage = function (row) {
         row = row || defaultRow;
         return element.find(row + ' .confirm-message');
-    }
+    };
 
     this.getStartRoundButton = function () {
         return element.find('.newround-start');

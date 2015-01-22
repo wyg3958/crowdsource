@@ -28,56 +28,13 @@
 
 <div class="page-wrapper">
 
-    <div class="contain-to-grid">
-        <nav class="top-bar" data-topbar role="navigation" ng-controller="NavigationController as nav">
-            <ul class="title-area">
-                <li class="name">
-                    <h1><a href="#/" class="site-logo">CROWD</a></h1>
-                </li>
-                <li class="toggle-topbar menu-icon"><a><span></span></a></li>
-            </ul>
-
-            <section class="top-bar-section">
-                <ul class="right">
-                    <li ng-class="getClassForMenuItem('/project/new')" class="border new-project"><a href="#/project/new">Neues Projekt</a></li>
-                    <li ng-if="!nav.auth.currentUser.loggedIn" ng-class="getClassForMenuItem('/login')" class="login"><a href="#/login">Login</a></li>
-                    <li ng-if="!nav.auth.currentUser.loggedIn" ng-class="getClassForMenuItem('/signup')" class="register"><a href="#/signup">Registrieren</a></li>
-                    <li ng-if="nav.auth.currentUser.loggedIn" ng-class="getClassForMenuItem('/logout')" class="logout"><a href="#/logout">Logout</a></li>
-                </ul>
-            </section>
-        </nav>
-    </div>
-
+    <nav-bar></nav-bar>
     <teaser></teaser>
     <status-bar></status-bar>
 
     <div class="content" ng-view></div>
 
-    <div class="footer" ng-controller="NavigationController as nav">
-        <div class="row">
-            <ul class="footer__col">
-              <li class="footer__item-head">AS Crowd</li>
-              <li>Log In</li>
-              <li>Registrieren</li>
-              <li>Entdecken</li>
-            </ul>
-            <ul class="footer__col">
-                <li class="footer__item-head">Hilfe</li>
-                <li>Über uns</li>
-                <li>FAQ</li>
-            </ul>
-            <ul class="footer__col"  ng-if="nav.auth.currentUser.hasRole('ADMIN')">
-                <li class="footer__item-head">Admin</li>
-                <li class="admin"><a href="#/financingrounds">Finanzierungsrunden</a></li>
-            </ul>
-            <ul class="footer__col-brand">
-                <li class="footer__item-head-se">
-                  Axel Springer SE
-                </li>
-            </ul>
-        </div>
-      </div>
-    </div>
+    <footer></footer>
 </div>
 </body>
 </html>

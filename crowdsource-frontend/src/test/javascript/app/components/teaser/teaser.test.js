@@ -45,7 +45,7 @@ describe('teaser metrics service', function () {
         changeRouteWithTeaserWanted(true);
 
         expect(teaser.remainingBudgetItem).not.toHaveClass('ng-hide');
-        expect(teaser.remainingBudget.text()).toBe(' $');
+        expect(teaser.remainingBudget.text()).toBe('$');
         expect(teaser.remainingTime.text()).toBe(' ');
         expect(teaser.remainingTimeLabel.text()).toBe('Noch in dieser Runde');
 
@@ -53,7 +53,7 @@ describe('teaser metrics service', function () {
 
         expect(teaser.container).toHaveClass('teaser--hero');
         expect(teaser.remainingBudgetItem).not.toHaveClass('ng-hide');
-        expect(teaser.remainingBudget.text()).toBe('54.321 $');
+        expect(teaser.remainingBudget.text()).toBe('$54.321');
         expect(teaser.remainingTime.text()).toBe('1d 7h 55m 35s');
         expect(teaser.remainingTimeLabel.text()).toBe('Noch in dieser Runde');
         expect(teaser.userCount.text()).toBe('33 aktive Nutzer');
@@ -97,14 +97,14 @@ describe('teaser metrics service', function () {
         changeRouteWithTeaserWanted(true);
         $httpBackend.flush();
 
-        expect(teaser.remainingBudget.text()).toBe('54.321 $');
+        expect(teaser.remainingBudget.text()).toBe('$54.321');
 
         expectMetricsBECall().respond(200, { remainingBudget: 123, count: 33 });
         expectFinancingRoundBECall().respond(200, financingRound('2015-01-23T22:59:59.000Z'));
         changeRouteWithTeaserWanted(true);
         $httpBackend.flush();
 
-        expect(teaser.remainingBudget.text()).toBe('123 $');
+        expect(teaser.remainingBudget.text()).toBe('$123');
         expect(teaser.remainingTime.text()).toBe('2d 7h 55m 35s');
     });
 

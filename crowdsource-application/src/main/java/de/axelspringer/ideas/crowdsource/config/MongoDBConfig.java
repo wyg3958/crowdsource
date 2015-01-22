@@ -22,7 +22,7 @@ public class MongoDBConfig extends AbstractMongoConfiguration {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
-    @Value("#{'${de.axelspringer.ideas.crowdsource.db.hosts:172.31.0.106,172.31.46.89,172.31.18.9}'.split(',')}")
+    @Value("#{'${de.axelspringer.ideas.crowdsource.db.hosts:172.31.21.81,172.31.0.106,172.31.46.89}'.split(',')}")
     private List<String> hosts;
 
     @Value("${de.axelspringer.ideas.crowdsource.db.port:27017}")

@@ -13,6 +13,9 @@ describe('financing rounds', function () {
             $httpBackend = _$httpBackend_;
             $location = _$location_;
 
+            // the FinancingRound service gets the active service on creation
+            $httpBackend.expectGET('/financinground/active').respond(404);
+
             $controller('FinancingRoundsController as financingRounds', {
                 $scope: $scope,
                 $location: $location,
@@ -165,6 +168,8 @@ describe('financing rounds', function () {
             { "budget": "5555", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "active": true }
         ]);
 
+        $httpBackend.expectGET('/financinground/active').respond(200, { active: true });
+
         financingRounds.getStartRoundButton().click();
         expect(financingRounds.getStartRoundButton()).toHaveText('Starten...');
         $httpBackend.flush();
@@ -196,6 +201,8 @@ describe('financing rounds', function () {
         prepareBackendGetFinancingRoundsMock([
             { "id": "4711", "budget": "5555", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "active": false }
         ]);
+
+        $httpBackend.expectGET('/financinground/active').respond(404);
 
         financingRounds.getTableEndRoundButton().click();
         expect(financingRounds.getTableEndRoundButton()).toHaveText('Beenden...');

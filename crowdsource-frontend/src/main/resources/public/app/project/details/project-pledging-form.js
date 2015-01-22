@@ -11,7 +11,7 @@ angular.module('crowdsource')
             controller: function(Project, Authentication, RemoteFormValidation, FinancingRound, $q) {
                 var vm = this;
 
-                vm.activeFinancingRound = FinancingRound.getActive();
+                FinancingRound.reloadCurrentRound();
 
                 // to get the current user's budget
                 vm.user = Authentication.reloadUser();
@@ -50,7 +50,7 @@ angular.module('crowdsource')
                         return 0;
                     }
 
-                    if (!vm.activeFinancingRound.active) {
+                    if (!FinancingRound.current.active) {
                         return 0;
                     }
 
@@ -69,7 +69,7 @@ angular.module('crowdsource')
                     if (vm.project.status == 'FULLY_PLEDGED') {
                         return { type: 'info', message: 'Das Project ist zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich.' };
                     }
-                    if (!vm.activeFinancingRound.active) {
+                    if (!FinancingRound.current.active) {
                         return { type: 'info', message: 'Momentan läuft keine Finanzierungsrunde. Bitte versuche es nochmal, wenn die Finanzierungsrunde gestartet worden ist.' };
                     }
                     if (!vm.user.loggedIn) {
@@ -84,7 +84,7 @@ angular.module('crowdsource')
 
 
                 function isLoading() {
-                    return !vm.project.$resolved || !vm.user.$resolved || !vm.activeFinancingRound.$resolved;
+                    return !vm.project.$resolved || !vm.user.$resolved || !FinancingRound.current.$resolved;
                 }
 
                 function reloadUserAndProject() {
@@ -92,14 +92,13 @@ angular.module('crowdsource')
                     var promises = $q.all({
                         project: Project.get(vm.project.id).$promise,
                         user: Authentication.reloadUser().$promise,
-                        financingRound: FinancingRound.getActive().$promise
+                        financingRound: FinancingRound.reloadCurrentRound()
                     });
 
                     // will be resolved when all calls are completed
                     promises.then(function(resolvedPromises) {
                         angular.copy(resolvedPromises.project, vm.project);
-                        angular.copy(resolvedPromises.financingRound, vm.activeFinancingRound);
-                        // the user is already copied over from Authentication.reloadUser
+                        // the user and financing round are already copied over in their services
                     });
 
                     return promises;

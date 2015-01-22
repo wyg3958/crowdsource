@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .directive('statusBar', function($rootScope, $window, Authentication) {
+    .directive('statusBar', function($rootScope, $window, Authentication, FinancingRound) {
         return {
             controllerAs: 'status',
             bindToController: true,
@@ -14,6 +14,8 @@ angular.module('crowdsource')
                 });
 
                 vm.auth = Authentication;
+
+                vm.financingRound = FinancingRound;
             }
         };
     });

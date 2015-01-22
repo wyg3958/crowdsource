@@ -50,8 +50,6 @@ angular.module('crowdsource')
             // 3 metrics items while loading instead of only two
             vm.remainingTime = " ";
 
-            var activeRound = { $resolved: false };
-
             $rootScope.$on('$routeChangeSuccess', function (event, current) {
                 vm.show = current.showTeaser;
 
@@ -69,8 +67,7 @@ angular.module('crowdsource')
                     vm.userMetrics = metrics;
                 });
 
-                activeRound = FinancingRound.getActive();
-                activeRound.$promise.then(function() {
+                FinancingRound.reloadCurrentRound().then(function() {
                     // recalculate the remaining time right when the data is available,
                     // else it is first updated when the next $interval kicks in
                     applyRemainingTime();
@@ -78,11 +75,11 @@ angular.module('crowdsource')
             }
 
             function applyRemainingTime() {
-                if (!activeRound.$resolved) {
+                if (!FinancingRound.current.$resolved) {
                     return;
                 }
 
-                vm.remainingTime = TeaserMetrics.formatRemainingTime(activeRound.endDate);
+                vm.remainingTime = TeaserMetrics.formatRemainingTime(FinancingRound.current.endDate);
             }
         };
 

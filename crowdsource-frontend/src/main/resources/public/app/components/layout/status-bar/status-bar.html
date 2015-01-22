@@ -2,7 +2,7 @@
     <div class="small-6 columns breadcrump">
         {{ status.breadcrump }}
     </div>
-    <div class="small-6 columns budget">
+    <div class="small-6 columns budget" ng-if="status.financingRound.current.active">
         Budget: <span class="label radius">${{ status.auth.currentUser.budget | number }}</span>
     </div>
 </div>

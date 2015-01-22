@@ -34,7 +34,7 @@
                             <dockerImageName>mongo:2.6.6</dockerImageName>
                             <dockerRunOptions>-p 27001:27017 -p 28001:28017</dockerRunOptions>
                             <!-- pin to exactly one machine -->
-                            <xFleetOptions>MachineID=2f5479ff9b7847a5a3e790ab63cfa62e</xFleetOptions>
+                            <xFleetOptions>MachineID=d22ce82da6c5489ba19aba3b72faeb37</xFleetOptions>
                         </configuration>
                     </execution>
                     <execution>
@@ -53,7 +53,7 @@
                             <dockerImageName>gaffa/restmail</dockerImageName>
                             <dockerRunOptions>-p 1025:1025 -p 18080:8080</dockerRunOptions>
                             <!-- pin to exactly one machine -->
-                            <xFleetOptions>MachineID=2f5479ff9b7847a5a3e790ab63cfa62e</xFleetOptions>
+                            <xFleetOptions>MachineID=d22ce82da6c5489ba19aba3b72faeb37</xFleetOptions>
                         </configuration>
                     </execution>
                     <execution>
@@ -73,7 +73,7 @@
                             <dockerImageName>asideas/crowdsource</dockerImageName>
                             <dockerRunOptions>-p 8080:8080 -e "SPRING_PROFILES_ACTIVE=cons"</dockerRunOptions>
                             <!-- pin to exactly one machine -->
-                            <xFleetOptions>MachineID=2f5479ff9b7847a5a3e790ab63cfa62e</xFleetOptions>
+                            <xFleetOptions>MachineID=d22ce82da6c5489ba19aba3b72faeb37</xFleetOptions>
                             <availabilityCheck>
                                 <port>8080</port>
                                 <contextPath>/</contextPath>

@@ -1,0 +1,25 @@
+<content-row class="project-administration-overview box-wide">
+
+    <h1>Projektadministration</h1>
+
+    <div class="alert-box info" ng-if="projectAdministration.info">
+        {{ projectAdministration.info }}
+        <span class="close" ng-click="projectAdministration.info = undefined">&times;</span>
+    </div>
+
+    <form name="projectAdministration.form" class="project-administration-form form-horizontal" novalidate>
+        <div class="panel">
+            <h2>Projekte verwalten</h2>
+
+
+            <div class="row">
+                <div ng-repeat="statusName in projectAdministration.allStatuses" class="status-set">
+                    <b>{{statusName}}</b>
+                    <li ng-repeat="project in projectAdministration.allProjects | filter: {status: statusName}">
+                        {{project.title}}
+                    </li>
+                </div>
+            </div>
+        </div>
+    </form>
+</content-row>

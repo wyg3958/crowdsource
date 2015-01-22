@@ -1,6 +1,14 @@
 
 function ActivationForm(element) {
 
+    this.getHeadline = function() {
+        return element.find('h1');
+    };
+
+    this.getInformationText = function() {
+        return element.find('.info-text');
+    };
+
     this.getGeneralErrorsContainer = function() {
         return element.find('.general-error');
     };

@@ -1,9 +1,12 @@
 package de.axelspringer.ideas.crowdsource.controller.usercontroller;
 
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
+import de.axelspringer.ideas.crowdsource.model.presentation.user.UserRegistration;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultMatcher;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -14,9 +17,12 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class RegisterUserControllerTest extends AbstractUserControllerTest {
+
+    private UserRegistration userRegistration = new UserRegistration();
 
     @Test
     public void registerUser_shouldReturnSuccessfullyWhenEmailAndTosOkOnSave() throws Exception {
@@ -37,7 +43,7 @@ public class RegisterUserControllerTest extends AbstractUserControllerTest {
 
         // once in NotExistingAndActivatedValidator and once in the UserController
         verify(userRepository, times(2)).findByEmail(any());
-        verify(userActivationService).sendActivationMail(any());
+        verify(userNotificationService).sendActivationMail(any());
         verify(userRepository).save(any(UserEntity.class));
     }
 
@@ -109,6 +115,14 @@ public class RegisterUserControllerTest extends AbstractUserControllerTest {
         final MvcResult mvcResult = registerUserAndExpect(status().isBadRequest());
 
         assertEquals("", "{\"errorCode\":\"field_errors\",\"fieldViolations\":{\"email\":\"not_activated\"}}", mvcResult.getResponse().getContentAsString());
+    }
+
+    private MvcResult registerUserAndExpect(ResultMatcher expectedResponseStatus) throws Exception {
+        return mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(userRegistration)))
+                .andExpect(expectedResponseStatus)
+                .andReturn();
     }
 
 }

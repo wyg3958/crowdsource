@@ -17,6 +17,7 @@ angular.module('crowdsource')
         });
 
         var UserActivationResource = $resource('/user/:email/activation', { email: '@email' });
+        var PasswordRecoveryResource = $resource('/user/:email/password-recovery');
 
         service.register = function (user) {
             return UserResource.save(user).$promise;
@@ -24,6 +25,10 @@ angular.module('crowdsource')
 
         service.activate = function (user) {
             return UserActivationResource.save(user);
+        };
+
+        service.recoverPassword = function (emailAddress) {
+            return PasswordRecoveryResource.get({ email: emailAddress });
         };
 
         service.authenticated = function() {

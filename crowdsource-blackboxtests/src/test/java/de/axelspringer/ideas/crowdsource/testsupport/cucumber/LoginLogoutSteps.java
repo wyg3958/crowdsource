@@ -166,4 +166,11 @@ public class LoginLogoutSteps {
         String pageSource = webDriver.getPageSource();
         assertThat(pageSource, containsString(text));
     }
+
+    @And("^he clicks on the password recovery link$")
+    public void he_clicks_on_the_password_recovery_link() throws Throwable {
+        PageFactory.initElements(webDriver, loginForm);
+        loginForm.waitForPageLoad();
+        loginForm.clickPasswordRecoveryLink();
+    }
 }

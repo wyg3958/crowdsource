@@ -8,10 +8,15 @@ describe('user activation view', function () {
 
         localStorage.clear(); // reset
 
-        inject(function($compile, $rootScope, $templateCache, $controller, _$httpBackend_, _$location_, User, Authentication, RemoteFormValidation) {
-            var $scope = $rootScope.$new();
+        inject(function(_$httpBackend_, _$location_) {
             $httpBackend = _$httpBackend_;
             $location = _$location_;
+        });
+    });
+
+    function compileView() {
+        inject(function($compile, $rootScope, $templateCache, $controller, User, Authentication, RemoteFormValidation) {
+            var $scope = $rootScope.$new();
 
             $controller('UserActivationController as activation', {
                 $scope: $scope,
@@ -19,7 +24,7 @@ describe('user activation view', function () {
                     email: "test@axelspringer.de",
                     activationToken: "12345"
                 },
-                $location: _$location_,
+                $location: $location,
                 User: User,
                 Authentication: Authentication,
                 RemoteFormValidation: RemoteFormValidation
@@ -31,7 +36,7 @@ describe('user activation view', function () {
             $scope.$digest();
             activationForm = new ActivationForm(view);
         });
-    });
+    }
 
     function expectValidationError(inputName, violatedRule) {
         expect(activationForm[inputName].getLabelContainer()).toHaveClass('error');
@@ -70,6 +75,8 @@ describe('user activation view', function () {
 
 
     it('should show no validation errors when the form is untouched', function () {
+        compileView();
+
         expect(activationForm.getGeneralErrorsContainer()).not.toExist();
 
         expectNoValidationError('password');
@@ -77,6 +84,8 @@ describe('user activation view', function () {
     });
 
     it('should show no validation errors when the form is filled correctly', function () {
+        compileView();
+
         activationForm.password.getInputField().val('secret!!!').trigger('input');
         activationForm.repeatedPassword.getInputField().val('secret!!!').trigger('input');
 
@@ -87,6 +96,8 @@ describe('user activation view', function () {
     });
 
     it('should POST the data to the server, request an access token and redirect to index page', function () {
+        compileView();
+
         expectBackendActivationCallAndRespond(201);
         expectBackendLoginCallAndRespond(200);
         $httpBackend.expectGET('/user/current').respond(200, {});
@@ -98,6 +109,8 @@ describe('user activation view', function () {
     });
 
     it('should disable the submit button and change it\'s text while loading', function () {
+        compileView();
+
         expectBackendActivationCallAndRespond(201);
         expectBackendLoginCallAndRespond(200);
         $httpBackend.expectGET('/user/current').respond(200, {});
@@ -117,6 +130,8 @@ describe('user activation view', function () {
     });
 
     it('should show an unknown error when the activation call results in 500', function () {
+        compileView();
+
         expectBackendActivationCallAndRespond(500);
         spyOn($location, 'path');
 
@@ -129,6 +144,8 @@ describe('user activation view', function () {
     });
 
     it('should show an unknown error when the token call results in 500', function () {
+        compileView();
+
         expectBackendActivationCallAndRespond(201);
         expectBackendLoginCallAndRespond(500);
         spyOn($location, 'path');
@@ -142,6 +159,9 @@ describe('user activation view', function () {
     });
 
     it('should show "required" validation errors when the form is submitted without touching the input fields', function () {
+        compileView();
+
+
         activationForm.getSubmitButton().click();
 
         expectValidationError('password', 'required');
@@ -149,6 +169,8 @@ describe('user activation view', function () {
     });
 
     it('should show a validation error if the password is changed to blank', function () {
+        compileView();
+
         activationForm.password.getInputField().val('secret!!!').trigger('input');
         activationForm.password.getInputField().val('').trigger('input');
 
@@ -156,6 +178,8 @@ describe('user activation view', function () {
     });
 
     it('should show a validation error if the repeated password is changed to blank', function () {
+        compileView();
+
         activationForm.repeatedPassword.getInputField().val('secret!!!').trigger('input');
         activationForm.repeatedPassword.getInputField().val('').trigger('input');
 
@@ -163,31 +187,43 @@ describe('user activation view', function () {
     });
 
     it('should show a validation error if the password is too short', function () {
+        compileView();
+
         activationForm.password.getInputField().val('123456').trigger('input');
         expectValidationError('password', 'pattern');
     });
 
     it('should show a validation error if the password has no special characters', function () {
+        compileView();
+
         activationForm.password.getInputField().val('12345678').trigger('input');
         expectValidationError('password', 'pattern');
     });
 
     it('should show a validation error if the password contains whitespaces', function () {
+        compileView();
+
         activationForm.password.getInputField().val('12345 67!').trigger('input');
         expectValidationError('password', 'pattern');
     });
 
     it('should show a validation error if the password contains whitespaces at the beginning', function () {
+        compileView();
+
         activationForm.password.getInputField().val(' 1234567!').trigger('input');
         expectValidationError('password', 'pattern');
     });
 
     it('should show a validation error if the password contains whitespaces at the end', function () {
+        compileView();
+
         activationForm.password.getInputField().val('1234567! ').trigger('input');
         expectValidationError('password', 'pattern');
     });
 
     it('should show a validation error if different passwords are entered once the form is submitted', function () {
+        compileView();
+
         activationForm.password.getInputField().val('secure!!!').trigger('input');
         activationForm.repeatedPassword.getInputField().val('something else').trigger('input');
 
@@ -199,16 +235,35 @@ describe('user activation view', function () {
     });
 
     it('should show an appropriate error message if the server responds with "already_activated"', function () {
+        compileView();
+
         expectBackendActivationCallAndRespond(400, { "errorCode": "already_activated" });
 
         fillAndSubmitForm();
         $httpBackend.flush();
 
         expect(activationForm.getGeneralErrorsContainer()).toExist();
-        expect(activationForm.getGeneralError('remote_already_activated')).toExist();
+        expect(activationForm.getGeneralError('remote_already_activated')).toHaveText('Dein Konto wurde bereits aktiviert. ' +
+            'Du kannst Dich mit Deiner Email-Adresse und Deinem Passwort einloggen.');
+    });
+
+    it('should show an appropriate error message if the server responds with "already_activated"', function () {
+        spyOn($location, 'path').and.returnValue('/login/password-recovery/abc@def.ghi/activation/yzz');
+
+        compileView();
+
+        expectBackendActivationCallAndRespond(400, { "errorCode": "already_activated" });
+
+        fillAndSubmitForm();
+        $httpBackend.flush();
+
+        expect(activationForm.getGeneralErrorsContainer()).toExist();
+        expect(activationForm.getGeneralError('remote_already_activated')).toHaveText('Du hast dein Passwort bereits mit dem Link aus deiner E-Mail neu gesetzt. Du kannst die Passwort vergessen Funktion erneut benutzen, um einen neuen Link zugesendet zu bekommen.');
     });
 
     it('should show an appropriate error message if the server responds with "activation_token_invalid"', function () {
+        compileView();
+
         expectBackendActivationCallAndRespond(400, { "errorCode": "activation_token_invalid" });
 
         fillAndSubmitForm();
@@ -219,6 +274,8 @@ describe('user activation view', function () {
     });
 
     it('should show an appropriate error message if the server responds with 404', function () {
+        compileView();
+
         expectBackendActivationCallAndRespond(404);
 
         fillAndSubmitForm();
@@ -229,6 +286,8 @@ describe('user activation view', function () {
     });
 
     it('should clear the remote_equal validation error once the user starts typing again', function () {
+        compileView();
+
         activationForm.password.getInputField().val('secret!!!').trigger('input');
         activationForm.repeatedPassword.getInputField().val('something else!').trigger('input');
 
@@ -237,5 +296,21 @@ describe('user activation view', function () {
         activationForm.repeatedPassword.getInputField().val('secret!!!').trigger('input');
 
         expectNoValidationError('repeatedPassword');
+    });
+
+    it('should display the right text if the view is used in the registration flow', function () {
+        compileView();
+
+        expect(activationForm.getHeadline()).toHaveText('Registrierung - Letzte Schritte');
+        expect(activationForm.getInformationText()).toHaveText('Bitte vergib ein Passwort, um die Aktivierung Deines Kontos abzuschließen.');
+    });
+
+    it('should display the right text if the view is used in the registration flow', function () {
+        spyOn($location, 'path').and.returnValue('/login/password-recovery/abc@def.ghi/activation/yzz');
+
+        compileView();
+
+        expect(activationForm.getHeadline()).toHaveText('Passwort neu setzen');
+        expect(activationForm.getInformationText()).toHaveText('Bitte vergib jetzt ein neues Passwort.');
     });
 });

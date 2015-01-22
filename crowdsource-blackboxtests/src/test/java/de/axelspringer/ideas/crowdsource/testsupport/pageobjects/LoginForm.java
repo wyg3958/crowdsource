@@ -23,6 +23,9 @@ public class LoginForm {
     @FindBy(css = ".login-form .general-error span")
     private WebElement errorText;
 
+    @FindBy(className = "password-recovery-link")
+    private WebElement passwordRecoveryLink;
+
     @Autowired
     private SeleniumWait wait;
 
@@ -42,5 +45,9 @@ public class LoginForm {
     public String getErrorText(){
         wait.until(visibilityOf(errorText));
         return errorText.getText();
+    }
+
+    public void clickPasswordRecoveryLink() {
+        passwordRecoveryLink.click();
     }
 }

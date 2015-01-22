@@ -1,7 +1,13 @@
 <content-row class="login-form box">
     <form name="login.form" novalidate>
 
-        <h1>Login</h1>
+        <h1>
+            Login
+
+            <small class="right push--top">
+                <a class="password-recovery-link" href="#/login/password-recovery">Passwort vergessen?</a>
+            </small>
+        </h1>
 
         <div class="small-12 columns">
             <div class="general-error alert-box alert" ng-messages="login.generalErrors" ng-if="login.generalErrors">

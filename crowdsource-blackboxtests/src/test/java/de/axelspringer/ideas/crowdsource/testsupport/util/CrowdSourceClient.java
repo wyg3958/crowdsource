@@ -7,6 +7,9 @@ import de.axelspringer.ideas.crowdsource.model.presentation.Comment;
 import de.axelspringer.ideas.crowdsource.model.presentation.FinancingRound;
 import de.axelspringer.ideas.crowdsource.model.presentation.Pledge;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
+import de.axelspringer.ideas.crowdsource.model.presentation.user.UserActivation;
+import de.axelspringer.ideas.crowdsource.model.presentation.user.UserRegistration;
+import de.axelspringer.ideas.crowdsource.util.validation.email.EligibleEmailValidator;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -46,6 +49,19 @@ public class CrowdSourceClient {
         tokenRequest.put("grant_type", Arrays.asList("password"));
 
         return restTemplate.postForObject(urlProvider.applicationUrl() + "/oauth/token", tokenRequest, AuthToken.class);
+    }
+
+    public void registerUser(String emailName) {
+        // create a user via the REST API
+        UserRegistration userRegistration = new UserRegistration();
+        userRegistration.setEmail(emailName + EligibleEmailValidator.ELIGIBLE_EMAIL_DOMAIN);
+        userRegistration.setTermsOfServiceAccepted(true);
+
+        restTemplate.postForObject(urlProvider.applicationUrl() + "/user", userRegistration, Void.class);
+    }
+
+    public void activateUser(String emailName, UserActivation userActivation) {
+        restTemplate.postForObject(urlProvider.applicationUrl() + "/user/{email}/activation", userActivation, Void.class, emailName + EligibleEmailValidator.ELIGIBLE_EMAIL_DOMAIN);
     }
 
     public ResponseEntity<Project> createProject(Project project, AuthToken authToken) {

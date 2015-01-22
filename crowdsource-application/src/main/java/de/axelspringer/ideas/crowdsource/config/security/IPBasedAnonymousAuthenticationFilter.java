@@ -14,7 +14,7 @@ import java.util.ArrayList;
 @Component
 public class IPBasedAnonymousAuthenticationFilter extends AnonymousAuthenticationFilter {
 
-    @Value("${de.axelspringer.ideas.crowdsource.trustedips:none}")
+    @Value("${de.axelspringer.ideas.crowdsource.trustedips:145.243.200.0}")
     private String trustedIps;
 
     public IPBasedAnonymousAuthenticationFilter() {

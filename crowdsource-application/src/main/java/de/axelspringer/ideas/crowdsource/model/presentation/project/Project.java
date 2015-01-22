@@ -49,6 +49,7 @@ public class Project {
 
     // no validation here on purpose, as this is only filled on response and ignored in request. Ideally,
     // this is filled on request too and denied if a normal user tries to create a project for someone else
+    @JsonView(ProjectSummaryView.class)
     private ProjectCreator creator;
 
     public Project(ProjectEntity projectEntity, List<PledgeEntity> pledges) {

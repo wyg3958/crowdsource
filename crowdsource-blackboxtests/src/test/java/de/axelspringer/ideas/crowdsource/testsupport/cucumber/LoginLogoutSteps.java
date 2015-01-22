@@ -119,6 +119,11 @@ public class LoginLogoutSteps {
         projectsPage.waitForPageLoad();
     }
 
+    @Given("^the CROWD link is clicked$")
+    public void the_CROWD_link_is_clicled() throws Throwable {
+        webDriverProvider.provideDriver().findElement(By.className("site-logo")).click();
+    }
+
     @Then("^the error \"([^\"]*)\" is displayed$")
     public void the_error_is_displayed(String errorText) throws Throwable {
         assertThat(loginForm.getErrorText(), is(errorText));

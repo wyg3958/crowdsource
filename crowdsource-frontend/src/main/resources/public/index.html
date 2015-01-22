@@ -28,70 +28,13 @@
 
 <div class="page-wrapper">
 
-    <div class="contain-to-grid">
-        <nav class="top-bar" data-topbar role="navigation" ng-controller="NavigationController as nav">
-            <ul class="title-area">
-                <li class="name">
-                    <h1><a href="#/" class="site-logo">CROWD</a></h1>
-                </li>
-                <li class="toggle-topbar menu-icon"><a><span></span></a></li>
-            </ul>
-
-            <section class="top-bar-section">
-                <ul class="right">
-                    <li ng-class="getClassForMenuItem('/project/new')" class="border new-project"><a href="#/project/new">Neues Projekt</a></li>
-                    <li ng-if="!nav.auth.currentUser.loggedIn" ng-class="getClassForMenuItem('/login')" class="login"><a href="#/login">Login</a></li>
-                    <li ng-if="!nav.auth.currentUser.loggedIn" ng-class="getClassForMenuItem('/signup')" class="register"><a href="#/signup">Registrieren</a></li>
-                    <li ng-if="nav.auth.currentUser.loggedIn" ng-class="getClassForMenuItem('/logout')" class="logout"><a href="#/logout">Logout</a></li>
-                </ul>
-            </section>
-        </nav>
-    </div>
-
-    <div class="teaser--hero">
-        <h1 class="teaser__heading">Deine nächste Innovation</h1>
-
-        <p class="teaser__intro">Noch 30 Tage</p>
-        <a href="#/project/new" class="button  crwd  round  push-dble--top  flush--bottom">Jetzt starten</a>
-    </div>
-
+    <nav-bar></nav-bar>
+    <teaser></teaser>
     <status-bar></status-bar>
 
     <div class="content" ng-view></div>
 
-    <div class="footer" ng-controller="NavigationController as nav">
-        <div class="footer__l-inner">
-            <ul class="footer__ul-heading">
-                <li class="footer__list-item-heading">Axel Springer Crowd</li>
-                <li class="footer__list-item-heading">Hilfe</li>
-                <li class="admin footer__list-item-heading" ng-if="nav.auth.currentUser.hasRole('ADMIN')">Admin</li>
-                <li class="right">Axel Springer SE</li>
-            </ul>
-
-            <div class="divider--solar-light"></div>
-
-            <ul class="footer__ul-content">
-                <li>
-                    <ul class="footer__ul-content-secondary">
-                        <li><a href="#">Login</a></li>
-                        <li>Registrieren</li>
-                        <li>Entdecken</li>
-                    </ul>
-                </li>
-                <li>
-                    <ul class="footer__ul-content-secondary">
-                        <li>Über uns</li>
-                        <li>FAQ</li>
-                    </ul>
-                </li>
-                <li>
-                    <ul class="footer__ul-content-secondary" ng-if="nav.auth.currentUser.hasRole('ADMIN')">
-                        <li class="admin"><a href="#/financingrounds">Finanzierungsrunden</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
+    <footer></footer>
 </div>
 </body>
 </html>

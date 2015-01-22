@@ -1,6 +1,7 @@
 package de.axelspringer.ideas.crowdsource.model.presentation.user;
 
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
+import de.axelspringer.ideas.crowdsource.util.UserHelper;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

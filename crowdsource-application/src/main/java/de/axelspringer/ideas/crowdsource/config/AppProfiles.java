@@ -1,6 +1,6 @@
 package de.axelspringer.ideas.crowdsource.config;
 
-public interface AppProfile {
+public interface AppProfiles {
 
     String NOT = "!";
     String DEV = "dev";

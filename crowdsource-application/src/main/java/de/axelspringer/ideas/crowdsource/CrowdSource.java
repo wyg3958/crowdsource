@@ -41,7 +41,7 @@ public class CrowdSource extends WebMvcConfigurerAdapter {
                 @Override
                 public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
                     final String forwardedHeader = request.getHeader("X-FORWARDED-PROTO");
-                    if (StringUtils.isBlank(forwardedHeader) || !"HTTPS".equals(forwardedHeader)) {
+                    if (StringUtils.isBlank(forwardedHeader) || !"HTTPS".equalsIgnoreCase(forwardedHeader)) {
                         log.warn("redirecting non-https request with header: {}", forwardedHeader);
                         response.sendRedirect("https://crowd.asideas.de");
                         return false;

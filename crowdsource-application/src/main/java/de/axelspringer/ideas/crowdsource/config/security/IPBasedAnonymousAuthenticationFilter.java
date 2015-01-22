@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.crowdsource.config.security;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,10 +28,22 @@ public class IPBasedAnonymousAuthenticationFilter extends AnonymousAuthenticatio
         final ArrayList<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(Roles.ROLE_UNTRUSTED_ANONYMOUS));
 
-        if (ipWhiteListed(request.getRemoteAddr())) {
+        if (ipWhiteListed(request.getRemoteAddr()) || forwardedForTrusted(request)) {
             authorities.add(new SimpleGrantedAuthority(Roles.ROLE_TRUSTED_ANONYMOUS));
         }
         return new AnonymousAuthenticationToken("ANONYMOUS", "ANONYMOUS", authorities);
+    }
+
+    private boolean forwardedForTrusted(HttpServletRequest request) {
+        final String forwardedFor = request.getHeader("X-Forwarded-For");
+        if (!StringUtils.isBlank(forwardedFor)) {
+            for (String forwardedForEntry : forwardedFor.split(",")) {
+                if (ipWhiteListed(forwardedForEntry.trim())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private boolean ipWhiteListed(String remoteAddr) {

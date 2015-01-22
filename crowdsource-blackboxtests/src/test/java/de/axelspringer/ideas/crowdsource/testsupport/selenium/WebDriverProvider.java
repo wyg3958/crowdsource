@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 /**
@@ -96,8 +95,6 @@ public class WebDriverProvider {
         }
 
         DRIVER_INSTANCE.manage().window().setSize(new Dimension(1280, 800));
-        DRIVER_INSTANCE.manage().timeouts().implicitlyWait(5000, TimeUnit.MILLISECONDS);
-        DRIVER_INSTANCE.manage().timeouts().pageLoadTimeout(5000, TimeUnit.MILLISECONDS);
         return DRIVER_INSTANCE;
     }
 

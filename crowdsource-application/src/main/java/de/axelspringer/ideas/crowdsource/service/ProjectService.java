@@ -50,7 +50,7 @@ public class ProjectService {
 
     public List<Project> getProjects() {
 
-        final List<ProjectEntity> projects = projectRepository.findAll();
+        final List<ProjectEntity> projects = projectRepository.findByStatusOrderByCreatedDateDesc(ProjectStatus.PUBLISHED);
         return projects.stream().map(this::project).collect(toList());
     }
 

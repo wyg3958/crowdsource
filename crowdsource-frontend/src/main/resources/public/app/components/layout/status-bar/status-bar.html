@@ -4,10 +4,10 @@
             <span class="sbar__icon--location">CROWD / {{ status.breadcrump }}</span>
         </li>
 
-        <li class="sbar__li--primary">
+        <li class="sbar__li--primary" ng-if="status.financingRound.current.active">
             <ul class="sbar__ul-float">
-                <li><span class="sbar__icon--hourglass">1d 23h 55m 55s</span></li>
-                <li ng-if="status.financingRound.current.active"><span class="sbar__icon--box">Dein Budget &nbsp;</span><span class="sbar__pill">${{ status.auth.currentUser.budget | number }}</span></li>
+                <!-- <li><span class="sbar__icon--hourglass">1d 23h 55m 55s</span></li> -->
+                <li><span class="sbar__icon--box">Dein Budget &nbsp;</span><span class="sbar__pill">${{ status.auth.currentUser.budget | number }}</span></li>
             </ul>
         </li>
     </ul>

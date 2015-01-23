@@ -1,8 +1,14 @@
 <div class="row" ng-show="status.auth.currentUser.loggedIn">
-    <div class="small-6 columns breadcrump">
-        {{ status.breadcrump }}
-    </div>
-    <div class="small-6 columns budget">
-        Budget: <span class="label radius">${{ status.auth.currentUser.budget | number }}</span>
-    </div>
+    <ul class="sbar__ul">
+        <li class="sbar__li--secondary">
+            <span class="sbar__icon--location">CROWD / {{ status.breadcrump }}</span>
+        </li>
+
+        <li class="sbar__li--primary">
+            <ul class="sbar__ul-float">
+                <li><span class="sbar__icon--hourglass">1d 23h 55m 55s</span></li>
+                <li><span class="sbar__icon--box">Dein Budget &nbsp;</span><span class="sbar__pill">${{ status.auth.currentUser.budget | number }}</span></li>
+            </ul>
+        </li>
+    </ul>
 </div>

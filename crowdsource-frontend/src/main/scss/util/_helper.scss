@@ -59,7 +59,6 @@
 
 @mixin css-table-cell($options: ()) {
   $options: map-merge((
-    width:  auto,
     valign: middle
   ), $options);
 

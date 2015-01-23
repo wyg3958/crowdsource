@@ -1,6 +1,6 @@
 describe('teaser metrics service', function () {
 
-    var $rootScope, $scope, $compile, $httpBackend, $interval, Route, TeaserMetrics, onRouteChangeSuccessListener;
+    var $rootScope, $scope, $compile, $httpBackend, $interval, $timeout, Route, TeaserMetrics, onRouteChangeSuccessListener;
 
     beforeEach(function () {
         module('crowdsource.templates');
@@ -17,12 +17,13 @@ describe('teaser metrics service', function () {
             });
         });
 
-        inject(function (_$rootScope_, _$compile_, _$httpBackend_, _$interval_, _Route_, _TeaserMetrics_) {
+        inject(function (_$rootScope_, _$compile_, _$httpBackend_, _$interval_, _$timeout_, _Route_, _TeaserMetrics_) {
             $rootScope = _$rootScope_;
             $scope = $rootScope.$new();
             $compile = _$compile_;
             $httpBackend = _$httpBackend_;
             $interval = _$interval_;
+            $timeout = _$timeout_;
             Route = _Route_;
             TeaserMetrics = _TeaserMetrics_;
 
@@ -100,11 +101,7 @@ describe('teaser metrics service', function () {
 
         expect(teaser.remainingTime.text()).toBe('1d 7h 55m 35s');
 
-        // let the next 'new Date()'-calls to return the frozen time + 1 second
-        jasmine.clock().tick(1000);
-
-        // trigger any $invervals as if 1 second passed
-        $interval.flush('1000');
+        elapseTime(1000);
 
         expect(teaser.remainingTime.text()).toBe('1d 7h 55m 34s');
     });
@@ -182,6 +179,35 @@ describe('teaser metrics service', function () {
         expect(teaser.remainingBudget.text()).toBe('$123');
         expect(teaser.remainingTime.text()).toBe('2d 7h 55m 35s');
     });
+
+    it("should reload the data when the time runs out", function () {
+        expectFinancingRoundBECall().respond(200, financingRound('2015-01-21T15:04:25.003Z'));
+        expectMetricsBECall().respond(200, { remainingBudget: 54321, count: 33 });
+
+        currentRouteWantsTeaser(true);
+        var teaser = renderDirective();
+        $httpBackend.flush();
+
+        expect(teaser.remainingTime.text()).toBe('2s');
+        elapseTime(1000);
+        expect(teaser.remainingTime.text()).toBe('1s');
+        elapseTime(1000);
+        expect(teaser.remainingTime.text()).toBe('Keine aktive Runde');
+
+        expectMetricsBECall().respond(200, { remainingBudget: 54321, count: 33 });
+        expectFinancingRoundBECall().respond(404);
+        $timeout.flush(500);
+        $httpBackend.flush();
+    });
+
+
+    function elapseTime(ms) {
+        // let the next 'new Date()'-calls to return the frozen time + given ms
+        jasmine.clock().tick(ms);
+
+        // trigger any $invervals as if ms number of miliseconds passed
+        $interval.flush(ms);
+    }
 
     function expectMetricsBECall() {
         return $httpBackend.expectGET('/users/metrics');

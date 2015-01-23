@@ -7,6 +7,7 @@ import de.axelspringer.ideas.crowdsource.config.security.SecurityConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
@@ -29,6 +30,9 @@ public class CrowdSource extends WebMvcConfigurerAdapter {
     @Autowired
     private Environment environment;
 
+    @Value("${de.axelspringer.ideas.crowdsource.baseUrl}")
+    private String applicationUrl;
+
     public static void main(String[] args) {
         SpringApplication.run(CrowdSource.class, args);
     }
@@ -43,7 +47,7 @@ public class CrowdSource extends WebMvcConfigurerAdapter {
                     final String forwardedHeader = request.getHeader("X-FORWARDED-PROTO");
                     if (StringUtils.isBlank(forwardedHeader) || !"HTTPS".equalsIgnoreCase(forwardedHeader)) {
                         log.warn("redirecting non-https request with header: {}", forwardedHeader);
-                        response.sendRedirect("https://crowd.asideas.de");
+                        response.sendRedirect(applicationUrl);
                         return false;
                     }
                     return true;

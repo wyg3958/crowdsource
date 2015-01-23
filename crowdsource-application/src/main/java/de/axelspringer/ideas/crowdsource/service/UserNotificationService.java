@@ -24,7 +24,7 @@ public class UserNotificationService {
     public static final String ACTIVATION_LINK_PATTERN = "/signup/{emailAddress}/activation/{activationToken}";
     public static final String PASSWORD_RECOVERY_LINK_PATTERN = "/login/password-recovery/{emailAddress}/activation/{activationToken}";
 
-    @Value("${de.axelspringer.ideas.crowdsource.baseUrl:http://54.194.152.80}")
+    @Value("${de.axelspringer.ideas.crowdsource.baseUrl}")
     private String applicationUrl;
 
     @Autowired

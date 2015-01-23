@@ -11,7 +11,7 @@ public class StatusBar {
     @FindBy(css = "status-bar .row")
     private WebElement statusBar;
 
-    @FindBy(css = "status-bar .budget .label")
+    @FindBy(css = "status-bar .budget .sbar__pill")
     private WebElement budgetLabel;
 
     public boolean isVisible() {

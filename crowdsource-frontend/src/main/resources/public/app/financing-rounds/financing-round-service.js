@@ -4,7 +4,7 @@ angular.module('crowdsource')
 
         var financingRoundResource = $resource('/financinground/:id');
 
-        var stopFinancingRoundRessource = $resource('/financinground/:id/cancel', {}, {
+        var stopFinancingRoundResource = $resource('/financinground/:id/cancel', {}, {
             'update': {
                 method: 'PUT'
             }
@@ -31,7 +31,7 @@ angular.module('crowdsource')
                 return financingRoundResource.save(financingRound).$promise;
             },
             stop: function (financingRound) {
-                return stopFinancingRoundRessource.update({id: financingRound.id}, {}).$promise;
+                return stopFinancingRoundResource.update({id: financingRound.id}, {}).$promise;
             },
             getAll: function () {
                 return financingRoundsResource.query();

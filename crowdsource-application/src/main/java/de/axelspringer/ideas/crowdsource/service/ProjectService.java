@@ -50,7 +50,7 @@ public class ProjectService {
 
     public List<Project> getProjects() {
 
-        final List<ProjectEntity> projects = projectRepository.findByStatusOrderByCreatedDateDesc(ProjectStatus.PUBLISHED);
+        final List<ProjectEntity> projects = projectRepository.findAll();
         return projects.stream().map(this::project).collect(toList());
     }
 
@@ -60,6 +60,16 @@ public class ProjectService {
         projectEntity = projectRepository.save(projectEntity);
 
         log.debug("Project added: {}", projectEntity);
+        return project(projectEntity);
+    }
+
+    public Project updateProject(Project project) {
+
+        ProjectEntity projectEntity = projectRepository.findOne(project.getId());
+        projectEntity.setStatus(project.getStatus());
+        projectEntity = projectRepository.save(projectEntity);
+
+        log.debug("Project updated: {}", projectEntity);
         return project(projectEntity);
     }
 
@@ -110,4 +120,5 @@ public class ProjectService {
         List<PledgeEntity> pledges = pledgeRepository.findByProject(projectEntity);
         return new Project(projectEntity, pledges);
     }
+
 }

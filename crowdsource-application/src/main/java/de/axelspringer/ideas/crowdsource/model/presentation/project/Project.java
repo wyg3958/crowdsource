@@ -17,10 +17,12 @@ import java.util.List;
 public class Project {
 
     // no validation here on purpose, as this is only filled on response and ignored in request.
+    @NotEmpty(groups = {UpdateProject.class})
     @JsonView(ProjectSummaryView.class)
     private String id;
 
     // no validation here on purpose, as this is only filled on response and ignored in request
+    @NotEmpty(groups = {UpdateProject.class})
     @JsonView(ProjectSummaryView.class)
     private ProjectStatus status;
 

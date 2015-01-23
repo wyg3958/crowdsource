@@ -22,11 +22,15 @@
 
                     <div ng-repeat="project in projectAdministration.allProjects | filter: {status: statusName}">
 
-                        <p>Titel: {{project.title}}</p>
+                        <p>Projekttitel: {{project.title}}</p>
+
+                        <p>Ersteller: {{project.creator.name}}</p>
+
+                        <p>Email: {{project.creator.email}}</p>
 
                         <p>Kurzbeschreibung: {{project.shortDescription}}</p>
 
-                        <p>Finanzierungsbedarf: {{project.pledgeGoal}}</p>
+                        <p>Finanzierungsbedarf: {{project.pledgeGoal}} $</p>
 
                         <div ng-if="statusName == 'PROPOSED'">
                             <button class="stop-button alert flush--bottom"

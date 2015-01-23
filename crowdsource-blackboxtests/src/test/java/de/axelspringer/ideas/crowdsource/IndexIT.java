@@ -38,6 +38,6 @@ public class IndexIT {
     public void testIndexPage() {
 
         webDriver.get(urlProvider.applicationUrl() + "/index.html");
-        assertEquals("AS CrowdSource", webDriver.getTitle());
+        assertEquals("AS CrowdSource - Projekte", webDriver.getTitle());
     }
 }

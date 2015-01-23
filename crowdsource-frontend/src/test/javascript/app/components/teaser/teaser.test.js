@@ -1,14 +1,15 @@
 describe('teaser metrics service', function () {
 
-    var $rootScope, $scope, $httpBackend, $interval, TeaserMetrics, teaser;
+    var $rootScope, $scope, $compile, $httpBackend, $interval, TeaserMetrics;
 
     beforeEach(function () {
         module('crowdsource');
         module('crowdsource.templates');
 
-        inject(function (_$rootScope_, $compile, _$httpBackend_, _$interval_, _TeaserMetrics_) {
+        inject(function (_$rootScope_, _$compile_, _$httpBackend_, _$interval_, _TeaserMetrics_) {
             $rootScope = _$rootScope_;
             $scope = $rootScope.$new();
+            $compile = _$compile_;
             $httpBackend = _$httpBackend_;
             $interval = _$interval_;
             TeaserMetrics = _TeaserMetrics_;
@@ -17,22 +18,29 @@ describe('teaser metrics service', function () {
             jasmine.clock().mockDate(new Date('2015-01-21T15:04:23.003Z'));
             jasmine.clock().install();
 
-            var root = $compile('<teaser></teaser>')($scope);
-            $scope.$digest();
-
-            teaser = {
-                root: root,
-                container: root.find('> div'),
-                remainingBudgetItem: root.find('.remaining-budget'),
-                remainingBudget: root.find('.remaining-budget .metrics__heading'),
-                remainingTime: root.find('.remaining-time .metrics__heading'),
-                remainingTimeLabel: root.find('.remaining-time .metrics__subhead'),
-                userCount: root.find('.user-count .metrics__heading')
-            }
+            // the FinancingRound service gets the active service on creation
+            $httpBackend.expectGET('/financinground/active').respond(404);
         });
     });
 
+    function renderDirective() {
+        var root = $compile('<teaser></teaser>')($scope);
+        $scope.$digest();
+
+        return {
+            root: root,
+            container: root.find('> div'),
+            remainingBudgetItem: root.find('.remaining-budget'),
+            remainingBudget: root.find('.remaining-budget .metrics__heading'),
+            remainingTime: root.find('.remaining-time .metrics__heading'),
+            remainingTimeLabel: root.find('.remaining-time .metrics__subhead'),
+            userCount: root.find('.user-count .metrics__heading')
+        }
+    }
+
     it("should show a slim teaser if the new route is configured to show no teaser", function () {
+        var teaser = renderDirective();
+
         changeRouteWithTeaserWanted(false);
 
         expect(teaser.container).toHaveClass('teaser--slim');
@@ -41,6 +49,8 @@ describe('teaser metrics service', function () {
     it("should show the metrics retrieved from the backend", function () {
         expectMetricsBECall().respond(200, { remainingBudget: 54321, count: 33 });
         expectFinancingRoundBECall().respond(200, financingRound('2015-01-22T22:59:59.000Z'));
+
+        var teaser = renderDirective();
 
         changeRouteWithTeaserWanted(true);
 
@@ -63,6 +73,7 @@ describe('teaser metrics service', function () {
         expectMetricsBECall().respond(200, { remainingBudget: 54321, count: 33 });
         expectFinancingRoundBECall().respond(200, financingRound('2015-01-22T22:59:59.000Z'));
 
+        var teaser = renderDirective();
         changeRouteWithTeaserWanted(true);
         $httpBackend.flush();
 
@@ -81,6 +92,7 @@ describe('teaser metrics service', function () {
         expectMetricsBECall().respond(200, { remainingBudget: 54321, count: 33 });
         expectFinancingRoundBECall().respond(404);
 
+        var teaser = renderDirective();
         changeRouteWithTeaserWanted(true);
         $httpBackend.flush();
 
@@ -94,6 +106,8 @@ describe('teaser metrics service', function () {
     it("should update the metrics when the route changes", function () {
         expectMetricsBECall().respond(200, { remainingBudget: 54321, count: 33 });
         expectFinancingRoundBECall().respond(200, financingRound('2015-01-22T22:59:59.000Z'));
+
+        var teaser = renderDirective();
         changeRouteWithTeaserWanted(true);
         $httpBackend.flush();
 

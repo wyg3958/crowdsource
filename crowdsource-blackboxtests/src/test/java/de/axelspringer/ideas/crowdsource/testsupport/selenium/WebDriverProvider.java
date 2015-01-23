@@ -24,6 +24,9 @@ import java.util.logging.Level;
 @Service
 public class WebDriverProvider {
 
+    public static final int DESKTOP_WIDTH = 1280;
+    public static final int MOBILE_WIDTH = 400;
+
     private final static Logger LOG = LoggerFactory.getLogger(WebDriverProvider.class);
 
     private static RemoteWebDriver DRIVER_INSTANCE;
@@ -94,7 +97,7 @@ public class WebDriverProvider {
             DRIVER_INSTANCE = new FirefoxDriver(capabilities);
         }
 
-        DRIVER_INSTANCE.manage().window().setSize(new Dimension(1280, 800));
+        DRIVER_INSTANCE.manage().window().setSize(new Dimension(DESKTOP_WIDTH, 800));
         return DRIVER_INSTANCE;
     }
 

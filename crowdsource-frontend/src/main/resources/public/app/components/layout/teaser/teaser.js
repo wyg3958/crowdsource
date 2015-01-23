@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .directive('teaser', function ($interval, Route, TeaserMetrics, User, FinancingRound) {
+    .directive('teaser', function ($interval, $timeout, Route, TeaserMetrics, User, FinancingRound) {
         var directive = {};
 
         directive.controllerAs = 'teaser';
@@ -60,6 +60,14 @@ angular.module('crowdsource')
                 }
 
                 vm.remainingTime = TeaserMetrics.formatRemainingTime(FinancingRound.current.endDate);
+
+                // financing round time is now over
+                if (FinancingRound.current.active && !vm.remainingTime) {
+                    // reload the data 500ms later (because the time of the browser could be out of sync with the server time)
+                    $timeout(function() {
+                        loadData(false);
+                    }, 500);
+                }
             }
         };
 

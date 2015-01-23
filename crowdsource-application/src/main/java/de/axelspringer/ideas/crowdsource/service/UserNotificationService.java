@@ -17,14 +17,14 @@ public class UserNotificationService {
     public static final String ACTIVATION_MAIL_CONTENT = "Activation link: ";
     public static final String PASSWORD_RECOVERY_MAIL_CONTENT = "Password recovery link: ";
 
-    public static final String FROM_ADDRESS = "ascrowdsource@gmail.com";
+    public static final String FROM_ADDRESS = "noreply@crowd.asideas.de";
     public static final String REGISTRATION_SUBJECT = "CrowdSource Registrierung";
     public static final String PASSWORD_RECOVERY_SUBJECT = "CrowdSource Passwort Vergessen";
 
     public static final String ACTIVATION_LINK_PATTERN = "/signup/{emailAddress}/activation/{activationToken}";
     public static final String PASSWORD_RECOVERY_LINK_PATTERN = "/login/password-recovery/{emailAddress}/activation/{activationToken}";
 
-    @Value("${de.axelspringer.ideas.crowdsource.baseUrl:http://54.194.152.80}")
+    @Value("${de.axelspringer.ideas.crowdsource.baseUrl}")
     private String applicationUrl;
 
     @Autowired

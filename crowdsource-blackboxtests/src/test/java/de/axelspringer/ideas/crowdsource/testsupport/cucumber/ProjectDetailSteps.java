@@ -5,6 +5,7 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import de.axelspringer.ideas.crowdsource.model.presentation.Pledge;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.ProjectDetailPage;
@@ -27,6 +28,7 @@ import static org.hamcrest.Matchers.is;
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
 public class ProjectDetailSteps {
 
+    public static final int PLEDGED_AMOUNT = 10;
     @Autowired
     private ProjectsPage projectsPage;
 
@@ -69,6 +71,26 @@ public class ProjectDetailSteps {
         createdProject = crowdSourceClient.createProject(createdProject, authToken).getBody();
     }
 
+    @And("^a published and partially pledged project is available$")
+    public void a_published_and_partially_pledged_project_is_available() throws Throwable {
+        a_published_project_is_available(25);
+
+        CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithDefaultUser();
+
+        Pledge pledge = new Pledge(PLEDGED_AMOUNT);
+        crowdSourceClient.pledgeProject(createdProject, pledge, authToken);
+    }
+
+    @And("^a published and fully pledged project is available$")
+    public void a_published_and_fully_pledged_project_is_available() throws Throwable {
+        a_published_project_is_available(PLEDGED_AMOUNT);
+
+        CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithDefaultUser();
+
+        Pledge pledge = new Pledge(PLEDGED_AMOUNT);
+        crowdSourceClient.pledgeProject(createdProject, pledge, authToken);
+    }
+
     @When("^the user clicks on the tile of this published project$")
     public void the_user_clicks_on_the_tile_of_this_published_project() throws Throwable {
         PageFactory.initElements(webDriver, projectsPage);
@@ -90,6 +112,22 @@ public class ProjectDetailSteps {
         assertThat(projectStatusWidget.getPledgeGoal(), is("$25"));
         assertThat(projectStatusWidget.getBackers(), is("0"));
         assertThat(projectStatusWidget.getUserName(), is("Crowdsource"));
+    }
+
+    @Then("^the pledged amount is displayed$")
+    public void the_pledged_amount_is_displayed() throws Throwable {
+        projectDetailPage.waitForDetailsToBeLoaded();
+
+        ProjectStatusWidget projectStatusWidget = projectDetailPage.getProjectStatusWidget();
+        assertThat(projectStatusWidget.getPledgedAmount(), is("$" + PLEDGED_AMOUNT));
+    }
+
+    @Then("^the pledged amount is zero$")
+    public void the_pledged_amount_is_zero() throws Throwable {
+        projectDetailPage.waitForDetailsToBeLoaded();
+
+        ProjectStatusWidget projectStatusWidget = projectDetailPage.getProjectStatusWidget();
+        assertThat(projectStatusWidget.getPledgedAmount(), is("$0"));
     }
 
     @Given("^the user requests the project detail page with a non existant project id$")

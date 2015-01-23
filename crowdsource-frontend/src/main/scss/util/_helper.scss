@@ -73,6 +73,11 @@
 // Text-Helpers
 // ---
 
+%font-smoothing {
+    -webkit-font-smoothing: antialiased;
+}
+
+
 .text--strong {
   font-weight: $fw-bold;
 }

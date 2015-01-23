@@ -1,7 +1,47 @@
-<content-row class="intro-section">
-    <h1>Axel Springer Crowd</h1>
+<content-row class="project-list">
 
-    <p>Die Axel Springer Crowd ist die Crowdfunding Plattform der AS IT. Hier kannst Du innovative Ideen pitchen und in die Tat umsetzen.</p>
+    <h2 class="plist__heading">Neue Crowd Projekte</h2>
+    <p class="plist__intro--has-divider">Erfahre mehr über unseren aktuellen Crowd Projekte und stimme mit ab!</p>
+
+
+    <ul data-equalizer>
+        <li ng-repeat="project in projectList.projects" foundation-reflow="equalizer">
+            <div class="project-tile" data-equalizer-watch ng-click="projectList.showProjectDetails(project)">
+
+                <!-- when using ellipsis directive, the value must come from ng-bind -->
+                <h1 ellipsis ng-bind="project.title"></h1>
+
+                <p ellipsis ng-bind="project.shortDescription"></p>
+
+                <div class="metrics">
+                    <progress-bar value="project.pledgedAmount" maximum="project.pledgeGoal"></progress-bar>
+
+                    <div class="metrics-numbers">
+                        <span class="plist__pill backers-count">{{ project.backers }}</span>
+                        <span class="backers-text">Förderer</span>
+
+                        <span class="plist__pill pledged-amount">${{ project.pledgedAmount | number }}</span> Finanzierung
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+
+    <div class="no-projects text-center" ng-show="projectList.projects.$resolved && projectList.projects.length == 0">
+        <p>Oops. Noch sind keine Projekte eingestellt. Erstelle das erste Projekt!</p>
+
+        <div class="divider"></div>
+
+        <a class="button success" href="#/project/new">Jetzt neues Crowd Projekt starten</a>
+    </div>
+
+</content-row>
+
+
+<content-row class="intro-section">
+    <h2 class="plist__heading--secondary">Axel Springer Crowd</h1>
+
+    <p class="plist__intro--has-divider">Die Axel Springer Crowd ist die Crowdfunding Plattform der AS IT. Hier kannst du deine – oder andere – innovativen Ideen pitchen und in die Tat umsetzen.</p>
 
     <ul class="info-boxes" data-equalizer>
         <li>
@@ -33,42 +73,6 @@
         </li>
     </ul>
 
-    <p>Hast Du noch Fragen? Dann überfliege unseren FAQ.<br/>Registriere Dich, melde Dich an, und leg los!</p>
-
-</content-row>
-
-<content-row class="project-list">
-    <h2 class="text-center">Die neusten Projekte</h2>
-
-    <ul data-equalizer>
-        <li ng-repeat="project in projectList.projects" foundation-reflow="equalizer">
-            <div class="project-tile" data-equalizer-watch ng-click="projectList.showProjectDetails(project)">
-
-                <!-- when using ellipsis directive, the value must come from ng-bind -->
-                <h1 ellipsis ng-bind="project.title"></h1>
-
-                <p ellipsis ng-bind="project.shortDescription"></p>
-
-                <div class="metrics">
-                    <progress-bar value="project.pledgedAmount" maximum="project.pledgeGoal"></progress-bar>
-
-                    <div class="metrics-numbers">
-                        <span class="label radius backers-count">{{ project.backers }}</span>
-                        <span class="backers-text">Förderer</span>
-
-                        <span class="label radius pledged-amount">${{ project.pledgedAmount | number }}</span> Finanzierung
-                    </div>
-                </div>
-            </div>
-        </li>
-    </ul>
-
-    <div class="no-projects text-center" ng-show="projectList.projects.$resolved && projectList.projects.length == 0">
-        <p>Oops. Noch sind keine Projekte eingestellt. Erstelle das erste Projekt!</p>
-
-        <div class="divider"></div>
-
-        <a class="button success" href="#/project/new">Jetzt neues Crowd Projekt starten</a>
-    </div>
+    <p class="plist__intro--has-divider">Hast Du noch Fragen? Dann überfliege unseren FAQ.<br><a href="#/signup">Registriere</a> Dich, <a href="#/login">melde</a> Dich an, und <a href="#/project/new">leg los!</a></p>
 
 </content-row>

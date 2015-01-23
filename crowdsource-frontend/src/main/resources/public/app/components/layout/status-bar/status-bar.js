@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .directive('statusBar', function($rootScope, $window, Authentication, FinancingRound) {
+    .directive('statusBar', function($rootScope, $window, Route, Authentication, FinancingRound) {
         return {
             controllerAs: 'status',
             bindToController: true,
@@ -8,14 +8,18 @@ angular.module('crowdsource')
             controller: function() {
                 var vm = this;
 
-                $rootScope.$on('$routeChangeSuccess', function (event, current) {
-                    vm.breadcrump = current.title;
-                    $window.document.title = "AS CrowdSource - " + current.title;
-                });
-
                 vm.auth = Authentication;
 
                 vm.financingRound = FinancingRound;
+
+                Route.onRouteChangeSuccessAndInit(function (event, current) {
+                    updateView(current);
+                });
+
+                function updateView (currentRoute) {
+                    vm.breadcrump = currentRoute.title;
+                    $window.document.title = "AS CrowdSource - " + currentRoute.title;
+                }
             }
         };
     });

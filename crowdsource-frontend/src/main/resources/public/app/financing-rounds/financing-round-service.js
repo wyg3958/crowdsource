@@ -45,9 +45,13 @@ angular.module('crowdsource')
         };
 
         service.reloadCurrentRound = function () {
-            return getCurrent().then(function(currentRound) {
+            var promise = getCurrent();
+            service.current.$promise = promise;
+
+            promise.then(function(currentRound) {
                 service.current = currentRound;
             });
+            return promise;
         };
 
         function getCurrent () {

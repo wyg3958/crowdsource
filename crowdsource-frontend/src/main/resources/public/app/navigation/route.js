@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .factory('Route', function($rootScope, $location, Authentication) {
+    .factory('Route', function($rootScope, $injector, $location, Authentication) {
         var service = {};
 
         var pathBeforeRedirectToLogin;
@@ -32,6 +32,40 @@ angular.module('crowdsource')
             }
 
             pathBeforeRedirectToLogin = undefined;
+        };
+
+        /**
+         * The difference to listening to $routeChangeSuccess is that the callback
+         * is directly called for the current route too. This is useful when registering
+         * a callback on page load. Sometimes the element is initialized after the route
+         * change event fires, leading to a missed event. In case the element is initialized
+         * before the event fired, then the callback is not called again.
+         */
+        service.onRouteChangeSuccessAndInit = function(callback) {
+            callback({}, service.getCurrentRoute());
+
+            service.onRouteChangeSuccess(function (event, current, previous) {
+                // On page load, a route change is fired with no previous route.
+                // As callback is already called first, do not do it twice
+                if (previous) {
+                    callback.apply($rootScope, arguments);
+                }
+            });
+        };
+
+        // just a proxy for easier mocking
+        service.onRouteChangeSuccess = function(callback) {
+            $rootScope.$on('$routeChangeSuccess', function () {
+                callback.apply($rootScope, arguments);
+            });
+        };
+
+        // just a proxy for easier mocking. changing the $route.current in a test leads to a route being changed
+        service.getCurrentRoute = function() {
+            // adding $route as a dependency of the factory leads to curious karma tests issues,
+            // get the dependency on demand
+            var $route = $injector.get('$route');
+            return $route.current;
         };
 
         return service;

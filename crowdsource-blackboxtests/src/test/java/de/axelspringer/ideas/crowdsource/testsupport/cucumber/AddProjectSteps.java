@@ -1,6 +1,5 @@
 package de.axelspringer.ideas.crowdsource.testsupport.cucumber;
 
-import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -12,7 +11,6 @@ import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.Project
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.hamcrest.Matchers;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -43,32 +41,24 @@ public class AddProjectSteps {
     private ProjectsPage projectsPage;
 
 
-    private WebDriver webDriver;
-
     private String randomProjectTitlePrefix;
     private String randomProjectShortDescriptionPrefix;
 
-    @Before
-    public void init() {
-        webDriver = webDriverProvider.provideDriver();
-    }
-
-
     @When("^he clicks on the New Project link in the navigation bar$")
     public void he_clicks_on_the_New_Project_link_in_the_navigation_bar() throws Throwable {
-        PageFactory.initElements(webDriver, navigationBar);
+        PageFactory.initElements(webDriverProvider.provideDriver(), navigationBar);
         navigationBar.clickNewProject();
     }
 
     @Then("^he is redirected to the project creation page$")
     public void he_is_redirected_to_the_project_creation_page() throws Throwable {
-        PageFactory.initElements(webDriver, addProjectForm);
+        PageFactory.initElements(webDriverProvider.provideDriver(), addProjectForm);
         addProjectForm.waitForPageLoad();
     }
 
     @When("^he submits the form with valid project data$")
     public void he_submits_the_form_with_valid_project_data() throws Throwable {
-        PageFactory.initElements(webDriver, addProjectForm);
+        PageFactory.initElements(webDriverProvider.provideDriver(), addProjectForm);
 
         randomProjectTitlePrefix = "Title " + RandomStringUtils.randomAlphanumeric(16);
         randomProjectShortDescriptionPrefix = "Short description " + RandomStringUtils.randomAlphanumeric(16);
@@ -87,19 +77,19 @@ public class AddProjectSteps {
 
     @Then("^the project creation success page is shown$")
     public void the_project_creation_success_page_is_shown() throws Throwable {
-        PageFactory.initElements(webDriver, addProjectConfirmationView);
+        PageFactory.initElements(webDriverProvider.provideDriver(), addProjectConfirmationView);
         addProjectConfirmationView.waitForPageLoad();
     }
 
     @When("^he clicks the project overview link$")
     public void he_clicks_the_project_overview_link() throws Throwable {
-        PageFactory.initElements(webDriver, addProjectConfirmationView);
+        PageFactory.initElements(webDriverProvider.provideDriver(), addProjectConfirmationView);
         addProjectConfirmationView.clickLinkToProject();
     }
 
     @Then("^the project overview page shows the new project$")
     public void the_project_overview_page_shows_the_new_project() throws Throwable {
-        PageFactory.initElements(webDriver, projectsPage);
+        PageFactory.initElements(webDriverProvider.provideDriver(), projectsPage);
         projectsPage.waitForPageLoad();
 
         List<Project> projects = projectsPage.getProjects();

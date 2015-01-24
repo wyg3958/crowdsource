@@ -68,37 +68,42 @@ public class WebDriverProvider {
      */
     public RemoteWebDriver provideDriver() {
 
-        if (DRIVER_INSTANCE != null) {
-            return DRIVER_INSTANCE;
-        }
+        if (DRIVER_INSTANCE == null) {
+            if (new File(phantomBinaryPath).exists()) {
+                LOG.info("providing phantomjs driver");
 
-        if (new File(phantomBinaryPath).exists()) {
-            LOG.info("providing phantomjs driver");
+                DesiredCapabilities capabilities = DesiredCapabilities.phantomjs();
+                capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, phantomBinaryPath);
+                enableLogging(capabilities);
 
-            DesiredCapabilities capabilities = DesiredCapabilities.phantomjs();
-            capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, phantomBinaryPath);
-            enableLogging(capabilities);
+                DRIVER_INSTANCE = new PhantomJSDriver(capabilities);
+            } else if (new File(chromeBinaryPath).exists()) {
+                LOG.info("providing chromedriver");
+                System.setProperty("webdriver.chrome.driver", chromeBinaryPath);
 
-            DRIVER_INSTANCE = new PhantomJSDriver(capabilities);
-        } else if (new File(chromeBinaryPath).exists()) {
-            LOG.info("providing chromedriver");
-            System.setProperty("webdriver.chrome.driver", chromeBinaryPath);
+                DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+                enableLogging(capabilities);
 
-            DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-            enableLogging(capabilities);
+                DRIVER_INSTANCE = new ChromeDriver(capabilities);
+            } else {
+                LOG.info("providing firefox driver as phantomjs-binary was not specified or does not resolve in file system.");
 
-            DRIVER_INSTANCE = new ChromeDriver(capabilities);
-        } else {
-            LOG.info("providing firefox driver as phantomjs-binary was not specified or does not resolve in file system.");
+                DesiredCapabilities capabilities = DesiredCapabilities.firefox();
+                enableLogging(capabilities);
 
-            DesiredCapabilities capabilities = DesiredCapabilities.firefox();
-            enableLogging(capabilities);
-
-            DRIVER_INSTANCE = new FirefoxDriver(capabilities);
+                DRIVER_INSTANCE = new FirefoxDriver(capabilities);
+            }
         }
 
         DRIVER_INSTANCE.manage().window().setSize(new Dimension(DESKTOP_WIDTH, 800));
         return DRIVER_INSTANCE;
+    }
+
+    public RemoteWebDriver provideMobileDriver() {
+
+        RemoteWebDriver driver = provideDriver();
+        driver.manage().window().setSize(new Dimension(WebDriverProvider.MOBILE_WIDTH, 800));
+        return driver;
     }
 
     private void enableLogging(DesiredCapabilities capabilities) {

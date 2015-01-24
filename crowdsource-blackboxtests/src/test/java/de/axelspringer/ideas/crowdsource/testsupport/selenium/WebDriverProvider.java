@@ -24,7 +24,7 @@ import java.util.logging.Level;
 @Service
 public class WebDriverProvider {
 
-    public static final int DESKTOP_WIDTH = 1280;
+    public static final int DESKTOP_WIDTH = 1680;
     public static final int MOBILE_WIDTH = 400;
 
     private final static Logger LOG = LoggerFactory.getLogger(WebDriverProvider.class);

@@ -42,6 +42,7 @@ public class AddProjectSteps {
 
 
     private String randomProjectTitlePrefix;
+
     private String randomProjectShortDescriptionPrefix;
 
     @When("^he clicks on the New Project link in the navigation bar$")
@@ -60,7 +61,7 @@ public class AddProjectSteps {
     public void he_submits_the_form_with_valid_project_data() throws Throwable {
         PageFactory.initElements(webDriverProvider.provideDriver(), addProjectForm);
 
-        randomProjectTitlePrefix = "Title " + RandomStringUtils.randomAlphanumeric(16);
+        randomProjectTitlePrefix = "Title" + RandomStringUtils.randomAlphanumeric(4);
         randomProjectShortDescriptionPrefix = "Short description " + RandomStringUtils.randomAlphanumeric(16);
 
         // makes exactly 60 characters, to cause the text to be abbreviated on purpose

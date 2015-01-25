@@ -10,18 +10,12 @@ import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.AddProj
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.AddProjectForm;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.ProjectsPage;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
+import de.axelspringer.ideas.crowdsource.testsupport.util.CrowdSourceClient;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.hamcrest.Matchers;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -41,6 +35,9 @@ public class AddProjectSteps {
 
     @Autowired
     private ProjectsPage projectsPage;
+
+    @Autowired
+    private CrowdSourceClient crowdSourceClient;
 
 
     private WebDriver webDriver;
@@ -102,11 +99,20 @@ public class AddProjectSteps {
         PageFactory.initElements(webDriver, projectsPage);
         projectsPage.waitForPageLoad();
 
-        List<Project> projects = projectsPage.getProjects();
-        assertThat(projects, hasItem(Matchers.<Project>hasProperty("title", startsWith(randomProjectTitlePrefix))));
-        assertThat(projects, hasItem(Matchers.<Project>hasProperty("title", endsWith("\u2026")))); // u2026 is the ellipsis unicode character '...'
-        assertThat(projects, hasItem(Matchers.<Project>hasProperty("shortDescription", startsWith(randomProjectShortDescriptionPrefix))));
-        assertThat(projects, hasItem(Matchers.<Project>hasProperty("shortDescription", endsWith("\u2026"))));
+        assertTrue(projectVisible());
+    }
+
+    private boolean projectVisible() {
+
+        for (Project project : projectsPage.getProjects()) {
+            if (project.getTitle().startsWith(randomProjectTitlePrefix)
+                    && project.getTitle().endsWith("\u2026")
+                    && project.getShortDescription().startsWith(randomProjectShortDescriptionPrefix)
+                    && project.getShortDescription().endsWith("…")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @And("^the tooltip for currency conversion is not visible$")
@@ -122,5 +128,24 @@ public class AddProjectSteps {
     @Then("^the tooltip for currency conversion is visible$")
     public void the_tooltip_for_currency_conversion_is_visible() throws Throwable {
         assertTrue(addProjectForm.currencyConversionTooltipVisible());
+    }
+
+    @Then("^the project overview page does not show the new project$")
+    public void the_project_overview_page_does_not_show_the_new_project() throws Throwable {
+        PageFactory.initElements(webDriver, projectsPage);
+        projectsPage.waitForPageLoad();
+
+        assertFalse(projectVisible());
+    }
+
+    @When("^an admin publishs the project$")
+    public void an_admin_publishs_the_project() throws Throwable {
+
+        final CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithAdminUser();
+        crowdSourceClient.listProjects(authToken).forEach(project -> {
+            if (project.getTitle().startsWith(randomProjectTitlePrefix)) {
+                crowdSourceClient.publish(project, authToken);
+            }
+        });
     }
 }

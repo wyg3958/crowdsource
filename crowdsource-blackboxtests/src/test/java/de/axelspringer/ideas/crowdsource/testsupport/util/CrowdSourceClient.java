@@ -25,6 +25,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -110,6 +111,13 @@ public class CrowdSourceClient {
         return new HttpEntity<>(body, headers);
     }
 
+    private HttpEntity createRequestEntity(AuthToken authToken) {
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        headers.put("Authorization", Arrays.asList("Bearer " + authToken.accessToken));
+
+        return new HttpEntity<>(headers);
+    }
+
     public RestTemplate getUnderlyingClient() {
         return restTemplate;
     }
@@ -118,7 +126,14 @@ public class CrowdSourceClient {
 
         createdProject.setStatus(ProjectStatus.PUBLISHED);
         final ResponseEntity<Project> exchange = restTemplate.exchange(urlProvider.applicationUrl() + "/project/" + createdProject.getId(), HttpMethod.PATCH, createRequestEntity(createdProject, adminToken), Project.class);
-        assertEquals(exchange.getStatusCode(), HttpStatus.OK);
+        assertEquals(HttpStatus.OK, exchange.getStatusCode());
+    }
+
+    public List<Project> listProjects(AuthToken authToken) {
+
+        ResponseEntity<Project[]> responseEntity = restTemplate.exchange(urlProvider.applicationUrl() + "/projects", HttpMethod.GET, createRequestEntity(authToken), Project[].class);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        return Arrays.asList(responseEntity.getBody());
     }
 
     @Data

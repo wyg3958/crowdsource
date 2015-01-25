@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.axelspringer.ideas.crowdsource.controller.ControllerExceptionAdvice;
 import de.axelspringer.ideas.crowdsource.controller.UserController;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
+import de.axelspringer.ideas.crowdsource.repository.FinancingRoundRepository;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import de.axelspringer.ideas.crowdsource.service.UserNotificationService;
 import de.axelspringer.ideas.crowdsource.service.UserService;
@@ -50,6 +51,9 @@ public abstract class AbstractUserControllerTest {
     @Autowired
     protected UserNotificationService userNotificationService;
 
+    @Autowired
+    protected FinancingRoundRepository financingRoundRepository;
+
     @Resource
     protected WebApplicationContext webApplicationContext;
 
@@ -65,6 +69,7 @@ public abstract class AbstractUserControllerTest {
 
         reset(userNotificationService);
         reset(userRepository);
+        reset(financingRoundRepository);
 
         when(userRepository.findByEmail(eq(NEW_USER_MAIL_ADDRESS))).thenReturn(null);
 
@@ -76,6 +81,7 @@ public abstract class AbstractUserControllerTest {
         activatedUser = new UserEntity(ACTIVATED_USER_MAIL_ADDRESS);
         activatedUser.setActivated(true);
         activatedUser.setActivationToken("");
+        activatedUser.setBudget(500);
         when(userRepository.findByEmail(eq(ACTIVATED_USER_MAIL_ADDRESS))).thenReturn(activatedUser);
 
         reset(passwordEncoder);
@@ -99,6 +105,11 @@ public abstract class AbstractUserControllerTest {
         @Bean
         public UserNotificationService userActivationService() {
             return mock(UserNotificationService.class);
+        }
+
+        @Bean
+        public FinancingRoundRepository financingRoundRepository() {
+            return mock(FinancingRoundRepository.class);
         }
 
         @Bean

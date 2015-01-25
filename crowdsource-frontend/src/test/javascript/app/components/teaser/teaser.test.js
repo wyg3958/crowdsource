@@ -49,7 +49,6 @@ describe('teaser metrics service', function () {
     }
 
     it("should show a slim teaser if the new route is configured to show no teaser", function () {
-        expectFinancingRoundBECall().respond(404);
         currentRouteWantsTeaser(false);
 
         var teaser = renderDirective();
@@ -57,8 +56,8 @@ describe('teaser metrics service', function () {
     });
 
     it("should show the metrics retrieved from the backend", function () {
-        expectFinancingRoundBECall().respond(200, financingRound('2015-01-22T22:59:59.000Z'));
         expectMetricsBECall().respond(200, { remainingBudget: 54321, count: 33 });
+        expectFinancingRoundBECall().respond(200, financingRound('2015-01-22T22:59:59.000Z'));
 
         currentRouteWantsTeaser(true);
         var teaser = renderDirective();
@@ -79,8 +78,8 @@ describe('teaser metrics service', function () {
     });
 
     it("should only render the directive once if the directive is initialized before the $routeChangeStart event fired", function () {
-        expectFinancingRoundBECall().respond(200, financingRound('2015-01-23T22:59:59.000Z'));
         expectMetricsBECall().respond(200, { remainingBudget: 123, count: 33 });
+        expectFinancingRoundBECall().respond(200, financingRound('2015-01-23T22:59:59.000Z'));
 
         currentRouteWantsTeaser(true);
         var teaser = renderDirective();
@@ -92,8 +91,8 @@ describe('teaser metrics service', function () {
     });
 
     it("should show count down the remaining time", function () {
-        expectFinancingRoundBECall().respond(200, financingRound('2015-01-22T22:59:59.000Z'));
         expectMetricsBECall().respond(200, { remainingBudget: 54321, count: 33 });
+        expectFinancingRoundBECall().respond(200, financingRound('2015-01-22T22:59:59.000Z'));
 
         currentRouteWantsTeaser(true);
         var teaser = renderDirective();
@@ -107,8 +106,8 @@ describe('teaser metrics service', function () {
     });
 
     it("should show a different information if no financing round is currently active", function () {
-        expectFinancingRoundBECall().respond(404);
         expectMetricsBECall().respond(200, { remainingBudget: 54321, count: 33 });
+        expectFinancingRoundBECall().respond(404);
 
         currentRouteWantsTeaser(true);
         var teaser = renderDirective();
@@ -122,8 +121,6 @@ describe('teaser metrics service', function () {
     });
 
     it("should show the teaser when the route changes and the next routes wants a teaser to be shown", function () {
-        expectFinancingRoundBECall().respond(404); // FinancingRound service produces the call
-
         currentRouteWantsTeaser(false);
         var teaser = renderDirective();
 
@@ -139,8 +136,8 @@ describe('teaser metrics service', function () {
     });
 
     it("should hide the teaser when the route changes and the next routes wants a teaser to be hidden", function () {
-        expectFinancingRoundBECall().respond(200, financingRound('2015-01-23T22:59:59.000Z'));
         expectMetricsBECall().respond(200, { remainingBudget: 123, count: 33 });
+        expectFinancingRoundBECall().respond(200, financingRound('2015-01-23T22:59:59.000Z'));
 
         currentRouteWantsTeaser(true);
         var teaser = renderDirective();
@@ -154,8 +151,8 @@ describe('teaser metrics service', function () {
     });
 
     it("should update the metrics when the route changes back and forth", function () {
-        expectFinancingRoundBECall().respond(200, financingRound('2015-01-22T22:59:59.000Z'));
         expectMetricsBECall().respond(200, { remainingBudget: 54321, count: 33 });
+        expectFinancingRoundBECall().respond(200, financingRound('2015-01-22T22:59:59.000Z'));
 
         currentRouteWantsTeaser(true);
         var teaser = renderDirective();
@@ -181,8 +178,8 @@ describe('teaser metrics service', function () {
     });
 
     it("should reload the data when the time runs out", function () {
-        expectFinancingRoundBECall().respond(200, financingRound('2015-01-21T15:04:25.003Z'));
         expectMetricsBECall().respond(200, { remainingBudget: 54321, count: 33 });
+        expectFinancingRoundBECall().respond(200, financingRound('2015-01-21T15:04:25.003Z'));
 
         currentRouteWantsTeaser(true);
         var teaser = renderDirective();

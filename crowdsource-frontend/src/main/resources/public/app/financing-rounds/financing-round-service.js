@@ -80,7 +80,5 @@ angular.module('crowdsource')
 
         service.current = { $resolved: false };
 
-        service.reloadCurrentRound();
-
         return service;
     });

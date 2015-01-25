@@ -13,9 +13,6 @@ describe('financing rounds', function () {
             $httpBackend = _$httpBackend_;
             $location = _$location_;
 
-            // the FinancingRound service gets the active service on creation
-            $httpBackend.expectGET('/financinground/active').respond(404);
-
             $controller('FinancingRoundsController as financingRounds', {
                 $scope: $scope,
                 $location: $location,

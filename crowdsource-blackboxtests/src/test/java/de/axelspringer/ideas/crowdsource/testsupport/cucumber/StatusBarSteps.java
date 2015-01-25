@@ -1,7 +1,6 @@
 package de.axelspringer.ideas.crowdsource.testsupport.cucumber;
 
 import cucumber.api.java.en.And;
-import cucumber.api.java.en.Then;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.StatusBar;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
@@ -22,21 +20,17 @@ public class StatusBarSteps {
     @Autowired
     private WebDriverProvider webDriverProvider;
 
-    @Then("^the status bar is not visible$")
-    public void the_status_bar_is_not_visible() {
+    @And("^the budget in the status bar is (displayed|hidden)$")
+    public void the_budget_in_the_status_bar_is_displayed(String displayed) throws Throwable {
+        boolean expectedBudgetVisibility = "displayed".equals(displayed);
+
         PageFactory.initElements(webDriverProvider.provideDriver(), statusBar);
-        assertThat(statusBar.isVisible(), is(false));
+        assertThat(statusBar.isBudgetDisplayed(), is(expectedBudgetVisibility));
     }
 
-    @And("^the status bar is visible$")
-    public void the_status_bar_is_visible() throws Throwable {
+    @And("^the displayed budget is (\\d+)$")
+    public void the_displayed_budget_is(int expectedBudget) throws Throwable {
         PageFactory.initElements(webDriverProvider.provideDriver(), statusBar);
-        assertThat(statusBar.isVisible(), is(true));
-    }
-
-    @And("^the budget in the status bar is displayed$")
-    public void the_budget_in_the_status_bar_is_displayed() throws Throwable {
-        PageFactory.initElements(webDriverProvider.provideDriver(), statusBar);
-        assertThat(statusBar.getBudget(), is(greaterThan(0)));
+        assertThat(statusBar.getBudget(), is(expectedBudget));
     }
 }

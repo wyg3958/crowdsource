@@ -3,7 +3,7 @@ package de.axelspringer.ideas.crowdsource.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import de.axelspringer.ideas.crowdsource.config.security.Roles;
 import de.axelspringer.ideas.crowdsource.enums.ProjectStatus;
-import de.axelspringer.ideas.crowdsource.exceptions.ResourceNotFoundException;
+import de.axelspringer.ideas.crowdsource.exceptions.NotAuthorizedException;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.model.presentation.Pledge;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
@@ -58,7 +58,7 @@ public class ProjectController {
 
         final Project project = projectService.getProject(projectId);
         if (!mayViewProjectFilter(project, principal)) {
-            throw new ResourceNotFoundException();
+            throw new NotAuthorizedException("you may not get information about this project.");
         }
         return project;
     }

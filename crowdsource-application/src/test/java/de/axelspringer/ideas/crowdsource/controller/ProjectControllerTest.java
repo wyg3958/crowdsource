@@ -108,7 +108,7 @@ public class ProjectControllerTest {
 
         assertThat(mvcResult.getResponse().getContentAsString(), is("{" +
                 "\"id\":null," + // actually this is non null, but the projectRepository is a mock and does not generate an id
-                "\"status\":\"PUBLISHED\"," +
+                "\"status\":\"PROPOSED\"," +
                 "\"title\":\"myTitle\"," +
                 "\"shortDescription\":\"theShortDescription\"," +
                 "\"description\":\"theFullDescription\"," +

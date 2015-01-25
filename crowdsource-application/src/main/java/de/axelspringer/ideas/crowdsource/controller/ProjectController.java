@@ -3,6 +3,7 @@ package de.axelspringer.ideas.crowdsource.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import de.axelspringer.ideas.crowdsource.config.security.Roles;
 import de.axelspringer.ideas.crowdsource.enums.ProjectStatus;
+import de.axelspringer.ideas.crowdsource.exceptions.ResourceNotFoundException;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.model.presentation.Pledge;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
@@ -47,21 +48,40 @@ public class ProjectController {
     public List<Project> getProjects(Principal principal) {
 
         final List<Project> projects = projectService.getProjects();
-        final UserEntity userEntity = userService.getUserByName(principal.getName());
-        if (userEntity.getRoles().contains(Roles.ROLE_ADMIN)) {
-            return projects;
-        }
-        return projects.stream().filter(project -> {
-            final ProjectStatus status = project.getStatus();
-            return status == PUBLISHED || status == FULLY_PLEDGED || project.getCreator().getEmail().equals(userEntity.getEmail());
-        }).collect(Collectors.toList());
+        // filter projects. only return projects that are published, fully pledged or created by the requesting user (or if requestor is admin)
+        return projects.stream().filter(project -> mayViewProjectFilter(project, principal)).collect(Collectors.toList());
     }
 
     @Secured({Roles.ROLE_TRUSTED_ANONYMOUS, Roles.ROLE_USER})
     @RequestMapping(value = "/project/{projectId}", method = RequestMethod.GET)
-    public Project getProject(@PathVariable String projectId) {
+    public Project getProject(@PathVariable String projectId, Principal principal) {
 
-        return projectService.getProject(projectId);
+        final Project project = projectService.getProject(projectId);
+        if (!mayViewProjectFilter(project, principal)) {
+            throw new ResourceNotFoundException();
+        }
+        return project;
+    }
+
+    private boolean mayViewProjectFilter(Project project, Principal requestor) {
+
+        // fully pledged and published are always visible
+        final ProjectStatus status = project.getStatus();
+        if (status == FULLY_PLEDGED || status == PUBLISHED) {
+            return true;
+        }
+
+        // try find a user for the principal
+        final UserEntity userEntity = userService.getUserByName(requestor.getName());
+
+        // admins may do everything
+        if (userEntity != null && userEntity.getRoles().contains(Roles.ROLE_ADMIN)) {
+            return true;
+        }
+
+        // the creator always may see his project
+        final String requestorEmail = userEntity == null ? "foo" : userEntity.getEmail();
+        return project.getCreator().getEmail().equals(requestorEmail);
     }
 
     @Secured(Roles.ROLE_USER)

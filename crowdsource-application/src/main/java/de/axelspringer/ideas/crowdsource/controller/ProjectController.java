@@ -72,7 +72,7 @@ public class ProjectController {
         }
 
         // try find a user for the principal
-        final UserEntity userEntity = userService.getUserByName(requestor.getName());
+        final UserEntity userEntity = requestor != null && requestor.getName() != null ? userService.getUserByName(requestor.getName()) : null;
 
         // admins may do everything
         if (userEntity != null && userEntity.getRoles().contains(Roles.ROLE_ADMIN)) {

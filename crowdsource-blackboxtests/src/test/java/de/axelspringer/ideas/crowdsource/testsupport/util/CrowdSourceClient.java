@@ -3,6 +3,7 @@ package de.axelspringer.ideas.crowdsource.testsupport.util;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.axelspringer.ideas.crowdsource.config.security.MongoUserDetailsService;
+import de.axelspringer.ideas.crowdsource.enums.ProjectStatus;
 import de.axelspringer.ideas.crowdsource.model.presentation.Comment;
 import de.axelspringer.ideas.crowdsource.model.presentation.FinancingRound;
 import de.axelspringer.ideas.crowdsource.model.presentation.Pledge;
@@ -24,6 +25,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
+
+import static org.junit.Assert.assertEquals;
 
 @Component
 public class CrowdSourceClient {
@@ -109,6 +112,13 @@ public class CrowdSourceClient {
 
     public RestTemplate getUnderlyingClient() {
         return restTemplate;
+    }
+
+    public void publish(Project createdProject, AuthToken adminToken) {
+
+        createdProject.setStatus(ProjectStatus.PUBLISHED);
+        final ResponseEntity<Project> exchange = restTemplate.exchange(urlProvider.applicationUrl() + "/project/" + createdProject.getId(), HttpMethod.PATCH, createRequestEntity(createdProject, adminToken), Project.class);
+        assertEquals(exchange.getStatusCode(), HttpStatus.OK);
     }
 
     @Data

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
@@ -22,7 +23,7 @@ public class Project {
     private String id;
 
     // no validation here on purpose, as this is only filled on response and ignored in request
-    @NotEmpty(groups = {UpdateProject.class})
+    @NotNull(groups = {UpdateProject.class})
     @JsonView(ProjectSummaryView.class)
     private ProjectStatus status;
 

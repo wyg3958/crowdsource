@@ -63,9 +63,12 @@ public class ProjectService {
         return project(projectEntity);
     }
 
-    public Project updateProject(Project project) {
+    public Project updateProject(String projectId, Project project) {
 
-        ProjectEntity projectEntity = projectRepository.findOne(project.getId());
+        ProjectEntity projectEntity = projectRepository.findOne(projectId);
+        if (projectEntity == null) {
+            throw new ResourceNotFoundException();
+        }
         projectEntity.setStatus(project.getStatus());
         projectEntity = projectRepository.save(projectEntity);
 

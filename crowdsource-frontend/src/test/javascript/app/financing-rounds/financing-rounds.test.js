@@ -46,7 +46,7 @@ describe('financing rounds', function () {
 
 
     it("should display correct elements when active round is present", function () {
-        var startDate = moment().tz('Europe/Berlin');
+        var startDate = moment();
         var endDate = startDate.add(5, 'days');
 
         prepareBackendGetFinancingRoundsMock([
@@ -56,7 +56,7 @@ describe('financing rounds', function () {
         $scope.$digest();
 
         expect(financingRounds.getTableRowCount()).toBe(1);
-        expect(financingRounds.getTableStartDate()).toHaveText(startDate.format('DD.MM.YY HH:mm'));
+        expect(financingRounds.getTableStartDate().text()).toBe(startDate.format('DD.MM.YY HH:mm'));
         expect(financingRounds.getTableEndDate().text()).toBe(endDate.format('DD.MM.YY HH:mm'));
         expect(financingRounds.getTableBudget()).toHaveText('5.555');
         expect(financingRounds.getTableEndRoundButton()).not.toBeDisabled();
@@ -66,7 +66,7 @@ describe('financing rounds', function () {
 
 
     it("should display two finished rounds", function () {
-        var now = moment().tz('Europe/Berlin');
+        var now = moment();
         var startDate1 = now.subtract(10, 'days');
         var endDate1 = startDate1.add(5, 'days');
         var startDate2 = now.subtract(20, 'days');
@@ -98,9 +98,8 @@ describe('financing rounds', function () {
         expect(financingRounds.getNotification()).not.toContainText('Es läuft bereits eine Finanzierungsrunde. Daher kann keine neue Runde gestartet werden.');
     });
 
-
     it("should display two rounds where one of them is active", function () {
-        var now = moment().tz('Europe/Berlin');
+        var now = moment();
         var startDate1 = now.subtract(10, 'days');
         var endDate1 = now.add(5, 'days');
         var startDate2 = now.subtract(20, 'days');

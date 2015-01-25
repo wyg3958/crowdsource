@@ -1,6 +1,6 @@
 package de.axelspringer.ideas.crowdsource.config.security;
 
-import de.axelspringer.ideas.crowdsource.config.ProductionCondition;
+import de.axelspringer.ideas.crowdsource.config.AppProfiles;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
 @Component
-@Conditional(ProductionCondition.class)
+@Conditional(AppProfiles.ProductionCondition.class)
 public class LBHttpsEnforcerInterceptor extends HandlerInterceptorAdapter {
 
     @Value("${de.axelspringer.ideas.crowdsource.baseUrl}")

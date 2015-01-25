@@ -2,6 +2,7 @@ package de.axelspringer.ideas.crowdsource.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import de.axelspringer.ideas.crowdsource.config.security.Roles;
+import de.axelspringer.ideas.crowdsource.enums.ProjectStatus;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.model.presentation.Pledge;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
@@ -25,6 +26,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static de.axelspringer.ideas.crowdsource.enums.ProjectStatus.FULLY_PLEDGED;
+import static de.axelspringer.ideas.crowdsource.enums.ProjectStatus.PUBLISHED;
 
 @Slf4j
 @RestController
@@ -39,9 +44,17 @@ public class ProjectController {
     @Secured({Roles.ROLE_TRUSTED_ANONYMOUS, Roles.ROLE_USER})
     @RequestMapping(value = "/projects", method = RequestMethod.GET)
     @JsonView(ProjectSummaryView.class)
-    public List<Project> getProjects() {
+    public List<Project> getProjects(Principal principal) {
 
-        return projectService.getProjects();
+        final List<Project> projects = projectService.getProjects();
+        final UserEntity userEntity = userService.getUserByName(principal.getName());
+        if (userEntity.getRoles().contains(Roles.ROLE_ADMIN)) {
+            return projects;
+        }
+        return projects.stream().filter(project -> {
+            final ProjectStatus status = project.getStatus();
+            return status == PUBLISHED || status == FULLY_PLEDGED || project.getCreator().getEmail().equals(userEntity.getEmail());
+        }).collect(Collectors.toList());
     }
 
     @Secured({Roles.ROLE_TRUSTED_ANONYMOUS, Roles.ROLE_USER})
@@ -71,7 +84,7 @@ public class ProjectController {
 
     @Secured(Roles.ROLE_ADMIN)
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/project/{projectId}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/project/{projectId}", method = RequestMethod.PATCH)
     public Project updateProject(@PathVariable("projectId") String projectId, @RequestBody @Validated(UpdateProject.class) Project projectWithUpdateData) {
 
         return projectService.updateProject(projectId, projectWithUpdateData);

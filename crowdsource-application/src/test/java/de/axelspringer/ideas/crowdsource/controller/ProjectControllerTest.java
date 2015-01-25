@@ -1,6 +1,7 @@
 package de.axelspringer.ideas.crowdsource.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.axelspringer.ideas.crowdsource.config.security.Roles;
 import de.axelspringer.ideas.crowdsource.enums.ProjectStatus;
 import de.axelspringer.ideas.crowdsource.model.persistence.FinancingRoundEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.PledgeEntity;
@@ -57,6 +58,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ProjectControllerTest {
 
     private static final String EXISTING_USER_MAIL = "existing@mail.com";
+    private static final String EXISTING_ADMIN_MAIL = "existing@mail.com";
     private static final String NON_EXISTING_USER_MAIL = "nonexisting@mail.com";
     private static final String EXISTING_PROJECT_ID = "existingProjectId";
     private static final String FULLY_PLEDGED_PROJECT_ID = "fullyPledgedProjectId";
@@ -95,6 +97,11 @@ public class ProjectControllerTest {
         existingUserEntity = new UserEntity(EXISTING_USER_MAIL);
         existingUserEntity.setId("existingUserId");
         existingUserEntity.setBudget(1000);
+
+        UserEntity existingAdminEntity = new UserEntity(EXISTING_ADMIN_MAIL);
+        existingAdminEntity.setId("existingAdminId");
+        existingAdminEntity.setRoles(Arrays.asList(Roles.ROLE_ADMIN, Roles.ROLE_USER));
+        when(userRepository.findByEmail(EXISTING_ADMIN_MAIL)).thenReturn(existingAdminEntity);
 
         when(userRepository.findByEmail(EXISTING_USER_MAIL)).thenReturn(existingUserEntity);
         when(userRepository.findByEmail(NON_EXISTING_USER_MAIL)).thenReturn(null);
@@ -152,7 +159,7 @@ public class ProjectControllerTest {
                 "\"description\":\"theFullDescription\"," +
                 "\"pledgeGoal\":50,\"pledgedAmount\":0," +
                 "\"backers\":0," +
-                "\"creator\":{\"id\":\"existingUserId\",\"name\":\"Existing\"}}"));
+                "\"creator\":{\"id\":\"existingUserId\",\"name\":\"Existing\",\"email\":\"existing@mail.com\"}}"));
     }
 
     @Test
@@ -206,9 +213,10 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void getProjects_shouldReturnSuccessfully() throws Exception {
+    public void getProjectsForUser_shouldReturnNothingWhenProjectNotPublished() throws Exception {
 
-        final MvcResult mvcResult = mockMvc.perform(get("/projects"))
+        final MvcResult mvcResult = mockMvc.perform(get("/projects")
+                .principal(new UsernamePasswordAuthenticationToken(EXISTING_USER_MAIL, "somepassword")))
                 .andExpect(status().isOk())
                 .andReturn();
 

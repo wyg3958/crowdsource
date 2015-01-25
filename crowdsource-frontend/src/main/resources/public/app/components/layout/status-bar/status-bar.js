@@ -17,8 +17,13 @@ angular.module('crowdsource')
                 });
 
                 function updateView (currentRoute) {
+                    var title = "AS CrowdSource";
+                    if (currentRoute.title) {
+                        title += " - " + currentRoute.title;
+                    }
+
+                    $window.document.title = title;
                     vm.breadcrump = currentRoute.title;
-                    $window.document.title = "AS CrowdSource - " + currentRoute.title;
                 }
             }
         };

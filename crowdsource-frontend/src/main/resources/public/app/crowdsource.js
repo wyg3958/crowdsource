@@ -49,23 +49,18 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
             })
             .when('/login/password-recovery', {
                 templateUrl: 'app/user/password-recovery/password-recovery.html',
-                controller: 'PasswordRecoveryController as passwordRecovery'
+                controller: 'PasswordRecoveryController as passwordRecovery',
+                title: 'Passwort vergessen'
             })
             .when('/login/password-recovery/:email/success', {
                 templateUrl: 'app/user/password-recovery/password-recovery-success.html',
-                controller: 'PasswordRecoverySuccessController as passwordRecoverySuccess'
+                controller: 'PasswordRecoverySuccessController as passwordRecoverySuccess',
+                title: 'Passwort vergessen erfolgreich'
             })
             .when('/login/password-recovery/:email/activation/:activationToken', {
                 templateUrl: 'app/user/activation/user-activation.html',
-                controller: 'UserActivationController as activation'
-            })
-            .when('/login/password-recovery', {
-                templateUrl: 'app/user/password-recovery/password-recovery.html',
-                controller: 'PasswordRecoveryController as passwordRecovery'
-            })
-            .when('/login/password-recovery/:email/success', {
-                templateUrl: 'app/user/password-recovery/password-recovery-success.html',
-                controller: 'PasswordRecoverySuccessController as passwordRecoverySuccess'
+                controller: 'UserActivationController as activation',
+                title: 'Passwort setzen'
             })
             .when('/financingrounds', {
                 templateUrl: 'app/financing-rounds/financing-rounds.html',

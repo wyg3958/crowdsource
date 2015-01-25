@@ -35,6 +35,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -49,6 +50,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -441,6 +443,24 @@ public class ProjectControllerTest {
                 .andReturn();
 
         assertThat(mvcResult.getResponse().getContentAsString(), is("{\"errorCode\":\"no_financing_round_currently_active\",\"fieldViolations\":{}}"));
+    }
+
+    @Test
+    public void testUpdateProjectToPublish() throws Exception {
+
+        final String email = "some@mail.com";
+        final UserEntity user = userEntity(email, Roles.ROLE_USER, Roles.ROLE_ADMIN);
+        final ProjectEntity projectEntity = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PROPOSED);
+        final Project project = new Project(projectEntity, new ArrayList<>());
+        project.setStatus(ProjectStatus.PUBLISHED);
+
+        mockMvc.perform(patch("/project/{projectId}", "some_id")
+                .principal(new UsernamePasswordAuthenticationToken(email, "somepassword"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(project)))
+                .andExpect(status().isOk());
+
+        verify(projectRepository).save(projectEntity);
     }
 
     private void pledgeProject(ProjectEntity project, UserEntity user, int amount) {

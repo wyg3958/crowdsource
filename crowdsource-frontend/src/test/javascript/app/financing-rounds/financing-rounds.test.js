@@ -50,14 +50,14 @@ describe('financing rounds', function () {
         var endDate = startDate.add(5, 'days');
 
         prepareBackendGetFinancingRoundsMock([
-            { "id": "4711", "budget": "5555", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "active": true }
+            {"id": "4711", "budget": "5555", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "active": true}
         ]);
         $httpBackend.flush();
         $scope.$digest();
 
         expect(financingRounds.getTableRowCount()).toBe(1);
         expect(financingRounds.getTableStartDate()).toHaveText(startDate.format('DD.MM.YY HH:mm'));
-        expect(financingRounds.getTableEndDate()).toHaveText(endDate.format('DD.MM.YY HH:mm'));
+        expect(financingRounds.getTableEndDate().text()).toBe(endDate.format('DD.MM.YY HH:mm'));
         expect(financingRounds.getTableBudget()).toHaveText('5.555');
         expect(financingRounds.getTableEndRoundButton()).not.toBeDisabled();
         expect(financingRounds.getStartRoundButton()).not.toExist();
@@ -75,20 +75,20 @@ describe('financing rounds', function () {
         var row = '.row-1';
 
         prepareBackendGetFinancingRoundsMock([
-            { "budget": "1111", "startDate": startDate1.toISOString(), "endDate": endDate1.toISOString(), "active": false },
-            { "budget": "2222", "startDate": startDate2.toISOString(), "endDate": endDate2.toISOString(), "active": false }
+            {"budget": "1111", "startDate": startDate1.toISOString(), "endDate": endDate1.toISOString(), "active": false},
+            {"budget": "2222", "startDate": startDate2.toISOString(), "endDate": endDate2.toISOString(), "active": false}
         ]);
         $httpBackend.flush();
         $scope.$digest();
 
         expect(financingRounds.getTableRowCount()).toBe(2);
 
-        expect(financingRounds.getTableStartDate()).toHaveText(startDate1.format('DD.MM.YY HH:mm'));
-        expect(financingRounds.getTableEndDate()).toHaveText(endDate1.format('DD.MM.YY HH:mm'));
+        expect(financingRounds.getTableStartDate().text()).toBe(startDate1.format('DD.MM.YY HH:mm'));
+        expect(financingRounds.getTableEndDate().text()).toBe(endDate1.format('DD.MM.YY HH:mm'));
         expect(financingRounds.getTableBudget()).toHaveText('1.111');
 
-        expect(financingRounds.getTableStartDate(row)).toHaveText(startDate2.format('DD.MM.YY HH:mm'));
-        expect(financingRounds.getTableEndDate(row)).toHaveText(endDate2.format('DD.MM.YY HH:mm'));
+        expect(financingRounds.getTableStartDate(row).text()).toBe(startDate2.format('DD.MM.YY HH:mm'));
+        expect(financingRounds.getTableEndDate(row).text()).toBe(endDate2.format('DD.MM.YY HH:mm'));
         expect(financingRounds.getTableBudget(row)).toHaveText('2.222');
 
         expect(financingRounds.getTableEndRoundButton()).not.toExist();
@@ -109,8 +109,8 @@ describe('financing rounds', function () {
         var row = '.row-1';
 
         prepareBackendGetFinancingRoundsMock([
-            { "budget": "1111", "startDate": startDate1.toISOString(), "endDate": endDate1.toISOString(), "active": true },
-            { "budget": "2222", "startDate": startDate2.toISOString(), "endDate": endDate2.toISOString(), "active": false }
+            {"budget": "1111", "startDate": startDate1.toISOString(), "endDate": endDate1.toISOString(), "active": true},
+            {"budget": "2222", "startDate": startDate2.toISOString(), "endDate": endDate2.toISOString(), "active": false}
         ]);
 
         $httpBackend.flush();
@@ -158,11 +158,11 @@ describe('financing rounds', function () {
         expect(financingRounds.getStartRoundButton()).not.toBeDisabled();
         expect(financingRounds.getStartRoundButton()).toHaveText('Starten!');
 
-        $httpBackend.expectPOST('/financinground', { "budget": budget, "endDate": endDate.toISOString() }).respond(200,
-            { "id": "4711", "startDate": startDate.toISOString(), "endDate": modifiedEndDate.toISOString(), "budget": budget, "active": true });
+        $httpBackend.expectPOST('/financinground', {"budget": budget, "endDate": endDate.toISOString()}).respond(200,
+            {"id": "4711", "startDate": startDate.toISOString(), "endDate": modifiedEndDate.toISOString(), "budget": budget, "active": true});
 
         $httpBackend.expectGET('/financingrounds').respond(200, [
-            { "budget": "5555", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "active": true }
+            {"budget": "5555", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "active": true}
         ]);
 
         financingRounds.getStartRoundButton().click();
@@ -178,7 +178,7 @@ describe('financing rounds', function () {
         var endDate = startDate.add(5, 'days');
 
         prepareBackendGetFinancingRoundsMock([
-            { "id": "4711", "budget": "5555", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "active": true }
+            {"id": "4711", "budget": "5555", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "active": true}
         ]);
 
         $httpBackend.flush();
@@ -191,10 +191,10 @@ describe('financing rounds', function () {
         expect(financingRounds.getTableEndRoundConfirmMessage()).toContainText('Wirklich beenden?');
 
         $httpBackend.expectPUT('/financinground/4711/cancel', {})
-            .respond(200, { "id": "4711", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "budget": 4444, "active": false });
+            .respond(200, {"id": "4711", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "budget": 4444, "active": false});
 
         prepareBackendGetFinancingRoundsMock([
-            { "id": "4711", "budget": "5555", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "active": false }
+            {"id": "4711", "budget": "5555", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "active": false}
         ]);
 
         financingRounds.getTableEndRoundButton().click();
@@ -210,7 +210,7 @@ describe('financing rounds', function () {
         var endDate = startDate.add(5, 'days');
 
         prepareBackendGetFinancingRoundsMock([
-            { "id": "4711", "budget": "5555", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "active": true }
+            {"id": "4711", "budget": "5555", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "active": true}
         ]);
 
         $httpBackend.flush();
@@ -242,7 +242,7 @@ describe('financing rounds', function () {
 
         prepareViewWithNoRunningRound();
 
-        $httpBackend.expectPOST('/financinground', { "budget": budget, "endDate": modifiedEndDate.toISOString() }).respond(500);
+        $httpBackend.expectPOST('/financinground', {"budget": budget, "endDate": modifiedEndDate.toISOString()}).respond(500);
         expect(financingRounds.getStartRoundButton()).toBeDisabled();
 
         financingRounds.getEndDate().getInputField().val(endDate.format('DD.MM.YYYY')).trigger('input');
@@ -259,7 +259,7 @@ describe('financing rounds', function () {
         var endDate = startDate.add(5, 'days');
 
         prepareBackendGetFinancingRoundsMock([
-            { "id": "4711", "budget": "5555", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "active": true }
+            {"id": "4711", "budget": "5555", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "active": true}
         ]);
 
         $httpBackend.flush();

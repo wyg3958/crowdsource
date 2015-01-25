@@ -1,10 +1,10 @@
-<div class="row" ng-show="status.auth.currentUser.loggedIn">
+<div class="row">
     <ul class="sbar__ul">
         <li class="sbar__li--secondary">
             <span class="sbar__icon--location">CROWD / {{ status.breadcrump }}</span>
         </li>
 
-        <li class="sbar__li--primary" ng-if="status.financingRound.current.active">
+        <li class="sbar__li--primary" ng-if="status.auth.currentUser.loggedIn && status.financingRound.current.active">
             <ul class="sbar__ul-float">
                 <!-- <li><span class="sbar__icon--hourglass">1d 23h 55m 55s</span></li> -->
                 <li class="budget">

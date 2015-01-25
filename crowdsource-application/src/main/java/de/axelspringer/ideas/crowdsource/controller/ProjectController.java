@@ -8,7 +8,6 @@ import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.model.presentation.Pledge;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.ProjectSummaryView;
-import de.axelspringer.ideas.crowdsource.model.presentation.project.UpdateProject;
 import de.axelspringer.ideas.crowdsource.service.ProjectService;
 import de.axelspringer.ideas.crowdsource.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -105,7 +104,7 @@ public class ProjectController {
     @Secured(Roles.ROLE_ADMIN)
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/project/{projectId}", method = RequestMethod.PATCH)
-    public Project updateProject(@PathVariable("projectId") String projectId, @RequestBody @Validated(UpdateProject.class) Project projectWithUpdateData) {
+    public Project updateProject(@PathVariable("projectId") String projectId, @RequestBody @Validated(Project.UpdateProject.class) Project projectWithUpdateData) {
 
         return projectService.updateProject(projectId, projectWithUpdateData);
     }

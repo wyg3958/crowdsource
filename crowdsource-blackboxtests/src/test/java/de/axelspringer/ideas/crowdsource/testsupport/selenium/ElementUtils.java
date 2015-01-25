@@ -8,12 +8,11 @@ public class ElementUtils {
 
     public static int parseCurrency(WebElement element) {
         String value = element.getText();
-        value = value.substring(1); // cut off currency
         return parseNumber(value);
     }
 
     public static int parseNumber(String value) {
-        value = value.replaceAll("\\.", "");
+        value = value.replaceAll("\\.", "").replaceAll("\\$", "").trim();
         return Integer.parseInt(value);
     }
 

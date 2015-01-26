@@ -4,7 +4,6 @@ import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.NavigationBar;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.AddProjectConfirmationView;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.AddProjectForm;
@@ -13,11 +12,12 @@ import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.axelspringer.ideas.crowdsource.testsupport.util.CrowdSourceClient;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.WebDriver;
-import org.hamcrest.Matchers;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class AddProjectSteps {
@@ -39,7 +39,7 @@ public class AddProjectSteps {
 
     @Autowired
     private CrowdSourceClient crowdSourceClient;
-    
+
     private WebDriver webDriver;
 
     private String randomProjectTitlePrefix;
@@ -100,20 +100,8 @@ public class AddProjectSteps {
         PageFactory.initElements(webDriver, projectsPage);
         projectsPage.waitForPageLoad();
 
-        assertTrue(projectVisible());
-    }
 
-    private boolean projectVisible() {
-
-        for (Project project : projectsPage.getProjects()) {
-            if (project.getTitle().startsWith(randomProjectTitlePrefix)
-                    && project.getTitle().endsWith("\u2026")
-                    && project.getShortDescription().startsWith(randomProjectShortDescriptionPrefix)
-                    && project.getShortDescription().endsWith("…")) {
-                return true;
-            }
-        }
-        return false;
+        assertTrue(projectsPage.containsProject(randomProjectTitlePrefix, randomProjectShortDescriptionPrefix));
     }
 
     @And("^the tooltip for currency conversion is not visible$")
@@ -131,14 +119,6 @@ public class AddProjectSteps {
         assertTrue(addProjectForm.currencyConversionTooltipVisible());
     }
 
-    @Then("^the project overview page does not show the new project$")
-    public void the_project_overview_page_does_not_show_the_new_project() throws Throwable {
-        PageFactory.initElements(webDriver, projectsPage);
-        projectsPage.waitForPageLoad();
-
-        assertFalse(projectVisible());
-    }
-
     @When("^an admin publishs the project$")
     public void an_admin_publishs_the_project() throws Throwable {
 
@@ -148,5 +128,12 @@ public class AddProjectSteps {
                 crowdSourceClient.publish(project, authToken);
             }
         });
+    }
+
+    @And("^the project is marked \"([^\"]*)\"$")
+    public void the_project_is_marked(String state) throws Throwable {
+        final WebElement projectElement = projectsPage.findProject(randomProjectTitlePrefix, randomProjectShortDescriptionPrefix);
+        assertNotNull(projectElement);
+        assertTrue(projectElement.getAttribute("class").contains("project-" + state));
     }
 }

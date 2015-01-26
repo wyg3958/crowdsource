@@ -52,6 +52,61 @@ describe('project list', function () {
         expect(projectList.find('.no-projects')).toHaveClass('ng-hide');
     });
 
+    it('should display the projects that are in state PROPOSED as first in list', function () {
+
+        $httpBackend.expectGET('/projects').respond(200, [
+            project('Title', 'Short Description', 100, 10, 1, 'PUBLISHED'),
+            project('Title 2', 'Short Description 2', 100, 20, 2, 'PROPOSED')
+        ]);
+        $scope.$digest();
+        $httpBackend.flush();
+
+        var listItems = projectList.find('.project-tile');
+        expect(listItems).toHaveLength(2);
+
+        expect($(listItems[0]).find('h1')).toHaveText('Title 2');
+        expect($(listItems[1]).find('h1')).toHaveText('Title');
+    });
+
+    it('should display the projects that are in state FULLY_PLEDGED as last in list', function () {
+
+        $httpBackend.expectGET('/projects').respond(200, [
+            project('Title', 'Short Description', 100, 10, 1, 'FULLY_PLEDGED'),
+            project('Title 2', 'Short Description 2', 100, 20, 2, 'PUBLISHED')
+        ]);
+        $scope.$digest();
+        $httpBackend.flush();
+
+        var listItems = projectList.find('.project-tile');
+        expect(listItems).toHaveLength(2);
+
+        expect($(listItems[0]).find('h1')).toHaveText('Title 2');
+        expect($(listItems[1]).find('h1')).toHaveText('Title');
+    });
+
+    it('should set classes based on project status', function () {
+
+        $httpBackend.expectGET('/projects').respond(200, [
+            project('Title', 'Short Description', 100, 10, 1, 'PUBLISHED'),
+            project('Title 2', 'Short Description 2', 100, 20, 2, 'FULLY_PLEDGED'),
+            project('Title 3', 'Short Description 3', 100, 20, 2, 'PROPOSED')
+        ]);
+        $scope.$digest();
+        $httpBackend.flush();
+
+        var listItems = projectList.find('.project-tile');
+        expect(listItems).toHaveLength(3);
+
+        expect($(listItems[0]).find('h1').text()).toBe('Title 3');
+        expect($(listItems[0]).attr("class")).toBe('project-tile project-PROPOSED');
+
+        expect($(listItems[1]).find('h1').text()).toBe('Title');
+        expect($(listItems[1]).attr("class")).toBe('project-tile project-PUBLISHED');
+
+        expect($(listItems[2]).find('h1').text()).toBe('Title 2');
+        expect($(listItems[2]).attr("class")).toBe('project-tile project-FULLY_PLEDGED');
+    });
+
     it("should redirect to the project's details page when the project tile is clicked", function () {
         $httpBackend.expectGET('/projects').respond(200, [
             project('Title', 'Short Description', 100, 10, 1),
@@ -84,7 +139,7 @@ describe('project list', function () {
         expect(projectList.find('.no-projects')).not.toHaveClass('ng-hide');
     });
 
-    function project(title, shortDescription, pledgeGoal, pledgedAmount, backers) {
+    function project(title, shortDescription, pledgeGoal, pledgedAmount, backers, status) {
         var project = {};
         project.id = 'projectId';
         project.title = title;
@@ -92,6 +147,7 @@ describe('project list', function () {
         project.pledgeGoal = pledgeGoal;
         project.pledgedAmount = pledgedAmount;
         project.backers = backers;
+        project.status = status;
         return project;
     }
 });

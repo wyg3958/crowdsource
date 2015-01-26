@@ -25,6 +25,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -35,8 +36,10 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.annotation.Resource;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -96,16 +99,16 @@ public class ProjectControllerTest {
         final Project project = project("myTitle", "theFullDescription", "theShortDescription", 50);
 
         final String email = "some@mail.com";
-        final UserEntity userEntity = userEntity(email, Roles.ROLE_USER);
+        final UserEntity user = userEntity(email, Roles.ROLE_USER);
 
         MvcResult mvcResult = mockMvc.perform(post("/project")
-                .principal(new UsernamePasswordAuthenticationToken(email, "somepassword"))
+                .principal(authentication(user))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(project)))
                 .andExpect(status().isCreated())
                 .andReturn();
 
-        ProjectEntity projectEntity = new ProjectEntity(userEntity, project);
+        ProjectEntity projectEntity = new ProjectEntity(user, project);
         verify(projectRepository).save(eq(projectEntity));
 
         assertThat(mvcResult.getResponse().getContentAsString(), is("{" +
@@ -138,10 +141,10 @@ public class ProjectControllerTest {
         final Project project = new Project();
 
         final String email = "some@mail.com";
-        userEntity(email, Roles.ROLE_USER);
+        final UserEntity user = userEntity(email, Roles.ROLE_USER);
 
         mockMvc.perform(post("/project")
-                .principal(new UsernamePasswordAuthenticationToken(email, "somepassword"))
+                .principal(authentication(user))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(project)))
                 .andExpect(status().isBadRequest());
@@ -182,14 +185,14 @@ public class ProjectControllerTest {
     public void shouldReturnProjectInProjectsQueryWhenProjectIsPublished() throws Exception {
 
         final String email = "some@mail.com";
-        final UserEntity userEntity = userEntity(email, Roles.ROLE_USER);
+        final UserEntity user = userEntity(email, Roles.ROLE_USER);
 
         final String projectId = "existingProjectId";
-        final ProjectEntity projectEntity = projectEntity(userEntity, projectId, "title", 44, "short description", "description", ProjectStatus.PUBLISHED);
+        final ProjectEntity projectEntity = projectEntity(user, projectId, "title", 44, "short description", "description", ProjectStatus.PUBLISHED);
         when(projectRepository.findAll()).thenReturn(Collections.singletonList(projectEntity));
 
         MvcResult mvcResult = mockMvc.perform(get("/projects", projectId)
-                .principal(new UsernamePasswordAuthenticationToken(email, "somepassword")))
+                .principal(authentication(user)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -236,10 +239,10 @@ public class ProjectControllerTest {
         when(projectRepository.findAll()).thenReturn(Collections.singletonList(projectEntity));
 
         final String requestorEmail = "other@mail.com";
-        userEntity(requestorEmail, Roles.ROLE_USER, Roles.ROLE_ADMIN);
+        final UserEntity requestor = userEntity(requestorEmail, Roles.ROLE_USER, Roles.ROLE_ADMIN);
 
         final MvcResult mvcResult = mockMvc.perform(get("/projects")
-                .principal(new UsernamePasswordAuthenticationToken(requestorEmail, "somepassword")))
+                .principal(authentication(requestor)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -277,7 +280,7 @@ public class ProjectControllerTest {
         when(financingRoundRepository.findActive(any())).thenReturn(new FinancingRoundEntity());
 
         mockMvc.perform(post("/project/{projectId}/pledge", "some_id")
-                .principal(new UsernamePasswordAuthenticationToken(email, "somepassword"))
+                .principal(authentication(user))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(pledge)))
                 .andExpect(status().isCreated());
@@ -306,7 +309,7 @@ public class ProjectControllerTest {
         when(financingRoundRepository.findActive(any())).thenReturn(new FinancingRoundEntity());
 
         mockMvc.perform(post("/project/{projectId}/pledge", "some_id")
-                .principal(new UsernamePasswordAuthenticationToken(email, "somepassword"))
+                .principal(authentication(user))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(1)))
                 .andExpect(status().isCreated());
@@ -333,10 +336,10 @@ public class ProjectControllerTest {
     public void pledgeProject_shouldRespondWith404IfTheProjectWasNotFound() throws Exception {
 
         final String email = "some@mail.com";
-        userEntity(email, Roles.ROLE_USER);
+        final UserEntity user = userEntity(email, Roles.ROLE_USER);
 
         mockMvc.perform(post("/project/{projectId}/pledge", "some_foo_id")
-                .principal(new UsernamePasswordAuthenticationToken(email, "somepassword"))
+                .principal(authentication(user))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(new Pledge(1))))
                 .andExpect(status().isNotFound());
@@ -346,10 +349,10 @@ public class ProjectControllerTest {
     public void pledgeProject_shouldRespondWith400IfTheRequestObjectIsInvalid() throws Exception {
 
         final String email = "some@mail.com";
-        userEntity(email, Roles.ROLE_USER);
+        final UserEntity user = userEntity(email, Roles.ROLE_USER);
 
         MvcResult mvcResult = mockMvc.perform(post("/project/{projectId}/pledge", "some_id")
-                .principal(new UsernamePasswordAuthenticationToken(email, "somepassword"))
+                .principal(authentication(user))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(new Pledge(0))))
                 .andExpect(status().isBadRequest())
@@ -372,7 +375,7 @@ public class ProjectControllerTest {
         when(financingRoundRepository.findActive(any())).thenReturn(new FinancingRoundEntity());
 
         MvcResult mvcResult = mockMvc.perform(post("/project/{projectId}/pledge", "some_id")
-                .principal(new UsernamePasswordAuthenticationToken(email, "somepassword"))
+                .principal(authentication(user))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(new Pledge(2))))
                 .andExpect(status().isBadRequest())
@@ -395,7 +398,7 @@ public class ProjectControllerTest {
         pledgeProject(project, user, project.getPledgeGoal());
 
         MvcResult mvcResult = mockMvc.perform(post("/project/{projectId}/pledge", "some_id")
-                .principal(new UsernamePasswordAuthenticationToken(email, "somepassword"))
+                .principal(authentication(user))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(new Pledge(1))))
                 .andExpect(status().isBadRequest())
@@ -416,7 +419,7 @@ public class ProjectControllerTest {
         when(financingRoundRepository.findActive(any())).thenReturn(new FinancingRoundEntity());
 
         MvcResult mvcResult = mockMvc.perform(post("/project/{projectId}/pledge", "some_id")
-                .principal(new UsernamePasswordAuthenticationToken(email, "somepassword"))
+                .principal(authentication(user))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(2)))
                 .andExpect(status().isBadRequest())
@@ -436,7 +439,7 @@ public class ProjectControllerTest {
         when(financingRoundRepository.findActive(any())).thenReturn(null);
 
         MvcResult mvcResult = mockMvc.perform(post("/project/{projectId}/pledge", "some_id")
-                .principal(new UsernamePasswordAuthenticationToken(email, "somepassword"))
+                .principal(authentication(user))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(new Pledge(user.getBudget() + 1))))
                 .andExpect(status().isBadRequest())
@@ -455,12 +458,19 @@ public class ProjectControllerTest {
         project.setStatus(ProjectStatus.PUBLISHED);
 
         mockMvc.perform(patch("/project/{projectId}", "some_id")
-                .principal(new UsernamePasswordAuthenticationToken(email, "somepassword"))
+                .principal(authentication(user))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(project)))
                 .andExpect(status().isOk());
 
         verify(projectRepository).save(projectEntity);
+    }
+
+    private Principal authentication(UserEntity userEntity) {
+
+        final Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        userEntity.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
+        return new UsernamePasswordAuthenticationToken(userEntity.getEmail(), "somepassword", authorities);
     }
 
     private void pledgeProject(ProjectEntity project, UserEntity user, int amount) {

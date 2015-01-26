@@ -25,13 +25,24 @@
         </div>
 
         <div class="project-status__cta">
-            <button class="project-status__btn  to-pledging-form-button"
-                    scroll-to="project-pledging-form"
-                    ng-disabled="projectDetails.project.status == 'FULLY_PLEDGED'">
-
-                <span ng-if="projectDetails.project.status == 'FULLY_PLEDGED'">Zu 100% finanziert!</span>
-                <span ng-if="projectDetails.project.status != 'FULLY_PLEDGED'">Zur Finanzierung</span>
-            </button>
+            <div>
+                <button class="project-status__btn  to-pledging-form-button"
+                        scroll-to="project-pledging-form"
+                        ng-disabled="projectDetails.project.status == 'FULLY_PLEDGED'">
+                    <span ng-if="projectDetails.project.status == 'FULLY_PLEDGED'">Zu 100% finanziert!</span>
+                    <span ng-if="projectDetails.project.status != 'FULLY_PLEDGED'">Zur Finanzierung</span>
+                </button>
+            </div>
+            <div ng-if="projectDetails.project.status != 'PUBLISHED' && projectDetails.auth.currentUser.hasRole('ADMIN')">
+                <button class="project-status__btn  publish-button" ng-click="projectDetails.publish()">
+                    Veröffentlichen
+                </button>
+            </div>
+            <div ng-if="projectDetails.project.status != 'REJECTED' && projectDetails.auth.currentUser.hasRole('ADMIN')">
+                <button class="project-status__btn  reject-button" ng-click="projectDetails.reject()">
+                    Ablehnen
+                </button>
+            </div>
         </div>
 
     </div>

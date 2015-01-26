@@ -1,11 +1,11 @@
 describe('teaser metrics service', function () {
 
-    var $rootScope, $scope, $compile, $httpBackend, $interval, $timeout, Route, TeaserMetrics, onRouteChangeSuccessListener;
+    var $rootScope, $scope, $compile, $httpBackend, $interval, $timeout, Route, onRouteChangeSuccessListener;
 
     beforeEach(function () {
         module('crowdsource.templates');
-        module('crowdsource', function($provide) {
-            $provide.decorator('Route', function($delegate) {
+        module('crowdsource', function ($provide) {
+            $provide.decorator('Route', function ($delegate) {
                 // callback mock
                 $delegate.onRouteChangeSuccess = function (cb) {
                     onRouteChangeSuccessListener = cb;
@@ -17,7 +17,7 @@ describe('teaser metrics service', function () {
             });
         });
 
-        inject(function (_$rootScope_, _$compile_, _$httpBackend_, _$interval_, _$timeout_, _Route_, _TeaserMetrics_) {
+        inject(function (_$rootScope_, _$compile_, _$httpBackend_, _$interval_, _$timeout_, _Route_) {
             $rootScope = _$rootScope_;
             $scope = $rootScope.$new();
             $compile = _$compile_;
@@ -25,7 +25,6 @@ describe('teaser metrics service', function () {
             $interval = _$interval_;
             $timeout = _$timeout_;
             Route = _Route_;
-            TeaserMetrics = _TeaserMetrics_;
 
             // freeze the time. All calls to new Date() return this time
             jasmine.clock().mockDate(new Date('2015-01-21T15:04:23.003Z'));
@@ -56,7 +55,7 @@ describe('teaser metrics service', function () {
     });
 
     it("should show the metrics retrieved from the backend", function () {
-        expectMetricsBECall().respond(200, { remainingBudget: 54321, count: 33 });
+        expectMetricsBECall().respond(200, {remainingBudget: 54321, count: 33});
         expectFinancingRoundBECall().respond(200, financingRound('2015-01-22T22:59:59.000Z'));
 
         currentRouteWantsTeaser(true);
@@ -78,12 +77,12 @@ describe('teaser metrics service', function () {
     });
 
     it("should only render the directive once if the directive is initialized before the $routeChangeStart event fired", function () {
-        expectMetricsBECall().respond(200, { remainingBudget: 123, count: 33 });
+        expectMetricsBECall().respond(200, {remainingBudget: 123, count: 33});
         expectFinancingRoundBECall().respond(200, financingRound('2015-01-23T22:59:59.000Z'));
 
         currentRouteWantsTeaser(true);
         var teaser = renderDirective();
-        changeRoute({ showTeaser: true });
+        changeRoute({showTeaser: true});
 
         $httpBackend.flush();
 
@@ -91,7 +90,7 @@ describe('teaser metrics service', function () {
     });
 
     it("should show count down the remaining time", function () {
-        expectMetricsBECall().respond(200, { remainingBudget: 54321, count: 33 });
+        expectMetricsBECall().respond(200, {remainingBudget: 54321, count: 33});
         expectFinancingRoundBECall().respond(200, financingRound('2015-01-22T22:59:59.000Z'));
 
         currentRouteWantsTeaser(true);
@@ -106,7 +105,7 @@ describe('teaser metrics service', function () {
     });
 
     it("should show a different information if no financing round is currently active", function () {
-        expectMetricsBECall().respond(200, { remainingBudget: 54321, count: 33 });
+        expectMetricsBECall().respond(200, {remainingBudget: 54321, count: 33});
         expectFinancingRoundBECall().respond(404);
 
         currentRouteWantsTeaser(true);
@@ -126,17 +125,17 @@ describe('teaser metrics service', function () {
 
         expect(teaser.container).toHaveClass('teaser--slim');
 
-        expectMetricsBECall().respond(200, { remainingBudget: 123, count: 33 });
+        expectMetricsBECall().respond(200, {remainingBudget: 123, count: 33});
         expectFinancingRoundBECall().respond(200, financingRound('2015-01-23T22:59:59.000Z'));
 
-        changeRoute({ showTeaser: true }, { showTeaser: false });
+        changeRoute({showTeaser: true}, {showTeaser: false});
         $httpBackend.flush();
 
         expect(teaser.container).toHaveClass('teaser--hero');
     });
 
     it("should hide the teaser when the route changes and the next routes wants a teaser to be hidden", function () {
-        expectMetricsBECall().respond(200, { remainingBudget: 123, count: 33 });
+        expectMetricsBECall().respond(200, {remainingBudget: 123, count: 33});
         expectFinancingRoundBECall().respond(200, financingRound('2015-01-23T22:59:59.000Z'));
 
         currentRouteWantsTeaser(true);
@@ -145,13 +144,13 @@ describe('teaser metrics service', function () {
 
         expect(teaser.container).toHaveClass('teaser--hero');
 
-        changeRoute({ showTeaser: false }, { showTeaser: true });
+        changeRoute({showTeaser: false}, {showTeaser: true});
 
         expect(teaser.container).toHaveClass('teaser--slim');
     });
 
     it("should update the metrics when the route changes back and forth", function () {
-        expectMetricsBECall().respond(200, { remainingBudget: 54321, count: 33 });
+        expectMetricsBECall().respond(200, {remainingBudget: 54321, count: 33});
         expectFinancingRoundBECall().respond(200, financingRound('2015-01-22T22:59:59.000Z'));
 
         currentRouteWantsTeaser(true);
@@ -161,15 +160,15 @@ describe('teaser metrics service', function () {
         expect(teaser.remainingBudget.text()).toBe('$54.321');
 
         // new route wants no teaser
-        changeRoute({ showTeaser: false }, { showTeaser: true });
+        changeRoute({showTeaser: false}, {showTeaser: true});
 
         expect(teaser.container).toHaveClass('teaser--slim');
 
-        expectMetricsBECall().respond(200, { remainingBudget: 123, count: 33 });
+        expectMetricsBECall().respond(200, {remainingBudget: 123, count: 33});
         expectFinancingRoundBECall().respond(200, financingRound('2015-01-23T22:59:59.000Z'));
 
         // new route wants teaser
-        changeRoute({ showTeaser: true }, { showTeaser: false });
+        changeRoute({showTeaser: true}, {showTeaser: false});
         $httpBackend.flush();
 
         expect(teaser.container).toHaveClass('teaser--hero');
@@ -178,7 +177,7 @@ describe('teaser metrics service', function () {
     });
 
     it("should reload the data when the time runs out", function () {
-        expectMetricsBECall().respond(200, { remainingBudget: 54321, count: 33 });
+        expectMetricsBECall().respond(200, {remainingBudget: 54321, count: 33});
         expectFinancingRoundBECall().respond(200, financingRound('2015-01-21T15:04:25.003Z'));
 
         currentRouteWantsTeaser(true);
@@ -191,7 +190,7 @@ describe('teaser metrics service', function () {
         elapseTime(1000);
         expect(teaser.remainingTime.text()).toBe('Keine aktive Runde');
 
-        expectMetricsBECall().respond(200, { remainingBudget: 54321, count: 33 });
+        expectMetricsBECall().respond(200, {remainingBudget: 54321, count: 33});
         expectFinancingRoundBECall().respond(404);
         $timeout.flush(500);
         $httpBackend.flush();
@@ -215,7 +214,7 @@ describe('teaser metrics service', function () {
     }
 
     function currentRouteWantsTeaser(showTeaser) {
-        spyOn(Route, 'getCurrentRoute').and.returnValue({ showTeaser: showTeaser });
+        spyOn(Route, 'getCurrentRoute').and.returnValue({showTeaser: showTeaser});
     }
 
     function changeRoute(currentRoute, previousRoute) {
@@ -224,6 +223,6 @@ describe('teaser metrics service', function () {
     }
 
     function financingRound(endDate) {
-        return { id: 'xyz', startDate: '2015-01-21T09:04:23.003Z', endDate: endDate, active: true }
+        return {id: 'xyz', startDate: '2015-01-21T09:04:23.003Z', endDate: endDate, active: true}
     }
 });

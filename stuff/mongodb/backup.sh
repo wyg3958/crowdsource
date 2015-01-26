@@ -1,10 +1,12 @@
 #!/bin/bash
 
-# The jenkins job is configured to execute the following shell command:
+# The jenkins job is configured to clone the crowdsource git repository (name = "origin") and executes the following shell command:
 #
 # cd stuff/mongodb
 # chmod 400 coreos_rsa
 # ./backup.sh
+#
+# Then the "GitPublisher" post-build action pushes the branch "master" to the target remote name "origin".
 
 KEYFILE=coreos_rsa
 HOST=54.194.152.80

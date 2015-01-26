@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,25 +46,25 @@ public class ProjectController {
     @Secured({Roles.ROLE_TRUSTED_ANONYMOUS, Roles.ROLE_USER})
     @RequestMapping(value = "/projects", method = RequestMethod.GET)
     @JsonView(ProjectSummaryView.class)
-    public List<Project> getProjects(Principal principal) {
+    public List<Project> getProjects(Authentication auth) {
 
         final List<Project> projects = projectService.getProjects();
         // filter projects. only return projects that are published, fully pledged or created by the requesting user (or if requestor is admin)
-        return projects.stream().filter(project -> mayViewProjectFilter(project, principal)).collect(Collectors.toList());
+        return projects.stream().filter(project -> mayViewProjectFilter(project, auth)).collect(Collectors.toList());
     }
 
     @Secured({Roles.ROLE_TRUSTED_ANONYMOUS, Roles.ROLE_USER})
     @RequestMapping(value = "/project/{projectId}", method = RequestMethod.GET)
-    public Project getProject(@PathVariable String projectId, Principal principal) {
+    public Project getProject(@PathVariable String projectId, Authentication auth) {
 
         final Project project = projectService.getProject(projectId);
-        if (!mayViewProjectFilter(project, principal)) {
+        if (!mayViewProjectFilter(project, auth)) {
             throw new NotAuthorizedException("you may not get information about this project.");
         }
         return project;
     }
 
-    private boolean mayViewProjectFilter(Project project, Principal requestor) {
+    private boolean mayViewProjectFilter(Project project, Authentication auth) {
 
         // fully pledged and published are always visible
         final ProjectStatus status = project.getStatus();
@@ -70,17 +72,19 @@ public class ProjectController {
             return true;
         }
 
-        // try find a user for the principal
-        final UserEntity userEntity = requestor != null && requestor.getName() != null ? userService.getUserByName(requestor.getName()) : null;
+        if (auth == null) {
+            return false;
+        }
 
         // admins may do everything
-        if (userEntity != null && userEntity.getRoles().contains(Roles.ROLE_ADMIN)) {
-            return true;
+        for (GrantedAuthority grantedAuthority : auth.getAuthorities()) {
+            if (Roles.ROLE_ADMIN.equals(grantedAuthority.getAuthority())) {
+                return true;
+            }
         }
 
         // the creator always may see his project
-        final String requestorEmail = userEntity == null ? "foo" : userEntity.getEmail();
-        return project.getCreator().getEmail().equals(requestorEmail);
+        return project.getCreator().getEmail().equals(auth.getName());
     }
 
     @Secured(Roles.ROLE_USER)

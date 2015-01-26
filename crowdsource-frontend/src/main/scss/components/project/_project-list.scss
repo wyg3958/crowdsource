@@ -1,10 +1,91 @@
+/***
+ * Project List & Home
+ *
+ *
+ */
+
+
+
+/*h2*/.plist__heading {
+    margin: 0 0 1rem 0;
+    font-size:     2rem;
+    font-weight:   300;
+    line-height:   1.3333;
+    color:         #4B51D4;
+    text-align:    center;
+}
+
+
+/*h2*/.plist__heading--secondary {
+    @extend .plist__heading;
+    color: #D44B95;
+}
+
+
+/*p*/.plist__intro {
+    font-size:   rem-calc(18px);
+    line-height: 1.5;
+    color:       #2D2D2D;
+    text-align:  center;
+}
+
+
+/*p*/.plist__intro--has-divider {
+    @extend .plist__intro;
+
+    $divider-config: (
+        width:  rem-calc(96px),
+        height: rem-calc(4px),
+        offset-bottom: rem-calc(24px)
+    );
+
+    $offset-bottom: map-get($divider-config, offset-bottom) + map-get($divider-config, height) / 2;
+    $margin-left:   map-get($divider-config, width) / 2;
+    $margin-bottom: map-get($divider-config, offset-bottom) * 4;
+
+    position: relative;
+    margin-bottom:  $margin-bottom;
+
+    &::after {
+        content:  '';
+        position: absolute;
+        left:   50%;
+        bottom: #{-$offset-bottom};
+        width:  map-get($divider-config, width);
+        margin-left:   #{-$margin-left};
+        border-bottom: map-get($divider-config, height) solid #2D2D2D;
+    }
+}
+
+
+/*span*/.plist__pill {
+    position: relative;
+    margin:  0 rem-calc(4px) 0 rem-calc(16px);
+    padding:   rem-calc(2px) rem-calc(8px);
+
+    color: $white;
+    letter-spacing: 1px;
+
+    background-color: $clr-red-shade-2;
+    border-radius: rem-calc($border-radius);
+
+
+
+    &:first-child {
+        margin-left: 2px;
+    }
+}
+
+
 .intro-section {
-    background: $white;
     text-align: center;
 
     .container > p {
-        max-width: rem-calc(600);
-        margin: 0 auto 20px auto;
+        max-width: rem-calc(700);
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+
     }
 
     .info-boxes {
@@ -56,8 +137,14 @@
         $project-tile-metrics-height: 50px;
 
         @extend .panel;
-        @extend %light;
-        @extend .radius;
+
+        border: none;
+        border-radius: $border-radius;
+        background-color: $white;
+        box-shadow: 0 1px 0 0 rgba(0,0,0,0.1),   // Shadow below
+                    0 0 2px 0 rgba(0,0,0,0.1);   // Outline-like shadow
+
+
         margin-bottom: 0;
         padding-bottom: $project-tile-metrics-height + 20px;
         cursor: pointer;
@@ -65,11 +152,15 @@
 
         h1 {
             @include limit-lines(2, 20px, 1.5);
-            margin-bottom: 10px;
+            margin-bottom: rem-calc(24px);
+            -webkit-font-smoothing: antialiased;
+            font-size: rem-calc(22px);
+            font-weight: 600;
         }
 
         p {
             @include limit-lines(4, 16px, 1.5);
+            margin-bottom: 1.5rem;
         }
 
         .metrics {

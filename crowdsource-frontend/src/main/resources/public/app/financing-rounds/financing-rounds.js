@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .controller('FinancingRoundsController', function ($routeParams, $location, FinancingRound) {
+    .controller('FinancingRoundsController', function ($routeParams, $location, FinancingRound, Authentication) {
 
         var vm = this;
 
@@ -21,6 +21,9 @@ angular.module('crowdsource')
                 .then(function () {
                     vm.allFinancingRounds = FinancingRound.getAll();
                     vm.info = "Finanzierungsrunde gestartet.";
+
+                    FinancingRound.reloadCurrentRound();
+                    Authentication.reloadUser();
                 })
                 .catch(function () {
                     vm.info = "Fehler beim Starten der Finanzierungsrunde!";
@@ -45,6 +48,9 @@ angular.module('crowdsource')
                 .then(function () {
                     vm.allFinancingRounds = FinancingRound.getAll();
                     vm.info = "Finanzierungsrunde gestoppt.";
+
+                    FinancingRound.reloadCurrentRound();
+                    Authentication.reloadUser();
                 })
                 .catch(function () {
                     vm.info = "Fehler beim Stoppen der Finanzierungsrunde!";

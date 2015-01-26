@@ -45,7 +45,6 @@ Specifiy path to chromedriver/chrom in test.properties to use chrome (untested).
 Firefox is the fallback. Do nothing and use the worst possible browser by default.
 
 
-TEAMCITY
+CI-Server
 
-Give this parameter in your build's maven step: clean verify -Pdocker,phantomjs -Dde.axelspringer.ideas.crowdsource.db.host=%env.AGENT_HOST_IP% -DHOST_IP=%env.AGENT_HOST_IP%.
-Note that the parameter AGENT_HOST_IP needs to be available in your environment.
+Give this parameter in your build's maven step: clean verify -Pdocker,phantomjs  -Dde.axelspringer.ideas.crowdsource.test.applicationhost=54.154.213.220.

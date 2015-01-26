@@ -10,7 +10,7 @@ public class UrlProvider {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
-    @Value("${HOST_IP:localhost}")
+    @Value("${de.axelspringer.ideas.crowdsource.test.applicationhost:localhost}")
     private String applicationHost;
 
     @Value("${de.axelspringer.ideas.crowdsource.test.server.port:8080}")

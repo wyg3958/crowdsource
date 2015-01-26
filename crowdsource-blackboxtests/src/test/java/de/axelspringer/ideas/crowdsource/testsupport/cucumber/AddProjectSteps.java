@@ -13,6 +13,7 @@ import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.axelspringer.ideas.crowdsource.testsupport.util.CrowdSourceClient;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.WebDriver;
+import org.hamcrest.Matchers;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -38,11 +39,11 @@ public class AddProjectSteps {
 
     @Autowired
     private CrowdSourceClient crowdSourceClient;
-
-
+    
     private WebDriver webDriver;
 
     private String randomProjectTitlePrefix;
+
     private String randomProjectShortDescriptionPrefix;
 
     @Before
@@ -67,7 +68,7 @@ public class AddProjectSteps {
     public void he_submits_the_form_with_valid_project_data() throws Throwable {
         PageFactory.initElements(webDriver, addProjectForm);
 
-        randomProjectTitlePrefix = "Title " + RandomStringUtils.randomAlphanumeric(16);
+        randomProjectTitlePrefix = "Title" + RandomStringUtils.randomAlphanumeric(4);
         randomProjectShortDescriptionPrefix = "Short description " + RandomStringUtils.randomAlphanumeric(16);
 
         // makes exactly 60 characters, to cause the text to be abbreviated on purpose

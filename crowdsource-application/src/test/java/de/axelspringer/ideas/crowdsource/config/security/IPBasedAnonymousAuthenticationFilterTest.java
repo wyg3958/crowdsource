@@ -44,6 +44,26 @@ public class IPBasedAnonymousAuthenticationFilterTest {
     }
 
     @Test
+    public void testCreateAuthenticationTrustedIpAsForwardedIp() throws Exception {
+
+        trust("10.5.4.8");
+        final HttpServletRequest request = mockRequest("foo_bar_ip");
+        when(request.getHeader("X-Forwarded-For")).thenReturn("10.5.4.8");
+        final Authentication authentication = ipBasedAnonymousAuthenticationFilter.createAuthentication(request);
+        assertTrue(trustedAnonymousGranted(authentication));
+    }
+
+    @Test
+    public void testCreateAuthenticationTrustedIpAsForwardedIps() throws Exception {
+
+        trust("10.5.4.8");
+        final HttpServletRequest request = mockRequest("foo_bar_ip");
+        when(request.getHeader("X-Forwarded-For")).thenReturn("foo, bar, 10.5.4.8");
+        final Authentication authentication = ipBasedAnonymousAuthenticationFilter.createAuthentication(request);
+        assertTrue(trustedAnonymousGranted(authentication));
+    }
+
+    @Test
     public void testCreateAuthenticationTrustedIps() throws Exception {
 
         trust("10.5.4.8, 10.5.4.9");

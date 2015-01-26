@@ -56,8 +56,8 @@ describe('financing rounds', function () {
         $scope.$digest();
 
         expect(financingRounds.getTableRowCount()).toBe(1);
-        expect(financingRounds.getTableStartDate().text()).toBe(startDate.format('DD.MM.YY HH:mm'));
-        expect(financingRounds.getTableEndDate().text()).toBe(endDate.format('DD.MM.YY HH:mm'));
+        expect(financingRounds.getTableStartDate()).toHaveText(startDate.format('DD.MM.YY HH:mm'));
+        expect(financingRounds.getTableEndDate()).toHaveText(endDate.format('DD.MM.YY HH:mm'));
         expect(financingRounds.getTableBudget()).toHaveText('5.555');
         expect(financingRounds.getTableEndRoundButton()).not.toBeDisabled();
         expect(financingRounds.getStartRoundButton()).not.toExist();
@@ -85,10 +85,10 @@ describe('financing rounds', function () {
 
         expect(financingRounds.getTableStartDate().text()).toBe(startDate1.format('DD.MM.YY HH:mm'));
         expect(financingRounds.getTableEndDate().text()).toBe(endDate1.format('DD.MM.YY HH:mm'));
-        expect(financingRounds.getTableBudget()).toHaveText('1.111');
+        expect(financingRounds.getTableBudget().text()).toBe('1.111');
 
         expect(financingRounds.getTableStartDate(row).text()).toBe(startDate2.format('DD.MM.YY HH:mm'));
-        expect(financingRounds.getTableEndDate(row).text()).toBe(endDate2.format('DD.MM.YY HH:mm'));
+        expect(financingRounds.getTableEndDate(row)).toHaveText(endDate2.format('DD.MM.YY HH:mm'));
         expect(financingRounds.getTableBudget(row)).toHaveText('2.222');
 
         expect(financingRounds.getTableEndRoundButton()).not.toExist();
@@ -97,6 +97,7 @@ describe('financing rounds', function () {
         expect(financingRounds.getStartRoundButton()).toExist();
         expect(financingRounds.getNotification()).not.toContainText('Es läuft bereits eine Finanzierungsrunde. Daher kann keine neue Runde gestartet werden.');
     });
+
 
     it("should display two rounds where one of them is active", function () {
         var now = moment();
@@ -164,6 +165,8 @@ describe('financing rounds', function () {
             {"budget": "5555", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "active": true}
         ]);
 
+        $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
+
         financingRounds.getStartRoundButton().click();
         expect(financingRounds.getStartRoundButton()).toHaveText('Starten...');
         $httpBackend.flush();
@@ -195,6 +198,8 @@ describe('financing rounds', function () {
         prepareBackendGetFinancingRoundsMock([
             {"id": "4711", "budget": "5555", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "active": false}
         ]);
+
+        $httpBackend.expectGET('/financinground/active').respond(404);
 
         financingRounds.getTableEndRoundButton().click();
         expect(financingRounds.getTableEndRoundButton()).toHaveText('Beenden...');

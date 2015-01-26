@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.crowdsource.testsupport.pageobjects;
 
+import de.axelspringer.ideas.crowdsource.testsupport.selenium.ElementUtils;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.SeleniumWait;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -23,6 +24,12 @@ public class NavigationBar {
     @FindBy(css = "nav.top-bar a[href='#/project/new']")
     private WebElement newProjectLink;
 
+    @FindBy(css = "nav-bar .toggle-topbar")
+    private WebElement toggleIcon;
+
+    @FindBy(css = "nav-bar nav")
+    private WebElement navContainer;
+
     @Autowired
     private SeleniumWait wait;
 
@@ -44,5 +51,13 @@ public class NavigationBar {
     public void clickNewProject() {
         wait.until(visibilityOf(newProjectLink));
         newProjectLink.click();
+    }
+
+    public WebElement getToggleIcon() {
+        return toggleIcon;
+    }
+
+    public boolean isExpanded() {
+        return ElementUtils.hasClass(navContainer, "expanded");
     }
 }

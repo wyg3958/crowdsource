@@ -5,14 +5,6 @@
  *
  */
 
-
-%font-smoothing {
-  -webkit-font-smoothing: antialiased;
-}
-
-
-
-
 //
 // Define Extends
 //
@@ -83,14 +75,13 @@
 
     @media #{$medium-up} {
         background: url('../images/teaser-bg.png') #39c277 center center no-repeat;
-        padding: 2rem;
     }
 }
 
 
 .teaser__content {
     position: relative;
-    padding:  2rem 1rem;
+    padding:  3rem 1rem;
     text-align: center;
 }
 

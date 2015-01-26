@@ -2,6 +2,7 @@ package de.axelspringer.ideas.crowdsource.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import de.axelspringer.ideas.crowdsource.config.security.Roles;
+import de.axelspringer.ideas.crowdsource.exceptions.InvalidRequestException;
 import de.axelspringer.ideas.crowdsource.exceptions.ResourceNotFoundException;
 import de.axelspringer.ideas.crowdsource.model.persistence.FinancingRoundEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
@@ -85,6 +86,14 @@ public class FinancingRoundController {
 
         // find entity
         final FinancingRoundEntity financingRoundEntity = financingRoundRepository.findOne(id);
+
+        if (financingRoundEntity == null) {
+            throw new ResourceNotFoundException();
+        }
+        if (financingRoundEntity.getEndDate().isBeforeNow()) {
+            throw InvalidRequestException.financingRoundAlreadyStopped();
+        }
+
         financingRoundEntity.setEndDate(new DateTime());
         financingRoundRepository.save(financingRoundEntity);
         return new FinancingRound(financingRoundEntity);

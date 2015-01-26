@@ -1,6 +1,6 @@
 package de.axelspringer.ideas.crowdsource.config.security;
 
-import de.axelspringer.ideas.crowdsource.config.AppProfile;
+import de.axelspringer.ideas.crowdsource.config.AppProfiles;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +41,7 @@ public class MongoUserDetailsService implements UserDetailsService {
     @PostConstruct
     public void createUsers() {
 
-        if (!environment.acceptsProfiles(AppProfile.DEV, AppProfile.CONS)) {
+        if (!environment.acceptsProfiles(AppProfiles.DEV, AppProfiles.CONS)) {
             log.info("not creating or updating any users as the application is not running in profile DEV or CI");
             return;
         }

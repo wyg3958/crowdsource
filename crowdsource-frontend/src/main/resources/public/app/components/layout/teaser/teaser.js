@@ -1,5 +1,73 @@
 angular.module('crowdsource')
 
+    .directive('teaser', function ($interval, $timeout, Authentication, Route, TeaserMetrics, User, FinancingRound) {
+        var directive = {};
+
+        directive.controllerAs = 'teaser';
+        directive.bindToController = true;
+        directive.templateUrl = 'app/components/layout/teaser/teaser.html';
+
+        directive.controller = function () {
+            var vm = this;
+
+            vm.show = false;
+
+            // initialize to a string that evaluates to true to show the
+            // 3 metrics items while loading instead of only two
+            vm.remainingTime = " ";
+
+            Route.onRouteChangeSuccessAndInit(function (event, current) {
+                render(current);
+            });
+
+            $interval(applyRemainingTime, 1000);
+
+            function render(currentRoute, wasPageLoad) {
+                vm.show = currentRoute.showTeaser;
+
+                if (currentRoute.showTeaser) {
+                    // refresh the data every time a route is changed and
+                    // the teaser should be shown
+                    loadData(wasPageLoad);
+                }
+            }
+
+            function loadData() {
+                User.getMetrics().$promise.then(function(metrics) {
+                    vm.userMetrics = metrics;
+                });
+
+                FinancingRound.reloadCurrentRound().then(function () {
+                    // recalculate the remaining time right when the data is available,
+                    // else it is first updated when the next $interval kicks in
+                    applyRemainingTime();
+                });
+            }
+
+            function applyRemainingTime() {
+                if (!FinancingRound.current.$resolved) {
+                    return;
+                }
+
+                vm.remainingTime = TeaserMetrics.formatRemainingTime(FinancingRound.current.endDate);
+
+                // financing round time is now over
+                if (FinancingRound.current.active && !vm.remainingTime) {
+                    // reload the data 500ms later (because the time of the browser could be out of sync with the server time)
+                    $timeout(function() {
+                        // reload the metrics to see if the financing round is really over
+                        loadData();
+
+                        // update the user's budget
+                        Authentication.reloadUser();
+                    }, 500);
+                }
+            }
+        };
+
+        return directive;
+    })
+
     .factory('TeaserMetrics', function() {
         var service = {};
 
@@ -32,59 +100,4 @@ angular.module('crowdsource')
         };
 
         return service;
-    })
-
-    .directive('teaser', function ($rootScope, $interval, TeaserMetrics, User, FinancingRound) {
-        var directive = {};
-
-        directive.controllerAs = 'teaser';
-        directive.bindToController = true;
-        directive.templateUrl = 'app/components/layout/teaser/teaser.html';
-
-        directive.controller = function () {
-            var vm = this;
-
-            vm.show = false;
-
-            // initialize to a string that evaluates to true to show the
-            // 3 metrics items while loading instead of only two
-            vm.remainingTime = " ";
-
-            var activeRound = { $resolved: false };
-
-            $rootScope.$on('$routeChangeSuccess', function (event, current) {
-                vm.show = current.showTeaser;
-
-                if (current.showTeaser) {
-                    // refresh the data every time a route is changed and
-                    // the teaser should be shown
-                    loadData();
-                }
-            });
-
-            $interval(applyRemainingTime, 1000);
-
-            function loadData() {
-                User.getMetrics().$promise.then(function(metrics) {
-                    vm.userMetrics = metrics;
-                });
-
-                activeRound = FinancingRound.getActive();
-                activeRound.$promise.then(function() {
-                    // recalculate the remaining time right when the data is available,
-                    // else it is first updated when the next $interval kicks in
-                    applyRemainingTime();
-                });
-            }
-
-            function applyRemainingTime() {
-                if (!activeRound.$resolved) {
-                    return;
-                }
-
-                vm.remainingTime = TeaserMetrics.formatRemainingTime(activeRound.endDate);
-            }
-        };
-
-        return directive;
     });

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
@@ -17,10 +18,12 @@ import java.util.List;
 public class Project {
 
     // no validation here on purpose, as this is only filled on response and ignored in request.
+    @NotEmpty(groups = {UpdateProject.class})
     @JsonView(ProjectSummaryView.class)
     private String id;
 
     // no validation here on purpose, as this is only filled on response and ignored in request
+    @NotNull(groups = {UpdateProject.class})
     @JsonView(ProjectSummaryView.class)
     private ProjectStatus status;
 
@@ -49,6 +52,7 @@ public class Project {
 
     // no validation here on purpose, as this is only filled on response and ignored in request. Ideally,
     // this is filled on request too and denied if a normal user tries to create a project for someone else
+    @JsonView(ProjectSummaryView.class)
     private ProjectCreator creator;
 
     public Project(ProjectEntity projectEntity, List<PledgeEntity> pledges) {
@@ -63,5 +67,11 @@ public class Project {
         this.backers = pledges.stream().map(PledgeEntity::getUser).distinct().count();
 
         this.creator = new ProjectCreator(projectEntity.getCreator());
+    }
+
+    /**
+     * Used as Marker for {@link de.axelspringer.ideas.crowdsource.model.presentation.project.Project} Validation on update requests
+     */
+    public interface UpdateProject {
     }
 }

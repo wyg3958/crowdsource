@@ -4,11 +4,7 @@ angular.module('crowdsource')
 
         var service = {};
 
-        var financingRoundResource = $resource('/financinground/:id', {}, {
-            get: {
-                method: 'GET'
-            }
-        });
+        var financingRoundResource = $resource('/financinground/:id');
 
         var stopFinancingRoundRessource = $resource('/financinground/:id/cancel', {}, {
             'update': {

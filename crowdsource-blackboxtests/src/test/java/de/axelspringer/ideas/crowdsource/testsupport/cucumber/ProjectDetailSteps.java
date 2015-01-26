@@ -67,6 +67,9 @@ public class ProjectDetailSteps {
 
         CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithDefaultUser();
         createdProject = crowdSourceClient.createProject(createdProject, authToken).getBody();
+
+        final CrowdSourceClient.AuthToken adminToken = crowdSourceClient.authorizeWithAdminUser();
+        crowdSourceClient.publish(createdProject, adminToken);
     }
 
     @When("^the user clicks on the tile of this published project$")

@@ -46,6 +46,6 @@ public class ProjectEntity {
         this.shortDescription = project.getShortDescription();
         this.description = project.getDescription();
         this.pledgeGoal = project.getPledgeGoal();
-        this.status = ProjectStatus.PUBLISHED;
+        this.status = ProjectStatus.PROPOSED;
     }
 }

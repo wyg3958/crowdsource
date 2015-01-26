@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.crowdsource.service;
 
+import de.axelspringer.ideas.crowdsource.config.security.Roles;
 import de.axelspringer.ideas.crowdsource.enums.ProjectStatus;
 import de.axelspringer.ideas.crowdsource.exceptions.InvalidRequestException;
 import de.axelspringer.ideas.crowdsource.exceptions.ResourceNotFoundException;
@@ -38,6 +39,8 @@ public class ProjectService {
     @Autowired
     private FinancingRoundRepository financingRoundRepository;
 
+    @Autowired
+    private UserNotificationService userNotificationService;
 
     public Project getProject(String projectId) {
 
@@ -60,8 +63,17 @@ public class ProjectService {
         ProjectEntity projectEntity = new ProjectEntity(userEntity, project, currentFinancingRound());
         projectEntity = projectRepository.save(projectEntity);
 
+        notifyAdminsOnNewProject(projectEntity);
+
         log.debug("Project added: {}", projectEntity);
         return project(projectEntity);
+    }
+
+    private void notifyAdminsOnNewProject(final ProjectEntity projectEntity) {
+        userRepository.findAll().stream()
+                .filter(user -> user.getRoles().contains(Roles.ROLE_ADMIN))
+                .map(UserEntity::getEmail)
+                .forEach(emailAddress -> userNotificationService.notifyAdminOnProjectCreation(projectEntity, emailAddress));
     }
 
     public Project updateProject(String projectId, Project project) {
@@ -70,8 +82,11 @@ public class ProjectService {
         if (projectEntity == null) {
             throw new ResourceNotFoundException();
         }
-        projectEntity.setStatus(project.getStatus());
-        projectEntity = projectRepository.save(projectEntity);
+        if (projectEntity.getStatus() != project.getStatus()) {
+            projectEntity.setStatus(project.getStatus());
+            projectEntity = projectRepository.save(projectEntity);
+            userNotificationService.notifyUserOnProjectUpdate(projectEntity, projectEntity.getCreator().getEmail());
+        }
 
         log.debug("Project updated: {}", projectEntity);
         return project(projectEntity);

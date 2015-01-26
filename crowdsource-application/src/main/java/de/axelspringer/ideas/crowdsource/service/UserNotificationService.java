@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.crowdsource.service;
 
+import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class UserNotificationService {
         String activationLink = buildLink(ACTIVATION_LINK_PATTERN, user.getEmail(), user.getActivationToken());
         log.debug("Sending activation link {} to {}", activationLink, user.getEmail());
 
-        sendMail(user, REGISTRATION_SUBJECT, ACTIVATION_MAIL_CONTENT + activationLink);
+        sendMail(user.getEmail(), REGISTRATION_SUBJECT, ACTIVATION_MAIL_CONTENT + activationLink);
     }
 
     public void sendPasswordRecoveryMail(UserEntity user) {
@@ -44,23 +45,41 @@ public class UserNotificationService {
         String passwordRecoveryLink = buildLink(PASSWORD_RECOVERY_LINK_PATTERN, user.getEmail(), user.getActivationToken());
         log.debug("Sending password recovery link {} to {}", passwordRecoveryLink, user.getEmail());
 
-        sendMail(user, PASSWORD_RECOVERY_SUBJECT, PASSWORD_RECOVERY_MAIL_CONTENT + passwordRecoveryLink);
+        sendMail(user.getEmail(), PASSWORD_RECOVERY_SUBJECT, PASSWORD_RECOVERY_MAIL_CONTENT + passwordRecoveryLink);
     }
 
     private String buildLink(String urlPattern, String emailAddress, String activationToken) {
+
         UriComponentsBuilder uriBuilder = ServletUriComponentsBuilder.fromUriString(applicationUrl);
         uriBuilder.fragment(urlPattern);
 
         return uriBuilder.buildAndExpand(emailAddress, activationToken).toUriString();
     }
 
-    private void sendMail(UserEntity user, String subject, String messageText) {
+    private void sendMail(String email, String subject, String messageText) {
+
         SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(user.getEmail());
+        mailMessage.setTo(email);
         mailMessage.setFrom(FROM_ADDRESS);
         mailMessage.setSubject(subject);
         mailMessage.setText(messageText);
 
         mailSender.send(mailMessage);
+    }
+
+    public void notifyUserOnProjectUpdate(ProjectEntity project, String emailAddress) {
+
+        final String subject = "Der Zustand Des Projektes " + project.getTitle() + " hat sich geändert!";
+        final String message = "Das Projekt " + project.getTitle() + " wurde in den Zustand " + project.getStatus().name() + " versetzt.";
+
+        sendMail(emailAddress, subject, message);
+    }
+
+    public void notifyAdminOnProjectCreation(ProjectEntity project, String emailAddress) {
+
+        final String subject = "Freigabeanforderung: Das Projekt " + project.getTitle() + " wurde angelegt.";
+        final String message = "Das Projekt " + project.getTitle() + " wurde in den Zustand " + project.getStatus().name() + " versetzt.";
+
+        sendMail(emailAddress, subject, message);
     }
 }

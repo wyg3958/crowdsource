@@ -15,6 +15,7 @@ import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import de.axelspringer.ideas.crowdsource.service.ProjectService;
 import de.axelspringer.ideas.crowdsource.service.UserNotificationService;
 import de.axelspringer.ideas.crowdsource.service.UserService;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,11 +43,8 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -101,13 +99,15 @@ public class ProjectControllerTest {
 
         existingProject = createProjectEntity(EXISTING_PROJECT_ID, "title", 44, "short description", "description", ProjectStatus.PUBLISHED);
         when(projectRepository.findOne(EXISTING_PROJECT_ID)).thenReturn(existingProject);
-        when(pledgeRepository.findByProject(eq(existingProject))).thenReturn(Arrays.asList(
-                new PledgeEntity(existingProject, existingUserEntity, new Pledge(ALREADY_PLEDGED))));
+
+        when(pledgeRepository.findByProjectAndFinancingRound(eq(existingProject), isA(FinancingRoundEntity.class))).thenReturn(Arrays.asList(
+                new PledgeEntity(existingProject, existingUserEntity, new Pledge(ALREADY_PLEDGED), new FinancingRoundEntity())));
 
         fullyPledgedProject = createProjectEntity(FULLY_PLEDGED_PROJECT_ID, "title", ALREADY_PLEDGED, "short description", "description", ProjectStatus.FULLY_PLEDGED);
         when(projectRepository.findOne(FULLY_PLEDGED_PROJECT_ID)).thenReturn(fullyPledgedProject);
-        when(pledgeRepository.findByProject(eq(fullyPledgedProject))).thenReturn(Arrays.asList(
-                new PledgeEntity(fullyPledgedProject, existingUserEntity, new Pledge(ALREADY_PLEDGED))));
+
+        when(pledgeRepository.findByProjectAndFinancingRound(eq(fullyPledgedProject), isA(FinancingRoundEntity.class))).thenReturn(Arrays.asList(
+                new PledgeEntity(fullyPledgedProject, existingUserEntity, new Pledge(ALREADY_PLEDGED), new FinancingRoundEntity())));
 
         ProjectEntity project1 = createProjectEntity("projectId1", "title1", 11, "short description1", "description1", ProjectStatus.PUBLISHED);
         ProjectEntity project2 = createProjectEntity("projectId2", "title2", 22, "short description2", "description2", ProjectStatus.PUBLISHED);
@@ -116,14 +116,18 @@ public class ProjectControllerTest {
 
         when(projectRepository.findByStatusOrderByCreatedDateDesc(any())).thenReturn(projects);
 
-        when(pledgeRepository.findByProject(eq(project1))).thenReturn(Arrays.asList(
-                new PledgeEntity(project1, existingUserEntity, new Pledge(11))));
-        when(pledgeRepository.findByProject(eq(project2))).thenReturn(Arrays.asList(
-                new PledgeEntity(project2, existingUserEntity, new Pledge(2)),
-                new PledgeEntity(project2, existingUserEntity, new Pledge(20))));
-        when(pledgeRepository.findByProject(eq(project3))).thenReturn(Arrays.asList());
+        when(pledgeRepository.findByProjectAndFinancingRound(eq(project1), isA(FinancingRoundEntity.class))).thenReturn(Arrays.asList(
+                new PledgeEntity(project1, existingUserEntity, new Pledge(11), new FinancingRoundEntity())));
+
+        when(pledgeRepository.findByProjectAndFinancingRound(eq(project2), isA(FinancingRoundEntity.class))).thenReturn(Arrays.asList(
+                new PledgeEntity(project2, existingUserEntity, new Pledge(2), new FinancingRoundEntity()),
+                new PledgeEntity(project2, existingUserEntity, new Pledge(20), new FinancingRoundEntity())));
+
+        when(pledgeRepository.findByProjectAndFinancingRound(eq(project3), isA(FinancingRoundEntity.class))).thenReturn(Arrays.asList());
 
         when(projectRepository.save(any(ProjectEntity.class))).thenAnswer(invocationOnMock -> invocationOnMock.getArguments()[0]);
+
+        when(financingRoundRepository.findActive(any(DateTime.class))).thenReturn(new FinancingRoundEntity());
     }
 
     @Test
@@ -234,7 +238,7 @@ public class ProjectControllerTest {
                 .content(mapper.writeValueAsString(pledge)))
                 .andExpect(status().isCreated());
 
-        PledgeEntity pledgeEntity = new PledgeEntity(existingProject, existingUserEntity, pledge);
+        PledgeEntity pledgeEntity = new PledgeEntity(existingProject, existingUserEntity, pledge, new FinancingRoundEntity());
         verify(pledgeRepository).save(pledgeEntity);
         verify(userRepository).save(existingUserEntity);
         verify(projectRepository, never()).save(any(ProjectEntity.class));
@@ -259,7 +263,7 @@ public class ProjectControllerTest {
                 .content(mapper.writeValueAsString(pledge)))
                 .andExpect(status().isCreated());
 
-        PledgeEntity pledgeEntity = new PledgeEntity(existingProject, existingUserEntity, pledge);
+        PledgeEntity pledgeEntity = new PledgeEntity(existingProject, existingUserEntity, pledge, new FinancingRoundEntity());
         verify(pledgeRepository).save(pledgeEntity);
         verify(userRepository).save(existingUserEntity);
         verify(projectRepository).save(existingProject);

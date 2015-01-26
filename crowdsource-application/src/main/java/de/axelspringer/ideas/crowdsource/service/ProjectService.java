@@ -3,6 +3,7 @@ package de.axelspringer.ideas.crowdsource.service;
 import de.axelspringer.ideas.crowdsource.enums.ProjectStatus;
 import de.axelspringer.ideas.crowdsource.exceptions.InvalidRequestException;
 import de.axelspringer.ideas.crowdsource.exceptions.ResourceNotFoundException;
+import de.axelspringer.ideas.crowdsource.model.persistence.FinancingRoundEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.PledgeEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
@@ -51,7 +52,7 @@ public class ProjectService {
     public List<Project> getProjects() {
 
         final List<ProjectEntity> projects = projectRepository.findByStatusOrderByCreatedDateDesc(ProjectStatus.PUBLISHED);
-        return projects.stream().map(this::project).collect(toList());
+        return projects.stream().map(p -> project(p)).collect(toList());
     }
 
     public Project addProject(Project project, UserEntity userEntity) {
@@ -63,11 +64,27 @@ public class ProjectService {
         return project(projectEntity);
     }
 
+    public Project updateProject(Project project) {
+
+        ProjectEntity projectEntity = projectRepository.findOne(project.getId());
+        projectEntity.setStatus(project.getStatus());
+        projectEntity = projectRepository.save(projectEntity);
+
+        log.debug("Project updated: {}", projectEntity);
+        return project(projectEntity);
+    }
+
     public void pledge(String projectId, UserEntity userEntity, Pledge pledge) {
 
         ProjectEntity projectEntity = projectRepository.findOne(projectId);
+        FinancingRoundEntity activeFinancingRoundEntity = getActiveFinancingRoundEntity();
+
         if (projectEntity == null) {
             throw new ResourceNotFoundException();
+        }
+
+        if (activeFinancingRoundEntity == null) {
+            throw InvalidRequestException.noFinancingRoundCurrentlyActive();
         }
 
         // potential problem: race condition. Two simultaneous requests could lead to "over-pledging"
@@ -89,7 +106,7 @@ public class ProjectService {
             throw InvalidRequestException.pledgeGoalExceeded();
         }
 
-        PledgeEntity pledgeEntity = new PledgeEntity(projectEntity, userEntity, pledge);
+        PledgeEntity pledgeEntity = new PledgeEntity(projectEntity, userEntity, pledge, activeFinancingRoundEntity);
         userEntity.reduceBudget(pledge.getAmount());
 
         if (newPledgedAmount == project.getPledgeGoal()) {
@@ -104,10 +121,14 @@ public class ProjectService {
         log.debug("Project pledged: {}", pledgeEntity);
     }
 
+    private FinancingRoundEntity getActiveFinancingRoundEntity() {
+        return financingRoundRepository.findActive(DateTime.now());
+    }
+
 
     private Project project(ProjectEntity projectEntity) {
 
-        List<PledgeEntity> pledges = pledgeRepository.findByProject(projectEntity);
+        List<PledgeEntity> pledges = pledgeRepository.findByProjectAndFinancingRound(projectEntity, getActiveFinancingRoundEntity());
         return new Project(projectEntity, pledges);
     }
 }

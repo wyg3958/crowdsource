@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -277,7 +278,9 @@ public class ProjectControllerTest {
 
         int budgetBeforePledge = user.getBudget();
 
-        when(financingRoundRepository.findActive(any())).thenReturn(new FinancingRoundEntity());
+        FinancingRoundEntity activeFinancingRound = new FinancingRoundEntity();
+        activeFinancingRound.setId(UUID.randomUUID().toString());
+        when(financingRoundRepository.findActive(any())).thenReturn(activeFinancingRound);
 
         mockMvc.perform(post("/project/{projectId}/pledge", "some_id")
                 .principal(authentication(user))
@@ -285,7 +288,7 @@ public class ProjectControllerTest {
                 .content(mapper.writeValueAsString(pledge)))
                 .andExpect(status().isCreated());
 
-        PledgeEntity pledgeEntity = new PledgeEntity(project, user, pledge);
+        PledgeEntity pledgeEntity = new PledgeEntity(project, user, pledge, activeFinancingRound);
         verify(pledgeRepository).save(pledgeEntity);
         verify(userRepository).save(user);
         verify(projectRepository, never()).save(any(ProjectEntity.class));
@@ -475,7 +478,9 @@ public class ProjectControllerTest {
 
     private void pledgeProject(ProjectEntity project, UserEntity user, int amount) {
 
-        when(pledgeRepository.findByProject(project)).thenReturn(Collections.singletonList(new PledgeEntity(project, user, new Pledge(amount))));
+        when(pledgeRepository.findByProjectAndFinancingRound(eq(project), any()))
+                .thenReturn(Collections.singletonList(new PledgeEntity(project, user, new Pledge(amount), new FinancingRoundEntity())));
+
         if (project.getPledgeGoal() == amount) {
             project.setStatus(ProjectStatus.FULLY_PLEDGED);
         }

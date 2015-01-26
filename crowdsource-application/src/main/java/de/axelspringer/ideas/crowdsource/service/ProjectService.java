@@ -74,7 +74,7 @@ public class ProjectService {
         projectEntity = projectRepository.save(projectEntity);
 
         log.debug("Project updated: {}", projectEntity);
-        return project(projectEntity);
+        return project(projectEntity, getActiveFinancingRoundEntity());
     }
 
     public void pledge(String projectId, UserEntity userEntity, Pledge pledge) {

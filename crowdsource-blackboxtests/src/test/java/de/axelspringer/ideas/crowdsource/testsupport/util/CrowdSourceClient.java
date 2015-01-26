@@ -90,7 +90,7 @@ public class CrowdSourceClient {
     }
 
     public ResponseEntity<FinancingRound> stopFinancingRound(String id, AuthToken authToken) {
-        HttpEntity<FinancingRound> requestEntity = createRequestEntity(null, authToken);
+        HttpEntity requestEntity = createRequestEntity(authToken);
         return restTemplate.exchange(urlProvider.applicationUrl() + "/financinground/{id}/cancel", HttpMethod.PUT, requestEntity, FinancingRound.class, id);
     }
 
@@ -112,10 +112,7 @@ public class CrowdSourceClient {
     }
 
     private HttpEntity createRequestEntity(AuthToken authToken) {
-        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.put("Authorization", Arrays.asList("Bearer " + authToken.accessToken));
-
-        return new HttpEntity<>(headers);
+        return createRequestEntity(null, authToken);
     }
 
     public RestTemplate getUnderlyingClient() {
@@ -143,3 +140,4 @@ public class CrowdSourceClient {
         private String accessToken;
     }
 }
+

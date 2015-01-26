@@ -7,12 +7,12 @@ import java.util.Arrays;
 public class ElementUtils {
 
     public static int parseCurrency(WebElement element) {
-        String value = element.getText();
+        String value = element.getText().replaceAll("\\$", "").trim();
         return parseNumber(value);
     }
 
     public static int parseNumber(String value) {
-        value = value.replaceAll("\\.", "").replaceAll("\\$", "").trim();
+        value = value.replaceAll("\\.", "").trim();
         return Integer.parseInt(value);
     }
 

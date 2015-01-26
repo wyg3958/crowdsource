@@ -8,6 +8,7 @@ import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.NavigationBar;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.AddProjectConfirmationView;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.AddProjectForm;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.ProjectsPage;
+import de.axelspringer.ideas.crowdsource.testsupport.selenium.ElementUtils;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.axelspringer.ideas.crowdsource.testsupport.util.CrowdSourceClient;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -134,6 +135,6 @@ public class AddProjectSteps {
     public void the_project_is_marked(String state) throws Throwable {
         final WebElement projectElement = projectsPage.findProject(randomProjectTitlePrefix, randomProjectShortDescriptionPrefix);
         assertNotNull(projectElement);
-        assertTrue(projectElement.getAttribute("class").contains("project-" + state));
+        assertTrue(ElementUtils.hasClass(projectElement, "project-" + state));
     }
 }

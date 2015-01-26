@@ -13,6 +13,32 @@ angular.module('crowdsource')
         // the GET /project/:id response is finished
         vm.project.id = $routeParams.projectId;
 
+        vm.publish = function () {
+            vm.publishing = true;
+            Project.publish(vm.project.id).$promise
+                .then(function (project) {
+                    vm.project = project;
+                })
+                .catch(function () {
+                    $location.path('/error/unknown');
+                }).finally(function () {
+                    vm.publishing = false;
+                });
+        };
+
+        vm.reject = function () {
+            vm.rejecting = true;
+            Project.reject(vm.project.id).$promise
+                .then(function (project) {
+                    vm.project = project;
+                })
+                .catch(function () {
+                    $location.path('/error/unknown');
+                }).finally(function () {
+                    vm.rejecting = false;
+                });
+        };
+
         vm.project.$promise.catch(function (response) {
             if (response.status == 404) {
                 $location.path('/error/notfound');

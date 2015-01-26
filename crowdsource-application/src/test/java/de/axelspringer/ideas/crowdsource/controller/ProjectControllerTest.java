@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -95,6 +96,9 @@ public class ProjectControllerTest {
         final String email = "some@mail.com";
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
 
+        FinancingRoundEntity currentFinancingRound = financingRound();
+        when(financingRoundRepository.findActive(any())).thenReturn(currentFinancingRound);
+
         MvcResult mvcResult = mockMvc.perform(post("/project")
                 .principal(authentication(user))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -102,7 +106,38 @@ public class ProjectControllerTest {
                 .andExpect(status().isCreated())
                 .andReturn();
 
-        ProjectEntity projectEntity = new ProjectEntity(user, project);
+        ProjectEntity projectEntity = new ProjectEntity(user, project, currentFinancingRound);
+        verify(projectRepository).save(eq(projectEntity));
+
+        assertThat(mvcResult.getResponse().getContentAsString(), is("{" +
+                "\"id\":null," + // actually this is non null, but the projectRepository is a mock and does not generate an id
+                "\"status\":\"PROPOSED\"," +
+                "\"title\":\"myTitle\"," +
+                "\"shortDescription\":\"theShortDescription\"," +
+                "\"description\":\"theFullDescription\"," +
+                "\"pledgeGoal\":50,\"pledgedAmount\":0," +
+                "\"backers\":0," +
+                "\"creator\":{\"id\":\"id_" + email + "\",\"name\":\"Some\",\"email\":\"" + email + "\"}}"));
+    }
+
+    @Test
+    public void addProject_shouldWorkIfNoFinancingRoundIsCurrentlyActive() throws Exception {
+
+        final Project project = project("myTitle", "theFullDescription", "theShortDescription", 50);
+
+        final String email = "some@mail.com";
+        final UserEntity user = userEntity(email, Roles.ROLE_USER);
+
+        when(financingRoundRepository.findActive(any())).thenReturn(null);
+
+        MvcResult mvcResult = mockMvc.perform(post("/project")
+                .principal(authentication(user))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(project)))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        ProjectEntity projectEntity = new ProjectEntity(user, project, null);
         verify(projectRepository).save(eq(projectEntity));
 
         assertThat(mvcResult.getResponse().getContentAsString(), is("{" +
@@ -271,7 +306,8 @@ public class ProjectControllerTest {
 
         int budgetBeforePledge = user.getBudget();
 
-        when(financingRoundRepository.findActive(any())).thenReturn(new FinancingRoundEntity());
+        FinancingRoundEntity activeFinancingRound = financingRound();
+        when(financingRoundRepository.findActive(any())).thenReturn(activeFinancingRound);
 
         mockMvc.perform(post("/project/{projectId}/pledge", "some_id")
                 .principal(authentication(user))
@@ -279,7 +315,7 @@ public class ProjectControllerTest {
                 .content(mapper.writeValueAsString(pledge)))
                 .andExpect(status().isCreated());
 
-        PledgeEntity pledgeEntity = new PledgeEntity(project, user, pledge);
+        PledgeEntity pledgeEntity = new PledgeEntity(project, user, pledge, activeFinancingRound);
         verify(pledgeRepository).save(pledgeEntity);
         verify(userRepository).save(user);
         verify(projectRepository, never()).save(any(ProjectEntity.class));
@@ -498,7 +534,9 @@ public class ProjectControllerTest {
 
     private void pledgeProject(ProjectEntity project, UserEntity user, int amount) {
 
-        when(pledgeRepository.findByProject(project)).thenReturn(Collections.singletonList(new PledgeEntity(project, user, new Pledge(amount))));
+        when(pledgeRepository.findByProjectAndFinancingRound(eq(project), any()))
+                .thenReturn(Collections.singletonList(new PledgeEntity(project, user, new Pledge(amount), new FinancingRoundEntity())));
+
         if (project.getPledgeGoal() == amount) {
             project.setStatus(ProjectStatus.FULLY_PLEDGED);
         }
@@ -535,6 +573,12 @@ public class ProjectControllerTest {
         projectEntity.setStatus(status);
         when(projectRepository.findOne(id)).thenReturn(projectEntity);
         return projectEntity;
+    }
+
+    private FinancingRoundEntity financingRound() {
+        FinancingRoundEntity financingRound = new FinancingRoundEntity();
+        financingRound.setId(UUID.randomUUID().toString());
+        return financingRound;
     }
 
     @Configuration

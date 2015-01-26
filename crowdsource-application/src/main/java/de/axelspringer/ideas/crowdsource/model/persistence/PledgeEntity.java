@@ -24,6 +24,9 @@ public class PledgeEntity {
     @DBRef
     private UserEntity user;
 
+    @DBRef
+    private FinancingRoundEntity financingRound;
+
     private int amount;
 
     @CreatedDate
@@ -32,10 +35,10 @@ public class PledgeEntity {
     @LastModifiedDate
     private DateTime lastModifiedDate;
 
-    public PledgeEntity(ProjectEntity projectEntity, UserEntity userEntity, Pledge pledge) {
+    public PledgeEntity(ProjectEntity projectEntity, UserEntity userEntity, Pledge pledge, FinancingRoundEntity financingRoundEntity) {
         this.project = projectEntity;
         this.user = userEntity;
-
+        this.financingRound = financingRoundEntity;
         this.amount = pledge.getAmount();
     }
 }

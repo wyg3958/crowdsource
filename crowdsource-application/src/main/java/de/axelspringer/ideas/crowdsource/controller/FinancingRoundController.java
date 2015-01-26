@@ -2,6 +2,7 @@ package de.axelspringer.ideas.crowdsource.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import de.axelspringer.ideas.crowdsource.config.security.Roles;
+import de.axelspringer.ideas.crowdsource.enums.ProjectStatus;
 import de.axelspringer.ideas.crowdsource.exceptions.InvalidRequestException;
 import de.axelspringer.ideas.crowdsource.exceptions.ResourceNotFoundException;
 import de.axelspringer.ideas.crowdsource.model.persistence.FinancingRoundEntity;
@@ -9,13 +10,19 @@ import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.model.presentation.FinancingRound;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.PublicFinancingRoundInformationView;
 import de.axelspringer.ideas.crowdsource.repository.FinancingRoundRepository;
+import de.axelspringer.ideas.crowdsource.repository.ProjectRepository;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -26,6 +33,9 @@ public class FinancingRoundController {
 
     @Autowired
     private FinancingRoundRepository financingRoundRepository;
+
+    @Autowired
+    private ProjectRepository projectRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -74,9 +84,17 @@ public class FinancingRoundController {
         financingRoundEntity.setBudget(financingRound.getBudget());
         financingRoundEntity.setBudgetPerUser(budgetPerUser);
         financingRoundEntity.setUserCount(userEntities.size());
-        financingRoundRepository.save(financingRoundEntity);
 
-        return new FinancingRound(financingRoundEntity);
+        final FinancingRoundEntity savedFinancingRoundEntity = financingRoundRepository.save(financingRoundEntity);
+
+        projectRepository.findAll().stream()
+                .filter(p -> p.getStatus() != ProjectStatus.FULLY_PLEDGED)
+                .forEach(project -> {
+                    project.setFinancingRound(savedFinancingRoundEntity);
+                    projectRepository.save(project);
+                });
+
+        return new FinancingRound(savedFinancingRoundEntity);
     }
 
     @Secured(Roles.ROLE_ADMIN)

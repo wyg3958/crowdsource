@@ -6,9 +6,13 @@
  *
  */
 
-// ---
+
+
+
+//
 // Layout helpers, like margins and paddings...
-// ---
+//
+
 
 // See inuit.css  >>> helpers
 
@@ -40,9 +44,11 @@
 
 
 
-// ---
-// Simple CSS table for resposnive layouts
-// ---
+
+//
+// Simple CSS table for responsive layouts
+//
+
 
 @mixin css-table($options: ()) {
   $options: map-merge((
@@ -69,9 +75,11 @@
 
 
 
-// ---
+
+//
 // Text-Helpers
-// ---
+//
+
 
 %font-smoothing {
     -webkit-font-smoothing: antialiased;
@@ -80,4 +88,37 @@
 
 .text--strong {
   font-weight: $fw-bold;
+}
+
+
+
+
+//
+// Divider Mixin
+//
+
+@mixin typographic-divider($options: ()) {
+    $options: map-merge((
+        width:  rem-calc(96px),
+        height: rem-calc(4px),
+        offset-bottom: rem-calc(24px)
+        ), $options
+    );
+
+    $offset-bottom: map-get($options, offset-bottom) + map-get($options, height) / 2;
+    $margin-left:   map-get($options, width) / 2;
+    $margin-bottom: map-get($options, offset-bottom) * 2.5;
+
+    position: relative;
+    margin-bottom: $margin-bottom;
+
+    &::after {
+        content:  '';
+        position: absolute;
+        left:   50%;
+        bottom: #{-$offset-bottom};
+        width:  map-get($options, width);
+        margin-left:   #{-$margin-left};
+        border-bottom: map-get($options, height) solid #2D2D2D;
+    }
 }

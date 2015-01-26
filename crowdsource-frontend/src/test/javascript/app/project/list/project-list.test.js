@@ -52,6 +52,33 @@ describe('project list', function () {
         expect(projectList.find('.no-projects')).toHaveClass('ng-hide');
     });
 
+    it('should display projects in correct order and set classes based on project status', function () {
+
+        $httpBackend.expectGET('/projects').respond(200, [
+            project('Title', 'Short Description', 100, 10, 1, 'PUBLISHED'),
+            project('Title 2', 'Short Description 2', 100, 20, 2, 'FULLY_PLEDGED'),
+            project('Title 3', 'Short Description 3', 100, 20, 2, 'REJECTED'),
+            project('Title 4', 'Short Description 3', 100, 20, 2, 'PROPOSED')
+        ]);
+        $scope.$digest();
+        $httpBackend.flush();
+
+        var listItems = projectList.find('.project-tile');
+        expect(listItems).toHaveLength(4);
+
+        expect($(listItems[0]).find('h1').text()).toBe('Title 4');
+        expect($(listItems[0]).hasClass("project-PROPOSED")).toBeTruthy();
+
+        expect($(listItems[1]).find('h1').text()).toBe('Title');
+        expect($(listItems[1]).hasClass("project-PUBLISHED")).toBeTruthy();
+
+        expect($(listItems[2]).find('h1').text()).toBe('Title 2');
+        expect($(listItems[2]).hasClass("project-FULLY_PLEDGED")).toBeTruthy();
+
+        expect($(listItems[3]).find('h1').text()).toBe('Title 3');
+        expect($(listItems[3]).hasClass("project-REJECTED")).toBeTruthy();
+    });
+
     it("should redirect to the project's details page when the project tile is clicked", function () {
         $httpBackend.expectGET('/projects').respond(200, [
             project('Title', 'Short Description', 100, 10, 1),
@@ -84,7 +111,7 @@ describe('project list', function () {
         expect(projectList.find('.no-projects')).not.toHaveClass('ng-hide');
     });
 
-    function project(title, shortDescription, pledgeGoal, pledgedAmount, backers) {
+    function project(title, shortDescription, pledgeGoal, pledgedAmount, backers, status) {
         var project = {};
         project.id = 'projectId';
         project.title = title;
@@ -92,6 +119,7 @@ describe('project list', function () {
         project.pledgeGoal = pledgeGoal;
         project.pledgedAmount = pledgedAmount;
         project.backers = backers;
+        project.status = status;
         return project;
     }
 });

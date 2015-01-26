@@ -52,7 +52,7 @@
                     <span form-label-invalid="pledgeGoal" ng-messages="projectForm.form.pledgeGoal.$error">
                         <span ng-message="required">Bitte gib den Finanzierungsbedarf an</span>
                         <span ng-message="number">Bitte gib nur Ziffern ein</span>
-                        <span ng-message="pattern">Bitte gib nur Ziffern ein</span>
+                        <span ng-message="pattern">Bitte gib nur valide Zahlen ein</span>
                         <span ng-message="min">Bitte gib einen Wert über Null ein</span>
                     </span>
                 </label>
@@ -60,10 +60,11 @@
                 <div class="table">
                     <div class="table-cell full-width">
                         <input type="number" name="pledgeGoal" ng-model="projectForm.project.pledgeGoal" class="text-right" placeholder="0"
-                               required ng-pattern="/^[0-9]+$/i" min="1" reset-remote-validation>
+                               required ng-pattern="/^[0-9]{1,6}$/i" min="1" reset-remote-validation>
                     </div>
                     <div class="table-cell">
-                        <span data-tooltip class="postfix text-left has-tip tip-right currency" aria-haspopup="true" title="Ein AS$ entspricht einem Euro">AS$</span>
+                        <span data-tooltip class="postfix text-left has-tip tip-right currency" aria-haspopup="true"
+                              title="Ein AS$ entspricht einem Euro. Der maximal mögliche Finanzierungsbedarf liegt bei 999999$.">AS$</span>
                     </div>
                 </div>
             </div>

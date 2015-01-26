@@ -68,6 +68,11 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
                 title: 'Finanzierungsrunden',
                 requireLogin: true
             })
+            .when('/about', {
+                templateUrl: 'app/misc/about.html',
+                title: 'Über Uns',
+                showTeaser: true
+            })
             .when('/logout', {
                 templateUrl: 'app/user/logout/user-logout.html',
                 controller: 'UserLogoutController as logout',

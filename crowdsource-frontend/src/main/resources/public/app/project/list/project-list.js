@@ -20,6 +20,7 @@ angular.module('crowdsource')
                 'PROPOSED': score++,
                 'PUBLISHED': score++,
                 'FULLY_PLEDGED': score++,
+                'REJECTED': score++
             };
 
             // get score for state

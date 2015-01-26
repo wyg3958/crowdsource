@@ -41,7 +41,7 @@
 
     $offset-bottom: map-get($divider-config, offset-bottom) + map-get($divider-config, height) / 2;
     $margin-left:   map-get($divider-config, width) / 2;
-    $margin-bottom: map-get($divider-config, offset-bottom) * 4;
+    $margin-bottom: map-get($divider-config, offset-bottom) * 2.5;
 
     position: relative;
     margin-bottom:  $margin-bottom;

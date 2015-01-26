@@ -4,7 +4,11 @@ angular.module('crowdsource')
 
         var service = {};
 
-        var projectResource = $resource('/project/:id');
+        var projectResource = $resource('/project/:id', {}, {
+            patch: {
+                method: 'PATCH'
+            }
+        });
         var projectsResource = $resource('/projects');
         var projectPledgeResource = $resource('/project/:id/pledge');
 
@@ -17,11 +21,19 @@ angular.module('crowdsource')
         };
 
         service.get = function (projectId) {
-            return projectResource.get({ id: projectId });
+            return projectResource.get({id: projectId});
         };
 
-        service.pledge = function(projectId, pledge) {
-            return projectPledgeResource.save({ id: projectId }, pledge);
+        service.pledge = function (projectId, pledge) {
+            return projectPledgeResource.save({id: projectId}, pledge);
+        };
+
+        service.publish = function (projectId) {
+            return projectResource.patch({id: projectId}, {status: 'PUBLISHED'});
+        };
+
+        service.reject = function (projectId) {
+            return projectResource.patch({id: projectId}, {status: 'REJECTED'});
         };
 
         return service;

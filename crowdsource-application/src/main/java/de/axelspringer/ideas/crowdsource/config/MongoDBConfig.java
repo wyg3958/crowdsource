@@ -2,7 +2,9 @@ package de.axelspringer.ideas.crowdsource.config;
 
 import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
 import com.mongodb.ServerAddress;
+import com.mongodb.WriteConcern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,7 +61,10 @@ public class MongoDBConfig extends AbstractMongoConfiguration {
         }
         else {
             // create a mongo client that connects to a replicaset
-            return new MongoClient(serverAddresses);
+            MongoClientOptions options = MongoClientOptions.builder()
+                    .writeConcern(WriteConcern.REPLICA_ACKNOWLEDGED)
+                    .build();
+            return new MongoClient(serverAddresses, options);
         }
     }
 

@@ -11,8 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 @Component
 public class ProjectsPage {
 
@@ -33,23 +31,40 @@ public class ProjectsPage {
         });
     }
 
-    public List<Project> getProjects() {
-        RemoteWebDriver webDriver = webDriverProvider.provideDriver();
-
-        List<WebElement> projectTiles = webDriver.findElements(By.cssSelector(".project-tile"));
-
-        return projectTiles.stream()
-                .map(projectTile -> {
-                    Project project = new Project();
-                    project.setTitle(projectTile.findElement(By.cssSelector("h1")).getText());
-                    project.setShortDescription(projectTile.findElement(By.cssSelector("p")).getText());
-                    return project;
-                }).collect(toList());
-    }
-
     public void clickProjectTileWithTitle(String title) {
         RemoteWebDriver webDriver = webDriverProvider.provideDriver();
         final WebElement projectTile = webDriver.findElement(By.xpath("//h1[text()='" + title + "']"));
         projectTile.click();
+    }
+
+    public boolean containsProject(String projectTitlePrefix, String projectShortDescriptionPrefix) {
+        return findProject(projectTitlePrefix, projectShortDescriptionPrefix) != null;
+    }
+
+    private List<WebElement> projects() {
+        RemoteWebDriver webDriver = webDriverProvider.provideDriver();
+        return webDriver.findElements(By.cssSelector(".project-tile"));
+    }
+
+    private Project project(WebElement projectElement) {
+        Project project = new Project();
+        project.setTitle(projectElement.findElement(By.cssSelector("h1")).getText());
+        project.setShortDescription(projectElement.findElement(By.cssSelector("p")).getText());
+        return project;
+    }
+
+    public WebElement findProject(String titlePrefix, String shortDescriptionPrefix) {
+
+        for (WebElement projectElement : projects()) {
+
+            final Project project = project(projectElement);
+            if (project.getTitle().startsWith(titlePrefix)
+                    && project.getTitle().endsWith("\u2026")
+                    && project.getShortDescription().startsWith(shortDescriptionPrefix)
+                    && project.getShortDescription().endsWith("…")) {
+                return projectElement;
+            }
+        }
+        return null;
     }
 }

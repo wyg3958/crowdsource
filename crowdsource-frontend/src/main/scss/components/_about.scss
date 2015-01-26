@@ -1,0 +1,125 @@
+/***
+ * About us
+ *
+ */
+
+
+
+
+//
+//  Container, that wraps all team members,
+//  works as a generic flex container
+//
+
+
+.team {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+
+
+
+//
+// Math: Calc width of team members items
+//
+
+
+$team-container-width:  rem-calc(920px);
+$team-items:  4;     // Max items that fit a row
+$team-gutter: 2rem;  // Margins left/right for every item
+$team-width:  ($team-container-width - ($team-gutter * $team-items * 2)) / $team-items;
+
+
+
+
+//
+// Team Members
+//
+
+
+.team__member {
+    position: relative;
+    width:  $team-width;
+    margin: $team-gutter;
+}
+
+
+.team__image-container {
+    position: relative;
+    display:  block;
+    width:  $team-width;
+    height: $team-width;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+
+/*img*/.team__image {
+    position: absolute;
+    display:  block;
+    width:  $team-width;
+    height: auto;
+
+    -webkit-filter: saturate(60%);
+}
+
+
+/*h3*/.team__member-name {
+    margin: 1rem 0 0 0;
+    font-size: 22px;
+    font-weight: 300;
+    text-align: center;
+    color: #D44B95;
+    letter-spacing: 0.5px;
+
+    a {
+        color: inherit;
+        text-decoration: none;
+
+        &:hover {
+            color: #4B51D4;
+        }
+    }
+}
+
+
+/*h3*/.team__member-name--has-divider {
+    @extend .team__member-name;
+
+    // Divider same as in product list
+
+    $divider-config: (
+        width:  rem-calc(40px),
+        height: rem-calc(2px),
+        offset-bottom: rem-calc(8px)
+    );
+
+    $offset-bottom: map-get($divider-config, offset-bottom) + map-get($divider-config, height) / 2;
+    $margin-left:   map-get($divider-config, width) / 2;
+    $margin-bottom: map-get($divider-config, offset-bottom) * 2.5;
+
+    position: relative;
+    margin-bottom:  $margin-bottom;
+
+    &::after {
+        content:  '';
+        position: absolute;
+        left:   50%;
+        bottom: #{-$offset-bottom};
+        width:  map-get($divider-config, width);
+        margin-left:   #{-$margin-left};
+        border-bottom: map-get($divider-config, height) solid #2D2D2D;
+    }
+}
+
+
+/*p*/.team__member-role {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}

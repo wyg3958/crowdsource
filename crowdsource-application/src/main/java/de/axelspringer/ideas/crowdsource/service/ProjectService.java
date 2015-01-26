@@ -46,22 +46,22 @@ public class ProjectService {
             throw new ResourceNotFoundException();
         }
 
-        return project(projectEntity, getActiveFinancingRoundEntity());
+        return project(projectEntity);
     }
 
     public List<Project> getProjects() {
 
         final List<ProjectEntity> projects = projectRepository.findAll();
-        return projects.stream().map(p -> project(p, getActiveFinancingRoundEntity())).collect(toList());
+        return projects.stream().map(this::project).collect(toList());
     }
 
     public Project addProject(Project project, UserEntity userEntity) {
 
-        ProjectEntity projectEntity = new ProjectEntity(userEntity, project);
+        ProjectEntity projectEntity = new ProjectEntity(userEntity, project, currentFinancingRound());
         projectEntity = projectRepository.save(projectEntity);
 
         log.debug("Project added: {}", projectEntity);
-        return project(projectEntity, getActiveFinancingRoundEntity());
+        return project(projectEntity);
     }
 
     public Project updateProject(String projectId, Project project) {
@@ -74,13 +74,13 @@ public class ProjectService {
         projectEntity = projectRepository.save(projectEntity);
 
         log.debug("Project updated: {}", projectEntity);
-        return project(projectEntity, getActiveFinancingRoundEntity());
+        return project(projectEntity);
     }
 
     public void pledge(String projectId, UserEntity userEntity, Pledge pledge) {
 
         ProjectEntity projectEntity = projectRepository.findOne(projectId);
-        FinancingRoundEntity activeFinancingRoundEntity = getActiveFinancingRoundEntity();
+        FinancingRoundEntity activeFinancingRoundEntity = currentFinancingRound();
 
         if (projectEntity == null) {
             throw new ResourceNotFoundException();
@@ -99,7 +99,7 @@ public class ProjectService {
             throw InvalidRequestException.userBudgetExceeded();
         }
 
-        Project project = project(projectEntity, activeFinancingRoundEntity);
+        Project project = project(projectEntity);
         int newPledgedAmount = pledge.getAmount() + project.getPledgedAmount();
         if (newPledgedAmount > project.getPledgeGoal()) {
             throw InvalidRequestException.pledgeGoalExceeded();
@@ -120,15 +120,13 @@ public class ProjectService {
         log.debug("Project pledged: {}", pledgeEntity);
     }
 
-    
-    private FinancingRoundEntity getActiveFinancingRoundEntity() {
-        return financingRoundRepository.findActive(DateTime.now());
+    private Project project(ProjectEntity projectEntity) {
+        List<PledgeEntity> pledges = pledgeRepository.findByProjectAndFinancingRound(projectEntity, projectEntity.getFinancingRound());
+        return new Project(projectEntity, pledges);
     }
 
-    private Project project(ProjectEntity projectEntity, FinancingRoundEntity activeFinancingRoundEntity) {
-
-        List<PledgeEntity> pledges = pledgeRepository.findByProjectAndFinancingRound(projectEntity, activeFinancingRoundEntity);
-        return new Project(projectEntity, pledges);
+    private FinancingRoundEntity currentFinancingRound() {
+        return financingRoundRepository.findActive(DateTime.now());
     }
 
 }

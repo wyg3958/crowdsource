@@ -27,7 +27,7 @@ public class ProjectTest {
         creator.setId("id");
 
         Project project = new Project();
-        projectEntity = new ProjectEntity(creator, project);
+        projectEntity = new ProjectEntity(creator, project, new FinancingRoundEntity());
 
         user1 = new UserEntity("user1@xyz.com");
         user2 = new UserEntity("user2@xyz.com");

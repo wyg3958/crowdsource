@@ -102,6 +102,9 @@ public class ProjectControllerTest {
         final String email = "some@mail.com";
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
 
+        FinancingRoundEntity currentFinancingRound = financingRound();
+        when(financingRoundRepository.findActive(any())).thenReturn(currentFinancingRound);
+
         MvcResult mvcResult = mockMvc.perform(post("/project")
                 .principal(authentication(user))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -109,7 +112,38 @@ public class ProjectControllerTest {
                 .andExpect(status().isCreated())
                 .andReturn();
 
-        ProjectEntity projectEntity = new ProjectEntity(user, project);
+        ProjectEntity projectEntity = new ProjectEntity(user, project, currentFinancingRound);
+        verify(projectRepository).save(eq(projectEntity));
+
+        assertThat(mvcResult.getResponse().getContentAsString(), is("{" +
+                "\"id\":null," + // actually this is non null, but the projectRepository is a mock and does not generate an id
+                "\"status\":\"PROPOSED\"," +
+                "\"title\":\"myTitle\"," +
+                "\"shortDescription\":\"theShortDescription\"," +
+                "\"description\":\"theFullDescription\"," +
+                "\"pledgeGoal\":50,\"pledgedAmount\":0," +
+                "\"backers\":0," +
+                "\"creator\":{\"id\":\"id_" + email + "\",\"name\":\"Some\",\"email\":\"" + email + "\"}}"));
+    }
+
+    @Test
+    public void addProject_shouldWorkIfNoFinancingRoundIsCurrentlyActive() throws Exception {
+
+        final Project project = project("myTitle", "theFullDescription", "theShortDescription", 50);
+
+        final String email = "some@mail.com";
+        final UserEntity user = userEntity(email, Roles.ROLE_USER);
+
+        when(financingRoundRepository.findActive(any())).thenReturn(null);
+
+        MvcResult mvcResult = mockMvc.perform(post("/project")
+                .principal(authentication(user))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(project)))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        ProjectEntity projectEntity = new ProjectEntity(user, project, null);
         verify(projectRepository).save(eq(projectEntity));
 
         assertThat(mvcResult.getResponse().getContentAsString(), is("{" +
@@ -278,8 +312,7 @@ public class ProjectControllerTest {
 
         int budgetBeforePledge = user.getBudget();
 
-        FinancingRoundEntity activeFinancingRound = new FinancingRoundEntity();
-        activeFinancingRound.setId(UUID.randomUUID().toString());
+        FinancingRoundEntity activeFinancingRound = financingRound();
         when(financingRoundRepository.findActive(any())).thenReturn(activeFinancingRound);
 
         mockMvc.perform(post("/project/{projectId}/pledge", "some_id")
@@ -517,6 +550,12 @@ public class ProjectControllerTest {
         projectEntity.setStatus(status);
         when(projectRepository.findOne(id)).thenReturn(projectEntity);
         return projectEntity;
+    }
+
+    private FinancingRoundEntity financingRound() {
+        FinancingRoundEntity financingRound = new FinancingRoundEntity();
+        financingRound.setId(UUID.randomUUID().toString());
+        return financingRound;
     }
 
     @Configuration

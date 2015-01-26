@@ -51,6 +51,9 @@ Feature: Administer financing rounds
     Then the pledged amount is displayed
     When a financing round is being deactivated in the meantime
     And the project detail page of this project is reloaded
+    Then the pledged amount is displayed
+    When a financing round is being activated in the meantime
+    And the project detail page of this project is reloaded
     Then the pledged amount is zero
 
   Scenario: The pledged amount of a fully pledged project is not reset when a financing round ends
@@ -61,5 +64,8 @@ Feature: Administer financing rounds
     And the project detail page of this project is requested
     Then the pledged amount is displayed
     When a financing round is being deactivated in the meantime
+    And the project detail page of this project is reloaded
+    Then the pledged amount is displayed
+    When a financing round is being activated in the meantime
     And the project detail page of this project is reloaded
     Then the pledged amount is displayed

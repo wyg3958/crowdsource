@@ -64,3 +64,20 @@ content-row {
         @extend %box;
     }
 }
+
+// TODO: cool styles
+.project-PROPOSED {
+    background: #808080 !important;
+}
+
+.project-PUBLISHED {
+    background: #008000 !important;
+}
+
+.project-FULLY_PLEDGED {
+    background: orangered !important;
+}
+
+.project-REJECTED {
+    background: darkred !important;
+}

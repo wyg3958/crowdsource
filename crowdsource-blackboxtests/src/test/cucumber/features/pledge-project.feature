@@ -1,7 +1,8 @@
 Feature: Pledge project
 
   Scenario: An anonymous user tries to pledge a project
-    Given a published project is available
+    Given a project is available
+    And an admin publishs the project
     And there is no financing round active
     When the project detail page of this project is requested
     Then the notification message "Momentan läuft keine Finanzierungsrunde. Bitte versuche es nochmal, wenn die Finanzierungsrunde gestartet worden ist." is displayed on the project pledging form
@@ -14,7 +15,7 @@ Feature: Pledge project
     And the user budget 0 is displayed
 
   Scenario: A user pledges a project
-    Given a published project is available
+    Given a project is available
     And a user is logged in
     And there is a financing round active
     When the project detail page of this project is requested
@@ -26,7 +27,7 @@ Feature: Pledge project
     And the project pledging form is enabled
 
   Scenario: A user fully pledges a project
-    Given a published project is available
+    Given a project is available
     And a user is logged in
     And there is a financing round active
     When the project detail page of this project is requested
@@ -42,7 +43,7 @@ Feature: Pledge project
     Then the notification message "Das Project ist zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich." is displayed on the project pledging form
 
   Scenario: The finance round is stopped while a user pledges a project
-    Given a published project is available
+    Given a project is available
     And there is a financing round active
     And a user is logged in
     When the project detail page of this project is requested
@@ -54,7 +55,7 @@ Feature: Pledge project
     And the project pledging form is disabled
 
   Scenario: A user over-pledges a project
-    Given a published project with a pledge goal of 25 is available
+    Given a project with a pledge goal of 25 is available
     And there is a financing round active
     And a user is logged in
     When the project detail page of this project is requested

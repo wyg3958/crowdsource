@@ -67,16 +67,16 @@ describe('project list', function () {
         expect(listItems).toHaveLength(4);
 
         expect($(listItems[0]).find('h1').text()).toBe('Title 4');
-        expect($(listItems[0]).attr("class")).toBe('project-tile project-PROPOSED');
+        expect($(listItems[0]).hasClass("project-PROPOSED")).toBeTruthy();
 
         expect($(listItems[1]).find('h1').text()).toBe('Title');
-        expect($(listItems[1]).attr("class")).toBe('project-tile project-PUBLISHED');
+        expect($(listItems[1]).hasClass("project-PUBLISHED")).toBeTruthy();
 
         expect($(listItems[2]).find('h1').text()).toBe('Title 2');
-        expect($(listItems[2]).attr("class")).toBe('project-tile project-FULLY_PLEDGED');
+        expect($(listItems[2]).hasClass("project-FULLY_PLEDGED")).toBeTruthy();
 
         expect($(listItems[3]).find('h1').text()).toBe('Title 3');
-        expect($(listItems[3]).attr("class")).toBe('project-tile project-REJECTED');
+        expect($(listItems[3]).hasClass("project-REJECTED")).toBeTruthy();
     });
 
     it("should redirect to the project's details page when the project tile is clicked", function () {

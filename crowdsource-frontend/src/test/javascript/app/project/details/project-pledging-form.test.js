@@ -84,7 +84,7 @@ describe('project pledging form', function () {
 
         // prepare for backend calls
         $httpBackend.expectPOST('/project/123/pledge', { amount: 30 }).respond(200);
-        $httpBackend.expectGET('/project/123').respond(200, { id: 123, pledgeGoal: 100, pledgedAmount: 90 });
+        $httpBackend.expectGET('/project/123').respond(200, { id: 123, pledgeGoal: 100, pledgedAmount: 90, status: 'PUBLISHED' });
         $httpBackend.expectGET('/user/current').respond(200, { budget: 170 });
         $httpBackend.expectGET('/financinground/active').respond(200, { active: true });
 
@@ -275,7 +275,7 @@ describe('project pledging form', function () {
 
         // prepare for backend call
         $httpBackend.expectPOST('/project/123/pledge', { amount: 30 }).respond(400, { errorCode: 'pledge_goal_exceeded' });
-        $httpBackend.expectGET('/project/123').respond(200, { id: 123, pledgeGoal: 500, pledgedAmount: 480 }); // the pledged amount is 480 now!
+        $httpBackend.expectGET('/project/123').respond(200, { id: 123, pledgeGoal: 500, pledgedAmount: 480, status: 'PUBLISHED' }); // the pledged amount is 480 now!
         $httpBackend.expectGET('/user/current').respond(200, { budget: 200 });
         $httpBackend.expectGET('/financinground/active').respond(200, { active: true });
 
@@ -307,7 +307,7 @@ describe('project pledging form', function () {
 
         // prepare for backend calls
         $httpBackend.expectPOST('/project/123/pledge', { amount: 10 }).respond(200);
-        $httpBackend.expectGET('/project/123').respond(200, { id: 123, pledgeGoal: 500, pledgedAmount: 490 });
+        $httpBackend.expectGET('/project/123').respond(200, { id: 123, pledgeGoal: 500, pledgedAmount: 490, status: 'PUBLISHED' });
         $httpBackend.expectGET('/user/current').respond(200, { budget: 190 });
         $httpBackend.expectGET('/financinground/active').respond(200, { active: true });
 
@@ -388,6 +388,7 @@ describe('project pledging form', function () {
         var elements = compileDirective();
         $httpBackend.flush();
 
+        expect(elements.slider).toHaveClass('disabled');
         expect(elements.notification).not.toHaveClass('ng-hide');
         expect(elements.notification).toHaveText('Bitte logge dich ein, um Projekte finanziell zu unterstützen.');
     });
@@ -401,8 +402,23 @@ describe('project pledging form', function () {
         var elements = compileDirective();
         $httpBackend.flush();
 
+        expect(elements.slider).toHaveClass('disabled');
         expect(elements.notification).not.toHaveClass('ng-hide');
         expect(elements.notification).toHaveText('Das Project ist zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich.');
+    });
+
+    it("should show a message saying that the project is not published", function () {
+
+        $scope.project = { $resolved: true, pledgeGoal: 100, pledgedAmount: 50, status: 'PROPOSED' };
+        spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(false);
+        $httpBackend.expectGET('/financinground/active').respond(200, { active: true });
+
+        var elements = compileDirective();
+        $httpBackend.flush();
+
+        expect(elements.slider).toHaveClass('disabled');
+        expect(elements.notification).not.toHaveClass('ng-hide');
+        expect(elements.notification.text().trim()).toBe('Eine Finanzierung ist erst möglich, wenn das Projekt von einem Administrator veröffentlicht wurde.');
     });
 
     it("should show a message saying that there is no financing round active", function () {

@@ -50,7 +50,7 @@ angular.module('crowdsource')
                         return 0;
                     }
 
-                    if (!FinancingRound.current.active) {
+                    if (!FinancingRound.current.active || vm.project.status != 'PUBLISHED') {
                         return 0;
                     }
 
@@ -68,6 +68,9 @@ angular.module('crowdsource')
                     }
                     if (vm.project.status == 'FULLY_PLEDGED') {
                         return { type: 'info', message: 'Das Project ist zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich.' };
+                    }
+                    if (vm.project.status != 'PUBLISHED') {
+                        return { type: 'info', message: 'Eine Finanzierung ist erst möglich, wenn das Projekt von einem Administrator veröffentlicht wurde.' };
                     }
                     if (!FinancingRound.current.active) {
                         return { type: 'info', message: 'Momentan läuft keine Finanzierungsrunde. Bitte versuche es nochmal, wenn die Finanzierungsrunde gestartet worden ist.' };

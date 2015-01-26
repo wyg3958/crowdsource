@@ -19,6 +19,9 @@ activeFinancingRound<form name="pledgingForm.form" class="pledging-form" novalid
                 Die Finanzierungsrunde ist mittlerweile leider beendet.
                 Das Finanzieren ist erst wieder möglich, wenn die nächste Runde gestartet wurde.
             </span>
+            <span ng-message="remote_project_not_published">
+                Das Projekt ist nicht mehr veröffentlicht. Nur veröffentliche Projekte können finanziert werden.
+            </span>
             <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuche es erneut.</span>
         </div>
 

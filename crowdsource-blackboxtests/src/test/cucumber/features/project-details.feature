@@ -2,6 +2,7 @@ Feature: Project details
 
   Scenario: A user opens a project detail page
     Given a project is available
+    And a user is logged in
     And the index page is visited
     When the user clicks on the tile of this project
     Then the project detail page of this project is displayed
@@ -17,8 +18,10 @@ Feature: Project details
     And the "publish"-button is visible
     And the "reject"-button is visible
     When the "publish"-button is clicked
+    And the user waits for the "publish"-button to disappear
     Then the "publish"-button is not visible
     When the "reject"-button is clicked
+    And the user waits for the "reject"-button to disappear
     Then the "reject"-button is not visible
 
   Scenario: A user opens a project detail page with an invalid project id

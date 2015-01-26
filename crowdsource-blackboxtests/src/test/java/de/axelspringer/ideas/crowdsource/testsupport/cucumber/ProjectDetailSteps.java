@@ -10,6 +10,7 @@ import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.ProjectDetailPage;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.ProjectStatusWidget;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.ProjectsPage;
+import de.axelspringer.ideas.crowdsource.testsupport.selenium.SeleniumWait;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverUtils;
 import de.axelspringer.ideas.crowdsource.testsupport.util.CrowdSourceClient;
@@ -44,6 +45,8 @@ public class ProjectDetailSteps {
     @Autowired
     private UrlProvider urlProvider;
 
+    @Autowired
+    private SeleniumWait seleniumWait;
 
     private WebDriver webDriver;
     private Project createdProject;
@@ -102,6 +105,7 @@ public class ProjectDetailSteps {
     @Given("^the user is on a project detail page$")
     public void the_user_is_on_a_project_detail_page() throws Throwable {
         a_project_is_available();
+        an_admin_publishs_the_created_project();
 
         webDriver.get(urlProvider.applicationUrl());
         projectsPage.waitForPageLoad();
@@ -134,16 +138,26 @@ public class ProjectDetailSteps {
 
     @And("^the \"([^\"]*)\"-button is not visible$")
     public void the_button_is_not_visible(String buttonName) throws Throwable {
-        assertTrue(webDriver.findElements(By.className("project-" + buttonName)).size() == 0);
+        assertTrue(webDriver.findElements(By.className(buttonName + "-button")).size() == 0);
     }
 
     @And("^the \"([^\"]*)\"-button is visible$")
     public void the_button_is_visible(String buttonName) throws Throwable {
-        assertTrue(webDriver.findElements(By.className("project-" + buttonName)).size() == 1);
+        assertTrue(webDriver.findElements(By.className(buttonName + "-button")).size() == 1);
     }
 
     @When("^the \"([^\"]*)\"-button is clicked$")
     public void the_button_is_clicked(String buttonName) throws Throwable {
-        webDriver.findElement(By.className("project-" + buttonName)).click();
+        webDriver.findElement(By.className(buttonName + "-button")).click();
+    }
+
+    @And("^an admin publishs the created project$")
+    public void an_admin_publishs_the_created_project() throws Throwable {
+        crowdSourceClient.publish(createdProject, crowdSourceClient.authorizeWithAdminUser());
+    }
+
+    @And("^the user waits for the \"([^\"]*)\"-button to disappear$")
+    public void the_user_waits_for_the_button_to_disappear(String buttonName) throws Throwable {
+        seleniumWait.until(input -> webDriver.findElements(By.className(buttonName + "-button")).size() == 0);
     }
 }

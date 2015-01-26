@@ -2,7 +2,7 @@ Feature: Pledge project
 
   Scenario: An anonymous user tries to pledge a project
     Given a project is available
-    And an admin publishs the project
+    And an admin publishs the created project
     And there is no financing round active
     When the project detail page of this project is requested
     Then the notification message "Momentan läuft keine Finanzierungsrunde. Bitte versuche es nochmal, wenn die Finanzierungsrunde gestartet worden ist." is displayed on the project pledging form

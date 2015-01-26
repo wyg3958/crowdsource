@@ -41,7 +41,7 @@
     <h2 class="text-center">Die neusten Projekte</h2>
 
     <ul data-equalizer>
-        <li ng-repeat="project in projectList.projects" foundation-reflow="equalizer">
+        <li ng-repeat="project in projectList.projects | orderBy:projectList.projectOrder" foundation-reflow="equalizer">
             <div class="project-tile" data-equalizer-watch ng-click="projectList.showProjectDetails(project)">
 
                 <!-- when using ellipsis directive, the value must come from ng-bind -->

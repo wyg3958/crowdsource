@@ -21,27 +21,35 @@ public class Project {
     @NotEmpty(groups = {UpdateProject.class})
     @JsonView(ProjectSummaryView.class)
     private String id;
+
     // no validation here on purpose, as this is only filled on response and ignored in request
     @NotNull(groups = {UpdateProject.class})
     @JsonView(ProjectSummaryView.class)
     private ProjectStatus status;
+
     @NotEmpty
     @JsonView(ProjectSummaryView.class)
     private String title;
+
     @NotEmpty
     @JsonView(ProjectSummaryView.class)
     private String shortDescription;
+
     @NotEmpty
     private String description;
+
     @Min(1)
     @JsonView(ProjectSummaryView.class)
     private int pledgeGoal;
+
     // no validation here on purpose, as this is only filled on response and ignored in request
     @JsonView(ProjectSummaryView.class)
     private int pledgedAmount;
+
     // no validation here on purpose, as this is only filled on response and ignored in request
     @JsonView(ProjectSummaryView.class)
     private long backers;
+
     // no validation here on purpose, as this is only filled on response and ignored in request. Ideally,
     // this is filled on request too and denied if a normal user tries to create a project for someone else
     @JsonView(ProjectSummaryView.class)

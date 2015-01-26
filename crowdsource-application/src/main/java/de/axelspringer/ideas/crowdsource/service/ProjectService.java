@@ -51,7 +51,7 @@ public class ProjectService {
 
     public List<Project> getProjects() {
 
-        final List<ProjectEntity> projects = projectRepository.findByStatusOrderByCreatedDateDesc(ProjectStatus.PUBLISHED);
+        final List<ProjectEntity> projects = projectRepository.findAll();
         return projects.stream().map(p -> project(p, getActiveFinancingRoundEntity())).collect(toList());
     }
 
@@ -62,6 +62,19 @@ public class ProjectService {
 
         log.debug("Project added: {}", projectEntity);
         return project(projectEntity, getActiveFinancingRoundEntity());
+    }
+
+    public Project updateProject(String projectId, Project project) {
+
+        ProjectEntity projectEntity = projectRepository.findOne(projectId);
+        if (projectEntity == null) {
+            throw new ResourceNotFoundException();
+        }
+        projectEntity.setStatus(project.getStatus());
+        projectEntity = projectRepository.save(projectEntity);
+
+        log.debug("Project updated: {}", projectEntity);
+        return project(projectEntity);
     }
 
     public void pledge(String projectId, UserEntity userEntity, Pledge pledge) {
@@ -111,14 +124,15 @@ public class ProjectService {
         log.debug("Project pledged: {}", pledgeEntity);
     }
 
+    
     private FinancingRoundEntity getActiveFinancingRoundEntity() {
         return financingRoundRepository.findActive(DateTime.now());
     }
-
 
     private Project project(ProjectEntity projectEntity, FinancingRoundEntity activeFinancingRoundEntity) {
 
         List<PledgeEntity> pledges = pledgeRepository.findByProjectAndFinancingRound(projectEntity, activeFinancingRoundEntity);
         return new Project(projectEntity, pledges);
     }
+
 }

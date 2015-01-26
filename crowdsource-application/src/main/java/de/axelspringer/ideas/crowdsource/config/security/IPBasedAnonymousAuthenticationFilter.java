@@ -35,12 +35,14 @@ public class IPBasedAnonymousAuthenticationFilter extends AnonymousAuthenticatio
     }
 
     private boolean forwardedForTrusted(HttpServletRequest request) {
+
         final String forwardedFor = request.getHeader("X-Forwarded-For");
-        if (!StringUtils.isBlank(forwardedFor)) {
-            for (String forwardedForEntry : forwardedFor.split(",")) {
-                if (ipWhiteListed(forwardedForEntry.trim())) {
-                    return true;
-                }
+        if (StringUtils.isBlank(forwardedFor)) {
+            return false;
+        }
+        for (String forwardedForEntry : forwardedFor.split(",")) {
+            if (ipWhiteListed(forwardedForEntry.trim())) {
+                return true;
             }
         }
         return false;

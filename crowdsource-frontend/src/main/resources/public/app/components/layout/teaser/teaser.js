@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .directive('teaser', function ($interval, $timeout, Route, TeaserMetrics, User, FinancingRound) {
+    .directive('teaser', function ($interval, $timeout, Authentication, Route, TeaserMetrics, User, FinancingRound) {
         var directive = {};
 
         directive.controllerAs = 'teaser';
@@ -16,9 +16,8 @@ angular.module('crowdsource')
             // 3 metrics items while loading instead of only two
             vm.remainingTime = " ";
 
-            Route.onRouteChangeSuccessAndInit(function (event, current, previous) {
-                var wasPageLoad = previous === undefined;
-                render(current, wasPageLoad);
+            Route.onRouteChangeSuccessAndInit(function (event, current) {
+                render(current);
             });
 
             $interval(applyRemainingTime, 1000);
@@ -33,25 +32,16 @@ angular.module('crowdsource')
                 }
             }
 
-            function loadData(wasPageLoad) {
+            function loadData() {
                 User.getMetrics().$promise.then(function(metrics) {
                     vm.userMetrics = metrics;
                 });
 
-                // The FinancingRound service already calls reloadCurrentRound on initalization.
-                // No need to do it twice.
-                if (wasPageLoad) {
-                    FinancingRound.current.$promise.then(function () {
-                        applyRemainingTime();
-                    });
-                }
-                else {
-                    FinancingRound.reloadCurrentRound().then(function () {
-                        // recalculate the remaining time right when the data is available,
-                        // else it is first updated when the next $interval kicks in
-                        applyRemainingTime();
-                    });
-                }
+                FinancingRound.reloadCurrentRound().then(function () {
+                    // recalculate the remaining time right when the data is available,
+                    // else it is first updated when the next $interval kicks in
+                    applyRemainingTime();
+                });
             }
 
             function applyRemainingTime() {
@@ -65,7 +55,11 @@ angular.module('crowdsource')
                 if (FinancingRound.current.active && !vm.remainingTime) {
                     // reload the data 500ms later (because the time of the browser could be out of sync with the server time)
                     $timeout(function() {
-                        loadData(false);
+                        // reload the metrics to see if the financing round is really over
+                        loadData();
+
+                        // update the user's budget
+                        Authentication.reloadUser();
                     }, 500);
                 }
             }

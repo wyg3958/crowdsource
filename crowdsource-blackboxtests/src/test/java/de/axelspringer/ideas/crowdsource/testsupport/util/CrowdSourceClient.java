@@ -3,6 +3,7 @@ package de.axelspringer.ideas.crowdsource.testsupport.util;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.axelspringer.ideas.crowdsource.config.security.MongoUserDetailsService;
+import de.axelspringer.ideas.crowdsource.enums.ProjectStatus;
 import de.axelspringer.ideas.crowdsource.model.presentation.Comment;
 import de.axelspringer.ideas.crowdsource.model.presentation.FinancingRound;
 import de.axelspringer.ideas.crowdsource.model.presentation.Pledge;
@@ -24,6 +25,9 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 @Component
 public class CrowdSourceClient {
@@ -86,7 +90,7 @@ public class CrowdSourceClient {
     }
 
     public ResponseEntity<FinancingRound> stopFinancingRound(String id, AuthToken authToken) {
-        HttpEntity<FinancingRound> requestEntity = createRequestEntity(null, authToken);
+        HttpEntity requestEntity = createRequestEntity(authToken);
         return restTemplate.exchange(urlProvider.applicationUrl() + "/financinground/{id}/cancel", HttpMethod.PUT, requestEntity, FinancingRound.class, id);
     }
 
@@ -107,8 +111,26 @@ public class CrowdSourceClient {
         return new HttpEntity<>(body, headers);
     }
 
+    private HttpEntity createRequestEntity(AuthToken authToken) {
+        return createRequestEntity(null, authToken);
+    }
+
     public RestTemplate getUnderlyingClient() {
         return restTemplate;
+    }
+
+    public void publish(Project createdProject, AuthToken adminToken) {
+
+        createdProject.setStatus(ProjectStatus.PUBLISHED);
+        final ResponseEntity<Project> exchange = restTemplate.exchange(urlProvider.applicationUrl() + "/project/" + createdProject.getId(), HttpMethod.PATCH, createRequestEntity(createdProject, adminToken), Project.class);
+        assertEquals(HttpStatus.OK, exchange.getStatusCode());
+    }
+
+    public List<Project> listProjects(AuthToken authToken) {
+
+        ResponseEntity<Project[]> responseEntity = restTemplate.exchange(urlProvider.applicationUrl() + "/projects", HttpMethod.GET, createRequestEntity(authToken), Project[].class);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        return Arrays.asList(responseEntity.getBody());
     }
 
     @Data
@@ -118,3 +140,4 @@ public class CrowdSourceClient {
         private String accessToken;
     }
 }
+

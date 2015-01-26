@@ -3,13 +3,16 @@ package de.axelspringer.ideas.crowdsource.controller;
 import de.axelspringer.ideas.crowdsource.config.security.Roles;
 import de.axelspringer.ideas.crowdsource.exceptions.InvalidRequestException;
 import de.axelspringer.ideas.crowdsource.exceptions.ResourceNotFoundException;
+import de.axelspringer.ideas.crowdsource.model.persistence.FinancingRoundEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.User;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.UserActivation;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.UserRegistration;
+import de.axelspringer.ideas.crowdsource.repository.FinancingRoundRepository;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import de.axelspringer.ideas.crowdsource.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -40,6 +43,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private FinancingRoundRepository financingRoundRepository;
 
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -108,6 +114,14 @@ public class UserController {
     public User getCurrentUser(Principal principal) {
 
         UserEntity userEntity = userService.getUserByName(principal.getName());
+
+        FinancingRoundEntity currentFinancingRound = financingRoundRepository.findActive(DateTime.now());
+        if (currentFinancingRound == null) {
+            // if there is no active financing round, the budget of the user should be 0
+            // but we have no scheduler that resets the budget of every user to 0 when the financing round ends
+            userEntity.setBudget(0);
+        }
+
         return new User(userEntity);
     }
 }

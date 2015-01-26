@@ -50,6 +50,7 @@ angular.module('crowdsource')
                     vm.info = "Finanzierungsrunde gestoppt.";
 
                     FinancingRound.reloadCurrentRound();
+                    Authentication.reloadUser();
                 })
                 .catch(function () {
                     vm.info = "Fehler beim Stoppen der Finanzierungsrunde!";

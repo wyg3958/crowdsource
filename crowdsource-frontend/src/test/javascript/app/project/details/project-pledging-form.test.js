@@ -13,9 +13,6 @@ describe('project pledging form', function () {
             $compile = _$compile_;
             $httpBackend = _$httpBackend_;
             AuthenticationToken = _AuthenticationToken_;
-
-            // the FinancingRound service gets the active service on creation
-            $httpBackend.expectGET('/financinground/active').respond(404);
         });
     });
 

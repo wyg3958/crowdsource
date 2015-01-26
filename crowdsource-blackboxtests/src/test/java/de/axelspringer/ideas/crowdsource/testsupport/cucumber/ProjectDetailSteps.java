@@ -69,6 +69,9 @@ public class ProjectDetailSteps {
 
         CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithDefaultUser();
         createdProject = crowdSourceClient.createProject(createdProject, authToken).getBody();
+
+        final CrowdSourceClient.AuthToken adminToken = crowdSourceClient.authorizeWithAdminUser();
+        crowdSourceClient.publish(createdProject, adminToken);
     }
 
     @And("^a published and partially pledged project is available$")

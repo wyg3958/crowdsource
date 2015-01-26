@@ -5,6 +5,8 @@
 */
 
 
+
+
 //
 // Status Bar' Mixins
 //
@@ -33,9 +35,9 @@
 
 status-bar {
     display: block;
-    background-color: $clr-bg;
+    background-color: gainsboro;
     @media #{$medium-up} {
-        border-bottom: 1px solid $clr-alto;
+        // border-bottom: 1px solid $clr-alto;
     }
 }
 
@@ -128,6 +130,9 @@ status-bar {
     }
 }
 
+
+
+
 //
 // Icons
 //
@@ -156,6 +161,7 @@ status-bar {
 //
 // Pill
 //
+
 
 /*span*/.sbar__pill {
     position: relative;

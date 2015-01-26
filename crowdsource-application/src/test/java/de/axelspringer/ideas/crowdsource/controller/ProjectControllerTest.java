@@ -1,6 +1,7 @@
 package de.axelspringer.ideas.crowdsource.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 import de.axelspringer.ideas.crowdsource.config.security.Roles;
 import de.axelspringer.ideas.crowdsource.enums.ProjectStatus;
 import de.axelspringer.ideas.crowdsource.model.persistence.FinancingRoundEntity;
@@ -16,6 +17,7 @@ import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import de.axelspringer.ideas.crowdsource.service.ProjectService;
 import de.axelspringer.ideas.crowdsource.service.UserNotificationService;
 import de.axelspringer.ideas.crowdsource.service.UserService;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -90,6 +92,8 @@ public class ProjectControllerTest {
         reset(userRepository);
         reset(financingRoundRepository);
 
+        mapper.registerModule(new JodaModule());
+
         // make sure that the project is returned that is request to save
         when(projectRepository.save(any(ProjectEntity.class))).thenAnswer(invocationOnMock -> invocationOnMock.getArguments()[0]);
     }
@@ -123,7 +127,8 @@ public class ProjectControllerTest {
                 "\"description\":\"theFullDescription\"," +
                 "\"pledgeGoal\":50,\"pledgedAmount\":0," +
                 "\"backers\":0," +
-                "\"creator\":{\"id\":\"id_" + email + "\",\"name\":\"Some\",\"email\":\"" + email + "\"}}"));
+                "\"creator\":{\"id\":\"id_" + email + "\",\"name\":\"Some\",\"email\":\"" + email + "\"}," +
+                "\"lastModifiedDate\":null}"));
     }
 
     @Test
@@ -154,7 +159,8 @@ public class ProjectControllerTest {
                 "\"description\":\"theFullDescription\"," +
                 "\"pledgeGoal\":50,\"pledgedAmount\":0," +
                 "\"backers\":0," +
-                "\"creator\":{\"id\":\"id_" + email + "\",\"name\":\"Some\",\"email\":\"" + email + "\"}}"));
+                "\"creator\":{\"id\":\"id_" + email + "\",\"name\":\"Some\",\"email\":\"" + email + "\"}," +
+                "\"lastModifiedDate\":null}"));
     }
 
     @Test
@@ -198,7 +204,7 @@ public class ProjectControllerTest {
         final UserEntity userEntity = userEntity(email, Roles.ROLE_USER);
 
         final String projectId = "existingProjectId";
-        projectEntity(userEntity, projectId, "title", 44, "short description", "description", ProjectStatus.PUBLISHED);
+        projectEntity(userEntity, projectId, "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
 
         MvcResult mvcResult = mockMvc.perform(get("/project/{projectId}", projectId))
                 .andExpect(status().isOk())
@@ -213,17 +219,19 @@ public class ProjectControllerTest {
                 "\"pledgeGoal\":44," +
                 "\"pledgedAmount\":0," +
                 "\"backers\":0," +
-                "\"creator\":{\"id\":\"id_" + email + "\",\"name\":\"Some\",\"email\":\"" + email + "\"}}"));
+                "\"creator\":{\"id\":\"id_" + email + "\",\"name\":\"Some\",\"email\":\"" + email + "\"}," +
+                "\"lastModifiedDate\":null}"));
     }
 
     @Test
     public void shouldReturnProjectInProjectsQueryWhenProjectIsPublished() throws Exception {
 
+        DateTime now = DateTime.now();
         final String email = "some@mail.com";
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
 
         final String projectId = "existingProjectId";
-        final ProjectEntity projectEntity = projectEntity(user, projectId, "title", 44, "short description", "description", ProjectStatus.PUBLISHED);
+        final ProjectEntity projectEntity = projectEntity(user, projectId, "title", 44, "short description", "description", ProjectStatus.PUBLISHED, now);
         when(projectRepository.findAll()).thenReturn(Collections.singletonList(projectEntity));
 
         MvcResult mvcResult = mockMvc.perform(get("/projects", projectId)
@@ -239,7 +247,8 @@ public class ProjectControllerTest {
                 "\"pledgeGoal\":44," +
                 "\"pledgedAmount\":0," +
                 "\"backers\":0," +
-                "\"creator\":{\"name\":\"Some\",\"email\":\"" + email + "\"}}]"));
+                "\"creator\":{\"name\":\"Some\",\"email\":\"" + email + "\"}," +
+                "\"lastModifiedDate\":" + now.getMillis() + "}]"));
     }
 
     @Test
@@ -249,7 +258,7 @@ public class ProjectControllerTest {
         final UserEntity creator = userEntity(creatorEmail, Roles.ROLE_USER);
 
         final String projectId = "existingProjectId";
-        final ProjectEntity projectEntity = projectEntity(creator, projectId, "title", 44, "short description", "description", ProjectStatus.PROPOSED);
+        final ProjectEntity projectEntity = projectEntity(creator, projectId, "title", 44, "short description", "description", ProjectStatus.PROPOSED, null);
         when(projectRepository.findAll()).thenReturn(Collections.singletonList(projectEntity));
 
         final String requestorEmail = "other@mail.com";
@@ -270,7 +279,7 @@ public class ProjectControllerTest {
         final UserEntity creator = userEntity(creatorEmail, Roles.ROLE_USER);
 
         final String projectId = "existingProjectId";
-        final ProjectEntity projectEntity = projectEntity(creator, projectId, "title", 44, "short description", "description", ProjectStatus.PROPOSED);
+        final ProjectEntity projectEntity = projectEntity(creator, projectId, "title", 44, "short description", "description", ProjectStatus.PROPOSED, null);
         when(projectRepository.findAll()).thenReturn(Collections.singletonList(projectEntity));
 
         final String requestorEmail = "other@mail.com";
@@ -281,7 +290,16 @@ public class ProjectControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        assertThat(mvcResult.getResponse().getContentAsString(), is("[{\"id\":\"existingProjectId\",\"status\":\"PROPOSED\",\"title\":\"title\",\"shortDescription\":\"short description\",\"pledgeGoal\":44,\"pledgedAmount\":0,\"backers\":0,\"creator\":{\"name\":\"Some\",\"email\":\"some@mail.com\"}}]"));
+        assertThat(mvcResult.getResponse().getContentAsString(), is("[{" +
+                "\"id\":\"existingProjectId\"," +
+                "\"status\":\"PROPOSED\"," +
+                "\"title\":\"title\"," +
+                "\"shortDescription\":\"short description\"," +
+                "\"pledgeGoal\":44," +
+                "\"pledgedAmount\":0," +
+                "\"backers\":0," +
+                "\"creator\":{\"name\":\"Some\",\"email\":\"some@mail.com\"}," +
+                "\"lastModifiedDate\":null}]"));
     }
 
     @Test
@@ -291,7 +309,7 @@ public class ProjectControllerTest {
         final UserEntity creator = userEntity(creatorEmail, Roles.ROLE_USER);
 
         final String projectId = "existingProjectId";
-        final ProjectEntity projectEntity = projectEntity(creator, projectId, "title", 44, "short description", "description", ProjectStatus.PROPOSED);
+        final ProjectEntity projectEntity = projectEntity(creator, projectId, "title", 44, "short description", "description", ProjectStatus.PROPOSED, null);
         when(projectRepository.findAll()).thenReturn(Collections.singletonList(projectEntity));
 
         final MvcResult mvcResult = mockMvc.perform(get("/projects")
@@ -299,7 +317,16 @@ public class ProjectControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        assertThat(mvcResult.getResponse().getContentAsString(), is("[{\"id\":\"existingProjectId\",\"status\":\"PROPOSED\",\"title\":\"title\",\"shortDescription\":\"short description\",\"pledgeGoal\":44,\"pledgedAmount\":0,\"backers\":0,\"creator\":{\"name\":\"Some\",\"email\":\"some@mail.com\"}}]"));
+        assertThat(mvcResult.getResponse().getContentAsString(), is("[{" +
+                "\"id\":\"existingProjectId\"," +
+                "\"status\":\"PROPOSED\"," +
+                "\"title\":\"title\"," +
+                "\"shortDescription\":\"short description\"," +
+                "\"pledgeGoal\":44," +
+                "\"pledgedAmount\":0," +
+                "\"backers\":0," +
+                "\"creator\":{\"name\":\"Some\",\"email\":\"some@mail.com\"}," +
+                "\"lastModifiedDate\":null}]"));
     }
 
     @Test
@@ -307,7 +334,7 @@ public class ProjectControllerTest {
 
         final String email = "some@mail.com";
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
-        final ProjectEntity project = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PUBLISHED);
+        final ProjectEntity project = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
         Pledge pledge = new Pledge(project.getPledgeGoal() - 4);
 
         int budgetBeforePledge = user.getBudget();
@@ -335,7 +362,7 @@ public class ProjectControllerTest {
 
         final String email = "some@mail.com";
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
-        final ProjectEntity project = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PUBLISHED);
+        final ProjectEntity project = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
 
         final int budgetBeforePledge = user.getBudget();
         pledgeProject(project, user, project.getPledgeGoal() - 1);
@@ -403,7 +430,7 @@ public class ProjectControllerTest {
         final String email = "some@mail.com";
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
 
-        final ProjectEntity project = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PUBLISHED);
+        final ProjectEntity project = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
 
         // pledge project nearly fully
         pledgeProject(project, user, project.getPledgeGoal() - 1);
@@ -426,7 +453,7 @@ public class ProjectControllerTest {
         final String email = "some@mail.com";
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
 
-        final ProjectEntity project = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PROPOSED);
+        final ProjectEntity project = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PROPOSED, null);
 
         when(financingRoundRepository.findActive(any())).thenReturn(new FinancingRoundEntity());
 
@@ -449,7 +476,7 @@ public class ProjectControllerTest {
         final String email = "some@mail.com";
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
 
-        final ProjectEntity project = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PROPOSED);
+        final ProjectEntity project = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PROPOSED, null);
 
         when(financingRoundRepository.findActive(any())).thenReturn(new FinancingRoundEntity());
         when(pledgeRepository.findByProjectAndFinancingRound(eq(project), any(FinancingRoundEntity.class)))
@@ -471,7 +498,7 @@ public class ProjectControllerTest {
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
         user.setBudget(1);
 
-        projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PUBLISHED);
+        projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
 
         when(financingRoundRepository.findActive(any())).thenReturn(new FinancingRoundEntity());
 
@@ -491,7 +518,7 @@ public class ProjectControllerTest {
         final String email = "some@mail.com";
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
 
-        projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PUBLISHED);
+        projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
 
         when(financingRoundRepository.findActive(any())).thenReturn(null);
 
@@ -510,7 +537,7 @@ public class ProjectControllerTest {
 
         final String email = "some@mail.com";
         final UserEntity user = userEntity(email, Roles.ROLE_USER, Roles.ROLE_ADMIN);
-        final ProjectEntity projectEntity = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PROPOSED);
+        final ProjectEntity projectEntity = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PROPOSED, null);
         final Project project = new Project(projectEntity, new ArrayList<>());
         project.setStatus(ProjectStatus.PUBLISHED);
 
@@ -569,7 +596,7 @@ public class ProjectControllerTest {
         return project;
     }
 
-    private ProjectEntity projectEntity(UserEntity userEntity, String id, String title, int pledgeGoal, String shortDescription, String description, ProjectStatus status) {
+    private ProjectEntity projectEntity(UserEntity userEntity, String id, String title, int pledgeGoal, String shortDescription, String description, ProjectStatus status, DateTime lastModifiedDate) {
         ProjectEntity projectEntity = new ProjectEntity();
         projectEntity.setId(id);
         projectEntity.setTitle(title);
@@ -578,6 +605,7 @@ public class ProjectControllerTest {
         projectEntity.setDescription(description);
         projectEntity.setCreator(userEntity);
         projectEntity.setStatus(status);
+        projectEntity.setLastModifiedDate(lastModifiedDate);
         when(projectRepository.findOne(id)).thenReturn(projectEntity);
         return projectEntity;
     }

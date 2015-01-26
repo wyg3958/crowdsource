@@ -54,34 +54,44 @@ describe('project list', function () {
 
     it('should display projects in correct order and set classes based on project status', function () {
 
+        var now = moment();
+
         $httpBackend.expectGET('/projects').respond(200, [
-            project('Title', 'Short Description', 100, 10, 1, 'PUBLISHED'),
-            project('Title 2', 'Short Description 2', 100, 20, 2, 'FULLY_PLEDGED'),
-            project('Title 3', 'Short Description 3', 100, 20, 2, 'REJECTED'),
-            project('Title 4', 'Short Description 3', 100, 20, 2, 'PROPOSED')
+            project('Title 0', 'Short Description 0', 100, 10, 1, 'PUBLISHED', moment(now).subtract(2, 'days')),
+            project('Title 1', 'Short Description 1', 100, 10, 1, 'PUBLISHED', moment(now).subtract(1, 'days')),
+            project('Title 2', 'Short Description 2', 100, 10, 1, 'PUBLISHED', moment(now).subtract(4, 'days')),
+            project('Title 3', 'Short Description 3', 100, 20, 2, 'FULLY_PLEDGED', moment(now).subtract(1, 'days')),
+            project('Title 4', 'Short Description 4', 100, 20, 2, 'REJECTED', moment(now).subtract(1, 'days')),
+            project('Title 5', 'Short Description 5', 100, 20, 2, 'PROPOSED', moment(now).subtract(1, 'days'))
         ]);
         $scope.$digest();
         $httpBackend.flush();
 
         var listItems = projectList.find('.project-tile');
-        expect(listItems).toHaveLength(4);
+        expect(listItems).toHaveLength(6);
 
-        expect($(listItems[0]).find('h1').text()).toBe('Title 4');
+        expect($(listItems[0]).find('h1').text()).toBe('Title 5');
         expect($(listItems[0]).hasClass("project-PROPOSED")).toBeTruthy();
 
-        expect($(listItems[1]).find('h1').text()).toBe('Title');
+        expect($(listItems[1]).find('h1').text()).toBe('Title 1');
         expect($(listItems[1]).hasClass("project-PUBLISHED")).toBeTruthy();
 
-        expect($(listItems[2]).find('h1').text()).toBe('Title 2');
-        expect($(listItems[2]).hasClass("project-FULLY_PLEDGED")).toBeTruthy();
+        expect($(listItems[2]).find('h1').text()).toBe('Title 0');
+        expect($(listItems[2]).hasClass("project-PUBLISHED")).toBeTruthy();
 
-        expect($(listItems[3]).find('h1').text()).toBe('Title 3');
-        expect($(listItems[3]).hasClass("project-REJECTED")).toBeTruthy();
+        expect($(listItems[3]).find('h1').text()).toBe('Title 2');
+        expect($(listItems[3]).hasClass("project-PUBLISHED")).toBeTruthy();
+
+        expect($(listItems[4]).find('h1').text()).toBe('Title 3');
+        expect($(listItems[4]).hasClass("project-FULLY_PLEDGED")).toBeTruthy();
+
+        expect($(listItems[5]).find('h1').text()).toBe('Title 4');
+        expect($(listItems[5]).hasClass("project-REJECTED")).toBeTruthy();
     });
 
     it("should redirect to the project's details page when the project tile is clicked", function () {
         $httpBackend.expectGET('/projects').respond(200, [
-            project('Title', 'Short Description', 100, 10, 1),
+            project('Title', 'Short Description', 100, 10, 1)
         ]);
         $scope.$digest();
         $httpBackend.flush();
@@ -111,7 +121,7 @@ describe('project list', function () {
         expect(projectList.find('.no-projects')).not.toHaveClass('ng-hide');
     });
 
-    function project(title, shortDescription, pledgeGoal, pledgedAmount, backers, status) {
+    function project(title, shortDescription, pledgeGoal, pledgedAmount, backers, status, lastModifiedDate) {
         var project = {};
         project.id = 'projectId';
         project.title = title;
@@ -120,6 +130,7 @@ describe('project list', function () {
         project.pledgedAmount = pledgedAmount;
         project.backers = backers;
         project.status = status;
+        project.lastModifiedDate = lastModifiedDate;
         return project;
     }
 });

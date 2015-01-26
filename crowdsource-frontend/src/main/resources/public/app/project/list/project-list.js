@@ -10,9 +10,7 @@ angular.module('crowdsource')
             $location.path('/project/' + project.id);
         };
 
-        vm.projectOrder = function (project) {
-
-            var projectState = project['status'];
+        vm.projectOrderByStatus = function (project) {
 
             // scores for states
             var score = 1;
@@ -24,9 +22,16 @@ angular.module('crowdsource')
             };
 
             // get score for state
-            var projectScore = projectScores[projectState];
+            var projectScore = projectScores[project.status];
 
             // return score or max score
             return projectScore || score;
+        };
+
+        vm.projectOrderByDate = function (project) {
+            var timestamp = new Date(project.lastModifiedDate).getTime();
+
+            // sort descending
+            return (-1) * timestamp;
         }
     });

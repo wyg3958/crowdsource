@@ -8,6 +8,7 @@ import de.axelspringer.ideas.crowdsource.model.presentation.user.ProjectCreator;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.joda.time.DateTime;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -54,6 +55,10 @@ public class Project {
     @JsonView(ProjectSummaryView.class)
     private ProjectCreator creator;
 
+    // no validation here on purpose, as this is only filled on response and ignored in request
+    @JsonView(ProjectSummaryView.class)
+    private DateTime lastModifiedDate;
+
     public Project(ProjectEntity projectEntity, List<PledgeEntity> pledges) {
         this.id = projectEntity.getId();
         this.status = projectEntity.getStatus();
@@ -61,6 +66,7 @@ public class Project {
         this.shortDescription = projectEntity.getShortDescription();
         this.description = projectEntity.getDescription();
         this.pledgeGoal = projectEntity.getPledgeGoal();
+        this.lastModifiedDate = projectEntity.getLastModifiedDate();
 
         this.pledgedAmount = pledges.stream().mapToInt(PledgeEntity::getAmount).sum();
         this.backers = pledges.stream().map(PledgeEntity::getUser).distinct().count();

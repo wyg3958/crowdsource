@@ -86,16 +86,12 @@ public class ProjectService {
             throw new ResourceNotFoundException();
         }
 
-        if (activeFinancingRoundEntity == null) {
-            throw InvalidRequestException.noFinancingRoundCurrentlyActive();
-        }
-
         // potential problem: race condition. Two simultaneous requests could lead to "over-pledging"
         if (projectEntity.getStatus() == ProjectStatus.FULLY_PLEDGED) {
             throw InvalidRequestException.projectAlreadyFullyPledged();
         }
 
-        if (financingRoundRepository.findActive(DateTime.now()) == null) {
+        if (activeFinancingRoundEntity == null) {
             throw InvalidRequestException.noFinancingRoundCurrentlyActive();
         }
 

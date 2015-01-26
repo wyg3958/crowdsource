@@ -19,6 +19,7 @@
 @import "components/financing-rounds";
 @import "components/alert-box";
 @import "components/_foundation-datepicker";
+@import "components/_about";
 
 .button, button {
     text-transform: uppercase;
@@ -33,13 +34,16 @@ body {
 }
 
 .page-wrapper {
+    height:     100%;  // Make our footer sticky
     min-height: 100%;
-    position: relative;
+    position:   relative;
 }
 
 .content {
-    // padding-bottom: 300px; // Height of sticky footer
+    min-height: calc(95% - 200px);  // Give height to make our footer sticky,
+    // value of 95% is approx. the height of the content area minus teaser, nav-bar, ... 
     color: $crowd-color-dark-grey;
+
 }
 
 content-row {

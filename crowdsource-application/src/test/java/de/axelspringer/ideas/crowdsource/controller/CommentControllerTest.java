@@ -2,6 +2,7 @@ package de.axelspringer.ideas.crowdsource.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.axelspringer.ideas.crowdsource.model.persistence.CommentEntity;
+import de.axelspringer.ideas.crowdsource.model.persistence.FinancingRoundEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.model.presentation.Comment;
@@ -79,7 +80,7 @@ public class CommentControllerTest {
         reset(userRepository);
 
         final UserEntity userEntity = new UserEntity("test.name@test.de", "password");
-        final ProjectEntity projectEntity = new ProjectEntity(userEntity, new Project());
+        final ProjectEntity projectEntity = new ProjectEntity(userEntity, new Project(), new FinancingRoundEntity());
         when(userRepository.findByEmail(EXISTING_USER_MAIL)).thenReturn(userEntity);
         when(projectRepository.findOne(EXISTING_PROJECT_ID)).thenReturn(projectEntity);
         when(commentRepository.findByProject(projectEntity)).thenReturn(Arrays.asList(new CommentEntity(projectEntity, userEntity, "some comment")));

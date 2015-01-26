@@ -46,13 +46,13 @@ public class ProjectService {
             throw new ResourceNotFoundException();
         }
 
-        return project(projectEntity);
+        return project(projectEntity, getActiveFinancingRoundEntity());
     }
 
     public List<Project> getProjects() {
 
         final List<ProjectEntity> projects = projectRepository.findByStatusOrderByCreatedDateDesc(ProjectStatus.PUBLISHED);
-        return projects.stream().map(p -> project(p)).collect(toList());
+        return projects.stream().map(p -> project(p, getActiveFinancingRoundEntity())).collect(toList());
     }
 
     public Project addProject(Project project, UserEntity userEntity) {
@@ -61,17 +61,7 @@ public class ProjectService {
         projectEntity = projectRepository.save(projectEntity);
 
         log.debug("Project added: {}", projectEntity);
-        return project(projectEntity);
-    }
-
-    public Project updateProject(Project project) {
-
-        ProjectEntity projectEntity = projectRepository.findOne(project.getId());
-        projectEntity.setStatus(project.getStatus());
-        projectEntity = projectRepository.save(projectEntity);
-
-        log.debug("Project updated: {}", projectEntity);
-        return project(projectEntity);
+        return project(projectEntity, getActiveFinancingRoundEntity());
     }
 
     public void pledge(String projectId, UserEntity userEntity, Pledge pledge) {
@@ -100,7 +90,7 @@ public class ProjectService {
             throw InvalidRequestException.userBudgetExceeded();
         }
 
-        Project project = project(projectEntity);
+        Project project = project(projectEntity, activeFinancingRoundEntity);
         int newPledgedAmount = pledge.getAmount() + project.getPledgedAmount();
         if (newPledgedAmount > project.getPledgeGoal()) {
             throw InvalidRequestException.pledgeGoalExceeded();
@@ -126,9 +116,9 @@ public class ProjectService {
     }
 
 
-    private Project project(ProjectEntity projectEntity) {
+    private Project project(ProjectEntity projectEntity, FinancingRoundEntity activeFinancingRoundEntity) {
 
-        List<PledgeEntity> pledges = pledgeRepository.findByProjectAndFinancingRound(projectEntity, getActiveFinancingRoundEntity());
+        List<PledgeEntity> pledges = pledgeRepository.findByProjectAndFinancingRound(projectEntity, activeFinancingRoundEntity);
         return new Project(projectEntity, pledges);
     }
 }

@@ -3,6 +3,7 @@ package de.axelspringer.ideas.crowdsource.service;
 import de.axelspringer.ideas.crowdsource.enums.ProjectStatus;
 import de.axelspringer.ideas.crowdsource.exceptions.InvalidRequestException;
 import de.axelspringer.ideas.crowdsource.exceptions.ResourceNotFoundException;
+import de.axelspringer.ideas.crowdsource.model.persistence.FinancingRoundEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.PledgeEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
@@ -56,7 +57,7 @@ public class ProjectService {
 
     public Project addProject(Project project, UserEntity userEntity) {
 
-        ProjectEntity projectEntity = new ProjectEntity(userEntity, project);
+        ProjectEntity projectEntity = new ProjectEntity(userEntity, project, currentFinancingRound());
         projectEntity = projectRepository.save(projectEntity);
 
         log.debug("Project added: {}", projectEntity);
@@ -79,6 +80,8 @@ public class ProjectService {
     public void pledge(String projectId, UserEntity userEntity, Pledge pledge) {
 
         ProjectEntity projectEntity = projectRepository.findOne(projectId);
+        FinancingRoundEntity activeFinancingRoundEntity = currentFinancingRound();
+
         if (projectEntity == null) {
             throw new ResourceNotFoundException();
         }
@@ -88,7 +91,7 @@ public class ProjectService {
             throw InvalidRequestException.projectAlreadyFullyPledged();
         }
 
-        if (financingRoundRepository.findActive(DateTime.now()) == null) {
+        if (activeFinancingRoundEntity == null) {
             throw InvalidRequestException.noFinancingRoundCurrentlyActive();
         }
 
@@ -102,7 +105,7 @@ public class ProjectService {
             throw InvalidRequestException.pledgeGoalExceeded();
         }
 
-        PledgeEntity pledgeEntity = new PledgeEntity(projectEntity, userEntity, pledge);
+        PledgeEntity pledgeEntity = new PledgeEntity(projectEntity, userEntity, pledge, activeFinancingRoundEntity);
         userEntity.reduceBudget(pledge.getAmount());
 
         if (newPledgedAmount == project.getPledgeGoal()) {
@@ -117,11 +120,13 @@ public class ProjectService {
         log.debug("Project pledged: {}", pledgeEntity);
     }
 
-
     private Project project(ProjectEntity projectEntity) {
-
-        List<PledgeEntity> pledges = pledgeRepository.findByProject(projectEntity);
+        List<PledgeEntity> pledges = pledgeRepository.findByProjectAndFinancingRound(projectEntity, projectEntity.getFinancingRound());
         return new Project(projectEntity, pledges);
+    }
+
+    private FinancingRoundEntity currentFinancingRound() {
+        return financingRoundRepository.findActive(DateTime.now());
     }
 
 }

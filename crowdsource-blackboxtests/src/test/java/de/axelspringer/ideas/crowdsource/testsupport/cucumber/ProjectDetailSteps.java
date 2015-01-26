@@ -5,16 +5,19 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import de.axelspringer.ideas.crowdsource.model.presentation.Pledge;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.ProjectDetailPage;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.ProjectStatusWidget;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.ProjectsPage;
+import de.axelspringer.ideas.crowdsource.testsupport.selenium.SeleniumWait;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverUtils;
 import de.axelspringer.ideas.crowdsource.testsupport.util.CrowdSourceClient;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +26,12 @@ import org.springframework.test.context.ContextConfiguration;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertTrue;
 
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
 public class ProjectDetailSteps {
 
+    public static final int PLEDGED_AMOUNT = 10;
     @Autowired
     private ProjectsPage projectsPage;
 
@@ -42,6 +47,8 @@ public class ProjectDetailSteps {
     @Autowired
     private UrlProvider urlProvider;
 
+    @Autowired
+    private SeleniumWait seleniumWait;
 
     private WebDriver webDriver;
     private Project createdProject;
@@ -52,13 +59,13 @@ public class ProjectDetailSteps {
         webDriver = webDriverProvider.provideDriver();
     }
 
-    @Given("^a published project is available$")
-    public void a_published_project_is_available() throws Throwable {
-        a_published_project_is_available(25);
+    @Given("^a project is available$")
+    public void a_project_is_available() throws Throwable {
+        a_project_is_available(25);
     }
 
-    @Given("^a published project with a pledge goal of (\\d+) is available$")
-    public void a_published_project_is_available(int pledgeGoal) throws Throwable {
+    @Given("^a project with a pledge goal of (\\d+) is available$")
+    public void a_project_is_available(int pledgeGoal) throws Throwable {
         createdProject = new Project();
         createdProject.setTitle("T" + RandomStringUtils.randomAlphanumeric(6));
         createdProject.setShortDescription("Short description " + RandomStringUtils.randomAlphanumeric(16));
@@ -67,13 +74,32 @@ public class ProjectDetailSteps {
 
         CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithDefaultUser();
         createdProject = crowdSourceClient.createProject(createdProject, authToken).getBody();
-
-        final CrowdSourceClient.AuthToken adminToken = crowdSourceClient.authorizeWithAdminUser();
-        crowdSourceClient.publish(createdProject, adminToken);
     }
 
-    @When("^the user clicks on the tile of this published project$")
-    public void the_user_clicks_on_the_tile_of_this_published_project() throws Throwable {
+    @And("^a published and partially pledged project is available$")
+    public void a_published_and_partially_pledged_project_is_available() throws Throwable {
+        a_project_is_available(25);
+        an_admin_publishs_the_created_project();
+
+        CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithDefaultUser();
+
+        Pledge pledge = new Pledge(PLEDGED_AMOUNT);
+        crowdSourceClient.pledgeProject(createdProject, pledge, authToken);
+    }
+
+    @And("^a published and fully pledged project is available$")
+    public void a_published_and_fully_pledged_project_is_available() throws Throwable {
+        a_project_is_available(PLEDGED_AMOUNT);
+        an_admin_publishs_the_created_project();
+
+        CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithDefaultUser();
+
+        Pledge pledge = new Pledge(PLEDGED_AMOUNT);
+        crowdSourceClient.pledgeProject(createdProject, pledge, authToken);
+    }
+
+    @When("^the user clicks on the tile of this project$")
+    public void the_user_clicks_on_the_tile_of_this_project() throws Throwable {
         PageFactory.initElements(webDriver, projectsPage);
         projectsPage.waitForPageLoad();
         projectsPage.clickProjectTileWithTitle(createdProject.getTitle());
@@ -95,6 +121,22 @@ public class ProjectDetailSteps {
         assertThat(projectStatusWidget.getUserName(), is("Crowdsource"));
     }
 
+    @Then("^the pledged amount is displayed$")
+    public void the_pledged_amount_is_displayed() throws Throwable {
+        projectDetailPage.waitForDetailsToBeLoaded();
+
+        ProjectStatusWidget projectStatusWidget = projectDetailPage.getProjectStatusWidget();
+        assertThat(projectStatusWidget.getPledgedAmount(), is("$" + PLEDGED_AMOUNT));
+    }
+
+    @Then("^the pledged amount is zero$")
+    public void the_pledged_amount_is_zero() throws Throwable {
+        projectDetailPage.waitForDetailsToBeLoaded();
+
+        ProjectStatusWidget projectStatusWidget = projectDetailPage.getProjectStatusWidget();
+        assertThat(projectStatusWidget.getPledgedAmount(), is("$0"));
+    }
+
     @Given("^the user requests the project detail page with a non existant project id$")
     public void the_user_requests_the_project_detail_page_with_a_non_existant_project_id() throws Throwable {
         projectDetailPage.openWithoutWaiting("i-dont-exist-project-id");
@@ -102,12 +144,13 @@ public class ProjectDetailSteps {
 
     @Given("^the user is on a project detail page$")
     public void the_user_is_on_a_project_detail_page() throws Throwable {
-        a_published_project_is_available();
+        a_project_is_available();
+        an_admin_publishs_the_created_project();
 
         webDriver.get(urlProvider.applicationUrl());
         projectsPage.waitForPageLoad();
 
-        the_user_clicks_on_the_tile_of_this_published_project();
+        the_user_clicks_on_the_tile_of_this_project();
     }
 
     @When("^the user clicks the funding button in status widget$")
@@ -131,5 +174,30 @@ public class ProjectDetailSteps {
 
     public Project getCreatedProject() {
         return createdProject;
+    }
+
+    @And("^the \"([^\"]*)\"-button is not visible$")
+    public void the_button_is_not_visible(String buttonName) throws Throwable {
+        assertTrue(webDriver.findElements(By.className(buttonName + "-button")).size() == 0);
+    }
+
+    @And("^the \"([^\"]*)\"-button is visible$")
+    public void the_button_is_visible(String buttonName) throws Throwable {
+        assertTrue(webDriver.findElements(By.className(buttonName + "-button")).size() == 1);
+    }
+
+    @When("^the \"([^\"]*)\"-button is clicked$")
+    public void the_button_is_clicked(String buttonName) throws Throwable {
+        webDriver.findElement(By.className(buttonName + "-button")).click();
+    }
+
+    @And("^an admin publishs the created project$")
+    public void an_admin_publishs_the_created_project() throws Throwable {
+        crowdSourceClient.publish(createdProject, crowdSourceClient.authorizeWithAdminUser());
+    }
+
+    @And("^the user waits for the \"([^\"]*)\"-button to disappear$")
+    public void the_user_waits_for_the_button_to_disappear(String buttonName) throws Throwable {
+        seleniumWait.until(input -> webDriver.findElements(By.className(buttonName + "-button")).size() == 0);
     }
 }

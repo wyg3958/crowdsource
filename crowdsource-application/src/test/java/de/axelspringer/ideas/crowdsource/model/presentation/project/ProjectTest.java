@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.crowdsource.model.presentation.project;
 
+import de.axelspringer.ideas.crowdsource.model.persistence.FinancingRoundEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.PledgeEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
@@ -26,7 +27,7 @@ public class ProjectTest {
         creator.setId("id");
 
         Project project = new Project();
-        projectEntity = new ProjectEntity(creator, project);
+        projectEntity = new ProjectEntity(creator, project, new FinancingRoundEntity());
 
         user1 = new UserEntity("user1@xyz.com");
         user2 = new UserEntity("user2@xyz.com");
@@ -34,10 +35,11 @@ public class ProjectTest {
 
     @Test
     public void testGetPledgedAmount() throws Exception {
+        final FinancingRoundEntity activeFinancingRoundEntity = new FinancingRoundEntity();
         pledges = Arrays.asList(
-                new PledgeEntity(projectEntity, user1, new Pledge(10)),
-                new PledgeEntity(projectEntity, user2, new Pledge(20)),
-                new PledgeEntity(projectEntity, user1, new Pledge(30)));
+                new PledgeEntity(projectEntity, user1, new Pledge(10), activeFinancingRoundEntity),
+                new PledgeEntity(projectEntity, user2, new Pledge(20), activeFinancingRoundEntity),
+                new PledgeEntity(projectEntity, user1, new Pledge(30), activeFinancingRoundEntity));
 
         Project project = new Project(projectEntity, pledges);
 
@@ -47,9 +49,9 @@ public class ProjectTest {
     @Test
     public void testGetBackers() throws Exception {
         pledges = Arrays.asList(
-                new PledgeEntity(projectEntity, user1, new Pledge(10)),
-                new PledgeEntity(projectEntity, user2, new Pledge(20)),
-                new PledgeEntity(projectEntity, user1, new Pledge(30)));
+                new PledgeEntity(projectEntity, user1, new Pledge(10), new FinancingRoundEntity()),
+                new PledgeEntity(projectEntity, user2, new Pledge(20), new FinancingRoundEntity()),
+                new PledgeEntity(projectEntity, user1, new Pledge(30), new FinancingRoundEntity()));
 
         Project project = new Project(projectEntity, pledges);
 

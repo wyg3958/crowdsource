@@ -2,10 +2,13 @@ package de.axelspringer.ideas.crowdsource.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
+import de.axelspringer.ideas.crowdsource.enums.ProjectStatus;
 import de.axelspringer.ideas.crowdsource.model.persistence.FinancingRoundEntity;
+import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.model.presentation.FinancingRound;
 import de.axelspringer.ideas.crowdsource.repository.FinancingRoundRepository;
+import de.axelspringer.ideas.crowdsource.repository.ProjectRepository;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
@@ -28,16 +31,25 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -50,6 +62,9 @@ public class FinancingRoundControllerMockMvcTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ProjectRepository projectRepository;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -65,6 +80,7 @@ public class FinancingRoundControllerMockMvcTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         reset(financingRoundRepository);
         reset(userRepository);
+        reset(projectRepository);
 
         List<FinancingRoundEntity> financingRoundEntities = new ArrayList<>();
 
@@ -79,6 +95,8 @@ public class FinancingRoundControllerMockMvcTest {
         when(userRepository.findAll()).thenReturn(userEntities);
 
         objectMapper.registerModule(new JodaModule());
+
+        when(financingRoundRepository.save(any(FinancingRoundEntity.class))).thenAnswer(invocationOnMock -> invocationOnMock.getArguments()[0]);
     }
 
     @Test
@@ -127,17 +145,28 @@ public class FinancingRoundControllerMockMvcTest {
     @Test
     public void testStartFinancingRound() throws Exception {
 
+        ProjectEntity proposedProject = project(ProjectStatus.PROPOSED);
+        when(projectRepository.findAll()).thenReturn(Arrays.asList(
+                proposedProject, project(ProjectStatus.FULLY_PLEDGED), project(ProjectStatus.FULLY_PLEDGED)
+        ));
+
         // create round
         mockMvc.perform(post("/financinground")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(financingRound(new DateTime().plusDays(1), 99))))
                 .andExpect(status().isCreated());
 
-        verify(financingRoundRepository).save(any(FinancingRoundEntity.class));
-
-        verify(financingRoundRepository, times(1)).save(any(FinancingRoundEntity.class));
+        ArgumentCaptor<FinancingRoundEntity> financingRoundCaptor = ArgumentCaptor.forClass(FinancingRoundEntity.class);
+        verify(financingRoundRepository, times(1)).save(financingRoundCaptor.capture());
         verify(userRepository, times(1)).findAll();
         verify(userRepository, times(2)).save(any(UserEntity.class));
+
+        ArgumentCaptor<ProjectEntity> projectCaptor = ArgumentCaptor.forClass(ProjectEntity.class);
+        verify(projectRepository, times(1)).save(projectCaptor.capture());
+
+        ProjectEntity updatedProject = projectCaptor.getValue();
+        assertThat(updatedProject, is(proposedProject));
+        assertThat(updatedProject.getFinancingRound(), is(financingRoundCaptor.getValue()));
     }
 
     @Test
@@ -259,6 +288,13 @@ public class FinancingRoundControllerMockMvcTest {
         return reference;
     }
 
+    private ProjectEntity project(ProjectStatus status) {
+        ProjectEntity projectEntity = new ProjectEntity();
+        projectEntity.setStatus(status);
+        projectEntity.setId(UUID.randomUUID().toString());
+        return projectEntity;
+    }
+
     @Configuration
     @EnableWebMvc
     static class Config {
@@ -281,6 +317,11 @@ public class FinancingRoundControllerMockMvcTest {
         @Bean
         public FinancingRoundRepository financingRoundRepository() {
             return mock(FinancingRoundRepository.class);
+        }
+
+        @Bean
+        public ProjectRepository projectRepository() {
+            return mock(ProjectRepository.class);
         }
     }
 }

@@ -41,3 +41,31 @@ Feature: Administer financing rounds
     And the financing round is not marked active any more
     And the option to start a new financing round is available
     And no notification message is displayed in the start financeround form
+
+  Scenario: The pledged amount of a project is reset when a financing round ends
+    Given there is a financing round active
+    And a user is logged in
+    And a published and partially pledged project is available
+    When the index page is visited
+    And the project detail page of this project is requested
+    Then the pledged amount is displayed
+    When a financing round is being deactivated in the meantime
+    And the project detail page of this project is reloaded
+    Then the pledged amount is displayed
+    When a financing round is being activated in the meantime
+    And the project detail page of this project is reloaded
+    Then the pledged amount is zero
+
+  Scenario: The pledged amount of a fully pledged project is not reset when a financing round ends
+    Given there is a financing round active
+    And a user is logged in
+    And a published and fully pledged project is available
+    When the index page is visited
+    And the project detail page of this project is requested
+    Then the pledged amount is displayed
+    When a financing round is being deactivated in the meantime
+    And the project detail page of this project is reloaded
+    Then the pledged amount is displayed
+    When a financing round is being activated in the meantime
+    And the project detail page of this project is reloaded
+    Then the pledged amount is displayed

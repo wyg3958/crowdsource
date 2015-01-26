@@ -23,6 +23,9 @@ public class ProjectEntity {
     @DBRef
     private UserEntity creator;
 
+    @DBRef
+    private FinancingRoundEntity financingRound;
+
     private String title;
 
     private String shortDescription;
@@ -40,8 +43,9 @@ public class ProjectEntity {
     @LastModifiedDate
     private DateTime lastModifiedDate;
 
-    public ProjectEntity(UserEntity creator, Project project) {
+    public ProjectEntity(UserEntity creator, Project project, FinancingRoundEntity financingRound) {
         this.creator = creator;
+        this.financingRound = financingRound;
         this.title = project.getTitle();
         this.shortDescription = project.getShortDescription();
         this.description = project.getDescription();

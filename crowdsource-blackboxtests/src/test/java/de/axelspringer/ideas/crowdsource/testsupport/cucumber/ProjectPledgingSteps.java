@@ -138,6 +138,11 @@ public class ProjectPledgingSteps {
         prepareFinancingRound(true);
     }
 
+    @When("^a financing round is being deactivated in the meantime$")
+    public void a_financing_round_is_being_deactivated_in_the_meantime() throws Throwable {
+        prepareFinancingRound(false);
+    }
+
     private void prepareFinancingRound(boolean requireActiveFinancingRound) {
         CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithAdminUser();
 

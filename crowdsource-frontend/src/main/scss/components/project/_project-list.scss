@@ -1,7 +1,6 @@
 /***
  * Project List & Home
  *
- *
  */
 
 
@@ -32,29 +31,7 @@
 
 /*p*/.plist__intro--has-divider {
     @extend .plist__intro;
-
-    $divider-config: (
-        width:  rem-calc(96px),
-        height: rem-calc(4px),
-        offset-bottom: rem-calc(24px)
-    );
-
-    $offset-bottom: map-get($divider-config, offset-bottom) + map-get($divider-config, height) / 2;
-    $margin-left:   map-get($divider-config, width) / 2;
-    $margin-bottom: map-get($divider-config, offset-bottom) * 2.5;
-
-    position: relative;
-    margin-bottom:  $margin-bottom;
-
-    &::after {
-        content:  '';
-        position: absolute;
-        left:   50%;
-        bottom: #{-$offset-bottom};
-        width:  map-get($divider-config, width);
-        margin-left:   #{-$margin-left};
-        border-bottom: map-get($divider-config, height) solid #2D2D2D;
-    }
+    @include typographic-divider();
 }
 
 
@@ -76,6 +53,8 @@
     }
 }
 
+
+// Section with Dein Budget / Du / Dein Zeitrahmen
 
 .intro-section {
     text-align: center;
@@ -112,12 +91,17 @@
     }
 }
 
+
 @mixin limit-lines ($lines, $font-size, $line-height) {
     font-size: $font-size;
     line-height: $line-height;
     max-height: ($lines * $font-size * $line-height);
     overflow: hidden;
 }
+
+
+
+// Project Tiles
 
 .project-list {
     ul {

@@ -87,31 +87,7 @@ $team-width:  ($team-container-width - ($team-gutter * $team-items * 2)) / $team
 
 /*h3*/.team__member-name--has-divider {
     @extend .team__member-name;
-
-    // Divider same as in product list
-
-    $divider-config: (
-        width:  rem-calc(40px),
-        height: rem-calc(2px),
-        offset-bottom: rem-calc(8px)
-    );
-
-    $offset-bottom: map-get($divider-config, offset-bottom) + map-get($divider-config, height) / 2;
-    $margin-left:   map-get($divider-config, width) / 2;
-    $margin-bottom: map-get($divider-config, offset-bottom) * 2.5;
-
-    position: relative;
-    margin-bottom:  $margin-bottom;
-
-    &::after {
-        content:  '';
-        position: absolute;
-        left:   50%;
-        bottom: #{-$offset-bottom};
-        width:  map-get($divider-config, width);
-        margin-left:   #{-$margin-left};
-        border-bottom: map-get($divider-config, height) solid #2D2D2D;
-    }
+    @include typographic-divider((width: 2rem, height: 0.125rem, offset-bottom: 0.5rem));
 }
 
 

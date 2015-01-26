@@ -22,6 +22,7 @@ import java.util.Arrays;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
@@ -30,6 +31,11 @@ import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProjectServiceTest {
+
+    private final static String USER_EMAIL = "user@some.host";
+    private final static String ADMIN1_EMAIL = "admin1@some.host";
+    private final static String ADMIN2_EMAIL = "admin2@some.host";
+
 
     @Mock
     private ProjectRepository projectRepository;
@@ -53,24 +59,24 @@ public class ProjectServiceTest {
     public void init() {
         reset(projectRepository);
         when(pledgeRepository.findByProjectAndFinancingRound(any(ProjectEntity.class), any(FinancingRoundEntity.class))).thenReturn(new ArrayList<>());
-        when(userRepository.findAll()).thenReturn(Arrays.asList(admin("some@other.mail"), admin("my@admin.com"), user("some@mail.com")));
+        when(userRepository.findAll()).thenReturn(Arrays.asList(admin(ADMIN1_EMAIL), admin(ADMIN2_EMAIL), user(USER_EMAIL)));
         when(projectRepository.save(any(ProjectEntity.class))).thenAnswer(invocation -> invocation.getArguments()[0]);
     }
 
     @Test
     public void testUpdateProjectWithUpdatedStateTriggersUserNotification() throws Exception {
 
-        final ProjectEntity projectEntity = project("some_id", ProjectStatus.PROPOSED, user("some@mail.com"));
+        final ProjectEntity projectEntity = project("some_id", ProjectStatus.PROPOSED, user(USER_EMAIL));
         final Project updateObject = project(projectEntity);
         updateObject.setStatus(ProjectStatus.PUBLISHED);
         projectService.updateProject("some_id", updateObject);
-        verify(userNotificationService).notifyUserOnProjectUpdate(any(ProjectEntity.class), anyString());
+        verify(userNotificationService).notifyUserOnProjectUpdate(any(ProjectEntity.class), eq(USER_EMAIL));
     }
 
     @Test
     public void testUpdateProjectWithNonUpdatedStateDoesNotTriggerUserNotification() throws Exception {
 
-        final ProjectEntity projectEntity = project("some_id", ProjectStatus.PROPOSED, user("some@mail.com"));
+        final ProjectEntity projectEntity = project("some_id", ProjectStatus.PROPOSED, user(USER_EMAIL));
         final Project updateObject = project(projectEntity);
         updateObject.setStatus(ProjectStatus.PROPOSED);
         projectService.updateProject("some_id", updateObject);
@@ -82,6 +88,9 @@ public class ProjectServiceTest {
 
         final Project newProject = new Project();
         projectService.addProject(newProject, user("some@mail.com"));
+        verify(userNotificationService).notifyAdminOnProjectCreation(any(ProjectEntity.class), eq(ADMIN1_EMAIL));
+        verify(userNotificationService).notifyAdminOnProjectCreation(any(ProjectEntity.class), eq(ADMIN2_EMAIL));
+        verify(userNotificationService, never()).notifyAdminOnProjectCreation(any(ProjectEntity.class), eq(USER_EMAIL));
         verify(userNotificationService, times(2)).notifyAdminOnProjectCreation(any(ProjectEntity.class), anyString());
     }
 

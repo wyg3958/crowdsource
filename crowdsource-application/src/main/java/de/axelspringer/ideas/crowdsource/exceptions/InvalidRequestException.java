@@ -30,7 +30,12 @@ public class InvalidRequestException extends RuntimeException {
         return new InvalidRequestException("financing_round_already_stopped");
     }
 
+    public static InvalidRequestException projectNotPublished() {
+        return new InvalidRequestException("project_not_published");
+    }
+
     public InvalidRequestException(String message) {
         super(message);
     }
+
 }

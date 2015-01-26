@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.crowdsource.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.axelspringer.ideas.crowdsource.config.security.Roles;
 import de.axelspringer.ideas.crowdsource.enums.ProjectStatus;
@@ -394,6 +395,29 @@ public class ProjectControllerTest {
 
         when(financingRoundRepository.findActive(any())).thenReturn(new FinancingRoundEntity());
 
+        when(pledgeRepository.findByProject(project)).thenReturn(Collections.singletonList(new PledgeEntity(project, user, new Pledge(1))));
+        project.setStatus(ProjectStatus.PROPOSED);
+
+
+        MvcResult mvcResult = getMvcResultForPledgedProject(user);
+        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"errorCode\":\"project_not_published\",\"fieldViolations\":{}}"));
+
+        project.setStatus(ProjectStatus.REJECTED);
+
+        mvcResult = getMvcResultForPledgedProject(user);
+        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"errorCode\":\"project_not_published\",\"fieldViolations\":{}}"));
+    }
+
+    @Test
+    public void pledgeProject_shouldRespondWith400IfTheProjectIsNotPublished() throws Exception {
+
+        final String email = "some@mail.com";
+        final UserEntity user = userEntity(email, Roles.ROLE_USER);
+
+        final ProjectEntity project = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PROPOSED);
+
+        when(financingRoundRepository.findActive(any())).thenReturn(new FinancingRoundEntity());
+
         // fully pledge
         pledgeProject(project, user, project.getPledgeGoal());
 
@@ -464,6 +488,15 @@ public class ProjectControllerTest {
                 .andExpect(status().isOk());
 
         verify(projectRepository).save(projectEntity);
+    }
+
+    private MvcResult getMvcResultForPledgedProject(UserEntity user) throws Exception {
+        return mockMvc.perform(post("/project/{projectId}/pledge", "some_id")
+                .principal(authentication(user))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(new Pledge(1))))
+                .andExpect(status().isBadRequest())
+                .andReturn();
     }
 
     private Principal authentication(UserEntity userEntity) {

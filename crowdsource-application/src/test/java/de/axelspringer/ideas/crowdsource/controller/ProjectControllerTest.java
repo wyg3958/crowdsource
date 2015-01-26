@@ -48,14 +48,8 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -307,7 +301,7 @@ public class ProjectControllerTest {
 
         final String email = "some@mail.com";
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
-        final ProjectEntity project = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PROPOSED);
+        final ProjectEntity project = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PUBLISHED);
         Pledge pledge = new Pledge(project.getPledgeGoal() - 4);
 
         int budgetBeforePledge = user.getBudget();
@@ -335,7 +329,7 @@ public class ProjectControllerTest {
 
         final String email = "some@mail.com";
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
-        final ProjectEntity project = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PROPOSED);
+        final ProjectEntity project = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PUBLISHED);
 
         final int budgetBeforePledge = user.getBudget();
         pledgeProject(project, user, project.getPledgeGoal() - 1);
@@ -403,7 +397,7 @@ public class ProjectControllerTest {
         final String email = "some@mail.com";
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
 
-        final ProjectEntity project = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PROPOSED);
+        final ProjectEntity project = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PUBLISHED);
 
         // pledge project nearly fully
         pledgeProject(project, user, project.getPledgeGoal() - 1);
@@ -444,13 +438,33 @@ public class ProjectControllerTest {
     }
 
     @Test
+    public void pledgeProject_shouldRespondWith400IfTheProjectIsNotPublished() throws Exception {
+
+        final String email = "some@mail.com";
+        final UserEntity user = userEntity(email, Roles.ROLE_USER);
+
+        final ProjectEntity project = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PROPOSED);
+
+        when(financingRoundRepository.findActive(any())).thenReturn(new FinancingRoundEntity());
+        when(pledgeRepository.findByProject(project)).thenReturn(Collections.singletonList(new PledgeEntity(project, user, new Pledge(1))));
+
+        project.setStatus(ProjectStatus.REJECTED);
+        MvcResult mvcResult = getMvcResultForPledgedProject(user);
+        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"errorCode\":\"project_not_published\",\"fieldViolations\":{}}"));
+
+        project.setStatus(ProjectStatus.PROPOSED);
+        mvcResult = getMvcResultForPledgedProject(user);
+        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"errorCode\":\"project_not_published\",\"fieldViolations\":{}}"));
+    }
+
+    @Test
     public void pledgeProject_shouldRespondWith400IfTheUserBudgetIsExceeded() throws Exception {
 
         final String email = "some@mail.com";
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
         user.setBudget(1);
 
-        projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PROPOSED);
+        projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PUBLISHED);
 
         when(financingRoundRepository.findActive(any())).thenReturn(new FinancingRoundEntity());
 
@@ -470,7 +484,7 @@ public class ProjectControllerTest {
         final String email = "some@mail.com";
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
 
-        projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PROPOSED);
+        projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PUBLISHED);
 
         when(financingRoundRepository.findActive(any())).thenReturn(null);
 
@@ -500,6 +514,15 @@ public class ProjectControllerTest {
                 .andExpect(status().isOk());
 
         verify(projectRepository).save(projectEntity);
+    }
+
+    private MvcResult getMvcResultForPledgedProject(UserEntity user) throws Exception {
+        return mockMvc.perform(post("/project/{projectId}/pledge", "some_id")
+                .principal(authentication(user))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(new Pledge(1))))
+                .andExpect(status().isBadRequest())
+                .andReturn();
     }
 
     private Principal authentication(UserEntity userEntity) {

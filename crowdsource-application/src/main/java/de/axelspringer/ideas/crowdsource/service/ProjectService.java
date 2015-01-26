@@ -86,9 +86,15 @@ public class ProjectService {
             throw new ResourceNotFoundException();
         }
 
+        final ProjectStatus projectStatus = projectEntity.getStatus();
+
         // potential problem: race condition. Two simultaneous requests could lead to "over-pledging"
-        if (projectEntity.getStatus() == ProjectStatus.FULLY_PLEDGED) {
+        if (projectStatus == ProjectStatus.FULLY_PLEDGED) {
             throw InvalidRequestException.projectAlreadyFullyPledged();
+        }
+
+        if (projectStatus != ProjectStatus.PUBLISHED) {
+            throw InvalidRequestException.projectNotPublished();
         }
 
         if (activeFinancingRoundEntity == null) {

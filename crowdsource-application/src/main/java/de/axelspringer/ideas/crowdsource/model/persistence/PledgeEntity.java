@@ -35,10 +35,10 @@ public class PledgeEntity {
     @LastModifiedDate
     private DateTime lastModifiedDate;
 
-    public PledgeEntity(ProjectEntity projectEntity, UserEntity userEntity, Pledge pledge, FinancingRoundEntity activeFinancingRoundEntity) {
+    public PledgeEntity(ProjectEntity projectEntity, UserEntity userEntity, Pledge pledge, FinancingRoundEntity financingRoundEntity) {
         this.project = projectEntity;
         this.user = userEntity;
-        this.financingRound = activeFinancingRoundEntity;
+        this.financingRound = financingRoundEntity;
         this.amount = pledge.getAmount();
     }
 }

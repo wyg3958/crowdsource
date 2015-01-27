@@ -34,7 +34,7 @@ Feature: Teaser
 
   Scenario: The teaser updates when a user pledges
     Given there is a financing round active
-    And a project is available
+    And a project is published
     And a user is logged in
     When the index page is visited
     Then the teaser shows the metrics of the active financing round

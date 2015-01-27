@@ -5,6 +5,27 @@
 
 
 
+
+//
+// Mixins
+//
+
+
+@mixin limit-lines ($lines, $font-size, $line-height) {
+    font-size: $font-size;
+    line-height: $line-height;
+    max-height: ($lines * $font-size * $line-height);
+    overflow: hidden;
+}
+
+
+
+
+//
+// Headings
+//
+
+
 /*h2*/.plist__heading {
     margin: 0 0 1rem 0;
     font-size:     2rem;
@@ -35,10 +56,17 @@
 }
 
 
+
+
+//
+// Pills
+//
+
+
 /*span*/.plist__pill {
     position: relative;
-    margin:  0 rem-calc(4px) 0 rem-calc(16px);
-    padding:   rem-calc(2px) rem-calc(8px);
+    margin:   0 4px; // 0 rem-calc(4px) 0 rem-calc(16px);
+    padding:  rem-calc(2px) rem-calc(8px);
 
     color: $white;
     letter-spacing: 1px;
@@ -46,12 +74,116 @@
     background-color: $clr-red-shade-2;
     border-radius: rem-calc($border-radius);
 
-
-
-    &:first-child {
-        margin-left: 2px;
+    &:first-of-type {
+        margin-left: 0;
     }
 }
+
+
+
+
+//
+// Tiles
+//
+
+
+%tile {
+    border: none;
+    border-radius: $border-radius;
+    background-color: $white;
+    box-shadow: 0 1px 0 0 rgba(0,0,0,0.1),   // Shadow below
+                0 0 2px 0 rgba(0,0,0,0.1);   // Outline-like shadow
+}
+
+
+$container-width: rem-calc(1000px);
+$tiles:           3;
+$tile-gutter:     1rem;
+$tile-width:      ($container-width - ($tile-gutter * $tiles * 2)) / $tiles;
+$tile-padding:    rem-calc(20px);
+$metrics-height:  rem-calc(42px);
+
+
+// This is our flex container housing a list projects
+
+/*ul*/.project__ul {
+
+    @extend %list--plain;
+
+    @media #{$medium-up} {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+
+// This is our flex item
+
+/*li*/.project__li {
+    margin: 1rem $tile-gutter;
+}
+
+
+// This is a project tile
+
+.project__tile {
+    @extend   %tile;
+    position: relative;
+    width:    100%;
+    padding:  $tile-padding;
+    padding-bottom: $tile-padding + $metrics-height * 2;
+    color:    #2d2d2d;
+    cursor:   pointer;
+
+    & > * {
+
+        &:first-child {
+            margin-top: 0;
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    @media #{$medium-up} {
+        width: $tile-width;
+    }
+}
+
+
+// Metrics
+
+.tile__metrics {
+    position:  absolute;
+    width:     calc(100% - #{$tile-padding * 2});
+    height:    $metrics-height;
+
+    left:      $tile-padding;
+    bottom:    $tile-padding;
+    font-size: rem-calc(14px);
+}
+
+
+// Headings + Text
+
+
+/*h3*/.tile__heading {
+    @include limit-lines(1, 20px, 1.4);
+    @extend  %full-width;
+    @extend  %font-smoothing;
+    margin:  2rem 0;
+    font-weight: 600;
+}
+
+
+/*p*/.tile__short-desc {
+    @include limit-lines(4, 16px, 1.5);
+    @extend %full-width;
+    margin: 0;
+}
+
 
 
 // Section with Dein Budget / Du / Dein Zeitrahmen
@@ -92,18 +224,13 @@
 }
 
 
-@mixin limit-lines ($lines, $font-size, $line-height) {
-    font-size: $font-size;
-    line-height: $line-height;
-    max-height: ($lines * $font-size * $line-height);
-    overflow: hidden;
-}
+
 
 
 
 // Project Tiles
 
-.project-list {
+.__project-list {
     ul {
         @media #{$small-up} {
             @include block-grid(1);

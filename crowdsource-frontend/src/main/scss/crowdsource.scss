@@ -20,6 +20,7 @@
 @import "components/alert-box";
 @import "components/_foundation-datepicker";
 @import "components/_about";
+@import "components/_progress-meter";
 
 .button, button {
     text-transform: uppercase;
@@ -41,7 +42,7 @@ body {
 
 .content {
     min-height: calc(95% - 200px);  // Give height to make our footer sticky,
-    // value of 95% is approx. the height of the content area minus teaser, nav-bar, ... 
+    // value of 95% is approx. the height of the content area minus teaser, nav-bar, ...
     color: $crowd-color-dark-grey;
 
 }
@@ -71,17 +72,17 @@ content-row {
 
 // TODO: cool styles
 .project-PROPOSED {
-    background: #808080 !important;
+    // background: #808080;
 }
 
 .project-PUBLISHED {
-    background: #008000 !important;
+    // background: #008000;
 }
 
 .project-FULLY_PLEDGED {
-    background: orangered !important;
+    // background: orangered;
 }
 
 .project-REJECTED {
-    background: darkred !important;
+    // background: darkred;
 }

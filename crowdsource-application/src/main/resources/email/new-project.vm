@@ -1,0 +1,31 @@
+<html>
+<body>
+<h3>Hallo Admin,</h3>
+
+<div>
+    es liegt ein neues Projekt zur Freigabe vor.
+</div>
+
+<div>
+    ${url}
+</div>
+
+<div>
+    Mit freundlichen Grüßen
+    Dein AS ideas Crowd Team
+</div>
+
+<div>
+    AS ideAS Engineering
+    Axel-Springer-Straße 65
+    10888 Berlin
+</div>
+
+<div>
+    Axel Springer ideAS Engineering GmbH
+    Ein Unternehmen der Axel Springer SE
+    Sitz Berlin, Amtsgericht Charlottenburg, HRB 138466 B
+    Geschäftsführer: Daniel Keller, Niels Matusch
+</div>
+</body>
+</html>

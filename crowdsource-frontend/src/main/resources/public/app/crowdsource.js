@@ -17,15 +17,16 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
                 title: 'Neues Projekt',
                 requireLogin: true
             })
+            .when('/project/new/:projectId', {
+                templateUrl: 'app/project/form/project-form-success.html',
+                controller: 'ProjectFormSuccessController as projectFormSuccess',
+                requireLogin: true,
+                title: 'Neues Projekt angelegt'
+            })
             .when('/project/:projectId', {
                 templateUrl: 'app/project/details/project-details.html',
                 controller: 'ProjectDetailsController as projectDetails',
                 title: 'Projektdetails'
-            })
-            .when('/project/new/success', {
-                templateUrl: 'app/project/form/project-form-success.html',
-                requireLogin: true,
-                title: 'Neues Projekt angelegt'
             })
             .when('/login', {
                 templateUrl: 'app/user/login/user-login.html',

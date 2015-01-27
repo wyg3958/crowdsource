@@ -84,16 +84,16 @@ describe('project form', function () {
     });
 
     it('should POST the data to the server and redirect to success page', function() {
-        expectBackendCallAndRespond(200);
+        expectBackendCallAndRespond(200, { id: 'aabbcc' });
 
         fillAndSubmitForm('Title', 'Short description', '12500', 'Looong description');
         $httpBackend.flush();
 
-        expect($location.path()).toBe('/project/new/success');
+        expect($location.path()).toBe('/project/new/aabbcc');
     });
 
     it('should disable the submit button and change it\'s text while loading', function() {
-        expectBackendCallAndRespond(200);
+        expectBackendCallAndRespond(200, { id: 'aabbcc' });
 
         expect(projectForm.getSubmitButton()).toHaveText('Absenden');
         expect(projectForm.getSubmitButton()).not.toBeDisabled();
@@ -173,7 +173,7 @@ describe('project form', function () {
         // that the trailing dot is removed automatically. This test is here to make sure this functionality
         // does not change unexpectedly
 
-        expectBackendCallAndRespond(200);
+        expectBackendCallAndRespond(200, { id: 'aabbcc' });
 
         fillAndSubmitForm('Title', 'Short description', '12500.', 'Looong description');
         $httpBackend.flush();

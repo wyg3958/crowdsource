@@ -13,8 +13,8 @@ angular.module('crowdsource')
             vm.loading = true;
 
             Project.add(vm.project)
-                .then(function() {
-                    $location.path('/project/new/success');
+                .then(function(savedProject) {
+                    $location.path('/project/new/' + savedProject.id);
                 })
                 .catch(function(response) {
                     RemoteFormValidation.applyServerErrorResponse(vm, vm.form, response);

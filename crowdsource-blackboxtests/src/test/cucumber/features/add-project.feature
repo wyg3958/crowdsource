@@ -6,7 +6,9 @@ Feature: Add project
     Then he is redirected to the project creation page
     When he submits the form with valid project data
     Then the project creation success page is shown
-    When he clicks the project overview link
+    When he clicks the project details link
+    Then the project details page shows the new project
+    When the CROWD link is clicked
     Then the project overview page shows the new project
     And the project is marked "PROPOSED"
 
@@ -17,7 +19,9 @@ Feature: Add project
     When he submits the form with valid project data
     Then the project creation success page is shown
     When an admin publishs the project
-    When he clicks the project overview link
+    When he clicks the project details link
+    Then the project details page shows the new project
+    When the CROWD link is clicked
     Then the project overview page shows the new project
     And the project is marked "PUBLISHED"
 

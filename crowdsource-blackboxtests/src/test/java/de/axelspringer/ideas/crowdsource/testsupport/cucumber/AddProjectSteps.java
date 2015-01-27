@@ -7,6 +7,8 @@ import cucumber.api.java.en.When;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.NavigationBar;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.AddProjectConfirmationView;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.AddProjectForm;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.ProjectDetailPage;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.ProjectStatusWidget;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.ProjectsPage;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.ElementUtils;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
@@ -17,6 +19,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -31,6 +36,9 @@ public class AddProjectSteps {
 
     @Autowired
     private AddProjectForm addProjectForm;
+
+    @Autowired
+    private ProjectDetailPage projectDetailPage;
 
     @Autowired
     private AddProjectConfirmationView addProjectConfirmationView;
@@ -90,8 +98,8 @@ public class AddProjectSteps {
         addProjectConfirmationView.waitForPageLoad();
     }
 
-    @When("^he clicks the project overview link$")
-    public void he_clicks_the_project_overview_link() throws Throwable {
+    @When("^he clicks the project details link$")
+    public void he_clicks_the_project_details_link() throws Throwable {
         PageFactory.initElements(webDriver, addProjectConfirmationView);
         addProjectConfirmationView.clickLinkToProject();
     }
@@ -103,6 +111,22 @@ public class AddProjectSteps {
 
 
         assertTrue(projectsPage.containsProject(randomProjectTitlePrefix, randomProjectShortDescriptionPrefix));
+    }
+
+    @Then("^the project details page shows the new project$")
+    public void the_project_details_page_shows_the_new_project() throws Throwable {
+        projectDetailPage.waitForDetailsToBeLoaded();
+
+        assertThat(projectDetailPage.getTitle(), startsWith(randomProjectTitlePrefix));
+        assertThat(projectDetailPage.getShortDescription(), startsWith(randomProjectShortDescriptionPrefix));
+        assertThat(projectDetailPage.getDescription(), is("Loooong description\nwith newlines"));
+
+        ProjectStatusWidget projectStatusWidget = projectDetailPage.getProjectStatusWidget();
+        assertThat(projectStatusWidget.getProgressBarValue(), is("0px"));
+        assertThat(projectStatusWidget.getPledgedAmount(), is("$0"));
+        assertThat(projectStatusWidget.getPledgeGoal(), is("$25.000"));
+        assertThat(projectStatusWidget.getBackers(), is("0"));
+        assertThat(projectStatusWidget.getUserName(), is("Crowdsource"));
     }
 
     @And("^the tooltip for currency conversion is not visible$")

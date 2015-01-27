@@ -4,6 +4,8 @@
 @import "util/helper";
 @import "foundation/scss/normalize";
 @import "foundation/foundation";
+@import "foundation/foundation-datepicker";
+@import "foundation/foundation-accordion";
 @import "util/form";
 @import "util/objects";
 @import "components/project/project-list";
@@ -18,8 +20,8 @@
 @import "components/finance";
 @import "components/financing-rounds";
 @import "components/alert-box";
-@import "components/_foundation-datepicker";
-@import "components/_about";
+@import "components/about";
+@import "components/faq";
 
 .button, button {
     text-transform: uppercase;

@@ -61,11 +61,17 @@ public class ProjectDetailSteps {
 
     @Given("^a project is available$")
     public void a_project_is_available() throws Throwable {
-        a_project_is_available(25);
+        a_project_with_a_pledge_goal_of_is_published(25);
     }
 
-    @Given("^a project with a pledge goal of (\\d+) is available$")
-    public void a_project_is_available(int pledgeGoal) throws Throwable {
+    @Given("^a project is published")
+    public void a_project_is_published() throws Throwable {
+        a_project_with_a_pledge_goal_of_is_published(25);
+        an_admin_publishs_the_created_project();
+    }
+
+    @Given("^a project with a pledge goal of (\\d+) is published$")
+    public void a_project_with_a_pledge_goal_of_is_published(int pledgeGoal) throws Throwable {
         createdProject = new Project();
         createdProject.setTitle("T" + RandomStringUtils.randomAlphanumeric(6));
         createdProject.setShortDescription("Short description " + RandomStringUtils.randomAlphanumeric(16));
@@ -74,11 +80,13 @@ public class ProjectDetailSteps {
 
         CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithDefaultUser();
         createdProject = crowdSourceClient.createProject(createdProject, authToken).getBody();
+
+        an_admin_publishs_the_created_project();
     }
 
     @And("^a published and partially pledged project is available$")
     public void a_published_and_partially_pledged_project_is_available() throws Throwable {
-        a_project_is_available(25);
+        a_project_with_a_pledge_goal_of_is_published(25);
         an_admin_publishs_the_created_project();
 
         CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithDefaultUser();
@@ -89,7 +97,7 @@ public class ProjectDetailSteps {
 
     @And("^a published and fully pledged project is available$")
     public void a_published_and_fully_pledged_project_is_available() throws Throwable {
-        a_project_is_available(PLEDGED_AMOUNT);
+        a_project_with_a_pledge_goal_of_is_published(PLEDGED_AMOUNT);
         an_admin_publishs_the_created_project();
 
         CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithDefaultUser();

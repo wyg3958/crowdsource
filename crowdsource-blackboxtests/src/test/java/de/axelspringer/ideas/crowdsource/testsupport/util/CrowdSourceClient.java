@@ -122,7 +122,7 @@ public class CrowdSourceClient {
     public void publish(Project createdProject, AuthToken adminToken) {
 
         createdProject.setStatus(ProjectStatus.PUBLISHED);
-        final ResponseEntity<Project> exchange = restTemplate.exchange(urlProvider.applicationUrl() + "/project/" + createdProject.getId(), HttpMethod.PATCH, createRequestEntity(createdProject, adminToken), Project.class);
+        final ResponseEntity<Project> exchange = restTemplate.exchange(urlProvider.applicationUrl() + "/project/" + createdProject.getId(), HttpMethod.PUT, createRequestEntity(createdProject, adminToken), Project.class);
         assertEquals(HttpStatus.OK, exchange.getStatusCode());
     }
 

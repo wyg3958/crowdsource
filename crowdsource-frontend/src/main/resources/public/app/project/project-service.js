@@ -5,8 +5,8 @@ angular.module('crowdsource')
         var service = {};
 
         var projectResource = $resource('/project/:id', {}, {
-            patch: {
-                method: 'PATCH'
+            put: {
+                method: 'PUT'
             }
         });
         var projectsResource = $resource('/projects');
@@ -29,11 +29,11 @@ angular.module('crowdsource')
         };
 
         service.publish = function (projectId) {
-            return projectResource.patch({id: projectId}, {status: 'PUBLISHED'});
+            return projectResource.put({id: projectId}, {status: 'PUBLISHED'});
         };
 
         service.reject = function (projectId) {
-            return projectResource.patch({id: projectId}, {status: 'REJECTED'});
+            return projectResource.put({id: projectId}, {status: 'REJECTED'});
         };
 
         return service;

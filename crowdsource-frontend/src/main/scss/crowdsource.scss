@@ -73,17 +73,16 @@ content-row {
 
 // TODO: cool styles
 .project-PROPOSED {
-    background: #808080 !important;
+    background: #ebebeb !important;
 }
 
 .project-PUBLISHED {
-    background: #008000 !important;
 }
 
 .project-FULLY_PLEDGED {
-    background: orangered !important;
+    background: rgba(0, 255, 0, 0.10) !important;
 }
 
 .project-REJECTED {
-    background: darkred !important;
+    background: rgba(139, 0, 0, 0.30) !important;
 }

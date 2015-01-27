@@ -61,7 +61,7 @@ public class ProjectDetailSteps {
 
     @Given("^a project is available$")
     public void a_project_is_available() throws Throwable {
-        a_project_with_a_pledge_goal_of_is_published(25);
+        a_project_with_a_pledge_goal_of_is_available(25);
     }
 
     @Given("^a project is published")
@@ -70,8 +70,8 @@ public class ProjectDetailSteps {
         an_admin_publishs_the_created_project();
     }
 
-    @Given("^a project with a pledge goal of (\\d+) is published$")
-    public void a_project_with_a_pledge_goal_of_is_published(int pledgeGoal) throws Throwable {
+    @Given("^a project with a pledge goal of (\\d+) is available")
+    public void a_project_with_a_pledge_goal_of_is_available(int pledgeGoal) throws Throwable {
         createdProject = new Project();
         createdProject.setTitle("T" + RandomStringUtils.randomAlphanumeric(6));
         createdProject.setShortDescription("Short description " + RandomStringUtils.randomAlphanumeric(16));
@@ -80,7 +80,11 @@ public class ProjectDetailSteps {
 
         CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithDefaultUser();
         createdProject = crowdSourceClient.createProject(createdProject, authToken).getBody();
+    }
 
+    @Given("^a project with a pledge goal of (\\d+) is published$")
+    public void a_project_with_a_pledge_goal_of_is_published(int pledgeGoal) throws Throwable {
+        a_project_with_a_pledge_goal_of_is_available(pledgeGoal);
         an_admin_publishs_the_created_project();
     }
 

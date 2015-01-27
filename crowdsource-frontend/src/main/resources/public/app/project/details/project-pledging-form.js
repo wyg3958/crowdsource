@@ -63,6 +63,9 @@ angular.module('crowdsource')
                         return null;
                     }
 
+                    if (vm.success && vm.project.status == 'FULLY_PLEDGED') {
+                        return { type: 'success', message: 'Deine Finanzierung war erfolgreich. Das Projekt ist jetzt zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich.' };
+                    }
                     if (vm.success) {
                         return { type: 'success', message: 'Deine Finanzierung war erfolgreich.' };
                     }

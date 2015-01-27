@@ -43,6 +43,9 @@ angular.module('crowdsource')
             if (response.status == 404) {
                 $location.path('/error/notfound');
             }
+            else if (response.status == 403) {
+                $location.path('/error/forbidden');
+            }
             else {
                 $location.path('/error/unknown');
             }

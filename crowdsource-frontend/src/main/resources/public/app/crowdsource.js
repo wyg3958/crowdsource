@@ -82,6 +82,10 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
                 templateUrl: 'app/error/error-notfound.html',
                 title: 'Seite nicht gefunden'
             })
+            .when('/error/forbidden', {
+                templateUrl: 'app/error/error-forbidden.html',
+                title: 'Zugriff verweigert'
+            })
             .when('/error/unknown', {
                 templateUrl: 'app/error/error-unknown.html',
                 title: 'Technischer Fehler'

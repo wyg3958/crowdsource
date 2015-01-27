@@ -75,6 +75,16 @@ describe('project details', function () {
         expect($location.path()).toBe('/error/notfound');
     });
 
+    it("should show a forbidden error page if the server responds with 403", function () {
+
+        $httpBackend.expectGET('/project/xyz').respond(403);
+
+        $scope.$digest();
+        $httpBackend.flush();
+
+        expect($location.path()).toBe('/error/forbidden');
+    });
+
     it("should show a technical failure page if the server responds with an unexpected status code", function () {
 
         $httpBackend.expectGET('/project/xyz').respond(500);

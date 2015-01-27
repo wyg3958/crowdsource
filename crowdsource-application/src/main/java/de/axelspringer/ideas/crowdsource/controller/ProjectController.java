@@ -3,7 +3,7 @@ package de.axelspringer.ideas.crowdsource.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import de.axelspringer.ideas.crowdsource.config.security.Roles;
 import de.axelspringer.ideas.crowdsource.enums.ProjectStatus;
-import de.axelspringer.ideas.crowdsource.exceptions.NotAuthorizedException;
+import de.axelspringer.ideas.crowdsource.exceptions.ForbiddenException;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.model.presentation.Pledge;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
@@ -59,32 +59,9 @@ public class ProjectController {
 
         final Project project = projectService.getProject(projectId);
         if (!mayViewProjectFilter(project, auth)) {
-            throw new NotAuthorizedException("you may not get information about this project.");
+            throw new ForbiddenException();
         }
         return project;
-    }
-
-    private boolean mayViewProjectFilter(Project project, Authentication auth) {
-
-        // fully pledged and published are always visible
-        final ProjectStatus status = project.getStatus();
-        if (status == FULLY_PLEDGED || status == PUBLISHED) {
-            return true;
-        }
-
-        if (auth == null) {
-            return false;
-        }
-
-        // admins may do everything
-        for (GrantedAuthority grantedAuthority : auth.getAuthorities()) {
-            if (Roles.ROLE_ADMIN.equals(grantedAuthority.getAuthority())) {
-                return true;
-            }
-        }
-
-        // the creator always may see his project
-        return project.getCreator().getEmail().equals(auth.getName());
     }
 
     @Secured(Roles.ROLE_USER)
@@ -111,5 +88,29 @@ public class ProjectController {
     public Project updateProject(@PathVariable("projectId") String projectId, @RequestBody @Validated(Project.UpdateProject.class) Project projectWithUpdateData) {
 
         return projectService.updateProject(projectId, projectWithUpdateData);
+    }
+
+
+    private boolean mayViewProjectFilter(Project project, Authentication auth) {
+
+        // fully pledged and published are always visible
+        final ProjectStatus status = project.getStatus();
+        if (status == FULLY_PLEDGED || status == PUBLISHED) {
+            return true;
+        }
+
+        if (auth == null) {
+            return false;
+        }
+
+        // admins may do everything
+        for (GrantedAuthority grantedAuthority : auth.getAuthorities()) {
+            if (Roles.ROLE_ADMIN.equals(grantedAuthority.getAuthority())) {
+                return true;
+            }
+        }
+
+        // the creator always may see his project
+        return project.getCreator().getEmail().equals(auth.getName());
     }
 }

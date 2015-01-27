@@ -198,6 +198,19 @@ public class ProjectControllerTest {
     }
 
     @Test
+    public void getProject_shouldRespondWith403IfTheUserMayNotSeeThisProject() throws Exception {
+
+        final String email = "some@mail.com";
+        final UserEntity userEntity = userEntity(email, Roles.ROLE_USER);
+
+        final String projectId = "existingProjectId";
+        projectEntity(userEntity, projectId, "title", 44, "short description", "description", ProjectStatus.PROPOSED, null);
+
+        mockMvc.perform(get("/project/{projectId}", projectId))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     public void getProject_shouldReturnSingleProjectSuccessfullyWhenProjectIsPublished() throws Exception {
 
         final String email = "some@mail.com";

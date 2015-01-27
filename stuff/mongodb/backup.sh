@@ -9,7 +9,7 @@
 # Then the "GitPublisher" post-build action pushes the branch "master" to the target remote name "origin".
 
 KEYFILE=coreos_rsa
-HOST=54.194.152.80
+HOST=51.194.152.80
 DUMPFILE=mongodump.tar.gz
 
 ssh -i ${KEYFILE} core@${HOST} "

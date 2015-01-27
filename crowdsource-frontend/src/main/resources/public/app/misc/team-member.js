@@ -10,6 +10,9 @@ angular.module('crowdsource')
                 email: '@',
                 name: '@',
                 role: '@'
+            },
+            controller: function () {
+                // no-op, do not remove this controller!
             }
         };
     });

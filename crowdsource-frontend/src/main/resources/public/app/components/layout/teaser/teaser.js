@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .directive('teaser', function ($interval, $timeout, Authentication, Route, TeaserMetrics, User, FinancingRound) {
+    .directive('teaser', function ($interval, $timeout, Authentication, Route, TeaserMetrics, ServerTime, User, FinancingRound) {
         var directive = {};
 
         directive.controllerAs = 'teaser';
@@ -9,6 +9,8 @@ angular.module('crowdsource')
 
         directive.controller = function () {
             var vm = this;
+
+            var serverTime = { $resolved: false };
 
             vm.show = false;
 
@@ -34,7 +36,13 @@ angular.module('crowdsource')
 
             function loadData() {
                 User.getMetrics().$promise.then(function(metrics) {
+                    // overwrite the reference when the response arrived to prevent flickering
                     vm.userMetrics = metrics;
+                });
+
+                ServerTime.reloadReferenceTime().$promise.then(function(response) {
+                    // overwrite the reference when the response arrived to prevent flickering
+                    serverTime = response;
                 });
 
                 FinancingRound.reloadCurrentRound().then(function () {
@@ -45,11 +53,11 @@ angular.module('crowdsource')
             }
 
             function applyRemainingTime() {
-                if (!FinancingRound.current.$resolved) {
+                if (!FinancingRound.current.$resolved || !serverTime.$resolved) {
                     return;
                 }
 
-                vm.remainingTime = TeaserMetrics.formatRemainingTime(FinancingRound.current.endDate);
+                vm.remainingTime = TeaserMetrics.formatRemainingTime(ServerTime.getInterpolatedTimeOfServer(), FinancingRound.current.endDate);
 
                 // financing round time is now over
                 if (FinancingRound.current.active && !vm.remainingTime) {
@@ -71,11 +79,11 @@ angular.module('crowdsource')
     .factory('TeaserMetrics', function() {
         var service = {};
 
-        service.formatRemainingTime = function(untilDate) {
-            var now = moment();
+        service.formatRemainingTime = function(fromDate, untilDate) {
+            var start = moment(fromDate);
             var end = moment(untilDate);
 
-            var diff = moment.duration(end.diff(now));
+            var diff = moment.duration(end.diff(start));
             if (diff.asSeconds() < 1) {
                 return null;
             }

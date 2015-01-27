@@ -4,6 +4,8 @@
 @import "util/helper";
 @import "foundation/scss/normalize";
 @import "foundation/foundation";
+@import "foundation/foundation-datepicker";
+@import "foundation/foundation-accordion";
 @import "util/form";
 @import "util/objects";
 @import "components/project/project-list";
@@ -18,9 +20,9 @@
 @import "components/finance";
 @import "components/financing-rounds";
 @import "components/alert-box";
-@import "components/_foundation-datepicker";
 @import "components/_about";
 @import "components/_progress-meter";
+@import "components/faq";
 
 .button, button {
     text-transform: uppercase;
@@ -72,17 +74,16 @@ content-row {
 
 // TODO: cool styles
 .project-PROPOSED {
-    // background: #808080;
+    background: #ebebeb !important;
 }
 
 .project-PUBLISHED {
-    // background: #008000;
 }
 
 .project-FULLY_PLEDGED {
-    // background: orangered;
+    background: rgba(0, 255, 0, 0.10) !important;
 }
 
 .project-REJECTED {
-    // background: darkred;
+    background: rgba(139, 0, 0, 0.30) !important;
 }

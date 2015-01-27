@@ -71,8 +71,11 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
             })
             .when('/about', {
                 templateUrl: 'app/misc/about.html',
-                title: 'Über Uns',
-                showTeaser: true
+                title: 'Über Uns'
+            })
+            .when('/faq', {
+                templateUrl: 'app/misc/faq.html',
+                title: 'FAQs'
             })
             .when('/logout', {
                 templateUrl: 'app/user/logout/user-logout.html',

@@ -1,0 +1,5 @@
+accordion-item .content {
+    // the accordion is implemented in angular (see accordion directive)
+    // and is hidden and shown by angular
+    display: block !important;
+}

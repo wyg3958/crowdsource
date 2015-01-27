@@ -5,11 +5,7 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.NavigationBar;
-import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.AddProjectConfirmationView;
-import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.AddProjectForm;
-import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.ProjectDetailPage;
-import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.ProjectStatusWidget;
-import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.ProjectsPage;
+import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.project.*;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.ElementUtils;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.axelspringer.ideas.crowdsource.testsupport.util.CrowdSourceClient;
@@ -22,9 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class AddProjectSteps {
 

@@ -20,10 +20,14 @@ angular.module('crowdsource')
             FinancingRound.start(vm.newRound)
                 .then(function () {
                     vm.allFinancingRounds = FinancingRound.getAll();
-                    vm.info = "Finanzierungsrunde gestartet.";
 
                     FinancingRound.reloadCurrentRound();
                     Authentication.reloadUser();
+
+                    return vm.allFinancingRounds.$promise;
+                })
+                .then(function () {
+                    vm.info = "Finanzierungsrunde gestartet.";
                 })
                 .catch(function () {
                     vm.info = "Fehler beim Starten der Finanzierungsrunde!";
@@ -47,10 +51,14 @@ angular.module('crowdsource')
             FinancingRound.stop(financingRound)
                 .then(function () {
                     vm.allFinancingRounds = FinancingRound.getAll();
-                    vm.info = "Finanzierungsrunde gestoppt.";
 
                     FinancingRound.reloadCurrentRound();
                     Authentication.reloadUser();
+
+                    return vm.allFinancingRounds.$promise;
+                })
+                .then(function () {
+                    vm.info = "Finanzierungsrunde gestoppt.";
                 })
                 .catch(function () {
                     vm.info = "Fehler beim Stoppen der Finanzierungsrunde!";

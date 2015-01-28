@@ -9,7 +9,7 @@ Feature: Pledge project
     And the project pledging form is disabled
     And the user budget 0 is displayed
     When a financing round is being activated in the meantime
-    And the project detail page of this project is reloaded
+    And the current page is reloaded
     Then the notification message "Bitte logge dich ein, um Projekte finanziell zu unterstützen." is displayed on the project pledging form
     And the project pledging form is disabled
     And the user budget 0 is displayed
@@ -35,7 +35,7 @@ Feature: Pledge project
     Then the displayed budget and financing infos are updated
     When the user submits the pledging form
     Then the notification message "Deine Finanzierung war erfolgreich. Das Projekt ist jetzt zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich." is displayed on the project pledging form
-    When the project detail page of this project is reloaded
+    And the current page is reloaded
     Then the notification message "Das Projekt ist zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich." is displayed on the project pledging form
     When he clicks on the Logout button
     And the project detail page of this project is requested

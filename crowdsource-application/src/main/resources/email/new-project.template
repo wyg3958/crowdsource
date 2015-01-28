@@ -1,9 +1,8 @@
-Hallo #{userName},
+Hallo Admin,
 
-Du hast Dich gerade auf der AS ideas Crowd Platform angemeldet.
-Um Deine Registrierung abzuschließen, öffnen bitte diesen Link und setze Dein Passwort.
+es liegt ein neues Projekt zur Freigabe vor:
 
-Bei Fragen wende dich an: support@crowd.asideas.de
+#{link}
 
 Mit freundlichen Grüßen
 Dein AS ideas Crowd Team

@@ -2,6 +2,7 @@ package de.axelspringer.ideas.crowdsource.service;
 
 import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
+import de.axelspringer.ideas.crowdsource.util.UserHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,29 +16,44 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Service
 public class UserNotificationService {
 
-    public static final String ACTIVATION_MAIL_CONTENT = "Activation link: ";
-    public static final String PASSWORD_RECOVERY_MAIL_CONTENT = "Password recovery link: ";
-
     public static final String FROM_ADDRESS = "noreply@crowd.asideas.de";
-    public static final String REGISTRATION_SUBJECT = "CrowdSource Registrierung";
-    public static final String PASSWORD_RECOVERY_SUBJECT = "CrowdSource Passwort Vergessen";
 
     public static final String ACTIVATION_LINK_PATTERN = "/signup/{emailAddress}/activation/{activationToken}";
     public static final String PASSWORD_RECOVERY_LINK_PATTERN = "/login/password-recovery/{emailAddress}/activation/{activationToken}";
+    public static final String CROWD_ASIDEAS_DE_PROJECT = "crowd.asideas.de/#/project/";
 
     @Value("${de.axelspringer.ideas.crowdsource.baseUrl}")
     private String applicationUrl;
 
+    @Value("${de.axelspringer.ideas.crowdsource.mail.activationSubject}")
+    private String activationSubject;
+
+    @Value("${de.axelspringer.ideas.crowdsource.mail.newProjectSubject}")
+    private String newProjectSubject;
+
+    @Value("${de.axelspringer.ideas.crowdsource.mail.passwordForgottenSubject}")
+    private String passwordForgottenSubject;
+
+    @Value("${de.axelspringer.ideas.crowdsource.mail.projectPublishedSubject}")
+    private String projectPublishedSubject;
+
+    @Value("${de.axelspringer.ideas.crowdsource.mail.projectRejectedSubject}")
+    private String projectRejectedSubject;
+
+
     @Autowired
     private JavaMailSender mailSender;
 
+    @Autowired
+    private EmailTemplateService templateService;
 
     public void sendActivationMail(UserEntity user) {
 
         String activationLink = buildLink(ACTIVATION_LINK_PATTERN, user.getEmail(), user.getActivationToken());
         log.debug("Sending activation link {} to {}", activationLink, user.getEmail());
 
-        sendMail(user.getEmail(), REGISTRATION_SUBJECT, ACTIVATION_MAIL_CONTENT + activationLink);
+        final String mailContent = getMailContent(user.getEmail(), activationLink, "email/activation.template");
+        sendMail(user.getEmail(), activationSubject, mailContent);
     }
 
     public void sendPasswordRecoveryMail(UserEntity user) {
@@ -45,7 +61,56 @@ public class UserNotificationService {
         String passwordRecoveryLink = buildLink(PASSWORD_RECOVERY_LINK_PATTERN, user.getEmail(), user.getActivationToken());
         log.debug("Sending password recovery link {} to {}", passwordRecoveryLink, user.getEmail());
 
-        sendMail(user.getEmail(), PASSWORD_RECOVERY_SUBJECT, PASSWORD_RECOVERY_MAIL_CONTENT + passwordRecoveryLink);
+        final String mailContent = getMailContent(user.getEmail(), passwordRecoveryLink, "email/password-forgotten.template");
+        sendMail(user.getEmail(), passwordForgottenSubject, mailContent);
+    }
+
+    public void notifyUserOnProjectUpdate(ProjectEntity project, String emailAddress) {
+
+        final String projectLink = getProjectLink(project.getId());
+        String mailContent;
+        String subject;
+
+        switch (project.getStatus()) {
+            case PUBLISHED:
+                mailContent = getMailContent(emailAddress, projectLink, "email/project-published.template");
+                subject = projectPublishedSubject;
+                break;
+
+            case REJECTED:
+                mailContent = getMailContent(emailAddress, projectLink, "email/project-rejected.template");
+                subject = projectRejectedSubject;
+                break;
+
+            default:
+                subject = "Der Zustand des Projekts " + project.getTitle() + " hat sich geändert!";
+                mailContent = "Das Projekt " + project.getTitle() + " wurde in den Zustand " + project.getStatus().name() + " versetzt.";
+                break;
+        }
+
+        sendMail(emailAddress, subject, mailContent);
+    }
+
+    public void notifyAdminOnProjectCreation(ProjectEntity project, String emailAddress) {
+
+        final String projectLink = getProjectLink(project.getId());
+
+        final String mailContent = getMailContent(null, projectLink, "email/new-project.template");
+        sendMail(emailAddress, newProjectSubject, mailContent);
+    }
+
+
+    private String getProjectLink(String projectId) {
+        return CROWD_ASIDEAS_DE_PROJECT + projectId;
+    }
+
+    private String getMailContent(String userEmail, String link, String templatePath) {
+
+        EmailTemplateContext context = new EmailTemplateContext();
+        context.setLink(link);
+        context.setUserName(UserHelper.determineNameFromEmail(userEmail));
+
+        return templateService.format(templatePath, context);
     }
 
     private String buildLink(String urlPattern, String emailAddress, String activationToken) {
@@ -67,19 +132,4 @@ public class UserNotificationService {
         mailSender.send(mailMessage);
     }
 
-    public void notifyUserOnProjectUpdate(ProjectEntity project, String emailAddress) {
-
-        final String subject = "Der Zustand Des Projektes " + project.getTitle() + " hat sich geändert!";
-        final String message = "Das Projekt " + project.getTitle() + " wurde in den Zustand " + project.getStatus().name() + " versetzt.";
-
-        sendMail(emailAddress, subject, message);
-    }
-
-    public void notifyAdminOnProjectCreation(ProjectEntity project, String emailAddress) {
-
-        final String subject = "Freigabeanforderung: Das Projekt " + project.getTitle() + " wurde angelegt.";
-        final String message = "Das Projekt " + project.getTitle() + " wurde in den Zustand " + project.getStatus().name() + " versetzt.";
-
-        sendMail(emailAddress, subject, message);
-    }
 }

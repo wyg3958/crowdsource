@@ -54,7 +54,6 @@ public class UserNotificationServiceTest {
         SimpleMailMessage message = messageCaptor.getValue();
         assertThat(message.getTo(), is(new String[]{EMAIL}));
         assertThat(message.getFrom(), is(UserNotificationService.FROM_ADDRESS));
-        assertThat(message.getSubject(), is(UserNotificationService.REGISTRATION_SUBJECT));
         assertThat(message.getText(), is("Activation link: http://test.de#/signup/some@mail.de/activation/xyz"));
     }
 
@@ -69,7 +68,6 @@ public class UserNotificationServiceTest {
         SimpleMailMessage message = messageCaptor.getValue();
         assertThat(message.getTo(), is(new String[]{EMAIL}));
         assertThat(message.getFrom(), is(UserNotificationService.FROM_ADDRESS));
-        assertThat(message.getSubject(), is(UserNotificationService.PASSWORD_RECOVERY_SUBJECT));
         assertThat(message.getText(), is("Password recovery link: http://test.de#/login/password-recovery/some@mail.de/activation/xyz"));
     }
 

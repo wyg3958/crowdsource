@@ -1,8 +1,11 @@
 Hallo #{userName},
 
-Du hast soeben ein neues Passwort für Dein Konto bei AS ideas Crowd Platform angefordert.
+Dein Projekt wurde leider abgelehnt.
+Das AS Crowd Platform Team wird in Kürze mit Dir in Kontakt treten, um die nächsten Schritte zu besprechen.
 
-Bitte öffne diesen #{link} und setze Dein neues Passwort.
+Zu Deinem Projekt:
+
+#{link}
 
 Bei Fragen wende Dich an: support@crowd.asideas.de
 

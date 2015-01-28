@@ -18,9 +18,9 @@ public class UserNotificationService {
 
     public static final String FROM_ADDRESS = "noreply@crowd.asideas.de";
 
+    public static final String PROJECT_LINK_PATTERN = "/project/{id}";
     public static final String ACTIVATION_LINK_PATTERN = "/signup/{emailAddress}/activation/{activationToken}";
     public static final String PASSWORD_RECOVERY_LINK_PATTERN = "/login/password-recovery/{emailAddress}/activation/{activationToken}";
-    public static final String CROWD_ASIDEAS_DE_PROJECT = "crowd.asideas.de/#/project/";
 
     @Value("${de.axelspringer.ideas.crowdsource.baseUrl}")
     private String applicationUrl;
@@ -99,9 +99,10 @@ public class UserNotificationService {
         sendMail(emailAddress, newProjectSubject, mailContent);
     }
 
-
     private String getProjectLink(String projectId) {
-        return CROWD_ASIDEAS_DE_PROJECT + projectId;
+        UriComponentsBuilder uriBuilder = ServletUriComponentsBuilder.fromUriString(applicationUrl);
+        uriBuilder.fragment(PROJECT_LINK_PATTERN);
+        return uriBuilder.buildAndExpand(projectId).toUriString();
     }
 
     private String getMailContent(String userEmail, String link, String templatePath) {

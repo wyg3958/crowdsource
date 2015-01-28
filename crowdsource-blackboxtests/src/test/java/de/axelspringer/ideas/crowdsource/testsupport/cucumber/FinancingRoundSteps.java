@@ -148,7 +148,7 @@ public class FinancingRoundSteps {
     @Then("^the financing round is not marked active any more$")
     public void the_financing_round_is_not_marked_active_any_more() throws Throwable {
 
-        final FinancingRound financingRound = financingRoundsPage.findFinancingRound(new DateTime(), budget);
+        final FinancingRound financingRound = financingRoundsPage.getFinancingRoundAt(0);
         assertNotNull(financingRound);
         assertFalse(financingRound.isActive());
     }

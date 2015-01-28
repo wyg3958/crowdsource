@@ -179,13 +179,9 @@ public class ProjectDetailSteps {
         assertThat(WebDriverUtils.getPageYOffset(webDriver), greaterThan(savedPageYOffset));
     }
 
-    @And("^the project detail page of this project is (requested|reloaded)$")
-    public void the_project_detail_page_of_this_project_is_requested(String mode) throws Throwable {
-        if ("reloaded".equals(mode)) {
-            webDriverProvider.provideDriver().navigate().refresh();
-        } else {
-            projectDetailPage.open(createdProject.getId());
-        }
+    @And("^the project detail page of this project is requested$")
+    public void the_project_detail_page_of_this_project_is_requested() throws Throwable {
+        projectDetailPage.open(createdProject.getId());
     }
 
     public Project getCreatedProject() {

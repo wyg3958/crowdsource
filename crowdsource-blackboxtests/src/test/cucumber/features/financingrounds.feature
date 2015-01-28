@@ -25,11 +25,8 @@ Feature: Administer financing rounds
 
   Scenario: An admin stops a financing round
     Given an admin is logged in
-    And there is no financing round active
+    And there is a financing round active
     And he visits the financingrounds-page
-    Then the option to start a new financing round is available
-    When he starts a new financing round
-    Then he gets displayed the message "Finanzierungsrunde gestartet."
     When he clicks the stop button of the financing round
     Then the stop button changed to two confirm buttons
     When he clicks the no button
@@ -50,10 +47,10 @@ Feature: Administer financing rounds
     And the project detail page of this project is requested
     Then the pledged amount is displayed
     When a financing round is being deactivated in the meantime
-    And the project detail page of this project is reloaded
+    And the current page is reloaded
     Then the pledged amount is displayed
     When a financing round is being activated in the meantime
-    And the project detail page of this project is reloaded
+    And the current page is reloaded
     Then the pledged amount is zero
 
   Scenario: The pledged amount of a fully pledged project is not reset when a financing round ends
@@ -64,8 +61,8 @@ Feature: Administer financing rounds
     And the project detail page of this project is requested
     Then the pledged amount is displayed
     When a financing round is being deactivated in the meantime
-    And the project detail page of this project is reloaded
+    And the current page is reloaded
     Then the pledged amount is displayed
     When a financing round is being activated in the meantime
-    And the project detail page of this project is reloaded
+    And the current page is reloaded
     Then the pledged amount is displayed

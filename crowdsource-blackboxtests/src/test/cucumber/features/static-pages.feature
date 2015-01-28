@@ -19,3 +19,8 @@ Feature: About us, FAQ and impress pages
     And the content text "Panel 2." is not visible
     When he clicks on text "At a movie theater which arm rest is yours?"
     Then the content text "Panel 2." is visible
+
+  Scenario: A user visits the Imprint page
+    Given a user is logged in
+    When he visits the "Impressum" page
+    Then he sees the text "Impressum"

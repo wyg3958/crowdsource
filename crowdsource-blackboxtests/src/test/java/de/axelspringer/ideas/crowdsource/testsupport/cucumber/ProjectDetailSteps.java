@@ -217,4 +217,9 @@ public class ProjectDetailSteps {
     public void the_confirmation_dialog_is_accepted() throws Throwable {
         webDriver.switchTo().alert().accept();
     }
+
+    @And("^the confirmation dialog is rejected")
+    public void the_confirmation_dialog_is_rejected() throws Throwable {
+        webDriver.switchTo().alert().dismiss();
+    }
 }

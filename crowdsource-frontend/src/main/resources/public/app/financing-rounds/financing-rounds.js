@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .controller('FinancingRoundsController', function ($routeParams, $location, FinancingRound, Authentication) {
+    .controller('FinancingRoundsController', function ($window, $routeParams, $location, FinancingRound, Authentication) {
 
         var vm = this;
 
@@ -39,13 +39,10 @@ angular.module('crowdsource')
 
 
         vm.stop = function (financingRound) {
-
-            if (!vm.confirmStop) {
-                vm.confirmStop = true;
+            if (!$window.confirm('Willst Du diese Finanzierungsrunde wirklich vorzeitig beenden?')) {
                 return;
             }
 
-            vm.confirmStop = false;
             vm.stopping = true;
 
             FinancingRound.stop(financingRound)
@@ -66,18 +63,6 @@ angular.module('crowdsource')
                 .finally(function () {
                     vm.stopping = false;
                 });
-        };
-
-        vm.getStopButtonText = function () {
-            if (vm.stopping) {
-                return "Beenden...";
-            }
-            else if (vm.confirmStop) {
-                return "Ja";
-            }
-            else {
-                return "Beenden";
-            }
         };
 
         vm.canStartNewRound = function () {

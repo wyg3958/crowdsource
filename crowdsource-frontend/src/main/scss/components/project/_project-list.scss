@@ -5,6 +5,30 @@
 
 
 
+//
+// Global vars
+//
+
+
+// Calculate width of a project tile depending on content-width, tiles, gutter
+
+$content-width:   rem-calc(1000px);
+$tiles:           3;       // Tiles on one row
+$tile-gutter:     0.5rem;  // Horizonatal margins
+$tile-width:      ($content-width - ($tile-gutter * $tiles * 2)) / $tiles;
+
+// Other tile vars
+
+$tile-padding:    rem-calc(20px);
+$metrics-height:  rem-calc(42px);   // Metrics object in a tile
+
+// Define mediaquery that formattes tiles in 2 ways: 1) width: 100% for
+// browser widths that fits only 1 tile, and 2) fixed width for browser widths,
+// that fits more than 1 tile
+
+$page-padding: rem-calc(40px);
+$tile-break:   "only screen and (min-width: #{$tile-width * 2 + $tile-gutter * 4 + $page-padding * 2 + rem-calc(1px)})";
+
 
 //
 // Mixins
@@ -65,11 +89,11 @@
 
 /*span*/.plist__pill {
     position: relative;
-    margin:   0 4px; // 0 rem-calc(4px) 0 rem-calc(16px);
+    margin:   0 rem-calc(4px);
     padding:  rem-calc(2px) rem-calc(8px);
 
     color: $white;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
 
     background-color: $clr-red-shade-2;
     border-radius: rem-calc($border-radius);
@@ -97,22 +121,14 @@
 }
 
 
-$container-width: rem-calc(1000px);
-$tiles:           3;
-$tile-gutter:     1rem;
-$tile-width:      ($container-width - ($tile-gutter * $tiles * 2)) / $tiles;
-$tile-padding:    rem-calc(20px);
-$metrics-height:  rem-calc(42px);
-
-
 // This is our flex container housing a list projects
 
 /*ul*/.project__ul {
 
     @extend %list--plain;
 
-    @media #{$medium-up} {
-        display: flex;
+    @media #{$tile-break} {
+        display:   flex;
         flex-wrap: wrap;
         justify-content: center;
     }
@@ -148,7 +164,8 @@ $metrics-height:  rem-calc(42px);
         }
     }
 
-    @media #{$medium-up} {
+    @media #{$tile-break} {
+    // @media #{$medium-up} {
         width: $tile-width;
     }
 }

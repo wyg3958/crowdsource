@@ -212,4 +212,14 @@ public class ProjectDetailSteps {
     public void the_user_waits_for_the_button_to_disappear(String buttonName) throws Throwable {
         seleniumWait.until(input -> webDriver.findElements(By.className(buttonName + "-button")).size() == 0);
     }
+
+    @And("^the confirmation dialog is accepted$")
+    public void the_confirmation_dialog_is_accepted() throws Throwable {
+        webDriver.switchTo().alert().accept();
+    }
+
+    @And("^the confirmation dialog is rejected")
+    public void the_confirmation_dialog_is_rejected() throws Throwable {
+        webDriver.switchTo().alert().dismiss();
+    }
 }

@@ -77,12 +77,8 @@
             <td class="budget">{{ fr.budget | number }}</td>
             <td class="action">
                 <div ng-if="fr.active">
-                    <span class="confirm-message" ng-if="financingRounds.confirmStop">Wirklich beenden?</span>
                     <button class="stop-button alert flush--bottom" ng-click="financingRounds.stop(fr)">
-                        {{ financingRounds.getStopButtonText() }}
-                    </button>
-                    <button class="cancel-button flush--bottom" ng-if="financingRounds.confirmStop"
-                            ng-click="financingRounds.confirmStop = false;">Nein
+                        {{ financingRounds.stopping ? 'Beenden...' : 'Beenden' }}
                     </button>
                 </div>
             </td>

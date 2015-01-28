@@ -28,12 +28,10 @@ Feature: Administer financing rounds
     And there is a financing round active
     And he visits the financingrounds-page
     When he clicks the stop button of the financing round
-    Then the stop button changed to two confirm buttons
-    When he clicks the no button
+    And the confirmation dialog is rejected
     Then the stop button is displayed again
     When he clicks the stop button of the financing round
-    Then the stop button changed to two confirm buttons
-    When he clicks the yes button
+    And the confirmation dialog is accepted
     Then he gets displayed the message "Finanzierungsrunde gestoppt."
     And the financing round is not marked active any more
     And the option to start a new financing round is available

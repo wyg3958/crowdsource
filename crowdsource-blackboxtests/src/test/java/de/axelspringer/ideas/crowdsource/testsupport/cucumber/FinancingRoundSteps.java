@@ -21,7 +21,6 @@ import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -99,50 +98,16 @@ public class FinancingRoundSteps {
 
     @When("^he clicks the stop button of the financing round$")
     public void he_clicks_the_stop_button_of_the_financing_round() throws Throwable {
-        WebElement button = getActionElementOfFinancingRoundAt(0, FinancingRoundsPage.ACTION_BUTTON_STOP);
+        WebElement button = financingRoundsPage.getStopButtonOfFinancingRoundAt(0);
         assertNotNull(button);
         button.click();
-    }
-
-    @When("^he clicks the no button$")
-    public void he_clicks_the_no_button() throws Throwable {
-        WebElement button = getActionElementOfFinancingRoundAt(0, FinancingRoundsPage.ACTION_BUTTON_CANCEL);
-        assertNotNull(button);
-        button.click();
-    }
-
-    @When("^he clicks the yes button$")
-    public void he_clicks_the_yes_button() throws Throwable {
-        WebElement button = getActionElementOfFinancingRoundAt(0, FinancingRoundsPage.ACTION_BUTTON_STOP);
-        assertNotNull(button);
-        button.click();
-    }
-
-    @Then("^the stop button changed to two confirm buttons$")
-    public void the_stop_button_changed_to_two_confirm_buttons() throws Throwable {
-        WebElement stopButton = getActionElementOfFinancingRoundAt(0, FinancingRoundsPage.ACTION_BUTTON_STOP);
-        assertNotNull(stopButton);
-        assertThat(stopButton.getText(), is("JA"));
-
-        WebElement cancelButton = getActionElementOfFinancingRoundAt(0, FinancingRoundsPage.ACTION_BUTTON_CANCEL);
-        assertNotNull(cancelButton);
-        assertThat(cancelButton.getText(), is("NEIN"));
-
-        WebElement confirmMessage = getActionElementOfFinancingRoundAt(0, FinancingRoundsPage.ACTION_CONFIRM_MESSAGE);
-        assertNotNull(confirmMessage);
     }
 
     @Then("^the stop button is displayed again$")
     public void the_stop_button_is_displayed() throws Throwable {
-        WebElement stopButton = getActionElementOfFinancingRoundAt(0, FinancingRoundsPage.ACTION_BUTTON_STOP);
+        WebElement stopButton = financingRoundsPage.getStopButtonOfFinancingRoundAt(0);
         assertNotNull(stopButton);
         assertThat(stopButton.getText(), is("BEENDEN"));
-
-        WebElement cancelButton = getActionElementOfFinancingRoundAt(0, FinancingRoundsPage.ACTION_BUTTON_CANCEL);
-        assertNull(cancelButton);
-
-        WebElement confirmMessage = getActionElementOfFinancingRoundAt(0, FinancingRoundsPage.ACTION_CONFIRM_MESSAGE);
-        assertNull(confirmMessage);
     }
 
     @Then("^the financing round is not marked active any more$")
@@ -178,11 +143,5 @@ public class FinancingRoundSteps {
     @And("^the notification message \"([^\"]*)\" is displayed in the start financeround form$")
     public void the_notification_message_is_displayed_in_the_start_financeround_form(String expectedMessage) throws Throwable {
         assertEquals(expectedMessage, financingRoundsPage.getNewRoundNotificationText());
-    }
-
-    private WebElement getActionElementOfFinancingRoundAt(int pos, String type) {
-        final FinancingRound financingRound = financingRoundsPage.getFinancingRoundAt(pos);
-        assertNotNull(financingRound);
-        return financingRoundsPage.getActionElementOfFinancingRound(financingRound, type);
     }
 }

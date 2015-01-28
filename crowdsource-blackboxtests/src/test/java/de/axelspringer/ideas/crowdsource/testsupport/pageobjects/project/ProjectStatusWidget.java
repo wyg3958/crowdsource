@@ -12,7 +12,7 @@ public class ProjectStatusWidget {
     @Autowired
     private SeleniumWait wait;
 
-    @FindBy(css = ".project-status__funding progress-bar .meter")
+    @FindBy(css = ".project-status__funding progress-bar .cs-progress__meter")
     private WebElement progressBar;
 
     @FindBy(className = "project-status__pledged-amount")

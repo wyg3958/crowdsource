@@ -77,6 +77,10 @@ angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.an
                 templateUrl: 'app/misc/faq.html',
                 title: 'FAQs'
             })
+            .when('/imprint', {
+                templateUrl: 'app/misc/imprint.html',
+                title: 'Impressum'
+            })
             .when('/logout', {
                 templateUrl: 'app/user/logout/user-logout.html',
                 controller: 'UserLogoutController as logout',

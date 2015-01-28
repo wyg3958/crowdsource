@@ -22,7 +22,7 @@ public class ProjectsPage {
 
     public void waitForPageLoad() {
         wait.until(driver -> {
-            if (driver.findElements(By.className("project-tile")).size() > 0) {
+            if (driver.findElements(By.className("project__tile")).size() > 0) {
                 return true;
             }
 
@@ -33,7 +33,7 @@ public class ProjectsPage {
 
     public void clickProjectTileWithTitle(String title) {
         RemoteWebDriver webDriver = webDriverProvider.provideDriver();
-        final WebElement projectTile = webDriver.findElement(By.xpath("//h1[text()='" + title + "']"));
+        final WebElement projectTile = webDriver.findElement(By.xpath("//h3[text()='" + title + "']"));
         projectTile.click();
     }
 
@@ -43,12 +43,12 @@ public class ProjectsPage {
 
     private List<WebElement> projects() {
         RemoteWebDriver webDriver = webDriverProvider.provideDriver();
-        return webDriver.findElements(By.cssSelector(".project-tile"));
+        return webDriver.findElements(By.cssSelector(".project__tile"));
     }
 
     private Project project(WebElement projectElement) {
         Project project = new Project();
-        project.setTitle(projectElement.findElement(By.cssSelector("h1")).getText());
+        project.setTitle(projectElement.findElement(By.cssSelector("h3")).getText());
         project.setShortDescription(projectElement.findElement(By.cssSelector("p")).getText());
         return project;
     }

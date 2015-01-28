@@ -205,7 +205,6 @@ public class ProjectDetailSteps {
     @When("^the \"([^\"]*)\"-button is clicked$")
     public void the_button_is_clicked(String buttonName) throws Throwable {
         webDriver.findElement(By.className(buttonName + "-button")).click();
-        webDriver.findElement(By.className(buttonName + "-button")).click();
     }
 
     @And("^an admin publishs the created project$")

@@ -48,6 +48,7 @@ public class ProjectPledgingSteps {
 
     @Then("^the notification message \"([^\"]*)\" is displayed on the project pledging form$")
     public void the_notification_message_is_displayed_on_the_project_pledging_form(String expectedNotification) {
+        pledgingForm.waitUntilANotificationOrEerrorMessageIsDisplayed();
         PageFactory.initElements(webDriver, pledgingForm);
         assertThat(pledgingForm.getNotificationMessage(), is(expectedNotification));
     }

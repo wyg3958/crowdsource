@@ -445,7 +445,7 @@ describe('project pledging form', function () {
 
         expect(elements.slider).toHaveClass('disabled');
         expect(elements.notification).not.toHaveClass('ng-hide');
-        expect(elements.notification).toHaveText('Das Project ist zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich.');
+        expect(elements.notification).toHaveText('Das Projekt ist zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich.');
     });
 
     it("should show a message saying that the project is not published", function () {

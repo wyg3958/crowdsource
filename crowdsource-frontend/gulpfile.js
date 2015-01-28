@@ -1,11 +1,12 @@
-var gulp =        require('gulp');
-var sourcemaps =  require('gulp-sourcemaps');
-var ngAnnotate =  require('gulp-ng-annotate');
-var uglify =      require('gulp-uglify');
-var concat =      require('gulp-concat');
-var merge =       require('merge-stream');
-var sass =        require('gulp-sass');
-var plumber =     require('gulp-plumber');
+var gulp =         require('gulp');
+var sourcemaps =   require('gulp-sourcemaps');
+var ngAnnotate =   require('gulp-ng-annotate');
+var uglify =       require('gulp-uglify');
+var concat =       require('gulp-concat');
+var merge =        require('merge-stream');
+var sass =         require('gulp-sass');
+var plumber =      require('gulp-plumber');
+var autoprefixer = require('gulp-autoprefixer');
 
 
 // Include our config
@@ -27,15 +28,23 @@ gulp.task('sass', function () {
             this.emit('end');
         }))
 
-        .pipe(sourcemaps.init())
-            .pipe(sass({
-                includePaths: ['bower_components'],
+        // .pipe(sourcemaps.init())
 
-                // Sourcemaps will only work, if sass output is not compressed or minified,
-                // comment out the following line to make sourcemaps work:
-                output_style: 'compressed'
-            }))
-        .pipe(sourcemaps.write('./'))
+        .pipe(sass({
+            includePaths: ['bower_components'],
+
+            // Sourcemaps will only work, if sass output is not compressed or minified,
+            // comment out the following line to make sourcemaps work:
+            output_style: 'compressed'
+        }))
+
+        .pipe(autoprefixer({
+            browsers: ['last 2 versions'],
+            cascade: false
+        }))
+
+
+        //.pipe(sourcemaps.write('./'))
         .pipe(gulp.dest(config.baseDestDir + '/css'));
 });
 

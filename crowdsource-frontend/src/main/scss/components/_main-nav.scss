@@ -10,8 +10,8 @@
 // ---
 
 .site-logo {
-  font-family: $ff-brand;
   font-size: rem-calc(22px);
+  font-weight: 700 !important;  // Overrule Foundation
 }
 
 

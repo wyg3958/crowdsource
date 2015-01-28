@@ -10,7 +10,7 @@
             <div class="project__tile project-{{project.status}}" data-equalizer-watch ng-click="projectList.showProjectDetails(project)">
                 <h3 class="tile__heading" ellipsis ng-bind="project.title"></h3>
                 <p class="tile__short-desc" ellipsis ng-bind="project.shortDescription"></p>
-
+                <div class="the-edge"></div>
                 <div class="tile__metrics">
                     <progress-bar value="project.pledgedAmount" maximum="project.pledgeGoal"></progress-bar>
 

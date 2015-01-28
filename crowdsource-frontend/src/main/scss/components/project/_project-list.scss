@@ -88,6 +88,7 @@
 
 
 %tile {
+    overflow: hidden;
     border: none;
     border-radius: $border-radius;
     background-color: $white;
@@ -157,9 +158,10 @@ $metrics-height:  rem-calc(42px);
 
 .tile__metrics {
     position:  absolute;
-    width:     calc(100% - #{$tile-padding * 2});
+    width:     calc(100% - #{$tile-padding * 2});  // Because of absolute positioning,
+    // the width 100% is as wide as the tile, ignoring the tile's padding
+    // -> substract the padding
     height:    $metrics-height;
-
     left:      $tile-padding;
     bottom:    $tile-padding;
     font-size: rem-calc(14px);
@@ -183,6 +185,20 @@ $metrics-height:  rem-calc(42px);
     @extend %full-width;
     margin: 0;
 }
+
+
+// The Edge
+
+.the-edge {
+    position: absolute;
+    width:40px;
+    height: 40px;
+    right: 0;
+    top:0;
+
+    background-color: green;
+}
+
 
 
 
@@ -219,77 +235,6 @@ $metrics-height:  rem-calc(42px);
 
         .divider {
             margin-bottom: 10px;
-        }
-    }
-}
-
-
-
-
-
-
-// Project Tiles
-
-.__project-list {
-    ul {
-        @media #{$small-up} {
-            @include block-grid(1);
-        }
-        @media #{$medium-up} {
-            @include block-grid(2);
-        }
-        @media #{$large-up} {
-            @include block-grid(3);
-        }
-    }
-
-    .project-tile {
-        $project-tile-padding: 20px;
-        $project-tile-metrics-height: 50px;
-
-        @extend .panel;
-
-        border: none;
-        border-radius: $border-radius;
-        background-color: $white;
-        box-shadow: 0 1px 0 0 rgba(0,0,0,0.1),   // Shadow below
-                    0 0 2px 0 rgba(0,0,0,0.1);   // Outline-like shadow
-
-
-        margin-bottom: 0;
-        padding-bottom: $project-tile-metrics-height + 20px;
-        cursor: pointer;
-        position: relative; // for positioning the metrics absolutely
-
-        h1 {
-            @include limit-lines(2, 20px, 1.5);
-            margin-bottom: rem-calc(24px);
-            -webkit-font-smoothing: antialiased;
-            font-size: rem-calc(22px);
-            font-weight: 600;
-        }
-
-        p {
-            @include limit-lines(4, 16px, 1.5);
-            margin-bottom: 1.5rem;
-        }
-
-        .metrics {
-            height: $project-tile-metrics-height;
-            position: absolute;
-            bottom: $project-tile-padding;
-
-            // because of absolute positioning, the width 100% is
-            // as wide as the tile, ignoring the tile's padding -> substract the padding
-            width: calc(100% - (#{$project-tile-padding} * 2));
-
-            .label {
-                margin: 0 5px 0 15px;
-            }
-
-            .label:first-child {
-                margin-left: 1px;
-            }
         }
     }
 }

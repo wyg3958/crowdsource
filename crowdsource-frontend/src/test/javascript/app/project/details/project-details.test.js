@@ -160,6 +160,20 @@ describe('project details', function () {
         expect(projectDetails.find('.publish-button')).not.toExist();
     });
 
+    it("should not display the publish-button when a project is fully pledged", function () {
+
+        prepareBackendMock('FULLY_PLEDGED');
+        $httpBackend.expectGET('/user/current').respond(200, {budget: 55, roles: ['ROLE_USER', 'ROLE_ADMIN']});
+        $httpBackend.expectGET('/project/xyz/comments').respond(200, []);
+
+        spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(true);
+
+        $scope.$digest();
+        $httpBackend.flush();
+
+        expect(projectDetails.find('.publish-button')).not.toExist();
+    });
+
     it("should display the reject-button when a project is not reject and the user is admin", function () {
 
         prepareBackendMock('PROPOSED');
@@ -191,6 +205,20 @@ describe('project details', function () {
     it("should not display the reject-button when a project is rejected", function () {
 
         prepareBackendMock('REJECTED');
+        $httpBackend.expectGET('/user/current').respond(200, {budget: 55, roles: ['ROLE_USER', 'ROLE_ADMIN']});
+        $httpBackend.expectGET('/project/xyz/comments').respond(200, []);
+
+        spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(true);
+
+        $scope.$digest();
+        $httpBackend.flush();
+
+        expect(projectDetails.find('.reject-button')).not.toExist();
+    });
+
+    it("should not display the reject-button when a project is fully pledged", function () {
+
+        prepareBackendMock('FULLY_PLEDGED');
         $httpBackend.expectGET('/user/current').respond(200, {budget: 55, roles: ['ROLE_USER', 'ROLE_ADMIN']});
         $httpBackend.expectGET('/project/xyz/comments').respond(200, []);
 

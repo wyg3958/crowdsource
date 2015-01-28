@@ -13,6 +13,18 @@ angular.module('crowdsource')
         // the GET /project/:id response is finished
         vm.project.id = $routeParams.projectId;
 
+        vm.project.$promise.catch(function (response) {
+            if (response.status == 404) {
+                $location.path('/error/notfound');
+            }
+            else if (response.status == 403) {
+                $location.path('/error/forbidden');
+            }
+            else {
+                $location.path('/error/unknown');
+            }
+        });
+
         vm.publish = function () {
             vm.publishing = true;
             Project.publish(vm.project.id).$promise
@@ -39,15 +51,17 @@ angular.module('crowdsource')
                 });
         };
 
-        vm.project.$promise.catch(function (response) {
-            if (response.status == 404) {
-                $location.path('/error/notfound');
+        vm.isPublishable = function () {
+            if (!vm.project.$resolved) {
+                return false;
             }
-            else if (response.status == 403) {
-                $location.path('/error/forbidden');
+            return vm.project.status == 'PROPOSED' || vm.project.status == 'REJECTED';
+        };
+
+        vm.isRejectable = function () {
+            if (!vm.project.$resolved) {
+                return false;
             }
-            else {
-                $location.path('/error/unknown');
-            }
-        });
+            return vm.project.status == 'PROPOSED' || vm.project.status == 'PUBLISHED';
+        };
     });

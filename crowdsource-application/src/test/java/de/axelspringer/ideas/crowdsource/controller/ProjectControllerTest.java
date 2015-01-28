@@ -563,6 +563,26 @@ public class ProjectControllerTest {
         verify(projectRepository).save(projectEntity);
     }
 
+    @Test
+    public void testUpdateProjectToPublishIfAlreadyFullyPledged() throws Exception {
+
+        final String email = "some@mail.com";
+        final UserEntity user = userEntity(email, Roles.ROLE_USER, Roles.ROLE_ADMIN);
+        final ProjectEntity projectEntity = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.FULLY_PLEDGED, null);
+        final Project project = new Project(projectEntity, new ArrayList<>());
+        project.setStatus(ProjectStatus.PUBLISHED);
+
+        MvcResult result = mockMvc.perform(patch("/project/{projectId}", "some_id")
+                .principal(authentication(user))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(project)))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        verify(projectRepository, never()).save(projectEntity);
+        assertThat(result.getResponse().getContentAsString(), is("{\"errorCode\":\"project_already_fully_pledged\",\"fieldViolations\":{}}"));
+    }
+
     private MvcResult getMvcResultForPledgedProject(UserEntity user) throws Exception {
         return mockMvc.perform(post("/project/{projectId}/pledge", "some_id")
                 .principal(authentication(user))

@@ -33,12 +33,12 @@
                     <span ng-if="projectDetails.project.status != 'FULLY_PLEDGED'">Zur Finanzierung</span>
                 </button>
             </div>
-            <div ng-if="projectDetails.project.status != 'PUBLISHED' && projectDetails.auth.currentUser.hasRole('ADMIN')">
+            <div ng-if="projectDetails.isPublishable() && projectDetails.auth.currentUser.hasRole('ADMIN')">
                 <button class="project-status__btn  publish-button" ng-click="projectDetails.publish()" ng-disabled="projectDetails.publishing">
                     {{ projectDetails.publishing ? 'Veröffentlichen...' : 'Veröffentlichen' }}
                 </button>
             </div>
-            <div ng-if="projectDetails.project.status != 'REJECTED' && projectDetails.auth.currentUser.hasRole('ADMIN')">
+            <div ng-if="projectDetails.isRejectable() && projectDetails.auth.currentUser.hasRole('ADMIN')">
                 <button class="project-status__btn  reject-button" ng-click="projectDetails.reject()" ng-disabled="projectDetails.rejecting">
                     {{ projectDetails.rejecting ? 'Ablehnen...' : 'Ablehnen'}}
                 </button>

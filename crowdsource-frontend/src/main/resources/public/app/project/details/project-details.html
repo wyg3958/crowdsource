@@ -34,12 +34,12 @@
                 </button>
             </div>
             <div ng-if="projectDetails.project.status != 'PUBLISHED' && projectDetails.auth.currentUser.hasRole('ADMIN')">
-                <button class="project-status__btn  publish-button" ng-click="projectDetails.publish()" ng-disabled="projectDetails.publishing">
+                <button class="project-status__btn  publish-button" ng-click="projectDetails.publish()" ng-disabled="projectDetails.publishing" confirmed>
                     {{ projectDetails.publishing ? 'Veröffentlichen...' : 'Veröffentlichen' }}
                 </button>
             </div>
             <div ng-if="projectDetails.project.status != 'REJECTED' && projectDetails.auth.currentUser.hasRole('ADMIN')">
-                <button class="project-status__btn  reject-button" ng-click="projectDetails.reject()" ng-disabled="projectDetails.rejecting">
+                <button class="project-status__btn  reject-button" ng-click="projectDetails.reject()" ng-disabled="projectDetails.rejecting" confirmed>
                     {{ projectDetails.rejecting ? 'Ablehnen...' : 'Ablehnen'}}
                 </button>
             </div>

@@ -202,7 +202,7 @@ describe('project details', function () {
         expect(projectDetails.find('.reject-button')).not.toExist();
     });
 
-    it("should send the patch-request to the backend when the publish-button is clicked", function () {
+    it("should send the put-request to the backend when the publish-button is clicked", function () {
 
         prepareBackendMock('PROPOSED');
         $httpBackend.expectGET('/user/current').respond(200, {budget: 55, roles: ['ROLE_USER', 'ROLE_ADMIN']});
@@ -215,13 +215,14 @@ describe('project details', function () {
 
         $httpBackend.expectPUT('/project/xyz', {status: 'PUBLISHED'}).respond(200, {status: 'PUBLISHED'});
         projectDetails.find('.publish-button').click();
+        projectDetails.find('.publish-button').click();
         $httpBackend.flush();
 
         expect(projectDetails.find('.publish-button')).not.toExist();
     });
 
 
-    it("should send the patch-request to the backend when the reject-button is clicked", function () {
+    it("should send the put-request to the backend when the reject-button is clicked", function () {
 
         prepareBackendMock('PROPOSED');
         $httpBackend.expectGET('/user/current').respond(200, {budget: 55, roles: ['ROLE_USER', 'ROLE_ADMIN']});
@@ -233,6 +234,7 @@ describe('project details', function () {
         $httpBackend.flush();
 
         $httpBackend.expectPUT('/project/xyz', {status: 'REJECTED'}).respond(200, {status: 'REJECTED'});
+        projectDetails.find('.reject-button').click();
         projectDetails.find('.reject-button').click();
         $httpBackend.flush();
 
@@ -252,6 +254,7 @@ describe('project details', function () {
 
         $httpBackend.expectPUT('/project/xyz', {status: 'REJECTED'}).respond(400);
         projectDetails.find('.reject-button').click();
+        projectDetails.find('.reject-button').click();
         $httpBackend.flush();
 
         expect($location.path()).toBe('/error/unknown');
@@ -269,6 +272,7 @@ describe('project details', function () {
         $httpBackend.flush();
 
         $httpBackend.expectPUT('/project/xyz', {status: 'PUBLISHED'}).respond(400);
+        projectDetails.find('.publish-button').click();
         projectDetails.find('.publish-button').click();
         $httpBackend.flush();
 

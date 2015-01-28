@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .controller('ProjectDetailsController', function ($routeParams, $location, Project, Authentication) {
+    .controller('ProjectDetailsController', function ($window, $routeParams, $location, Project, Authentication) {
 
         var vm = this;
 
@@ -14,6 +14,10 @@ angular.module('crowdsource')
         vm.project.id = $routeParams.projectId;
 
         vm.publish = function () {
+            if (!$window.confirm('Willst du das Projekt wirklich veröffentlichen?')) {
+                return;
+            }
+
             vm.publishing = true;
             Project.publish(vm.project.id).$promise
                 .then(function (project) {
@@ -27,6 +31,10 @@ angular.module('crowdsource')
         };
 
         vm.reject = function () {
+            if (!$window.confirm('Willst du das Projekt wirklich ablehnen?')) {
+                return;
+            }
+
             vm.rejecting = true;
             Project.reject(vm.project.id).$promise
                 .then(function (project) {

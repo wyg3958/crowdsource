@@ -34,7 +34,7 @@ Feature: Pledge project
     When the user sets his desired pledge amount as high as the remaining amount of the project goal
     Then the displayed budget and financing infos are updated
     When the user submits the pledging form
-    Then the notification message "Deine Finanzierung war erfolgreich." is displayed on the project pledging form
+    Then the notification message "Deine Finanzierung war erfolgreich. Das Projekt ist jetzt zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich." is displayed on the project pledging form
     When the project detail page of this project is reloaded
     Then the notification message "Das Project ist zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich." is displayed on the project pledging form
     When he clicks on the Logout button
@@ -66,4 +66,4 @@ Feature: Pledge project
     And the project pledging form is enabled
     When the user enters 5 as his desired pledge amount
     And the user submits the pledging form
-    Then the notification message "Deine Finanzierung war erfolgreich." is displayed on the project pledging form
+    Then the notification message "Deine Finanzierung war erfolgreich. Das Projekt ist jetzt zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich." is displayed on the project pledging form

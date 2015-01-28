@@ -56,8 +56,8 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -554,7 +554,7 @@ public class ProjectControllerTest {
         final Project project = new Project(projectEntity, new ArrayList<>());
         project.setStatus(ProjectStatus.PUBLISHED);
 
-        mockMvc.perform(put("/project/{projectId}", "some_id")
+        mockMvc.perform(patch("/project/{projectId}", "some_id")
                 .principal(authentication(user))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(project)))

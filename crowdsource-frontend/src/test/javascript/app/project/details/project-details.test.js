@@ -213,7 +213,7 @@ describe('project details', function () {
         $scope.$digest();
         $httpBackend.flush();
 
-        $httpBackend.expectPUT('/project/xyz', {status: 'PUBLISHED'}).respond(200, {status: 'PUBLISHED'});
+        $httpBackend.expectPATCH('/project/xyz', {status: 'PUBLISHED'}).respond(200, {status: 'PUBLISHED'});
         projectDetails.find('.publish-button').click();
         $httpBackend.flush();
 
@@ -232,7 +232,7 @@ describe('project details', function () {
         $scope.$digest();
         $httpBackend.flush();
 
-        $httpBackend.expectPUT('/project/xyz', {status: 'REJECTED'}).respond(200, {status: 'REJECTED'});
+        $httpBackend.expectPATCH('/project/xyz', {status: 'REJECTED'}).respond(200, {status: 'REJECTED'});
         projectDetails.find('.reject-button').click();
         $httpBackend.flush();
 
@@ -250,7 +250,7 @@ describe('project details', function () {
         $scope.$digest();
         $httpBackend.flush();
 
-        $httpBackend.expectPUT('/project/xyz', {status: 'REJECTED'}).respond(400);
+        $httpBackend.expectPATCH('/project/xyz', {status: 'REJECTED'}).respond(400);
         projectDetails.find('.reject-button').click();
         $httpBackend.flush();
 
@@ -268,7 +268,7 @@ describe('project details', function () {
         $scope.$digest();
         $httpBackend.flush();
 
-        $httpBackend.expectPUT('/project/xyz', {status: 'PUBLISHED'}).respond(400);
+        $httpBackend.expectPATCH('/project/xyz', {status: 'PUBLISHED'}).respond(400);
         projectDetails.find('.publish-button').click();
         $httpBackend.flush();
 

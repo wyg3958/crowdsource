@@ -100,8 +100,10 @@ public class UserNotificationService {
     }
 
     private String getProjectLink(String projectId) {
+
         UriComponentsBuilder uriBuilder = ServletUriComponentsBuilder.fromUriString(applicationUrl);
         uriBuilder.fragment(PROJECT_LINK_PATTERN);
+
         return uriBuilder.buildAndExpand(projectId).toUriString();
     }
 

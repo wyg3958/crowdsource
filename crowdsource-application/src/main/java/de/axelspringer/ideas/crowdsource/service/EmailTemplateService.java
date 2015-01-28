@@ -16,8 +16,8 @@ import java.io.StringWriter;
 @Service
 public class EmailTemplateService {
 
-    private final ExpressionParser PARSER = new SpelExpressionParser();
-    private final TemplateParserContext TEMPLATE_PARSER_CONTEXT = new TemplateParserContext();
+    private final ExpressionParser parser = new SpelExpressionParser();
+    private final TemplateParserContext templateParserContext = new TemplateParserContext();
 
 
     public String format(final String templatePath, final Object context) {
@@ -28,7 +28,7 @@ public class EmailTemplateService {
             StringWriter writer = new StringWriter();
             IOUtils.copy(inputStream, writer, "UTF-8");
 
-            return PARSER.parseExpression(writer.toString(), TEMPLATE_PARSER_CONTEXT).getValue(context, String.class);
+            return parser.parseExpression(writer.toString(), templateParserContext).getValue(context, String.class);
 
         } catch (IOException e) {
             throw new ResourceNotFoundException();

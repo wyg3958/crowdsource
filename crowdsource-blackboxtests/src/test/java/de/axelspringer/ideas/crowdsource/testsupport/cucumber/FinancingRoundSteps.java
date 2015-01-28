@@ -14,8 +14,10 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Random;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -165,12 +167,12 @@ public class FinancingRoundSteps {
 
     @Then("^he gets displayed the message \"([^\"]*)\"$")
     public void he_gets_displayed_the_message(String message) throws Throwable {
-        assertTrue(financingRoundsPage.infoText().contains(message));
+        assertThat(financingRoundsPage.infoText(), containsString(message));
     }
 
     @And("^no notification message is displayed in the start financeround form$")
     public void no_notification_message_is_displayed_in_the_start_financeround_form() throws Throwable {
-        assertNull(financingRoundsPage.getNewRoundNotificationText());
+        assertThat(financingRoundsPage.getNewRoundNotificationText(), is(nullValue()));
     }
 
     @And("^the notification message \"([^\"]*)\" is displayed in the start financeround form$")

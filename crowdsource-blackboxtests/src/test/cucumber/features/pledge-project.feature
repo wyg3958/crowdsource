@@ -36,11 +36,11 @@ Feature: Pledge project
     When the user submits the pledging form
     Then the notification message "Deine Finanzierung war erfolgreich. Das Projekt ist jetzt zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich." is displayed on the project pledging form
     When the project detail page of this project is reloaded
-    Then the notification message "Das Project ist zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich." is displayed on the project pledging form
+    Then the notification message "Das Projekt ist zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich." is displayed on the project pledging form
     When he clicks on the Logout button
     And the project detail page of this project is reloaded
     # an anonymous user should not get the message "Bitte logge dich ein, um Projekte finanziell zu unterstützen." in this state
-    Then the notification message "Das Project ist zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich." is displayed on the project pledging form
+    Then the notification message "Das Projekt ist zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich." is displayed on the project pledging form
 
   Scenario: The finance round is stopped while a user pledges a project
     Given a project is published

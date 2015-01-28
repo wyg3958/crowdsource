@@ -14,7 +14,7 @@ angular.module('crowdsource')
         vm.project.id = $routeParams.projectId;
 
         vm.publish = function () {
-            if (!$window.confirm('Willst du das Projekt wirklich veröffentlichen?')) {
+            if (!$window.confirm('Willst Du das Projekt wirklich veröffentlichen?')) {
                 return;
             }
 
@@ -31,7 +31,7 @@ angular.module('crowdsource')
         };
 
         vm.reject = function () {
-            if (!$window.confirm('Willst du das Projekt wirklich ablehnen?')) {
+            if (!$window.confirm('Willst Du das Projekt wirklich ablehnen?')) {
                 return;
             }
 

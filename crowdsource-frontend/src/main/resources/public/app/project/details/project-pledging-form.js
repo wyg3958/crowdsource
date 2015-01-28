@@ -70,7 +70,7 @@ angular.module('crowdsource')
                         return { type: 'success', message: 'Deine Finanzierung war erfolgreich.' };
                     }
                     if (vm.project.status == 'FULLY_PLEDGED') {
-                        return { type: 'info', message: 'Das Project ist zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich.' };
+                        return { type: 'info', message: 'Das Projekt ist zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich.' };
                     }
                     if (vm.project.status != 'PUBLISHED') {
                         return { type: 'info', message: 'Eine Finanzierung ist erst möglich, wenn das Projekt von einem Administrator veröffentlicht wurde.' };

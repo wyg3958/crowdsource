@@ -38,7 +38,7 @@ Feature: Pledge project
     When the project detail page of this project is reloaded
     Then the notification message "Das Projekt ist zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich." is displayed on the project pledging form
     When he clicks on the Logout button
-    And the project detail page of this project is reloaded
+    And the project detail page of this project is requested
     # an anonymous user should not get the message "Bitte logge dich ein, um Projekte finanziell zu unterstützen." in this state
     Then the notification message "Das Projekt ist zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich." is displayed on the project pledging form
 

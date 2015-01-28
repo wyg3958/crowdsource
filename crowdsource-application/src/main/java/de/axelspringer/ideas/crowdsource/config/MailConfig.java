@@ -1,12 +1,23 @@
 package de.axelspringer.ideas.crowdsource.config;
 
+import de.axelspringer.ideas.crowdsource.exceptions.ResourceNotFoundException;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.common.TemplateParserContext;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.Properties;
 
 @Configuration
@@ -26,6 +37,9 @@ public class MailConfig {
 
     @Value("${de.axelspringer.ideas.crowdsource.mail.starttls:true}")
     private boolean useStartTls;
+
+    private final ExpressionParser parser = new SpelExpressionParser();
+    private final TemplateParserContext templateParserContext = new TemplateParserContext();
 
     @Bean
     public JavaMailSender javaMailSender() {
@@ -48,4 +62,42 @@ public class MailConfig {
         return javaMailSender;
     }
 
+    @Bean
+    public Expression activationEmailTemplate() {
+        return format("email/activation.template");
+    }
+
+    @Bean
+    public Expression newProjectEmailTemplate() {
+        return format("email/new-project.template");
+    }
+
+    @Bean
+    public Expression passwordForgottenEmailTemplate() {
+        return format("email/password-forgotten.template");
+    }
+
+    @Bean
+    public Expression projectPublishedEmailTemplate() {
+        return format("email/project-published.template");
+    }
+
+    @Bean
+    public Expression projectRejectedEmailTemplate() {
+        return format("email/project-rejected.template");
+    }
+
+    private Expression format(final String templatePath) {
+        try {
+            Resource resource = new ClassPathResource(templatePath);
+            InputStream inputStream = resource.getInputStream();
+            StringWriter writer = new StringWriter();
+            IOUtils.copy(inputStream, writer, "UTF-8");
+
+            return parser.parseExpression(writer.toString());
+
+        } catch (IOException e) {
+            throw new ResourceNotFoundException();
+        }
+    }
 }

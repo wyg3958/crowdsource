@@ -6,6 +6,8 @@ import de.axelspringer.ideas.crowdsource.util.UserHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.expression.Expression;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -40,19 +42,34 @@ public class UserNotificationService {
     @Value("${de.axelspringer.ideas.crowdsource.mail.projectRejectedSubject}")
     private String projectRejectedSubject;
 
+    @Autowired
+    private Expression activationEmailTemplate;
+
+    @Autowired
+    private Expression newProjectEmailTemplate;
+
+    @Autowired
+    private Expression passwordForgottenEmailTemplate;
+
+    @Autowired
+    private Expression projectPublishedEmailTemplate;
+
+    @Autowired
+    private Expression projectRejectedEmailTemplate;
 
     @Autowired
     private JavaMailSender mailSender;
-
-    @Autowired
-    private EmailTemplateService templateService;
 
     public void sendActivationMail(UserEntity user) {
 
         String activationLink = buildLink(ACTIVATION_LINK_PATTERN, user.getEmail(), user.getActivationToken());
         log.debug("Sending activation link {} to {}", activationLink, user.getEmail());
 
-        final String mailContent = getMailContent(user.getEmail(), activationLink, "email/activation.template");
+        StandardEvaluationContext context = new StandardEvaluationContext();
+        context.setVariable("link", activationLink);
+        context.setVariable("userName", UserHelper.determineNameFromEmail(user.getEmail()));
+        final String mailContent = activationEmailTemplate.getValue(context, String.class);
+
         sendMail(user.getEmail(), activationSubject, mailContent);
     }
 
@@ -61,30 +78,38 @@ public class UserNotificationService {
         String passwordRecoveryLink = buildLink(PASSWORD_RECOVERY_LINK_PATTERN, user.getEmail(), user.getActivationToken());
         log.debug("Sending password recovery link {} to {}", passwordRecoveryLink, user.getEmail());
 
-        final String mailContent = getMailContent(user.getEmail(), passwordRecoveryLink, "email/password-forgotten.template");
+        StandardEvaluationContext context = new StandardEvaluationContext();
+        context.setVariable("link", passwordRecoveryLink);
+        context.setVariable("userName", UserHelper.determineNameFromEmail(user.getEmail()));
+        final String mailContent = passwordForgottenEmailTemplate.getValue(context, String.class);
+
         sendMail(user.getEmail(), passwordForgottenSubject, mailContent);
     }
 
     public void notifyUserOnProjectUpdate(ProjectEntity project, String emailAddress) {
 
+        final StandardEvaluationContext context = new StandardEvaluationContext();
         final String projectLink = getProjectLink(project.getId());
         String mailContent;
         String subject;
 
+        context.setVariable("link", projectLink);
+        context.setVariable("userName", UserHelper.determineNameFromEmail(emailAddress));
+
         switch (project.getStatus()) {
             case PUBLISHED:
-                mailContent = getMailContent(emailAddress, projectLink, "email/project-published.template");
+                mailContent = projectPublishedEmailTemplate.getValue(context, String.class);
                 subject = projectPublishedSubject;
                 break;
 
             case REJECTED:
-                mailContent = getMailContent(emailAddress, projectLink, "email/project-rejected.template");
+                mailContent = projectRejectedEmailTemplate.getValue(context, String.class);
                 subject = projectRejectedSubject;
                 break;
 
             default:
-                subject = "Der Zustand des Projekts " + project.getTitle() + " hat sich geändert!";
                 mailContent = "Das Projekt " + project.getTitle() + " wurde in den Zustand " + project.getStatus().name() + " versetzt.";
+                subject = "Der Zustand des Projekts " + project.getTitle() + " hat sich geändert!";
                 break;
         }
 
@@ -94,8 +119,9 @@ public class UserNotificationService {
     public void notifyAdminOnProjectCreation(ProjectEntity project, String emailAddress) {
 
         final String projectLink = getProjectLink(project.getId());
-
-        final String mailContent = getMailContent(null, projectLink, "email/new-project.template");
+        StandardEvaluationContext context = new StandardEvaluationContext();
+        context.setVariable("link", projectLink);
+        final String mailContent = newProjectEmailTemplate.getValue(context, String.class);
         sendMail(emailAddress, newProjectSubject, mailContent);
     }
 
@@ -105,15 +131,6 @@ public class UserNotificationService {
         uriBuilder.fragment(PROJECT_LINK_PATTERN);
 
         return uriBuilder.buildAndExpand(projectId).toUriString();
-    }
-
-    private String getMailContent(String userEmail, String link, String templatePath) {
-
-        EmailTemplateContext context = new EmailTemplateContext();
-        context.setLink(link);
-        context.setUserName(UserHelper.determineNameFromEmail(userEmail));
-
-        return templateService.format(templatePath, context);
     }
 
     private String buildLink(String urlPattern, String emailAddress, String activationToken) {

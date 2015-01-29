@@ -3,7 +3,9 @@
  *
  */
 
-
+.project-list {
+    //display: none;
+}
 
 //
 // Global vars and calculations
@@ -27,8 +29,8 @@ $metrics-height:  rem-calc(42px);   // Metrics object in a tile
 // 2) fixed width (see above) for browser widths that can contain more than 1 tile
 
 $page-padding: rem-calc(40px);
-$tile-break:   "only screen and (min-width: #{$tile-width * 2 + $tile-gutter * 4 + $page-padding * 2 + rem-calc(1px)})";
-
+$tile-break:      "only screen and (min-width: #{$tile-width * 2 + $tile-gutter * 4 + $page-padding * 2 + rem-calc(1px)})";
+$intro-box-break: "only screen and (max-width: 740px)";
 
 
 
@@ -97,7 +99,7 @@ $tile-break:   "only screen and (min-width: #{$tile-width * 2 + $tile-gutter * 4
     color: $white;
     letter-spacing: 0.5px;
 
-    background-color: $clr-red-shade-2;
+    background-color: $clr-blue-shade-1;
     border-radius: rem-calc($border-radius);
 
     &:first-of-type {
@@ -203,7 +205,7 @@ $tile-break:   "only screen and (min-width: #{$tile-width * 2 + $tile-gutter * 4
 
 
 .project-proposed {
-    @include project-status((content: 'In Freigabe', bg-status: #4B51D4, bg-tile: rgba(223, 223, 223, 0.5)));
+    @include project-status((content: 'In Freigabe', bg-tile: rgba(223, 223, 223, 0.5)));
 }
 
 
@@ -279,6 +281,118 @@ $tile-break:   "only screen and (min-width: #{$tile-width * 2 + $tile-gutter * 4
 
 
 // Section with Dein Budget / Du / Dein Zeitrahmen
+
+/*ul*/.intro-box {
+    @extend  %list--plain;
+    display: flex;
+    margin:  2rem 0;
+    border:  1px solid $clr-border;
+    border-radius: $border-radius;
+
+    @media #{$intro-box-break} {
+        flex-wrap: wrap;
+    }
+}
+
+
+/*li*/.intro-box__item {
+    flex:  0 0 33.333333333%;  // Force all flex-items to get the same width
+    order: 1;
+    padding: rem-calc(20px);
+    border-right: 1px solid $clr-border;
+
+    &:last-child {
+        border-right: none;
+    }
+
+    & > * {
+        &:first-child {
+            margin-top: 0;
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    @media #{$intro-box-break} {
+        flex: 0 0 100%;
+        border-right:  none;
+        border-bottom: 1px solid $clr-border;
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+}
+
+
+/*li*/.intro-box__item--important {
+    @extend .intro-box__item;
+    background-color: $white;
+
+    @media only screen and (max-width: 740px) {
+        order: 0;
+    }
+}
+
+
+/*h3*/.intro-box__heading {
+    margin: 1rem 0;
+    font-size: rem-calc(16px);
+    font-weight: 600;
+    line-height: 1.5;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+
+/*h3*/.intro-box__heading--has-divider {
+    @extend .intro-box__heading;
+    @include typographic-divider((height: 0.125rem, width: 2.5rem, offset-bottom: 1rem));
+}
+
+
+/*p*/.intro-box__intro {
+    // @extend %font-smoothing;
+}
+
+
+%intro-box__item-icon {
+    $dimension: 51px;
+
+    display: inline-block;
+    width:  $dimension;
+    height: $dimension;
+    border-radius: 50%;
+    background-color:    $clr-red-shade-2;
+    background-position: center center;
+    background-repeat:   no-repeat;
+    background-size:     rem-calc(22px);
+}
+
+
+.intro-box__item-icon--capital {
+    @extend %intro-box__item-icon;
+    background-image: url('../images/icon-$$-white.svg');
+}
+
+
+.intro-box__item-icon--user {
+    @extend %intro-box__item-icon;
+    background-image: url('../images/icon-user-white.svg');
+}
+
+
+.intro-box__item-icon--clock {
+    @extend %intro-box__item-icon;
+    background-image: url('../images/icon-clock-white.svg');
+}
+
+
+
+
+
 
 .intro-section {
     text-align: center;

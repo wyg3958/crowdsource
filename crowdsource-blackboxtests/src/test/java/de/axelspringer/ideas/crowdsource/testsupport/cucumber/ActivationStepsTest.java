@@ -21,4 +21,16 @@ public class ActivationStepsTest {
 
         assertEquals(activationToken, new ActivationSteps().extractActivationTokenFromMessage(testMail));
     }
+
+    @Test
+    public void testExtractActivationLink() {
+
+        final String activationToken = RandomStringUtils.randomAlphanumeric(UserService.ACTIVATION_TOKEN_LENGTH);
+        final String testMail = "Hallo Hans Dampf, Du hast Dich gerade auf der AS ideas Crowd Platform angemeldet. Um Deine Registrierung abzuschließen, öffne bitte diesen Link und setze Dein Passwort: http://localhost:8080#/signup/hans.dampf@axelspringer.de/activation/"
+                + activationToken
+                + " Bei Fragen wende dich an: support@crowd.asideas.de";
+
+        final String expectedLink = "http://localhost:8080#/signup/hans.dampf@axelspringer.de/activation/" + activationToken;
+        assertEquals(expectedLink, new ActivationSteps().extractActivationLinkFromMessage(testMail));
+    }
 }

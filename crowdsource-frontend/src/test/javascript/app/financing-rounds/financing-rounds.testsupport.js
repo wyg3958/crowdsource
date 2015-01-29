@@ -42,16 +42,6 @@ function FinancingRounds(element) {
         return element.find(row + ' .stop-button');
     };
 
-    this.getTableEndRoundCancelButton = function (row) {
-        row = row || defaultRow;
-        return element.find(row + ' .cancel-button');
-    };
-
-    this.getTableEndRoundConfirmMessage = function (row) {
-        row = row || defaultRow;
-        return element.find(row + ' .confirm-message');
-    };
-
     this.getStartRoundButton = function () {
         return element.find('.newround-start');
     };

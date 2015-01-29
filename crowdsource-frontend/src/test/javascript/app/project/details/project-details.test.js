@@ -1,6 +1,6 @@
 describe('project details', function () {
 
-    var $scope, $httpBackend, $location, AuthenticationToken, projectDetails;
+    var $scope, $httpBackend, $window, $location, AuthenticationToken, projectDetails;
 
     beforeEach(function () {
         module('crowdsource');
@@ -8,9 +8,10 @@ describe('project details', function () {
 
         localStorage.clear(); // reset, makes the user not logged in
 
-        inject(function ($compile, $rootScope, $templateCache, $controller, _$location_, _$httpBackend_, Project, _AuthenticationToken_) {
+        inject(function ($compile, $rootScope, $templateCache, _$window_, $controller, _$location_, _$httpBackend_, Project, _AuthenticationToken_) {
             $scope = $rootScope.$new();
             $httpBackend = _$httpBackend_;
+            $window = _$window_;
             $location = _$location_;
             AuthenticationToken = _AuthenticationToken_;
 
@@ -53,9 +54,9 @@ describe('project details', function () {
 
         expect(projectDetails.find('h1')).toHaveText('Title');
         expect(projectDetails.find('.project-status__creator strong')).toHaveText('Foo Bar');
-        expect(projectDetails.find('.project-status__funding progress-bar .meter')).toHaveCss({width: '69.265%'});
-        expect(projectDetails.find('.project-status__pledge-goal')).toHaveText('$20.000');
-        expect(projectDetails.find('.project-status__pledged-amount')).toHaveText('$13.853');
+        expect(projectDetails.find('.project-status__funding progress-bar .cs-progress__meter')).toHaveCss({width: '69.265%'});
+        expect(projectDetails.find('.project-status__pledge-goal')).toHaveText('AS$20.000');
+        expect(projectDetails.find('.project-status__pledged-amount')).toHaveText('AS$13.853');
         expect(projectDetails.find('.project-status__backers')).toHaveText('7');
         expect(projectDetails.find('h2')).toHaveText('Short description');
         expect(projectDetails.find('.project-description')).toHaveText('Looong description');
@@ -160,6 +161,20 @@ describe('project details', function () {
         expect(projectDetails.find('.publish-button')).not.toExist();
     });
 
+    it("should not display the publish-button when a project is fully pledged", function () {
+
+        prepareBackendMock('FULLY_PLEDGED');
+        $httpBackend.expectGET('/user/current').respond(200, {budget: 55, roles: ['ROLE_USER', 'ROLE_ADMIN']});
+        $httpBackend.expectGET('/project/xyz/comments').respond(200, []);
+
+        spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(true);
+
+        $scope.$digest();
+        $httpBackend.flush();
+
+        expect(projectDetails.find('.publish-button')).not.toExist();
+    });
+
     it("should display the reject-button when a project is not reject and the user is admin", function () {
 
         prepareBackendMock('PROPOSED');
@@ -202,7 +217,21 @@ describe('project details', function () {
         expect(projectDetails.find('.reject-button')).not.toExist();
     });
 
-    it("should send the patch-request to the backend when the publish-button is clicked", function () {
+    it("should not display the reject-button when a project is fully pledged", function () {
+
+        prepareBackendMock('FULLY_PLEDGED');
+        $httpBackend.expectGET('/user/current').respond(200, {budget: 55, roles: ['ROLE_USER', 'ROLE_ADMIN']});
+        $httpBackend.expectGET('/project/xyz/comments').respond(200, []);
+
+        spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(true);
+
+        $scope.$digest();
+        $httpBackend.flush();
+
+        expect(projectDetails.find('.reject-button')).not.toExist();
+    });
+
+    it("should send the patch-request to the backend when the publish-button is clicked and confirmed", function () {
 
         prepareBackendMock('PROPOSED');
         $httpBackend.expectGET('/user/current').respond(200, {budget: 55, roles: ['ROLE_USER', 'ROLE_ADMIN']});
@@ -213,15 +242,16 @@ describe('project details', function () {
         $scope.$digest();
         $httpBackend.flush();
 
-        $httpBackend.expectPUT('/project/xyz', {status: 'PUBLISHED'}).respond(200, {status: 'PUBLISHED'});
+        $httpBackend.expectPATCH('/project/xyz', {status: 'PUBLISHED'}).respond(200, {status: 'PUBLISHED'});
+
+        spyOn($window, 'confirm').and.returnValue(true);
         projectDetails.find('.publish-button').click();
         $httpBackend.flush();
 
         expect(projectDetails.find('.publish-button')).not.toExist();
     });
 
-
-    it("should send the patch-request to the backend when the reject-button is clicked", function () {
+    it("should not send the patch-request to the backend when the publish confirmation is canceled", function () {
 
         prepareBackendMock('PROPOSED');
         $httpBackend.expectGET('/user/current').respond(200, {budget: 55, roles: ['ROLE_USER', 'ROLE_ADMIN']});
@@ -232,11 +262,44 @@ describe('project details', function () {
         $scope.$digest();
         $httpBackend.flush();
 
-        $httpBackend.expectPUT('/project/xyz', {status: 'REJECTED'}).respond(200, {status: 'REJECTED'});
+        spyOn($window, 'confirm').and.returnValue(false);
+        projectDetails.find('.publish-button').click();
+
+        expect(projectDetails.find('.publish-button')).toExist();
+    });
+
+    it("should send the patch-request to the backend when the reject-button is clicked and confirmed", function () {
+
+        prepareBackendMock('PROPOSED');
+        $httpBackend.expectGET('/user/current').respond(200, {budget: 55, roles: ['ROLE_USER', 'ROLE_ADMIN']});
+        $httpBackend.expectGET('/project/xyz/comments').respond(200, []);
+
+        spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(true);
+
+        $scope.$digest();
+        $httpBackend.flush();
+
+        $httpBackend.expectPATCH('/project/xyz', {status: 'REJECTED'}).respond(200, {status: 'REJECTED'});
+        spyOn($window, 'confirm').and.returnValue(true);
         projectDetails.find('.reject-button').click();
         $httpBackend.flush();
 
         expect(projectDetails.find('.reject-button')).not.toExist();
+    });
+
+    it("should not send the patch-request to the backend when the reject confirmation is canceled", function () {
+
+        prepareBackendMock('PROPOSED');
+        $httpBackend.expectGET('/user/current').respond(200, {budget: 55, roles: ['ROLE_USER', 'ROLE_ADMIN']});
+        $httpBackend.expectGET('/project/xyz/comments').respond(200, []);
+
+        spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(true);
+
+        $scope.$digest();
+        $httpBackend.flush();
+
+        spyOn($window, 'confirm').and.returnValue(false);
+        projectDetails.find('.reject-button').click();
     });
 
     it("should redirect to unknown-error page when the reject-request fails", function () {
@@ -250,7 +313,8 @@ describe('project details', function () {
         $scope.$digest();
         $httpBackend.flush();
 
-        $httpBackend.expectPUT('/project/xyz', {status: 'REJECTED'}).respond(400);
+        $httpBackend.expectPATCH('/project/xyz', {status: 'REJECTED'}).respond(400);
+        spyOn($window, 'confirm').and.returnValue(true);
         projectDetails.find('.reject-button').click();
         $httpBackend.flush();
 
@@ -268,7 +332,8 @@ describe('project details', function () {
         $scope.$digest();
         $httpBackend.flush();
 
-        $httpBackend.expectPUT('/project/xyz', {status: 'PUBLISHED'}).respond(400);
+        $httpBackend.expectPATCH('/project/xyz', {status: 'PUBLISHED'}).respond(400);
+        spyOn($window, 'confirm').and.returnValue(true);
         projectDetails.find('.publish-button').click();
         $httpBackend.flush();
 

@@ -1,7 +1,11 @@
 <content-row class="project-form box-wide">
     <form name="projectForm.form" novalidate foundation-reflow="tooltip">
 
-        <h1>Deine neue Projektidee</h1>
+        <div class="row">
+            <div class="small-12 columns">
+                <h1>Deine neue Projektidee</h1>
+            </div>
+        </div>
 
         <div class="general-error alert-box alert" ng-messages="projectForm.generalErrors" ng-if="projectForm.generalErrors">
             <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuche es erneut.</span>
@@ -64,7 +68,7 @@
                     </div>
                     <div class="table-cell">
                         <span data-tooltip class="postfix text-left has-tip tip-right currency" aria-haspopup="true"
-                              title="Ein AS$ entspricht einem Euro. Der maximal mögliche Finanzierungsbedarf liegt bei $999.999.">AS$</span>
+                              title="Ein AS$ entspricht einem Euro. Der maximal mögliche Finanzierungsbedarf liegt bei AS$999.999. Da wir allerdings viele kleine Projekte unterstützen wollen, sollte dein Projekt nicht mehr als AS$25.000 kosten.">AS$</span>
                     </div>
                 </div>
             </div>
@@ -87,8 +91,12 @@
             </div>
         </div>
 
-        <button type="submit" class="success margin-top" ng-click="projectForm.submitProjectIdea()" ng-disabled="projectForm.loading">
-            {{ projectForm.loading ? 'Absenden...' : 'Absenden' }}
-        </button>
+        <div class="row">
+            <div class="small-12 columns">
+                <button type="submit" class="crwd-success radius shadow margin-top" ng-click="projectForm.submitProjectIdea()" ng-disabled="projectForm.loading">
+                    {{ projectForm.loading ? 'Absenden...' : 'Absenden' }}
+                </button>
+            </div>
+        </div>
     </form>
 </content-row>

@@ -82,13 +82,9 @@ public class ProjectController {
         projectService.pledge(projectId, userEntity, pledge);
     }
 
-    /**
-     * Actually this method should be PATCH, but phantomJS does support PATCH yet.
-     * See https://github.com/ariya/phantomjs/issues/11384
-     */
     @Secured(Roles.ROLE_ADMIN)
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/project/{projectId}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/project/{projectId}", method = RequestMethod.PATCH)
     public Project updateProject(@PathVariable("projectId") String projectId, @RequestBody @Validated(Project.UpdateProject.class) Project projectWithUpdateData) {
 
         return projectService.updateProject(projectId, projectWithUpdateData);

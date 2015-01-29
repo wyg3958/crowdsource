@@ -16,6 +16,11 @@ Feature: About us, FAQ and impress pages
     Given a user is logged in
     When he visits the "FAQ" page
     Then he sees the text "Frequently Asked Questions"
-    And the content text "Panel 2." is not visible
-    When he clicks on text "At a movie theater which arm rest is yours?"
-    Then the content text "Panel 2." is visible
+    And the content text "Ganz einfach." is not visible
+    When he clicks on text "Wie reiche ich eine Idee ein?"
+    Then the content text "Ganz einfach." is visible
+
+  Scenario: A user visits the Imprint page
+    Given a user is logged in
+    When he visits the "Impressum" page
+    Then he sees the text "Impressum"

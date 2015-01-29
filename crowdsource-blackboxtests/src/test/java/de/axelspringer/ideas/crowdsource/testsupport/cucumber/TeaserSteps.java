@@ -75,7 +75,7 @@ public class TeaserSteps {
 
     @When("^one second elapses$")
     public void one_second_passes_by() throws Throwable {
-        Thread.sleep(1000);
+        Thread.sleep(1100);
     }
 
     @Then("^the remaining time is less than before$")

@@ -17,15 +17,12 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
+import static org.junit.Assert.assertNotNull;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfAllElementsLocatedBy;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
 @Component
 public class FinancingRoundsPage {
-
-    public static final String ACTION_CONFIRM_MESSAGE = ".confirm-message";
-    public static final String ACTION_BUTTON_STOP = ".stop-button";
-    public static final String ACTION_BUTTON_CANCEL = ".cancel-button";
 
     @Autowired
     private WebDriverProvider webDriverProvider;
@@ -42,15 +39,6 @@ public class FinancingRoundsPage {
 
     public void waitForPageLoad() {
         seleniumWait.until(presenceOfElementLocated(By.cssSelector(".financingrounds tbody tr")));
-    }
-
-    public WebElement getActionElementOfFinancingRound(FinancingRound financingRound, String cssSelector) {
-        WebElement financingRoundElement = webDriverProvider.provideDriver().findElementsByClassName("financinground").stream()
-                .filter(roundElement -> financingRound.getId().equals(roundElement.getAttribute("fr_id")))
-                .findFirst()
-                .orElse(null);
-
-        return getOnlyElement(financingRoundElement.findElements(By.cssSelector(cssSelector)), null);
     }
 
     public void startFinancingRound(DateTime endDate, int budget) {
@@ -83,8 +71,7 @@ public class FinancingRoundsPage {
 
         if (financingRounds.size() > position) {
             return financingRound(financingRounds.get(position));
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -99,8 +86,7 @@ public class FinancingRoundsPage {
         if (wait) {
             seleniumWait.until(presenceOfAllElementsLocatedBy(By.className("newround-start")));
             return true;
-        }
-        else {
+        } else {
             return webDriver.findElements(By.className("newround-start")).size() > 0;
         }
     }
@@ -145,5 +131,20 @@ public class FinancingRoundsPage {
         }
 
         return elements.get(0).getText();
+    }
+
+    public WebElement getStopButtonOfFinancingRound(FinancingRound financingRound) {
+        WebElement financingRoundElement = webDriverProvider.provideDriver().findElementsByClassName("financinground").stream()
+                .filter(roundElement -> financingRound.getId().equals(roundElement.getAttribute("fr_id")))
+                .findFirst()
+                .orElse(null);
+
+        return getOnlyElement(financingRoundElement.findElements(By.cssSelector(".stop-button")), null);
+    }
+
+    public WebElement getStopButtonOfFinancingRoundAt(int pos) {
+        final FinancingRound financingRound = getFinancingRoundAt(pos);
+        assertNotNull(financingRound);
+        return getStopButtonOfFinancingRound(financingRound);
     }
 }

@@ -18,9 +18,11 @@ Feature: Project details
     And the "publish"-button is visible
     And the "reject"-button is visible
     When the "publish"-button is clicked
+    And the confirmation dialog is accepted
     And the user waits for the "publish"-button to disappear
     Then the "publish"-button is not visible
     When the "reject"-button is clicked
+    And the confirmation dialog is accepted
     And the user waits for the "reject"-button to disappear
     Then the "reject"-button is not visible
 

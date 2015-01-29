@@ -20,8 +20,10 @@
 @import "components/finance";
 @import "components/financing-rounds";
 @import "components/alert-box";
-@import "components/about";
+@import "components/_about";
+@import "components/_progress-meter";
 @import "components/faq";
+@import "components/imprint";
 
 .button, button {
     text-transform: uppercase;
@@ -43,7 +45,7 @@ body {
 
 .content {
     min-height: calc(95% - 200px);  // Give height to make our footer sticky,
-    // value of 95% is approx. the height of the content area minus teaser, nav-bar, ... 
+    // value of 95% is approx. the height of the content area minus teaser, nav-bar, ...
     color: $crowd-color-dark-grey;
 
 }
@@ -69,20 +71,4 @@ content-row {
     &.box-wide .container {
         @extend %box;
     }
-}
-
-// TODO: cool styles
-.project-PROPOSED {
-    background: #ebebeb !important;
-}
-
-.project-PUBLISHED {
-}
-
-.project-FULLY_PLEDGED {
-    background: rgba(0, 255, 0, 0.10) !important;
-}
-
-.project-REJECTED {
-    background: rgba(139, 0, 0, 0.30) !important;
 }

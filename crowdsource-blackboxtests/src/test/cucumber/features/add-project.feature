@@ -10,7 +10,7 @@ Feature: Add project
     Then the project details page shows the new project
     When the CROWD link is clicked
     Then the project overview page shows the new project
-    And the project is marked "PROPOSED"
+    And the project is marked "proposed"
 
   Scenario: A user adds a new project and it is published by an admin
     Given a user is logged in
@@ -23,7 +23,7 @@ Feature: Add project
     Then the project details page shows the new project
     When the CROWD link is clicked
     Then the project overview page shows the new project
-    And the project is marked "PUBLISHED"
+    And the project is marked "published"
 
   Scenario: A user view the new project page and gets a tooltip for currency conversion
     Given a user is logged in

@@ -14,8 +14,7 @@
 
 @import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,500,600,700,400italic);
 
-$ff:       "Source Sans Pro", "Helvetica Neue", Helvetica, sans-serif;
-$ff-brand: 'Helvetica Neue';
+$ff: "Source Sans Pro", "Helvetica Neue", "Helvetica", Arial, sans-serif;
 $crowd-font-family: $ff;
 $crowd-line-height: 22px;
 
@@ -28,7 +27,7 @@ $crowd-line-height: 22px;
 $crowd-color-purple:       #6455a0;
 $crowd-color-orange:       orange;
 $crowd-color-darker-grey:  #575757;
-$crowd-color-dark-grey:    #6b6b6b;
+$crowd-color-dark-grey:    #2d2d2d;
 $crowd-color-light-grey:   #e6e6e6;
 
 $success-color:            #43AC6A; // Abhängigkeit zu Foundation Settings

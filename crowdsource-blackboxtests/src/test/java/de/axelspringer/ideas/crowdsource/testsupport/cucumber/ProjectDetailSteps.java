@@ -127,8 +127,8 @@ public class ProjectDetailSteps {
 
         ProjectStatusWidget projectStatusWidget = projectDetailPage.getProjectStatusWidget();
         assertThat(projectStatusWidget.getProgressBarValue(), is("0px"));
-        assertThat(projectStatusWidget.getPledgedAmount(), is("$0"));
-        assertThat(projectStatusWidget.getPledgeGoal(), is("$25"));
+        assertThat(projectStatusWidget.getPledgedAmount(), is("AS$0"));
+        assertThat(projectStatusWidget.getPledgeGoal(), is("AS$25"));
         assertThat(projectStatusWidget.getBackers(), is("0"));
         assertThat(projectStatusWidget.getUserName(), is("Crowdsource"));
     }
@@ -138,7 +138,7 @@ public class ProjectDetailSteps {
         projectDetailPage.waitForDetailsToBeLoaded();
 
         ProjectStatusWidget projectStatusWidget = projectDetailPage.getProjectStatusWidget();
-        assertThat(projectStatusWidget.getPledgedAmount(), is("$" + PLEDGED_AMOUNT));
+        assertThat(projectStatusWidget.getPledgedAmount(), is("AS$" + PLEDGED_AMOUNT));
     }
 
     @Then("^the pledged amount is zero$")
@@ -146,7 +146,7 @@ public class ProjectDetailSteps {
         projectDetailPage.waitForDetailsToBeLoaded();
 
         ProjectStatusWidget projectStatusWidget = projectDetailPage.getProjectStatusWidget();
-        assertThat(projectStatusWidget.getPledgedAmount(), is("$0"));
+        assertThat(projectStatusWidget.getPledgedAmount(), is("AS$0"));
     }
 
     @Given("^the user requests the project detail page with a non existant project id$")
@@ -179,8 +179,8 @@ public class ProjectDetailSteps {
         assertThat(WebDriverUtils.getPageYOffset(webDriver), greaterThan(savedPageYOffset));
     }
 
-    @And("^the project detail page of this project is (requested|reloaded)$")
-    public void the_project_detail_page_of_this_project_is_requested(String dummy) throws Throwable {
+    @And("^the project detail page of this project is requested$")
+    public void the_project_detail_page_of_this_project_is_requested() throws Throwable {
         projectDetailPage.open(createdProject.getId());
     }
 
@@ -211,5 +211,15 @@ public class ProjectDetailSteps {
     @And("^the user waits for the \"([^\"]*)\"-button to disappear$")
     public void the_user_waits_for_the_button_to_disappear(String buttonName) throws Throwable {
         seleniumWait.until(input -> webDriver.findElements(By.className(buttonName + "-button")).size() == 0);
+    }
+
+    @And("^the confirmation dialog is accepted$")
+    public void the_confirmation_dialog_is_accepted() throws Throwable {
+        webDriver.switchTo().alert().accept();
+    }
+
+    @And("^the confirmation dialog is rejected")
+    public void the_confirmation_dialog_is_rejected() throws Throwable {
+        webDriver.switchTo().alert().dismiss();
     }
 }

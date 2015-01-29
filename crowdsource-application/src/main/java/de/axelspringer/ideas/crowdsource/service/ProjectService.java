@@ -82,7 +82,13 @@ public class ProjectService {
         if (projectEntity == null) {
             throw new ResourceNotFoundException();
         }
+
         if (projectEntity.getStatus() != project.getStatus()) {
+
+            if (projectEntity.getStatus() == ProjectStatus.FULLY_PLEDGED) {
+                throw InvalidRequestException.projectAlreadyFullyPledged();
+            }
+
             projectEntity.setStatus(project.getStatus());
             projectEntity = projectRepository.save(projectEntity);
             userNotificationService.notifyUserOnProjectUpdate(projectEntity, projectEntity.getCreator().getEmail());

@@ -7,7 +7,7 @@ angular.module('crowdsource')
                 value: '=',
                 maximum: '='
             },
-            template: '<div class="progress"><span class="meter" ng-style="{ width: getWidth() }"></span></div>',
+            template: '<div class="cs-progress"><span class="cs-progress__meter" ng-style="{ width: getWidth() }"></span></div>',
             controller: function($scope) {
 
                 $scope.getWidth = function() {

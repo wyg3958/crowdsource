@@ -63,7 +63,7 @@ describe('teaser metrics service', function () {
         var teaser = renderDirective();
 
         expect(teaser.remainingBudgetItem).not.toHaveClass('ng-hide');
-        expect(teaser.remainingBudget.text()).toBe('$');
+        expect(teaser.remainingBudget.text()).toBe('AS$');
         expect(teaser.remainingTime.text()).toBe(' ');
         expect(teaser.remainingTimeLabel.text()).toBe('Noch in dieser Runde');
 
@@ -71,7 +71,7 @@ describe('teaser metrics service', function () {
 
         expect(teaser.container).toHaveClass('teaser--hero');
         expect(teaser.remainingBudgetItem).not.toHaveClass('ng-hide');
-        expect(teaser.remainingBudget.text()).toBe('$54.321');
+        expect(teaser.remainingBudget.text()).toBe('AS$54.321');
         expect(teaser.remainingTime.text()).toBe('1d 7h 55m 35s');
         expect(teaser.remainingTimeLabel.text()).toBe('Noch in dieser Runde');
         expect(teaser.userCount.text()).toBe('33 aktive Nutzer');
@@ -180,7 +180,7 @@ describe('teaser metrics service', function () {
         var teaser = renderDirective();
         $httpBackend.flush();
 
-        expect(teaser.remainingBudget.text()).toBe('$54.321');
+        expect(teaser.remainingBudget.text()).toBe('AS$54.321');
 
         // new route wants no teaser
         changeRoute({showTeaser: false}, {showTeaser: true});
@@ -196,7 +196,7 @@ describe('teaser metrics service', function () {
         $httpBackend.flush();
 
         expect(teaser.container).toHaveClass('teaser--hero');
-        expect(teaser.remainingBudget.text()).toBe('$123');
+        expect(teaser.remainingBudget.text()).toBe('AS$123');
         expect(teaser.remainingTime.text()).toBe('2d 7h 55m 35s');
     });
 

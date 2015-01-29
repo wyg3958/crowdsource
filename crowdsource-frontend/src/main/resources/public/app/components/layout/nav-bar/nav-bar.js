@@ -14,7 +14,7 @@ angular.module('crowdsource')
 
             vm.getClassForMenuItem = function (location) {
                 if ($location.path() == location) {
-                    return 'active';
+                    return 'current';
                 }
 
                 return '';

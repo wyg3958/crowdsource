@@ -1,29 +1,31 @@
 <content-row class="project-list">
 
     <h2 class="plist__heading">Crowd Projekte</h2>
-    <p class="plist__intro--has-divider">Erfahre mehr über unseren aktuellen Crowd Projekte und stimme mit ab!</p>
 
-    <ul data-equalizer>
-        <li ng-repeat="project in projectList.projects | orderBy:[projectList.projectOrderByStatus, projectList.projectOrderByDate]" foundation-reflow="equalizer">
-            <div class="project-tile project-{{project.status}}" data-equalizer-watch ng-click="projectList.showProjectDetails(project)">
+    <p class="plist__intro--has-divider">Erfahre mehr über unsere aktuellen Crowd Projekte und stimme mit ab!</p>
 
-                <!-- when using ellipsis directive, the value must come from ng-bind -->
-                <h1 ellipsis ng-bind="project.title"></h1>
+    <ul class="project__ul" data-equalizer>
 
-                <p ellipsis ng-bind="project.shortDescription"></p>
+        <li class="project__li" ng-repeat="project in projectList.projects | orderBy:[projectList.projectOrderByStatus, projectList.projectOrderByDate]" foundation-reflow="equalizer">
 
-                <div class="metrics">
+            <div class="project__tile project-{{project.status.toLowerCase()}}" data-equalizer-watch ng-click="projectList.showProjectDetails(project)">
+                <div class="tile__status"></div>
+                <h3 class="tile__heading" ellipsis ng-bind="project.title"></h3>
+
+                <p  class="tile__short-desc" ellipsis ng-bind="project.shortDescription"></p>
+
+                <div class="tile__metrics">
                     <progress-bar value="project.pledgedAmount" maximum="project.pledgeGoal"></progress-bar>
 
-                    <div class="metrics-numbers">
-                        <span class="plist__pill backers-count">{{ project.backers }}</span>
-                        <span class="backers-text">Förderer</span>
+                    <span class="plist__pill backers-count">{{ project.backers }}</span>
+                    <span class="backers-text">Förderer</span>
+                    <span class="plist__pill pledged-amount">{{ project.pledgedAmount | number }} / {{ project.pledgeGoal | number }}</span> AS$
 
-                        <span class="plist__pill pledged-amount">${{ project.pledgedAmount | number }}</span> Finanzierung
-                    </div>
                 </div>
             </div>
+
         </li>
+
     </ul>
 
     <div class="no-projects text-center" ng-show="projectList.projects.$resolved && projectList.projects.length == 0">
@@ -31,7 +33,7 @@
 
         <div class="divider"></div>
 
-        <a class="button success" href="#/project/new">Jetzt neues Crowd Projekt starten</a>
+        <a class="button crwd-success radius shadow" href="#/project/new">Jetzt neues Crowd Projekt starten</a>
     </div>
 
 </content-row>
@@ -40,7 +42,9 @@
 <content-row class="intro-section" foundation-reflow="equalizer">
     <h2 class="plist__heading--secondary">Axel Springer Crowd</h2>
 
-    <p class="plist__intro--has-divider">Die Axel Springer Crowd ist die Crowdfunding Plattform der AS IT. Hier kannst Du Deine - oder andere - innovative Ideen pitchen und in die Tat umsetzen.</p>
+    <p class="plist__intro--has-divider">
+        Die Axel Springer Crowd ist die Crowd Innovationsplattform der AS IT. Hier kannst Du Deine - oder andere - innovative Ideen pitchen und in die Tat umsetzen.
+    </p>
 
     <ul class="info-boxes" data-equalizer>
         <li>

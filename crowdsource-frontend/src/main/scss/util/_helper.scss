@@ -97,6 +97,7 @@
 // Divider Mixin
 //
 
+
 @mixin typographic-divider($options: ()) {
     $options: map-merge((
         width:  rem-calc(96px),
@@ -121,4 +122,16 @@
         margin-left:   #{-$margin-left};
         border-bottom: map-get($options, height) solid #2D2D2D;
     }
+}
+
+
+
+//
+// List + List items
+//
+
+
+%list--plain {
+    margin: 0;  // Reset margins
+    list-style-type: none;
 }

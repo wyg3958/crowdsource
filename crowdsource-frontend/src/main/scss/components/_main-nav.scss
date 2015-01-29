@@ -46,6 +46,10 @@ nav.top-bar {
             line-height: inherit; // Foundation default: 45px
         }
 
+        li.current a {
+            color: $crowd-color-orange;
+        }
+
         // Make a list item visually more important
         @media #{$medium-up} {
 
@@ -67,6 +71,10 @@ nav.top-bar {
                 &:hover {
                   background-color: darken(gainsboro, 5%);
                 }
+            }
+
+            li.border.current a {
+                color: $white;
             }
         }
     }

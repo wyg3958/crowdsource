@@ -1,0 +1,29 @@
+[Unit]
+Description=CrowdSource AWS elb (de-)registration sidekick
+BindsTo=crowdsource.%i.service
+After=crowdsource.%i.service
+
+[Service]
+ExecStartPre=/usr/bin/docker run ulich/httpavail http://$COREOS_PRIVATE_IPV4:8080
+
+ExecStart=/bin/bash -c "/usr/bin/docker run --rm --entrypoint=aws \
+                -e AWS_ACCESS_KEY_ID=$(etcdctl get /aws/accessKey) \
+                -e AWS_SECRET_ACCESS_KEY=$(etcdctl get /aws/secretAccessKey) \
+                -e AWS_DEFAULT_REGION=$(etcdctl get /aws/defaultRegion) \
+                yaronr/awscli elb register-instances-with-load-balancer \
+                --load-balancer-name $(etcdctl get /aws/loadBalancerName) \
+                --instances $(etcdctl get /aws/instanceId) \
+                \
+                && tail -f /dev/null"
+
+ExecStop=/bin/bash -c "/usr/bin/docker run --rm --entrypoint=aws \
+                -e AWS_ACCESS_KEY_ID=$(etcdctl get /aws/accessKey) \
+                -e AWS_SECRET_ACCESS_KEY=$(etcdctl get /aws/secretAccessKey) \
+                -e AWS_DEFAULT_REGION=$(etcdctl get /aws/defaultRegion) \
+                yaronr/awscli elb deregister-instances-from-load-balancer \
+                --load-balancer-name $(etcdctl get /aws/loadBalancerName) \
+                --instances $(etcdctl get /aws/instanceId)"
+
+
+[X-Fleet]
+MachineOf=crowdsource.%i.service

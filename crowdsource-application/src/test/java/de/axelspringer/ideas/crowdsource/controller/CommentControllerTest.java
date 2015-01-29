@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.expression.Expression;
 import org.springframework.http.MediaType;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,11 +37,7 @@ import java.util.Arrays;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -209,6 +206,31 @@ public class CommentControllerTest {
         @Bean
         public UserService userService() {
             return new UserService();
+        }
+
+        @Bean
+        public Expression activationEmailTemplate() {
+            return mock(Expression.class);
+        }
+
+        @Bean
+        public Expression newProjectEmailTemplate() {
+            return mock(Expression.class);
+        }
+
+        @Bean
+        public Expression passwordForgottenEmailTemplate() {
+            return mock(Expression.class);
+        }
+
+        @Bean
+        public Expression projectPublishedEmailTemplate() {
+            return mock(Expression.class);
+        }
+
+        @Bean
+        public Expression projectRejectedEmailTemplate() {
+            return mock(Expression.class);
         }
     }
 }

@@ -1,12 +1,21 @@
 package de.axelspringer.ideas.crowdsource.config;
 
+import de.axelspringer.ideas.crowdsource.exceptions.ResourceNotFoundException;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ParserContext;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 @Configuration
@@ -26,6 +35,8 @@ public class MailConfig {
 
     @Value("${de.axelspringer.ideas.crowdsource.mail.starttls:true}")
     private boolean useStartTls;
+
+    private final SpelExpressionParser parser = new SpelExpressionParser();
 
     @Bean
     public JavaMailSender javaMailSender() {
@@ -48,4 +59,41 @@ public class MailConfig {
         return javaMailSender;
     }
 
+    @Bean
+    public Expression activationEmailTemplate() {
+        return createExpressionFromFile("email/activation.template");
+    }
+
+    @Bean
+    public Expression newProjectEmailTemplate() {
+        return createExpressionFromFile("email/new-project.template");
+    }
+
+    @Bean
+    public Expression passwordForgottenEmailTemplate() {
+        return createExpressionFromFile("email/password-forgotten.template");
+    }
+
+    @Bean
+    public Expression projectPublishedEmailTemplate() {
+        return createExpressionFromFile("email/project-published.template");
+    }
+
+    @Bean
+    public Expression projectRejectedEmailTemplate() {
+        return createExpressionFromFile("email/project-rejected.template");
+    }
+
+    private Expression createExpressionFromFile(final String templatePath) {
+        try {
+            Resource resource = new ClassPathResource(templatePath);
+            InputStream inputStream = resource.getInputStream();
+            final String fileContent = IOUtils.toString(inputStream);
+
+            return parser.parseExpression(fileContent, ParserContext.TEMPLATE_EXPRESSION);
+
+        } catch (IOException e) {
+            throw new ResourceNotFoundException();
+        }
+    }
 }

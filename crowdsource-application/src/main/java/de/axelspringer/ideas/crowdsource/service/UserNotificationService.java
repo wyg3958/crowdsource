@@ -2,9 +2,12 @@ package de.axelspringer.ideas.crowdsource.service;
 
 import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
+import de.axelspringer.ideas.crowdsource.util.UserHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.expression.Expression;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -15,29 +18,50 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Service
 public class UserNotificationService {
 
-    public static final String ACTIVATION_MAIL_CONTENT = "Activation link: ";
-    public static final String PASSWORD_RECOVERY_MAIL_CONTENT = "Password recovery link: ";
-
     public static final String FROM_ADDRESS = "noreply@crowd.asideas.de";
-    public static final String REGISTRATION_SUBJECT = "CrowdSource Registrierung";
-    public static final String PASSWORD_RECOVERY_SUBJECT = "CrowdSource Passwort Vergessen";
 
+    public static final String PROJECT_LINK_PATTERN = "/project/{id}";
     public static final String ACTIVATION_LINK_PATTERN = "/signup/{emailAddress}/activation/{activationToken}";
     public static final String PASSWORD_RECOVERY_LINK_PATTERN = "/login/password-recovery/{emailAddress}/activation/{activationToken}";
+
+    public static final String ACTIVATION_SUBJECT = "Bitte vergib ein Passwort für Dein Konto auf der AS ideas Crowd Platform";
+    public static final String NEW_PROJECT_SUBJECT = "Neues Projekt erstellt";
+    public static final String PASSWORD_FORGOTTEN_SUBJECT = "Bitte vergib ein Passwort für Dein Konto auf der AS ideas Crowd Platform";
+    public static final String PROJECT_PUBLISHED_SUBJECT = "Freigabe Deines Projektes";
+    public static final String PROJECT_REJECTED_SUBJECT = "Freigabe Deines Projektes";
 
     @Value("${de.axelspringer.ideas.crowdsource.baseUrl}")
     private String applicationUrl;
 
     @Autowired
-    private JavaMailSender mailSender;
+    private Expression activationEmailTemplate;
 
+    @Autowired
+    private Expression newProjectEmailTemplate;
+
+    @Autowired
+    private Expression passwordForgottenEmailTemplate;
+
+    @Autowired
+    private Expression projectPublishedEmailTemplate;
+
+    @Autowired
+    private Expression projectRejectedEmailTemplate;
+
+    @Autowired
+    private JavaMailSender mailSender;
 
     public void sendActivationMail(UserEntity user) {
 
         String activationLink = buildLink(ACTIVATION_LINK_PATTERN, user.getEmail(), user.getActivationToken());
         log.debug("Sending activation link {} to {}", activationLink, user.getEmail());
 
-        sendMail(user.getEmail(), REGISTRATION_SUBJECT, ACTIVATION_MAIL_CONTENT + activationLink);
+        StandardEvaluationContext context = new StandardEvaluationContext();
+        context.setVariable("link", activationLink);
+        context.setVariable("userName", UserHelper.determineNameFromEmail(user.getEmail()));
+        final String mailContent = activationEmailTemplate.getValue(context, String.class);
+
+        sendMail(user.getEmail(), ACTIVATION_SUBJECT, mailContent);
     }
 
     public void sendPasswordRecoveryMail(UserEntity user) {
@@ -45,7 +69,61 @@ public class UserNotificationService {
         String passwordRecoveryLink = buildLink(PASSWORD_RECOVERY_LINK_PATTERN, user.getEmail(), user.getActivationToken());
         log.debug("Sending password recovery link {} to {}", passwordRecoveryLink, user.getEmail());
 
-        sendMail(user.getEmail(), PASSWORD_RECOVERY_SUBJECT, PASSWORD_RECOVERY_MAIL_CONTENT + passwordRecoveryLink);
+        StandardEvaluationContext context = new StandardEvaluationContext();
+        context.setVariable("link", passwordRecoveryLink);
+        context.setVariable("userName", UserHelper.determineNameFromEmail(user.getEmail()));
+        final String mailContent = passwordForgottenEmailTemplate.getValue(context, String.class);
+
+        sendMail(user.getEmail(), PASSWORD_FORGOTTEN_SUBJECT, mailContent);
+    }
+
+    public void notifyUserOnProjectUpdate(ProjectEntity project, String emailAddress) {
+
+        final StandardEvaluationContext context = new StandardEvaluationContext();
+        final String projectLink = getProjectLink(project.getId());
+        String mailContent;
+        String subject;
+
+        context.setVariable("link", projectLink);
+        context.setVariable("userName", UserHelper.determineNameFromEmail(emailAddress));
+
+        switch (project.getStatus()) {
+            case PUBLISHED:
+                mailContent = projectPublishedEmailTemplate.getValue(context, String.class);
+                subject = PROJECT_PUBLISHED_SUBJECT;
+                break;
+
+            case REJECTED:
+                mailContent = projectRejectedEmailTemplate.getValue(context, String.class);
+                subject = PROJECT_REJECTED_SUBJECT;
+                break;
+
+            default:
+                mailContent = "Das Projekt " + project.getTitle() + " wurde in den Zustand " + project.getStatus().name() + " versetzt.";
+                subject = "Der Zustand des Projekts " + project.getTitle() + " hat sich geändert!";
+                break;
+        }
+
+        sendMail(emailAddress, subject, mailContent);
+    }
+
+    public void notifyAdminOnProjectCreation(ProjectEntity project, String emailAddress) {
+
+        final String projectLink = getProjectLink(project.getId());
+
+        StandardEvaluationContext context = new StandardEvaluationContext();
+        context.setVariable("link", projectLink);
+
+        final String mailContent = newProjectEmailTemplate.getValue(context, String.class);
+        sendMail(emailAddress, NEW_PROJECT_SUBJECT, mailContent);
+    }
+
+    private String getProjectLink(String projectId) {
+
+        UriComponentsBuilder uriBuilder = ServletUriComponentsBuilder.fromUriString(applicationUrl);
+        uriBuilder.fragment(PROJECT_LINK_PATTERN);
+
+        return uriBuilder.buildAndExpand(projectId).toUriString();
     }
 
     private String buildLink(String urlPattern, String emailAddress, String activationToken) {
@@ -67,19 +145,4 @@ public class UserNotificationService {
         mailSender.send(mailMessage);
     }
 
-    public void notifyUserOnProjectUpdate(ProjectEntity project, String emailAddress) {
-
-        final String subject = "Der Zustand Des Projektes " + project.getTitle() + " hat sich geändert!";
-        final String message = "Das Projekt " + project.getTitle() + " wurde in den Zustand " + project.getStatus().name() + " versetzt.";
-
-        sendMail(emailAddress, subject, message);
-    }
-
-    public void notifyAdminOnProjectCreation(ProjectEntity project, String emailAddress) {
-
-        final String subject = "Freigabeanforderung: Das Projekt " + project.getTitle() + " wurde angelegt.";
-        final String message = "Das Projekt " + project.getTitle() + " wurde in den Zustand " + project.getStatus().name() + " versetzt.";
-
-        sendMail(emailAddress, subject, message);
-    }
 }

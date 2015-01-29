@@ -10,35 +10,60 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.expression.Expression;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserNotificationServiceTest {
 
-    private static final String EMAIL = "some@mail.de";
+    private static final String EMAIL = "horst@mail.de";
     private static final String APP_URL = "http://test.de";
 
     @Mock
     private JavaMailSender javaMailSender;
 
+    @Mock
+    private Expression activationEmailTemplate;
+
+    @Mock
+    private Expression newProjectEmailTemplate;
+
+    @Mock
+    private Expression passwordForgottenEmailTemplate;
+
+    @Mock
+    private Expression projectPublishedEmailTemplate;
+
+    @Mock
+    private Expression projectRejectedTemplateMock;
+
     @InjectMocks
     private UserNotificationService userNotificationService;
 
     private UserEntity user;
-
+    private ArgumentCaptor<SimpleMailMessage> messageCaptor;
+    private ArgumentCaptor<StandardEvaluationContext> contextCaptor;
 
     @Before
     public void init() {
         ReflectionTestUtils.setField(userNotificationService, "applicationUrl", APP_URL);
 
+        when(activationEmailTemplate.getValue(any(), any())).thenReturn("the_mail_content_for_activation");
+        when(newProjectEmailTemplate.getValue(any(), any())).thenReturn("the_mail_content_for_new_project");
+        when(passwordForgottenEmailTemplate.getValue(any(), any())).thenReturn("the_mail_content_for_password_forgotten");
+        when(projectPublishedEmailTemplate.getValue(any(), any())).thenReturn("the_mail_content_for_project_published");
+        when(projectRejectedTemplateMock.getValue(any(), any())).thenReturn("the_mail_content_for_project_rejected");
+
+        messageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
+        contextCaptor = ArgumentCaptor.forClass(StandardEvaluationContext.class);
         user = new UserEntity(EMAIL);
         user.setActivationToken("xyz");
     }
@@ -48,14 +73,18 @@ public class UserNotificationServiceTest {
 
         userNotificationService.sendActivationMail(user);
 
-        ArgumentCaptor<SimpleMailMessage> messageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
         verify(javaMailSender, times(1)).send(messageCaptor.capture());
+        verify(activationEmailTemplate).getValue(contextCaptor.capture(), any());
+
+        final StandardEvaluationContext context = contextCaptor.getValue();
+        assertThat(context.lookupVariable("link"), is("http://test.de#/signup/horst@mail.de/activation/xyz"));
+        assertThat(context.lookupVariable("userName"), is("Horst"));
 
         SimpleMailMessage message = messageCaptor.getValue();
         assertThat(message.getTo(), is(new String[]{EMAIL}));
         assertThat(message.getFrom(), is(UserNotificationService.FROM_ADDRESS));
-        assertThat(message.getSubject(), is(UserNotificationService.REGISTRATION_SUBJECT));
-        assertThat(message.getText(), is("Activation link: http://test.de#/signup/some@mail.de/activation/xyz"));
+        assertThat(message.getSubject(), is("Bitte vergib ein Passwort für Dein Konto auf der AS ideas Crowd Platform"));
+        assertThat(message.getText(), is("the_mail_content_for_activation"));
     }
 
     @Test
@@ -63,29 +92,70 @@ public class UserNotificationServiceTest {
 
         userNotificationService.sendPasswordRecoveryMail(user);
 
-        ArgumentCaptor<SimpleMailMessage> messageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
         verify(javaMailSender, times(1)).send(messageCaptor.capture());
+        verify(passwordForgottenEmailTemplate).getValue(contextCaptor.capture(), any());
+
+        final StandardEvaluationContext context = contextCaptor.getValue();
+        assertThat(context.lookupVariable("link"), is("http://test.de#/login/password-recovery/horst@mail.de/activation/xyz"));
+        assertThat(context.lookupVariable("userName"), is("Horst"));
 
         SimpleMailMessage message = messageCaptor.getValue();
         assertThat(message.getTo(), is(new String[]{EMAIL}));
         assertThat(message.getFrom(), is(UserNotificationService.FROM_ADDRESS));
-        assertThat(message.getSubject(), is(UserNotificationService.PASSWORD_RECOVERY_SUBJECT));
-        assertThat(message.getText(), is("Password recovery link: http://test.de#/login/password-recovery/some@mail.de/activation/xyz"));
+        assertThat(message.getSubject(), is("Bitte vergib ein Passwort für Dein Konto auf der AS ideas Crowd Platform"));
+        assertThat(message.getText(), is("the_mail_content_for_password_forgotten"));
     }
 
     @Test
-    public void testSendUserNotificationMail() {
+    public void testSendUserNotificationMailForPublished() {
 
         userNotificationService.notifyUserOnProjectUpdate(project("some_id", ProjectStatus.PUBLISHED, user), EMAIL);
 
-        ArgumentCaptor<SimpleMailMessage> messageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
+        verify(javaMailSender, times(1)).send(messageCaptor.capture());
+        verify(projectPublishedEmailTemplate).getValue(contextCaptor.capture(), any());
+
+        final StandardEvaluationContext context = contextCaptor.getValue();
+        assertThat(context.lookupVariable("link"), is("http://test.de#/project/some_id"));
+        assertThat(context.lookupVariable("userName"), is("Horst"));
+
+        SimpleMailMessage message = messageCaptor.getValue();
+        assertThat(message.getTo(), is(new String[]{EMAIL}));
+        assertThat(message.getFrom(), is(UserNotificationService.FROM_ADDRESS));
+        assertThat(message.getSubject(), is("Freigabe Deines Projektes"));
+        assertThat(message.getText(), is("the_mail_content_for_project_published"));
+    }
+
+    @Test
+    public void testSendUserNotificationMailForRejected() {
+
+        userNotificationService.notifyUserOnProjectUpdate(project("some_id", ProjectStatus.REJECTED, user), EMAIL);
+
+        verify(javaMailSender, times(1)).send(messageCaptor.capture());
+        verify(projectRejectedTemplateMock).getValue(contextCaptor.capture(), any());
+
+        final StandardEvaluationContext context = contextCaptor.getValue();
+        assertThat(context.lookupVariable("link"), is("http://test.de#/project/some_id"));
+        assertThat(context.lookupVariable("userName"), is("Horst"));
+
+        SimpleMailMessage message = messageCaptor.getValue();
+        assertThat(message.getTo(), is(new String[]{EMAIL}));
+        assertThat(message.getFrom(), is(UserNotificationService.FROM_ADDRESS));
+        assertThat(message.getSubject(), is("Freigabe Deines Projektes"));
+        assertThat(message.getText(), is("the_mail_content_for_project_rejected"));
+    }
+
+    @Test
+    public void testSendUserNotificationMailForDefault() {
+
+        userNotificationService.notifyUserOnProjectUpdate(project("some_id", ProjectStatus.FULLY_PLEDGED, user), EMAIL);
+
         verify(javaMailSender, times(1)).send(messageCaptor.capture());
 
         SimpleMailMessage message = messageCaptor.getValue();
         assertThat(message.getTo(), is(new String[]{EMAIL}));
         assertThat(message.getFrom(), is(UserNotificationService.FROM_ADDRESS));
-        assertThat(message.getSubject(), containsString("Der Zustand Des Projektes"));
-        assertThat(message.getText(), containsString("wurde in den Zustand"));
+        assertThat(message.getSubject(), is("Der Zustand des Projekts null hat sich geändert!"));
+        assertThat(message.getText(), is("Das Projekt null wurde in den Zustand FULLY_PLEDGED versetzt."));
     }
 
     @Test
@@ -93,14 +163,17 @@ public class UserNotificationServiceTest {
 
         userNotificationService.notifyAdminOnProjectCreation(project("some_id", ProjectStatus.PUBLISHED, user), EMAIL);
 
-        ArgumentCaptor<SimpleMailMessage> messageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
         verify(javaMailSender, times(1)).send(messageCaptor.capture());
+        verify(newProjectEmailTemplate).getValue(contextCaptor.capture(), any());
+
+        final StandardEvaluationContext context = contextCaptor.getValue();
+        assertThat(context.lookupVariable("link"), is("http://test.de#/project/some_id"));
 
         SimpleMailMessage message = messageCaptor.getValue();
         assertThat(message.getTo(), is(new String[]{EMAIL}));
         assertThat(message.getFrom(), is(UserNotificationService.FROM_ADDRESS));
-        assertThat(message.getSubject(), containsString("Freigabeanforderung: Das Projekt"));
-        assertThat(message.getText(), containsString("wurde in den Zustand"));
+        assertThat(message.getSubject(), is("Neues Projekt erstellt"));
+        assertThat(message.getText(), is("the_mail_content_for_new_project"));
     }
 
     private ProjectEntity project(String id, ProjectStatus status, UserEntity user) {

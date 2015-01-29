@@ -1,7 +1,12 @@
 <content-row class="signup-form box">
     <form name="signup.form" novalidate>
 
-        <h1>Registrierung</h1>
+        <div class="row">
+            <div class="small-12 columns">
+                <h1>Registrierung</h1>
+            </div>
+        </div>
+
 
         <div class="general-error alert-box alert" ng-messages="signup.generalErrors" ng-if="signup.generalErrors">
             <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuche es erneut.</span>

@@ -61,6 +61,7 @@ content-row {
     .container {
         margin: 0 auto;
         max-width: $row-width;
+        padding: 0;
     }
 
     &.box .container {

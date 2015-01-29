@@ -52,10 +52,10 @@ body {
 
 content-row {
     display: block;
-    padding: 10px;
+    padding: rem-calc(32px) rem-calc(10px);
 
     @media #{$medium-up} {
-        padding: 40px;
+        padding: rem-calc(40px) rem-calc(16px);
     }
 
     .container {

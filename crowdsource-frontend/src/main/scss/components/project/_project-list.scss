@@ -127,7 +127,6 @@ $intro-box-break: "only screen and (max-width: 740px)";
 // This is our flex container housing a list projects
 
 /*ul*/.project__ul {
-
     @extend %list--plain;
 
     @media #{$tile-break} {
@@ -141,7 +140,11 @@ $intro-box-break: "only screen and (max-width: 740px)";
 // This is our flex item
 
 /*li*/.project__li {
-    margin: 1rem $tile-gutter;
+    margin: ($tile-gutter * 2) 0;
+
+    @media #{$tile-break} {
+        margin: $tile-gutter;
+    }
 }
 
 
@@ -282,6 +285,11 @@ $intro-box-break: "only screen and (max-width: 740px)";
 
 // Section with Dein Budget / Du / Dein Zeitrahmen
 
+.intro-section {
+    background-color: $white;
+}
+
+
 /*ul*/.intro-box {
     @extend  %list--plain;
     display: flex;
@@ -329,7 +337,7 @@ $intro-box-break: "only screen and (max-width: 740px)";
 
 /*li*/.intro-box__item--important {
     @extend .intro-box__item;
-    background-color: $white;
+    background-color: $clr-bg;
 
     @media only screen and (max-width: 740px) {
         order: 0;

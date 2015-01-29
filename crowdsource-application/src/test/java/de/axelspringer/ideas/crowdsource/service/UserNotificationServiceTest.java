@@ -16,7 +16,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
@@ -57,12 +56,6 @@ public class UserNotificationServiceTest {
     public void init() {
         ReflectionTestUtils.setField(userNotificationService, "applicationUrl", APP_URL);
 
-        ReflectionTestUtils.setField(userNotificationService, "activationSubject", "test-activationSubject");
-        ReflectionTestUtils.setField(userNotificationService, "newProjectSubject", "test-newProjectSubject");
-        ReflectionTestUtils.setField(userNotificationService, "passwordForgottenSubject", "test-passwordForgottenSubject");
-        ReflectionTestUtils.setField(userNotificationService, "projectPublishedSubject", "test-projectPublishedSubject");
-        ReflectionTestUtils.setField(userNotificationService, "projectRejectedSubject", "test-projectRejectedSubject");
-
         when(activationEmailTemplate.getValue(any(), any())).thenReturn("the_mail_content_for_activation");
         when(newProjectEmailTemplate.getValue(any(), any())).thenReturn("the_mail_content_for_new_project");
         when(passwordForgottenEmailTemplate.getValue(any(), any())).thenReturn("the_mail_content_for_password_forgotten");
@@ -90,6 +83,7 @@ public class UserNotificationServiceTest {
         SimpleMailMessage message = messageCaptor.getValue();
         assertThat(message.getTo(), is(new String[]{EMAIL}));
         assertThat(message.getFrom(), is(UserNotificationService.FROM_ADDRESS));
+        assertThat(message.getSubject(), is("Bitte vergib ein Passwort für Dein Konto auf der AS ideas Crowd Platform"));
         assertThat(message.getText(), is("the_mail_content_for_activation"));
     }
 
@@ -108,6 +102,7 @@ public class UserNotificationServiceTest {
         SimpleMailMessage message = messageCaptor.getValue();
         assertThat(message.getTo(), is(new String[]{EMAIL}));
         assertThat(message.getFrom(), is(UserNotificationService.FROM_ADDRESS));
+        assertThat(message.getSubject(), is("Bitte vergib ein Passwort für Dein Konto auf der AS ideas Crowd Platform"));
         assertThat(message.getText(), is("the_mail_content_for_password_forgotten"));
     }
 
@@ -126,7 +121,7 @@ public class UserNotificationServiceTest {
         SimpleMailMessage message = messageCaptor.getValue();
         assertThat(message.getTo(), is(new String[]{EMAIL}));
         assertThat(message.getFrom(), is(UserNotificationService.FROM_ADDRESS));
-        assertThat(message.getSubject(), containsString("test-projectPublishedSubject"));
+        assertThat(message.getSubject(), is("Freigabe Deines Projektes"));
         assertThat(message.getText(), is("the_mail_content_for_project_published"));
     }
 
@@ -145,7 +140,7 @@ public class UserNotificationServiceTest {
         SimpleMailMessage message = messageCaptor.getValue();
         assertThat(message.getTo(), is(new String[]{EMAIL}));
         assertThat(message.getFrom(), is(UserNotificationService.FROM_ADDRESS));
-        assertThat(message.getSubject(), containsString("test-projectRejectedSubject"));
+        assertThat(message.getSubject(), is("Freigabe Deines Projektes"));
         assertThat(message.getText(), is("the_mail_content_for_project_rejected"));
     }
 
@@ -159,7 +154,7 @@ public class UserNotificationServiceTest {
         SimpleMailMessage message = messageCaptor.getValue();
         assertThat(message.getTo(), is(new String[]{EMAIL}));
         assertThat(message.getFrom(), is(UserNotificationService.FROM_ADDRESS));
-        assertThat(message.getSubject(), containsString("Der Zustand des Projekts null hat sich geändert!"));
+        assertThat(message.getSubject(), is("Der Zustand des Projekts null hat sich geändert!"));
         assertThat(message.getText(), is("Das Projekt null wurde in den Zustand FULLY_PLEDGED versetzt."));
     }
 
@@ -177,7 +172,7 @@ public class UserNotificationServiceTest {
         SimpleMailMessage message = messageCaptor.getValue();
         assertThat(message.getTo(), is(new String[]{EMAIL}));
         assertThat(message.getFrom(), is(UserNotificationService.FROM_ADDRESS));
-        assertThat(message.getSubject(), containsString("test-newProjectSubject"));
+        assertThat(message.getSubject(), is("Neues Projekt erstellt"));
         assertThat(message.getText(), is("the_mail_content_for_new_project"));
     }
 

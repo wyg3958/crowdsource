@@ -24,23 +24,14 @@ public class UserNotificationService {
     public static final String ACTIVATION_LINK_PATTERN = "/signup/{emailAddress}/activation/{activationToken}";
     public static final String PASSWORD_RECOVERY_LINK_PATTERN = "/login/password-recovery/{emailAddress}/activation/{activationToken}";
 
+    public static final String ACTIVATION_SUBJECT = "Bitte vergib ein Passwort für Dein Konto auf der AS ideas Crowd Platform";
+    public static final String NEW_PROJECT_SUBJECT = "Neues Projekt erstellt";
+    public static final String PASSWORD_FORGOTTEN_SUBJECT = "Bitte vergib ein Passwort für Dein Konto auf der AS ideas Crowd Platform";
+    public static final String PROJECT_PUBLISHED_SUBJECT = "Freigabe Deines Projektes";
+    public static final String PROJECT_REJECTED_SUBJECT = "Freigabe Deines Projektes";
+
     @Value("${de.axelspringer.ideas.crowdsource.baseUrl}")
     private String applicationUrl;
-
-    @Value("${de.axelspringer.ideas.crowdsource.mail.activationSubject}")
-    private String activationSubject;
-
-    @Value("${de.axelspringer.ideas.crowdsource.mail.newProjectSubject}")
-    private String newProjectSubject;
-
-    @Value("${de.axelspringer.ideas.crowdsource.mail.passwordForgottenSubject}")
-    private String passwordForgottenSubject;
-
-    @Value("${de.axelspringer.ideas.crowdsource.mail.projectPublishedSubject}")
-    private String projectPublishedSubject;
-
-    @Value("${de.axelspringer.ideas.crowdsource.mail.projectRejectedSubject}")
-    private String projectRejectedSubject;
 
     @Autowired
     private Expression activationEmailTemplate;
@@ -70,7 +61,7 @@ public class UserNotificationService {
         context.setVariable("userName", UserHelper.determineNameFromEmail(user.getEmail()));
         final String mailContent = activationEmailTemplate.getValue(context, String.class);
 
-        sendMail(user.getEmail(), activationSubject, mailContent);
+        sendMail(user.getEmail(), ACTIVATION_SUBJECT, mailContent);
     }
 
     public void sendPasswordRecoveryMail(UserEntity user) {
@@ -83,7 +74,7 @@ public class UserNotificationService {
         context.setVariable("userName", UserHelper.determineNameFromEmail(user.getEmail()));
         final String mailContent = passwordForgottenEmailTemplate.getValue(context, String.class);
 
-        sendMail(user.getEmail(), passwordForgottenSubject, mailContent);
+        sendMail(user.getEmail(), PASSWORD_FORGOTTEN_SUBJECT, mailContent);
     }
 
     public void notifyUserOnProjectUpdate(ProjectEntity project, String emailAddress) {
@@ -99,12 +90,12 @@ public class UserNotificationService {
         switch (project.getStatus()) {
             case PUBLISHED:
                 mailContent = projectPublishedEmailTemplate.getValue(context, String.class);
-                subject = projectPublishedSubject;
+                subject = PROJECT_PUBLISHED_SUBJECT;
                 break;
 
             case REJECTED:
                 mailContent = projectRejectedEmailTemplate.getValue(context, String.class);
-                subject = projectRejectedSubject;
+                subject = PROJECT_REJECTED_SUBJECT;
                 break;
 
             default:
@@ -124,7 +115,7 @@ public class UserNotificationService {
         context.setVariable("link", projectLink);
 
         final String mailContent = newProjectEmailTemplate.getValue(context, String.class);
-        sendMail(emailAddress, newProjectSubject, mailContent);
+        sendMail(emailAddress, NEW_PROJECT_SUBJECT, mailContent);
     }
 
     private String getProjectLink(String projectId) {

@@ -54,7 +54,7 @@ public class MailSteps {
         assertThat(receivedMessage.message, containsString("Du hast Dich gerade auf der AS ideas Crowd Platform angemeldet."));
         // TODO: test with umlauts (https://asideas-crowd.atlassian.net/browse/CROWD-190)
         // assertThat(receivedMessage.message, containsString("Um Deine Registrierung abzuschließen, öffne bitte diesen Link und setze Dein Passwort:"));
-        assertThat(receivedMessage.message, containsString("Um Deine Registrierung abzuschließen, "));
+        assertThat(receivedMessage.message, containsString("Um Deine Registrierung abzuschlie "));
     }
 
     @When("^the user claims to have forgotten his password$")

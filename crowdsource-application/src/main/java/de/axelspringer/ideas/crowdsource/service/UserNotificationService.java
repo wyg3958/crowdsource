@@ -119,8 +119,10 @@ public class UserNotificationService {
     public void notifyAdminOnProjectCreation(ProjectEntity project, String emailAddress) {
 
         final String projectLink = getProjectLink(project.getId());
+
         StandardEvaluationContext context = new StandardEvaluationContext();
         context.setVariable("link", projectLink);
+
         final String mailContent = newProjectEmailTemplate.getValue(context, String.class);
         sendMail(emailAddress, newProjectSubject, mailContent);
     }

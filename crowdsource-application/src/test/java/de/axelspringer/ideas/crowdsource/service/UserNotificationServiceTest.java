@@ -32,16 +32,16 @@ public class UserNotificationServiceTest {
     private JavaMailSender javaMailSender;
 
     @Mock
-    private Expression activationTemplateMock;
+    private Expression activationEmailTemplate;
 
     @Mock
-    private Expression newProjectTemplateMock;
+    private Expression newProjectEmailTemplate;
 
     @Mock
-    private Expression passwordForgottenTemplateMock;
+    private Expression passwordForgottenEmailTemplate;
 
     @Mock
-    private Expression projectPublishedTemplateMock;
+    private Expression projectPublishedEmailTemplate;
 
     @Mock
     private Expression projectRejectedTemplateMock;
@@ -52,15 +52,10 @@ public class UserNotificationServiceTest {
     private UserEntity user;
     private ArgumentCaptor<SimpleMailMessage> messageCaptor;
     private ArgumentCaptor<StandardEvaluationContext> contextCaptor;
+
     @Before
     public void init() {
         ReflectionTestUtils.setField(userNotificationService, "applicationUrl", APP_URL);
-
-        ReflectionTestUtils.setField(userNotificationService, "activationEmailTemplate", activationTemplateMock);
-        ReflectionTestUtils.setField(userNotificationService, "newProjectEmailTemplate", newProjectTemplateMock);
-        ReflectionTestUtils.setField(userNotificationService, "passwordForgottenEmailTemplate", passwordForgottenTemplateMock);
-        ReflectionTestUtils.setField(userNotificationService, "projectPublishedEmailTemplate", projectPublishedTemplateMock);
-        ReflectionTestUtils.setField(userNotificationService, "projectRejectedEmailTemplate", projectRejectedTemplateMock);
 
         ReflectionTestUtils.setField(userNotificationService, "activationSubject", "test-activationSubject");
         ReflectionTestUtils.setField(userNotificationService, "newProjectSubject", "test-newProjectSubject");
@@ -68,10 +63,10 @@ public class UserNotificationServiceTest {
         ReflectionTestUtils.setField(userNotificationService, "projectPublishedSubject", "test-projectPublishedSubject");
         ReflectionTestUtils.setField(userNotificationService, "projectRejectedSubject", "test-projectRejectedSubject");
 
-        when(activationTemplateMock.getValue(any(), any())).thenReturn("the_mail_content_for_activation");
-        when(newProjectTemplateMock.getValue(any(), any())).thenReturn("the_mail_content_for_new_project");
-        when(passwordForgottenTemplateMock.getValue(any(), any())).thenReturn("the_mail_content_for_password_forgotten");
-        when(projectPublishedTemplateMock.getValue(any(), any())).thenReturn("the_mail_content_for_project_published");
+        when(activationEmailTemplate.getValue(any(), any())).thenReturn("the_mail_content_for_activation");
+        when(newProjectEmailTemplate.getValue(any(), any())).thenReturn("the_mail_content_for_new_project");
+        when(passwordForgottenEmailTemplate.getValue(any(), any())).thenReturn("the_mail_content_for_password_forgotten");
+        when(projectPublishedEmailTemplate.getValue(any(), any())).thenReturn("the_mail_content_for_project_published");
         when(projectRejectedTemplateMock.getValue(any(), any())).thenReturn("the_mail_content_for_project_rejected");
 
         messageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
@@ -86,7 +81,7 @@ public class UserNotificationServiceTest {
         userNotificationService.sendActivationMail(user);
 
         verify(javaMailSender, times(1)).send(messageCaptor.capture());
-        verify(activationTemplateMock).getValue(contextCaptor.capture(), any());
+        verify(activationEmailTemplate).getValue(contextCaptor.capture(), any());
 
         final StandardEvaluationContext context = contextCaptor.getValue();
         assertThat(context.lookupVariable("link"), is("http://test.de#/signup/horst@mail.de/activation/xyz"));
@@ -104,7 +99,7 @@ public class UserNotificationServiceTest {
         userNotificationService.sendPasswordRecoveryMail(user);
 
         verify(javaMailSender, times(1)).send(messageCaptor.capture());
-        verify(passwordForgottenTemplateMock).getValue(contextCaptor.capture(), any());
+        verify(passwordForgottenEmailTemplate).getValue(contextCaptor.capture(), any());
 
         final StandardEvaluationContext context = contextCaptor.getValue();
         assertThat(context.lookupVariable("link"), is("http://test.de#/login/password-recovery/horst@mail.de/activation/xyz"));
@@ -122,7 +117,7 @@ public class UserNotificationServiceTest {
         userNotificationService.notifyUserOnProjectUpdate(project("some_id", ProjectStatus.PUBLISHED, user), EMAIL);
 
         verify(javaMailSender, times(1)).send(messageCaptor.capture());
-        verify(projectPublishedTemplateMock).getValue(contextCaptor.capture(), any());
+        verify(projectPublishedEmailTemplate).getValue(contextCaptor.capture(), any());
 
         final StandardEvaluationContext context = contextCaptor.getValue();
         assertThat(context.lookupVariable("link"), is("http://test.de#/project/some_id"));
@@ -174,7 +169,7 @@ public class UserNotificationServiceTest {
         userNotificationService.notifyAdminOnProjectCreation(project("some_id", ProjectStatus.PUBLISHED, user), EMAIL);
 
         verify(javaMailSender, times(1)).send(messageCaptor.capture());
-        verify(newProjectTemplateMock).getValue(contextCaptor.capture(), any());
+        verify(newProjectEmailTemplate).getValue(contextCaptor.capture(), any());
 
         final StandardEvaluationContext context = contextCaptor.getValue();
         assertThat(context.lookupVariable("link"), is("http://test.de#/project/some_id"));

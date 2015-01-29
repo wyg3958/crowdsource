@@ -61,30 +61,30 @@ public class MailConfig {
 
     @Bean
     public Expression activationEmailTemplate() {
-        return format("email/activation.template");
+        return createExpressionFromFile("email/activation.template");
     }
 
     @Bean
     public Expression newProjectEmailTemplate() {
-        return format("email/new-project.template");
+        return createExpressionFromFile("email/new-project.template");
     }
 
     @Bean
     public Expression passwordForgottenEmailTemplate() {
-        return format("email/password-forgotten.template");
+        return createExpressionFromFile("email/password-forgotten.template");
     }
 
     @Bean
     public Expression projectPublishedEmailTemplate() {
-        return format("email/project-published.template");
+        return createExpressionFromFile("email/project-published.template");
     }
 
     @Bean
     public Expression projectRejectedEmailTemplate() {
-        return format("email/project-rejected.template");
+        return createExpressionFromFile("email/project-rejected.template");
     }
 
-    private Expression format(final String templatePath) {
+    private Expression createExpressionFromFile(final String templatePath) {
         try {
             Resource resource = new ClassPathResource(templatePath);
             InputStream inputStream = resource.getInputStream();

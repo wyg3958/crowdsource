@@ -68,6 +68,10 @@ public class CrowdSourceClient {
         restTemplate.postForObject(urlProvider.applicationUrl() + "/user/{email}/activation", userActivation, Void.class, emailName + EligibleEmailValidator.ELIGIBLE_EMAIL_DOMAIN);
     }
 
+    public void recoverPassword(String userEmail) {
+        restTemplate.getForObject(urlProvider.applicationUrl() + "/user/{email}/password-recovery", Void.class, userEmail);
+    }
+
     public ResponseEntity<Project> createProject(Project project, AuthToken authToken) {
         HttpEntity<Project> requestEntity = createRequestEntity(project, authToken);
         return restTemplate.exchange(urlProvider.applicationUrl() + "/project", HttpMethod.POST, requestEntity, Project.class);
@@ -119,10 +123,21 @@ public class CrowdSourceClient {
         return restTemplate;
     }
 
-    public void publish(Project createdProject, AuthToken adminToken) {
+    public void publish(Project project, AuthToken token) {
 
-        createdProject.setStatus(ProjectStatus.PUBLISHED);
-        final ResponseEntity<Project> exchange = restTemplate.exchange(urlProvider.applicationUrl() + "/project/" + createdProject.getId(), HttpMethod.PATCH, createRequestEntity(createdProject, adminToken), Project.class);
+        project.setStatus(ProjectStatus.PUBLISHED);
+        update(project, token);
+    }
+
+    public void reject(Project project, AuthToken token) {
+
+        project.setStatus(ProjectStatus.REJECTED);
+        update(project, token);
+    }
+
+    private void update(Project project, AuthToken token) {
+
+        final ResponseEntity<Project> exchange = restTemplate.exchange(urlProvider.applicationUrl() + "/project/" + project.getId(), HttpMethod.PATCH, createRequestEntity(project, token), Project.class);
         assertEquals(HttpStatus.OK, exchange.getStatusCode());
     }
 

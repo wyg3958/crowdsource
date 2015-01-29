@@ -5,8 +5,6 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -21,26 +19,22 @@ import java.util.Properties;
 @Configuration
 public class MailConfig {
 
+    private final SpelExpressionParser parser = new SpelExpressionParser();
     @Value("${de.axelspringer.ideas.crowdsource.mail.host:smtp.mailgun.org}")
     private String host;
-
     @Value("${de.axelspringer.ideas.crowdsource.mail.port:587}")
     private Integer port;
-
     @Value("${de.axelspringer.ideas.crowdsource.mail.username:postmaster@crowd.asideas.de}")
     private String username;
-
     @Value("${de.axelspringer.ideas.crowdsource.mail.password:d5400101dbe1f70e1c60d3dcc2450e2d}")
     private String password;
-
     @Value("${de.axelspringer.ideas.crowdsource.mail.starttls:true}")
     private boolean useStartTls;
-
-    private final SpelExpressionParser parser = new SpelExpressionParser();
 
     @Bean
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
+        javaMailSender.setDefaultEncoding("UTF-8");
         javaMailSender.setHost(host);
         javaMailSender.setPort(port);
 
@@ -61,34 +55,33 @@ public class MailConfig {
 
     @Bean
     public Expression activationEmailTemplate() {
-        return createExpressionFromFile("email/activation.template");
+        return createExpressionFromFile("/email/activation.template");
     }
 
     @Bean
     public Expression newProjectEmailTemplate() {
-        return createExpressionFromFile("email/new-project.template");
+        return createExpressionFromFile("/email/new-project.template");
     }
 
     @Bean
     public Expression passwordForgottenEmailTemplate() {
-        return createExpressionFromFile("email/password-forgotten.template");
+        return createExpressionFromFile("/email/password-forgotten.template");
     }
 
     @Bean
     public Expression projectPublishedEmailTemplate() {
-        return createExpressionFromFile("email/project-published.template");
+        return createExpressionFromFile("/email/project-published.template");
     }
 
     @Bean
     public Expression projectRejectedEmailTemplate() {
-        return createExpressionFromFile("email/project-rejected.template");
+        return createExpressionFromFile("/email/project-rejected.template");
     }
 
     private Expression createExpressionFromFile(final String templatePath) {
         try {
-            Resource resource = new ClassPathResource(templatePath);
-            InputStream inputStream = resource.getInputStream();
-            final String fileContent = IOUtils.toString(inputStream);
+            final InputStream resourceAsStream = getClass().getResourceAsStream(templatePath);
+            final String fileContent = IOUtils.toString(resourceAsStream, "UTF-8");
 
             return parser.parseExpression(fileContent, ParserContext.TEMPLATE_EXPRESSION);
 

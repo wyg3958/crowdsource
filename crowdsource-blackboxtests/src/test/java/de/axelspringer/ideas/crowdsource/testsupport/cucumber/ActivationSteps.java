@@ -15,6 +15,7 @@ import de.axelspringer.ideas.crowdsource.testsupport.util.MailServerClient;
 import de.axelspringer.ideas.crowdsource.util.validation.email.EligibleEmailValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.hamcrest.Matchers;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,6 @@ import org.springframework.test.context.ContextConfiguration;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 
@@ -81,11 +81,11 @@ public class ActivationSteps {
         assertThat(message.from, is(UserNotificationService.FROM_ADDRESS));
         assertThat(message.to, is(getGeneratedEmail()));
 
-        String expectedSubject = isRegistrationFlow ? UserNotificationService.REGISTRATION_SUBJECT : UserNotificationService.PASSWORD_RECOVERY_SUBJECT;
+        String expectedSubject = isRegistrationFlow ? UserNotificationService.ACTIVATION_SUBJECT : UserNotificationService.PASSWORD_FORGOTTEN_SUBJECT;
         assertThat(message.subject, is(expectedSubject));
 
-        String expectedContent = isRegistrationFlow ? UserNotificationService.ACTIVATION_MAIL_CONTENT : UserNotificationService.PASSWORD_RECOVERY_MAIL_CONTENT;
-        assertThat(message.message, startsWith(expectedContent));
+        String expectedContent = isRegistrationFlow ? "Du hast Dich gerade auf der AS ideas Crowd Platform angemeldet" : "Du hast soeben ein neues Passwort für Dein Konto bei der AS ideas Crowd Plattform angefordert.";
+        assertThat(message.message, Matchers.containsString(expectedContent));
     }
 
     @When("^the user clicks the email's activation link$")

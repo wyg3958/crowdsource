@@ -55,8 +55,8 @@ describe('project details', function () {
         expect(projectDetails.find('h1')).toHaveText('Title');
         expect(projectDetails.find('.project-status__creator strong')).toHaveText('Foo Bar');
         expect(projectDetails.find('.project-status__funding progress-bar .cs-progress__meter')).toHaveCss({width: '69.265%'});
-        expect(projectDetails.find('.project-status__pledge-goal')).toHaveText('$20.000');
-        expect(projectDetails.find('.project-status__pledged-amount')).toHaveText('$13.853');
+        expect(projectDetails.find('.project-status__pledge-goal')).toHaveText('AS$20.000');
+        expect(projectDetails.find('.project-status__pledged-amount')).toHaveText('AS$13.853');
         expect(projectDetails.find('.project-status__backers')).toHaveText('7');
         expect(projectDetails.find('h2')).toHaveText('Short description');
         expect(projectDetails.find('.project-description')).toHaveText('Looong description');

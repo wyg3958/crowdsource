@@ -41,13 +41,13 @@ describe('project list', function () {
         expect($(listItems[0]).find('p')).toHaveText('Short Description');
         expect($(listItems[0]).find('.cs-progress__meter').css("width")).toBe("10%");
         expect($(listItems[0]).find('.backers-count')).toHaveText('1');
-        expect($(listItems[0]).find('.pledged-amount').text()).toBe('$10');
+        expect($(listItems[0]).find('.pledged-amount').text()).toBe('AS$10');
 
         expect($(listItems[1]).find('.tile__heading')).toHaveText('Title 2');
         expect($(listItems[1]).find('p')).toHaveText('Short Description 2');
         expect($(listItems[1]).find('.cs-progress__meter').css("width")).toBe("20%");
         expect($(listItems[1]).find('.backers-count')).toHaveText('2');
-        expect($(listItems[1]).find('.pledged-amount').text()).toBe('$20');
+        expect($(listItems[1]).find('.pledged-amount').text()).toBe('AS$20');
 
         expect(projectList.find('.no-projects')).toHaveClass('ng-hide');
     });

@@ -6,7 +6,7 @@
 
 
 //
-// Global vars
+// Global vars and calculations
 //
 
 
@@ -22,12 +22,14 @@ $tile-width:      ($content-width - ($tile-gutter * $tiles * 2)) / $tiles;
 $tile-padding:    rem-calc(20px);
 $metrics-height:  rem-calc(42px);   // Metrics object in a tile
 
-// Define mediaquery that formattes tiles in 2 ways: 1) width: 100% for
-// browser widths that fits only 1 tile, and 2) fixed width for browser widths,
-// that fits more than 1 tile
+// Define mediaquery that formattes tiles in 2 ways:
+// 1) tile width: 100% for browser widths that can contain only 1 tile, and
+// 2) fixed width (see above) for browser widths that can contain more than 1 tile
 
 $page-padding: rem-calc(40px);
 $tile-break:   "only screen and (min-width: #{$tile-width * 2 + $tile-gutter * 4 + $page-padding * 2 + rem-calc(1px)})";
+
+
 
 
 //
@@ -112,11 +114,11 @@ $tile-break:   "only screen and (min-width: #{$tile-width * 2 + $tile-gutter * 4
 
 
 %tile {
-    overflow: hidden;
+    //overflow: hidden;
     border: none;
     border-radius: $border-radius;
     background-color: $white;
-    box-shadow: 0 1px 0 0 rgba(0,0,0,0.1),   // Shadow below
+    box-shadow: 0 2px 0 0 rgba(0,0,0,0.1),   // Shadow below
                 0 0 2px 0 rgba(0,0,0,0.1);   // Outline-like shadow
 }
 
@@ -171,6 +173,78 @@ $tile-break:   "only screen and (min-width: #{$tile-width * 2 + $tile-gutter * 4
 }
 
 
+// Class extensions for tiles
+
+@mixin project-status($options:()) {
+    $options: map-merge((
+
+        selector : '.tile__status', // Nested selector to apply our stlyes
+        content  : '',              // CSS content to apply
+        bg-tile  : $white,          // BG color for tile
+        bg-status: $black           // BG color for status pill
+
+        ), $options);
+
+    // Set BG color of our tile
+
+    background-color: map-get($options, bg-tile);
+
+    // Apply styles to nested selector specified above
+
+    #{map-get($options, selector)} {
+        display: block;   // Revert default display: none
+        background-color: map-get($options, bg-status);
+
+        // Set CSS content
+
+        &::after {
+            content: map-get($options, content);
+        }
+    }
+}
+
+
+.project-proposed {
+    @include project-status((content: 'In Bearbeitung', bg-status: #4B51D4, bg-tile: #DFDFDF));
+}
+
+
+%project-published {
+    // Nothing here at the moment
+}
+
+
+.project-fully_pledged {
+    @include project-status((content: '100% finanziert', bg-status: #39C277, bg-tile: rgba(60, 195, 120, 0.25)));
+}
+
+
+.project-rejected {
+    @include project-status((content: 'Leider abgelehnt :(', bg-tile: rgba(255, 60, 60, 0.25)));
+}
+
+
+
+// Every tile has a status div, that gets activated by additional classes:
+// project-PROPOSED, project-PUBLISHED, project-FULLY_PLEDGED, project-REJECTED
+
+.tile__status {
+    display:  none;
+    position: relative;
+    float: right;
+    top:   0.25rem;
+    padding:   rem-calc(2px) rem-calc(6px);
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: $white;
+    background-color: $black;
+    border-radius: rem-calc(3px);
+}
+
+
+
+
+
 // Metrics
 
 .tile__metrics {
@@ -192,7 +266,7 @@ $tile-break:   "only screen and (min-width: #{$tile-width * 2 + $tile-gutter * 4
     @include limit-lines(1, 20px, 1.4);
     @extend  %full-width;
     @extend  %font-smoothing;
-    margin:  2rem 0;
+    margin:  0 0 2rem 0;
     font-weight: 600;
 }
 
@@ -201,19 +275,6 @@ $tile-break:   "only screen and (min-width: #{$tile-width * 2 + $tile-gutter * 4
     @include limit-lines(4, 16px, 1.5);
     @extend %full-width;
     margin: 0;
-}
-
-
-// The Edge
-
-.the-edge {
-    position: absolute;
-    width:40px;
-    height: 40px;
-    right: 0;
-    top:0;
-
-    background-color: green;
 }
 
 

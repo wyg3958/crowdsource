@@ -72,19 +72,3 @@ content-row {
         @extend %box;
     }
 }
-
-// TODO: cool styles
-.project-PROPOSED {
-    background: #ebebeb !important;
-}
-
-.project-PUBLISHED {
-}
-
-.project-FULLY_PLEDGED {
-    background: rgba(0, 255, 0, 0.10) !important;
-}
-
-.project-REJECTED {
-    background: rgba(139, 0, 0, 0.30) !important;
-}

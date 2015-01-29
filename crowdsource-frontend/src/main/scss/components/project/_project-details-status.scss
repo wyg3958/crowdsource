@@ -10,7 +10,7 @@
   color: $clr-body;
 
   @media #{$medium-up} {
-    @include css-table();
+    @include css-table((table-layout: fixed));
   }
 }
 
@@ -33,10 +33,11 @@
 
 .project-status__creator {
   @extend %project-status__cell;
-  text-align: center;
+  text-align:  center;
+  line-height: 1.3333;
 
   @media #{$medium-up} {
-    @include css-table-cell((width: 25%));
+    @include css-table-cell((width: 30%));
   }
 }
 
@@ -44,7 +45,7 @@
 .project-status__funding {
   @extend %project-status__cell;
   @media #{$medium-up} {
-    @include css-table-cell((width: 65%));
+    @include css-table-cell((width: 55%));
   }
 }
 

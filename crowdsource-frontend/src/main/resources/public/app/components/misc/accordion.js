@@ -11,7 +11,7 @@ angular.module('crowdsource')
             controllerAs: 'accordion',
             bindToController: true,
             template:
-                '<li class="accordion-navigation">' +
+                '<li class="accordion-navigation" ng-class="{ \'accordion-active\': accordion.showContent }">' +
                     '<a ng-click="accordion.showContent = !accordion.showContent">{{ accordion.title }}</a>' +
                     '<div class="content" ng-transclude ng-if="accordion.showContent"></div>' +
                 '</li>',

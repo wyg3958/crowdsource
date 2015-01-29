@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
+    public final static int ACTIVATION_TOKEN_LENGTH = 32;
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private UserNotificationService userNotificationService;
 
@@ -43,7 +43,7 @@ public class UserService {
 
 
     private String generateActivationToken() {
-        return RandomStringUtils.randomAlphanumeric(32);
+        return RandomStringUtils.randomAlphanumeric(ACTIVATION_TOKEN_LENGTH);
     }
 
     private void saveUser(UserEntity userEntity) {

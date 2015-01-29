@@ -114,7 +114,6 @@ $tile-break:   "only screen and (min-width: #{$tile-width * 2 + $tile-gutter * 4
 
 
 %tile {
-    //overflow: hidden;
     border: none;
     border-radius: $border-radius;
     background-color: $white;
@@ -167,7 +166,6 @@ $tile-break:   "only screen and (min-width: #{$tile-width * 2 + $tile-gutter * 4
     }
 
     @media #{$tile-break} {
-    // @media #{$medium-up} {
         width: $tile-width;
     }
 }

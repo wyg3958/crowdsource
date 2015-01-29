@@ -7,6 +7,7 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.UserActivation;
 import de.axelspringer.ideas.crowdsource.service.UserNotificationService;
+import de.axelspringer.ideas.crowdsource.service.UserService;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.ActivationForm;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
@@ -156,10 +157,15 @@ public class ActivationSteps {
 
     private String getActivationLinkFromFirstEmail() {
         mailServerClient.waitForMails(1, 5000);
-
         final MailServerClient.Message message = mailServerClient.messages().get(0);
-        String messageContent = message.message;
-        return messageContent.substring(messageContent.indexOf("http")).trim();
+        return extractActivationTokenFromMessage(message.message);
+    }
+
+    String extractActivationTokenFromMessage(String message) {
+
+        final String searchKey = "activation/";
+        final Integer activationIndex = message.indexOf(searchKey) + searchKey.length();
+        return message.substring(activationIndex, activationIndex + UserService.ACTIVATION_TOKEN_LENGTH);
     }
 
     public String getGeneratedEmail() {

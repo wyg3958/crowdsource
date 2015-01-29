@@ -7,7 +7,7 @@ import java.util.Arrays;
 public class ElementUtils {
 
     public static int parseCurrency(WebElement element) {
-        String value = element.getText().replaceAll("\\AS$", "").trim();
+        String value = element.getText().replaceAll("AS\\$", "").trim();
         return parseNumber(value);
     }
 

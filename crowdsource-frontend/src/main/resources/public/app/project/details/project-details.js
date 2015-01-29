@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .controller('ProjectDetailsController', function ($routeParams, $location, Project, Authentication) {
+    .controller('ProjectDetailsController', function ($window, $routeParams, $location, Project, Authentication) {
 
         var vm = this;
 
@@ -13,7 +13,23 @@ angular.module('crowdsource')
         // the GET /project/:id response is finished
         vm.project.id = $routeParams.projectId;
 
+        vm.project.$promise.catch(function (response) {
+            if (response.status == 404) {
+                $location.path('/error/notfound');
+            }
+            else if (response.status == 403) {
+                $location.path('/error/forbidden');
+            }
+            else {
+                $location.path('/error/unknown');
+            }
+        });
+
         vm.publish = function () {
+            if (!$window.confirm('Willst Du das Projekt wirklich veröffentlichen?')) {
+                return;
+            }
+
             vm.publishing = true;
             Project.publish(vm.project.id).$promise
                 .then(function (project) {
@@ -27,6 +43,10 @@ angular.module('crowdsource')
         };
 
         vm.reject = function () {
+            if (!$window.confirm('Willst Du das Projekt wirklich ablehnen?')) {
+                return;
+            }
+
             vm.rejecting = true;
             Project.reject(vm.project.id).$promise
                 .then(function (project) {
@@ -39,15 +59,17 @@ angular.module('crowdsource')
                 });
         };
 
-        vm.project.$promise.catch(function (response) {
-            if (response.status == 404) {
-                $location.path('/error/notfound');
+        vm.isPublishable = function () {
+            if (!vm.project.$resolved) {
+                return false;
             }
-            else if (response.status == 403) {
-                $location.path('/error/forbidden');
+            return vm.project.status == 'PROPOSED' || vm.project.status == 'REJECTED';
+        };
+
+        vm.isRejectable = function () {
+            if (!vm.project.$resolved) {
+                return false;
             }
-            else {
-                $location.path('/error/unknown');
-            }
-        });
+            return vm.project.status == 'PROPOSED' || vm.project.status == 'PUBLISHED';
+        };
     });

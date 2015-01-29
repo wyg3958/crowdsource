@@ -85,7 +85,10 @@
 }
 
 
-/*button*/.project-status__btn {
+/*button*/.project-status__btn,
+          .project-status__btn[disabled],
+          .project-status__btn[disabled]:hover,
+          .project-status__btn:focus {
   @extend .radius; // Foundation: button extension
   margin:  0 auto;
   padding: rem-calc(8px) rem-calc(16px);
@@ -101,5 +104,10 @@
     background-color: $clr-bg;
     box-shadow: 0 2px 0 0 #35EA87;
     border: 1px solid #35EA87;
+  }
+
+  &[disabled]:hover {
+    background-color: transparent;
+    box-shadow: 0 2px 0 0 #4BD489;
   }
 }

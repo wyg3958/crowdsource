@@ -38,7 +38,7 @@
                         <span form-label-invalid="budget" ng-messages="financingRounds.form.budget.$error">
                             <span ng-message="required">Bitte gib das Budget an</span>
                             <span ng-message="number">Bitte gib nur Ziffern ein</span>
-                            <span ng-message="pattern">Valide Zahlen bis max 9999999$</span>
+                            <span ng-message="pattern">Valide Zahlen bis AS$9.999.999</span>
                             <span ng-message="min">Bitte gib einen Wert über Null ein</span>
                         </span>
 
@@ -49,7 +49,7 @@
                     </label>
                 </div>
                 <div class="small-3 columns">
-                    <button type="submit" class="newround-start success flush--bottom"
+                    <button type="submit" class="newround-start crwd-success radius shadow flush--bottom"
                             ng-click="financingRounds.start()"
                             ng-disabled="financingRounds.form.$invalid || financingRounds.saving || !financingRounds.canStartNewRound()">
                         {{ financingRounds.saving ? 'Starten...' : 'Starten!' }}
@@ -77,12 +77,8 @@
             <td class="budget">{{ fr.budget | number }}</td>
             <td class="action">
                 <div ng-if="fr.active">
-                    <span class="confirm-message" ng-if="financingRounds.confirmStop">Wirklich beenden?</span>
-                    <button class="stop-button alert flush--bottom" ng-click="financingRounds.stop(fr)">
-                        {{ financingRounds.getStopButtonText() }}
-                    </button>
-                    <button class="cancel-button flush--bottom" ng-if="financingRounds.confirmStop"
-                            ng-click="financingRounds.confirmStop = false;">Nein
+                    <button class="stop-button radius shadow alert flush--bottom" ng-click="financingRounds.stop(fr)">
+                        {{ financingRounds.stopping ? 'Beenden...' : 'Beenden' }}
                     </button>
                 </div>
             </td>

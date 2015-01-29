@@ -1,11 +1,15 @@
 <content-row class="activation-form box">
     <form name="activation.form" novalidate>
 
-        <h1 ng-if="::activation.isRegistrationFlow">Registrierung - Letzte Schritte</h1>
-        <h1 ng-if="::activation.isPasswordRecoveryFlow">Passwort neu setzen</h1>
+        <div class="row">
+            <div class="small-12 columns">
+                <h1 ng-if="::activation.isRegistrationFlow">Registrierung - Letzte Schritte</h1>
+                <h1 ng-if="::activation.isPasswordRecoveryFlow">Passwort neu setzen</h1>
 
-        <div class="info-text margin-bottom-small" ng-if="::activation.isRegistrationFlow">Bitte vergib ein Passwort, um die Aktivierung Deines Kontos abzuschließen.</div>
-        <div class="info-text margin-bottom-small" ng-if="::activation.isPasswordRecoveryFlow">Bitte vergib jetzt ein neues Passwort.</div>
+                <div class="info-text margin-bottom-small" ng-if="::activation.isRegistrationFlow">Bitte vergib ein Passwort, um die Aktivierung Deines Kontos abzuschließen.</div>
+                <div class="info-text margin-bottom-small" ng-if="::activation.isPasswordRecoveryFlow">Bitte vergib jetzt ein neues Passwort.</div>
+            </div>
+        </div>
 
         <div class="general-error alert-box alert" ng-messages="activation.generalErrors" ng-if="activation.generalErrors">
             <span ng-message="remote_already_activated">
@@ -58,7 +62,7 @@
         <div class="row">
             <div class="small-12 columns text-center">
                 <div>
-                    <button type="submit" class="success margin-top" ng-click="activation.activate()" ng-disabled="activation.loading">
+                    <button type="submit" class="crwd-success radius shadow margin-top" ng-click="activation.activate()" ng-disabled="activation.loading">
                         {{ activation.loading ? 'Speichern...' : 'Speichern' }}
                     </button>
                 </div>

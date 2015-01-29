@@ -41,13 +41,13 @@ describe('project list', function () {
         expect($(listItems[0]).find('p')).toHaveText('Short Description');
         expect($(listItems[0]).find('.cs-progress__meter').css("width")).toBe("10%");
         expect($(listItems[0]).find('.backers-count')).toHaveText('1');
-        expect($(listItems[0]).find('.pledged-amount').text()).toBe('$10');
+        expect($(listItems[0]).find('.pledged-amount').text()).toBe('10 / 100');
 
         expect($(listItems[1]).find('.tile__heading')).toHaveText('Title 2');
         expect($(listItems[1]).find('p')).toHaveText('Short Description 2');
         expect($(listItems[1]).find('.cs-progress__meter').css("width")).toBe("20%");
         expect($(listItems[1]).find('.backers-count')).toHaveText('2');
-        expect($(listItems[1]).find('.pledged-amount').text()).toBe('$20');
+        expect($(listItems[1]).find('.pledged-amount').text()).toBe('20 / 100');
 
         expect(projectList.find('.no-projects')).toHaveClass('ng-hide');
     });
@@ -71,22 +71,22 @@ describe('project list', function () {
         expect(listItems).toHaveLength(6);
 
         expect($(listItems[0]).find('.tile__heading').text()).toBe('Title 5');
-        expect($(listItems[0]).hasClass("project-PROPOSED")).toBeTruthy();
+        expect($(listItems[0]).hasClass("project-proposed")).toBeTruthy();
 
         expect($(listItems[1]).find('.tile__heading').text()).toBe('Title 1');
-        expect($(listItems[1]).hasClass("project-PUBLISHED")).toBeTruthy();
+        expect($(listItems[1]).hasClass("project-published")).toBeTruthy();
 
         expect($(listItems[2]).find('.tile__heading').text()).toBe('Title 0');
-        expect($(listItems[2]).hasClass("project-PUBLISHED")).toBeTruthy();
+        expect($(listItems[2]).hasClass("project-published")).toBeTruthy();
 
         expect($(listItems[3]).find('.tile__heading').text()).toBe('Title 2');
-        expect($(listItems[3]).hasClass("project-PUBLISHED")).toBeTruthy();
+        expect($(listItems[3]).hasClass("project-published")).toBeTruthy();
 
         expect($(listItems[4]).find('.tile__heading').text()).toBe('Title 3');
-        expect($(listItems[4]).hasClass("project-FULLY_PLEDGED")).toBeTruthy();
+        expect($(listItems[4]).hasClass("project-fully_pledged")).toBeTruthy();
 
         expect($(listItems[5]).find('.tile__heading').text()).toBe('Title 4');
-        expect($(listItems[5]).hasClass("project-REJECTED")).toBeTruthy();
+        expect($(listItems[5]).hasClass("project-rejected")).toBeTruthy();
     });
 
     it("should redirect to the project's details page when the project tile is clicked", function () {

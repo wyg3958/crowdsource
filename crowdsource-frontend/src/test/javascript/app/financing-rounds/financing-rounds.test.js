@@ -1,6 +1,6 @@
 describe('financing rounds', function () {
 
-    var $scope, $httpBackend, $location, financingRounds, view;
+    var $scope, $httpBackend, $window, $location, financingRounds, view;
 
     beforeEach(function () {
         module('crowdsource');
@@ -8,9 +8,10 @@ describe('financing rounds', function () {
 
         localStorage.clear(); // reset
 
-        inject(function ($compile, $rootScope, $templateCache, $controller, _$location_, _$httpBackend_, FinancingRound) {
+        inject(function ($compile, $rootScope, _$window_, $templateCache, $controller, _$location_, _$httpBackend_, FinancingRound) {
             $scope = $rootScope.$new();
             $httpBackend = _$httpBackend_;
+            $window = _$window_;
             $location = _$location_;
 
             $controller('FinancingRoundsController as financingRounds', {
@@ -186,11 +187,7 @@ describe('financing rounds', function () {
         $httpBackend.flush();
         $scope.$digest();
 
-        expect(financingRounds.getTableEndRoundCancelButton()).not.toExist();
-
-        financingRounds.getTableEndRoundButton().click();
-        expect(financingRounds.getTableEndRoundCancelButton()).toExist();
-        expect(financingRounds.getTableEndRoundConfirmMessage()).toContainText('Wirklich beenden?');
+        expect(financingRounds.getTableEndRoundButton()).toHaveText('Beenden');
 
         $httpBackend.expectPUT('/financinground/4711/cancel', {})
             .respond(200, {"id": "4711", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "budget": 4444, "active": false});
@@ -201,9 +198,12 @@ describe('financing rounds', function () {
 
         $httpBackend.expectGET('/financinground/active').respond(404);
 
+        spyOn($window, 'confirm').and.returnValue(true);
         financingRounds.getTableEndRoundButton().click();
+
         expect(financingRounds.getTableEndRoundButton()).toHaveText('Beenden...');
         $httpBackend.flush();
+
         expect(financingRounds.getAlertBox()).toContainText('Finanzierungsrunde gestoppt.');
         expect(financingRounds.getTableEndRoundButton()).not.toExist();
     });
@@ -220,17 +220,8 @@ describe('financing rounds', function () {
         $httpBackend.flush();
         $scope.$digest();
 
-        expect(financingRounds.getTableEndRoundCancelButton()).not.toExist();
-
-        expect(financingRounds.getTableEndRoundButton()).toHaveText('Beenden');
+        spyOn($window, 'confirm').and.returnValue(false);
         financingRounds.getTableEndRoundButton().click();
-        expect(financingRounds.getTableEndRoundButton()).toHaveText('Ja');
-        expect(financingRounds.getTableEndRoundCancelButton()).toExist();
-        expect(financingRounds.getTableEndRoundConfirmMessage()).toContainText('Wirklich beenden?');
-
-        financingRounds.getTableEndRoundCancelButton().click();
-        expect(financingRounds.getTableEndRoundConfirmMessage()).not.toExist();
-        expect(financingRounds.getTableEndRoundButton()).toHaveText('Beenden');
     });
 
 
@@ -271,7 +262,7 @@ describe('financing rounds', function () {
 
         $httpBackend.expectPUT('/financinground/4711/cancel', {}).respond(500);
 
-        financingRounds.getTableEndRoundButton().click();
+        spyOn($window, 'confirm').and.returnValue(true);
         financingRounds.getTableEndRoundButton().click();
         $httpBackend.flush();
 

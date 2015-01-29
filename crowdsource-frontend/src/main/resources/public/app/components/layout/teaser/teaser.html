@@ -3,19 +3,22 @@
 
     <div class="teaser__content">
         <h1 class="teaser__heading">Axel Springer Crowdfunding</h1>
+
         <p class="teaser__intro">Deine Innovation startet hier.</p>
 
         <div ng-class="teaser.remainingTime? 'metrics' : 'metrics--slim'">
 
             <div class="metrics__item remaining-budget" ng-show="teaser.remainingTime">
                 <div class="metrics__divider capital"></div>
-                <p class="metrics__heading">${{ teaser.userMetrics.remainingBudget | number }}</p>
+                <p class="metrics__heading">AS${{ teaser.userMetrics.remainingBudget | number }}</p>
+
                 <p class="metrics__subhead">Gesamtes Kapital im Umlauf</p>
             </div>
 
             <div class="metrics__item remaining-time">
                 <div class="metrics__divider time"></div>
                 <p class="metrics__heading">{{ teaser.remainingTime ? teaser.remainingTime : 'Keine aktive Runde' }}</p>
+
                 <p class="metrics__subhead">{{ teaser.remainingTime ? 'Noch in dieser Runde' : "Bald geht's los mit einer neuen Runde." }}</p>
             </div>
 

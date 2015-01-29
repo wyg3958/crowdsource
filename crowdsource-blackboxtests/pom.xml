@@ -25,7 +25,7 @@
             <testResource>
                 <directory>${project.basedir}/src/test/cucumber</directory>
             </testResource>
-            <!--enable filtering for test resources (to expose build variables like phantomjs binary-path to tests) -->
+            <!--enable filtering for test resources (to expose build variables like application port to tests) -->
             <testResource>
                 <directory>${project.basedir}/src/test/resources</directory>
                 <filtering>true</filtering>
@@ -53,34 +53,6 @@
         </plugins>
     </build>
 
-    <profiles>
-        <profile>
-            <id>phantomjs</id>
-            <build>
-                <plugins>
-                    <!-- downloads phantomjs and exposed variable phantomjs.binary -->
-                    <plugin>
-                        <groupId>com.github.klieber</groupId>
-                        <artifactId>phantomjs-maven-plugin</artifactId>
-                        <version>0.4</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>install</goal>
-                                </goals>
-                                <phase>generate-test-resources</phase>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <!-- phantomjs version -->
-                            <version>1.9.8</version>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -107,13 +79,7 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>2.41.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.detro</groupId>
-            <artifactId>phantomjsdriver</artifactId>
-            <version>1.2.0</version>
+            <version>2.44.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -1,4 +1,5 @@
-activeFinancingRound<form name="pledgingForm.form" class="pledging-form" novalidate>
+activeFinancingRound
+<form name="pledgingForm.form" class="pledging-form" novalidate>
 
     <div class="finance">
 
@@ -47,19 +48,19 @@ activeFinancingRound<form name="pledgingForm.form" class="pledging-form" novalid
                     </label>
                 </li>
                 <li class="right  finance__li-important pledgable-amount">
-                    ${{ pledgingForm.getPledgableAmount() | number }}
+                    AS${{ pledgingForm.getPledgableAmount() | number }}
                 </li>
             </ul>
         </div>
         <div class="finance__section">
             <ul class="finance__ul">
                 <li class="finance__li">
-                    <span class="pledged-amount">${{ pledgingForm.project.pledgedAmount + pledgingForm.pledge.amount | number }}</span> /
-                    <span class="pledge-goal">${{ pledgingForm.project.pledgeGoal | number }}</span>
+                    <span class="pledged-amount">AS${{ pledgingForm.project.pledgedAmount + pledgingForm.pledge.amount | number }}</span> /
+                    <span class="pledge-goal">AS${{ pledgingForm.project.pledgeGoal | number }}</span>
                     <span class="finance__subtitle">Finanzierung</span>
                 </li>
                 <li class="finance__li">
-                    <span class="budget">${{ pledgingForm.user.budget - pledgingForm.pledge.amount | number }}</span>
+                    <span class="budget">AS${{ pledgingForm.user.budget - pledgingForm.pledge.amount | number }}</span>
                     <span class="finance__subtitle">Dein Budget</span>
                 </li>
                 <li class="finance__li--cta">

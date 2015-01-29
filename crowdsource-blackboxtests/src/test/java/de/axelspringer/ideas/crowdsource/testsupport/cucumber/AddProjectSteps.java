@@ -123,7 +123,7 @@ public class AddProjectSteps {
 
         ProjectStatusWidget projectStatusWidget = projectDetailPage.getProjectStatusWidget();
         assertThat(projectStatusWidget.getProgressBarValue(), is("0px"));
-        assertThat(projectStatusWidget.getPledgedAmount(), is("$0"));
+        assertThat(projectStatusWidget.getPledgedAmount(), is("AS$0"));
         assertThat(projectStatusWidget.getPledgeGoal(), is("AS$25.000"));
         assertThat(projectStatusWidget.getBackers(), is("0"));
         assertThat(projectStatusWidget.getUserName(), is("Crowdsource"));

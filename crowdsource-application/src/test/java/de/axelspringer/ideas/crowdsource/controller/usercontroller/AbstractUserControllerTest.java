@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.expression.Expression;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
@@ -27,9 +28,7 @@ import javax.annotation.Resource;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -131,6 +130,31 @@ public abstract class AbstractUserControllerTest {
         @Bean
         public PasswordEncoder passwordEncoder() {
             return mock(PasswordEncoder.class);
+        }
+
+        @Bean
+        public Expression activationEmailTemplate() {
+            return mock(Expression.class);
+        }
+
+        @Bean
+        public Expression newProjectEmailTemplate() {
+            return mock(Expression.class);
+        }
+
+        @Bean
+        public Expression passwordForgottenEmailTemplate() {
+            return mock(Expression.class);
+        }
+
+        @Bean
+        public Expression projectPublishedEmailTemplate() {
+            return mock(Expression.class);
+        }
+
+        @Bean
+        public Expression projectRejectedEmailTemplate() {
+            return mock(Expression.class);
         }
     }
 }

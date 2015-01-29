@@ -8,8 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.expression.Expression;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.common.TemplateParserContext;
+import org.springframework.expression.ParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -17,7 +16,6 @@ import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.util.Properties;
 
 @Configuration
@@ -38,8 +36,7 @@ public class MailConfig {
     @Value("${de.axelspringer.ideas.crowdsource.mail.starttls:true}")
     private boolean useStartTls;
 
-    private final ExpressionParser parser = new SpelExpressionParser();
-    private final TemplateParserContext templateParserContext = new TemplateParserContext();
+    private final SpelExpressionParser parser = new SpelExpressionParser();
 
     @Bean
     public JavaMailSender javaMailSender() {
@@ -91,10 +88,9 @@ public class MailConfig {
         try {
             Resource resource = new ClassPathResource(templatePath);
             InputStream inputStream = resource.getInputStream();
-            StringWriter writer = new StringWriter();
-            IOUtils.copy(inputStream, writer, "UTF-8");
+            final String fileContent = IOUtils.toString(inputStream);
 
-            return parser.parseExpression(writer.toString());
+            return parser.parseExpression(fileContent, ParserContext.TEMPLATE_EXPRESSION);
 
         } catch (IOException e) {
             throw new ResourceNotFoundException();

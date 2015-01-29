@@ -1,11 +1,11 @@
-Hallo #{userName},
+Hallo #{#userName},
 
 Dein Projekt wurde erfolgreich freigegeben!
 Weitere Informationen hinsichtlich des Prozesses kannst Du der FAQ entnehmen.
 
 Zu Deinem Projekt:
 
-#{link}
+#{#link}
 
 Bei Fragen wende Dich an: support@crowd.asideas.de
 

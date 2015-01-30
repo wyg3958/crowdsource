@@ -39,16 +39,14 @@ body {
 }
 
 .page-wrapper {
-    height:     100%;  // Make our footer sticky
-    min-height: 100%;
-    position:   relative;
+    // Make our footer sticky
+    @media #{$medium-up} {
+        min-height: calc(100% - 240px);  // Our footer has a height of 240px;
+    }
 }
 
 .content {
-    min-height: calc(95% - 200px);  // Give height to make our footer sticky,
-    // value of 95% is approx. the height of the content area minus teaser, nav-bar, ...
     color: $crowd-color-dark-grey;
-
 }
 
 content-row {

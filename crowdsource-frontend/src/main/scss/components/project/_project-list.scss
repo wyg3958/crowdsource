@@ -14,7 +14,7 @@
 
 // Calculate width of a project tile depending on content-width, tiles, gutter
 
-$content-width:   rem-calc(1000px);
+$content-width:   rem-calc(968px);
 $tiles:           3;       // Tiles on one row
 $tile-gutter:     0.5rem;  // Horizonatal margins
 $tile-width:      ($content-width - ($tile-gutter * $tiles * 2)) / $tiles;

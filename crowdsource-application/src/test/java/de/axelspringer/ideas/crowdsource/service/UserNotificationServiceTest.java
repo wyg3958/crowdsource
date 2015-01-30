@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.crowdsource.service;
 
+import de.axelspringer.ideas.crowdsource.config.mail.MailTemplateConfig;
 import de.axelspringer.ideas.crowdsource.enums.ProjectStatus;
 import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
@@ -7,180 +8,150 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.expression.Expression;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.arrayContaining;
+import static org.hamcrest.core.Is.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { MailTemplateConfig.class, UserNotificationServiceTest.Config.class })
 public class UserNotificationServiceTest {
 
-    private static final String EMAIL = "horst@mail.de";
-    private static final String APP_URL = "http://test.de";
+    private static final String ADMIN_EMAIL = "some.admin@email.com";
 
-    @Mock
+    @Autowired
+    private UserNotificationService userNotificationService;
+    @Autowired
     private JavaMailSender javaMailSender;
 
-    @Mock
-    private Expression activationEmailTemplate;
-
-    @Mock
-    private Expression newProjectEmailTemplate;
-
-    @Mock
-    private Expression passwordForgottenEmailTemplate;
-
-    @Mock
-    private Expression projectPublishedEmailTemplate;
-
-    @Mock
-    private Expression projectRejectedTemplateMock;
-
-    @InjectMocks
-    private UserNotificationService userNotificationService;
-
-    private UserEntity user;
-    private ArgumentCaptor<SimpleMailMessage> messageCaptor;
-    private ArgumentCaptor<StandardEvaluationContext> contextCaptor;
-
     @Before
-    public void init() {
-        ReflectionTestUtils.setField(userNotificationService, "applicationUrl", APP_URL);
+    public void setUp() {
+        ReflectionTestUtils.setField(userNotificationService, "applicationUrl", "https://crowd.asideas.de");
 
-        when(activationEmailTemplate.getValue(any(), any())).thenReturn("the_mail_content_for_activation");
-        when(newProjectEmailTemplate.getValue(any(), any())).thenReturn("the_mail_content_for_new_project");
-        when(passwordForgottenEmailTemplate.getValue(any(), any())).thenReturn("the_mail_content_for_password_forgotten");
-        when(projectPublishedEmailTemplate.getValue(any(), any())).thenReturn("the_mail_content_for_project_published");
-        when(projectRejectedTemplateMock.getValue(any(), any())).thenReturn("the_mail_content_for_project_rejected");
-
-        messageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
-        contextCaptor = ArgumentCaptor.forClass(StandardEvaluationContext.class);
-        user = new UserEntity(EMAIL);
-        user.setActivationToken("xyz");
+        reset(javaMailSender);
     }
 
     @Test
     public void testSendActivationMail() {
+        UserEntity user = new UserEntity("some.one@email.com");
+        user.setActivationToken("activationTok3n");
 
         userNotificationService.sendActivationMail(user);
 
-        verify(javaMailSender, times(1)).send(messageCaptor.capture());
-        verify(activationEmailTemplate).getValue(contextCaptor.capture(), any());
-
-        final StandardEvaluationContext context = contextCaptor.getValue();
-        assertThat(context.lookupVariable("link"), is("http://test.de#/signup/horst@mail.de/activation/xyz"));
-        assertThat(context.lookupVariable("userName"), is("Horst"));
-
-        SimpleMailMessage message = messageCaptor.getValue();
-        assertThat(message.getTo(), is(new String[]{EMAIL}));
-        assertThat(message.getFrom(), is(UserNotificationService.FROM_ADDRESS));
-        assertThat(message.getSubject(), is("Bitte vergib ein Passwort für Dein Konto auf der AS ideas Crowd Platform"));
-        assertThat(message.getText(), is("the_mail_content_for_activation"));
+        SimpleMailMessage mail = getMessageFromMailSender();
+        assertThat(mail.getFrom(), is(UserNotificationService.FROM_ADDRESS));
+        assertThat(mail.getTo(), arrayContaining(user.getEmail()));
+        assertThat(mail.getSubject(), is(UserNotificationService.ACTIVATION_SUBJECT));
+        assertThat(mail.getText(), is("Hallo Some One,\n\nDu hast Dich gerade auf der AS ideas Crowd Platform angemeldet.\nUm Deine Registrierung abzuschließen, öffne bitte diesen Link und setze Dein Passwort:\n\nhttps://crowd.asideas.de#/signup/some.one@email.com/activation/activationTok3n\n\nBei Fragen wende dich an: support@crowd.asideas.de\n\nMit freundlichen Grüßen\nDein AS ideas Crowd Team\n\nAS ideAS Engineering\nAxel-Springer-Straße 65\n10888 Berlin\n\nAxel Springer ideAS Engineering GmbH\nEin Unternehmen der Axel Springer SE\nSitz Berlin, Amtsgericht Charlottenburg, HRB 138466 B\nGeschäftsführer: Daniel Keller, Niels Matusch"));
     }
 
     @Test
     public void testSendPasswordRecoveryMail() {
+        UserEntity user = new UserEntity("some.one@email.com");
+        user.setActivationToken("activationTok3n");
 
         userNotificationService.sendPasswordRecoveryMail(user);
 
-        verify(javaMailSender, times(1)).send(messageCaptor.capture());
-        verify(passwordForgottenEmailTemplate).getValue(contextCaptor.capture(), any());
-
-        final StandardEvaluationContext context = contextCaptor.getValue();
-        assertThat(context.lookupVariable("link"), is("http://test.de#/login/password-recovery/horst@mail.de/activation/xyz"));
-        assertThat(context.lookupVariable("userName"), is("Horst"));
-
-        SimpleMailMessage message = messageCaptor.getValue();
-        assertThat(message.getTo(), is(new String[]{EMAIL}));
-        assertThat(message.getFrom(), is(UserNotificationService.FROM_ADDRESS));
-        assertThat(message.getSubject(), is("Bitte vergib ein Passwort für Dein Konto auf der AS ideas Crowd Platform"));
-        assertThat(message.getText(), is("the_mail_content_for_password_forgotten"));
+        SimpleMailMessage mail = getMessageFromMailSender();
+        assertThat(mail.getFrom(), is(UserNotificationService.FROM_ADDRESS));
+        assertThat(mail.getTo(), arrayContaining(user.getEmail()));
+        assertThat(mail.getSubject(), is(UserNotificationService.PASSWORD_FORGOTTEN_SUBJECT));
+        assertThat(mail.getText(), is("Hallo Some One,\n\nDu hast soeben ein neues Passwort für Dein Konto bei der AS ideas Crowd Plattform angefordert.\n\nBitte öffne diesen Link:\n\nhttps://crowd.asideas.de#/login/password-recovery/some.one@email.com/activation/activationTok3n\n\nund setze Dein neues Passwort.\n\nBei Fragen wende Dich an: support@crowd.asideas.de\n\nMit freundlichen Grüßen\nDein AS ideas Crowd Team\n\nAS ideAS Engineering\nAxel-Springer-Straße 65\n10888 Berlin\n\nAxel Springer ideAS Engineering GmbH\nEin Unternehmen der Axel Springer SE\nSitz Berlin, Amtsgericht Charlottenburg, HRB 138466 B\nGeschäftsführer: Daniel Keller, Niels Matusch"));
     }
 
     @Test
     public void testSendUserNotificationMailForPublished() {
+        UserEntity user = new UserEntity("some.one@email.com");
 
-        userNotificationService.notifyUserOnProjectUpdate(project("some_id", ProjectStatus.PUBLISHED, user), EMAIL);
+        userNotificationService.notifyCreatorOnProjectUpdate(project("proj3ctId", ProjectStatus.PUBLISHED, user, "My Super Project"));
 
-        verify(javaMailSender, times(1)).send(messageCaptor.capture());
-        verify(projectPublishedEmailTemplate).getValue(contextCaptor.capture(), any());
-
-        final StandardEvaluationContext context = contextCaptor.getValue();
-        assertThat(context.lookupVariable("link"), is("http://test.de#/project/some_id"));
-        assertThat(context.lookupVariable("userName"), is("Horst"));
-
-        SimpleMailMessage message = messageCaptor.getValue();
-        assertThat(message.getTo(), is(new String[]{EMAIL}));
-        assertThat(message.getFrom(), is(UserNotificationService.FROM_ADDRESS));
-        assertThat(message.getSubject(), is("Freigabe Deines Projektes"));
-        assertThat(message.getText(), is("the_mail_content_for_project_published"));
+        SimpleMailMessage mail = getMessageFromMailSender();
+        assertThat(mail.getFrom(), is(UserNotificationService.FROM_ADDRESS));
+        assertThat(mail.getTo(), arrayContaining(user.getEmail()));
+        assertThat(mail.getSubject(), is(UserNotificationService.PROJECT_PUBLISHED_SUBJECT));
+        assertThat(mail.getText(), is("Hallo Some One,\n\nDein Projekt wurde erfolgreich freigegeben!\nWeitere Informationen hinsichtlich des Prozesses kannst Du der FAQ entnehmen.\n\nZu Deinem Projekt:\n\nhttps://crowd.asideas.de#/project/proj3ctId\n\nBei Fragen wende Dich an: support@crowd.asideas.de\n\nMit freundlichen Grüßen\nDein AS ideas Crowd Team\n\nAS ideAS Engineering\nAxel-Springer-Straße 65\n10888 Berlin\n\nAxel Springer ideAS Engineering GmbH\nEin Unternehmen der Axel Springer SE\nSitz Berlin, Amtsgericht Charlottenburg, HRB 138466 B\nGeschäftsführer: Daniel Keller, Niels Matusch"));
     }
 
     @Test
     public void testSendUserNotificationMailForRejected() {
+        UserEntity user = new UserEntity("some.one@email.com");
 
-        userNotificationService.notifyUserOnProjectUpdate(project("some_id", ProjectStatus.REJECTED, user), EMAIL);
+        userNotificationService.notifyCreatorOnProjectUpdate(project("proj3ctId", ProjectStatus.REJECTED, user, "My Super Project"));
 
-        verify(javaMailSender, times(1)).send(messageCaptor.capture());
-        verify(projectRejectedTemplateMock).getValue(contextCaptor.capture(), any());
-
-        final StandardEvaluationContext context = contextCaptor.getValue();
-        assertThat(context.lookupVariable("link"), is("http://test.de#/project/some_id"));
-        assertThat(context.lookupVariable("userName"), is("Horst"));
-
-        SimpleMailMessage message = messageCaptor.getValue();
-        assertThat(message.getTo(), is(new String[]{EMAIL}));
-        assertThat(message.getFrom(), is(UserNotificationService.FROM_ADDRESS));
-        assertThat(message.getSubject(), is("Freigabe Deines Projektes"));
-        assertThat(message.getText(), is("the_mail_content_for_project_rejected"));
+        SimpleMailMessage mail = getMessageFromMailSender();
+        assertThat(mail.getFrom(), is(UserNotificationService.FROM_ADDRESS));
+        assertThat(mail.getTo(), arrayContaining(user.getEmail()));
+        assertThat(mail.getSubject(), is(UserNotificationService.PROJECT_REJECTED_SUBJECT));
+        assertThat(mail.getText(), is("Hallo Some One,\n\nDein Projekt wurde leider abgelehnt.\nDas AS Crowd Platform Team wird in Kürze mit Dir in Kontakt treten, um die nächsten Schritte zu besprechen.\n\nZu Deinem Projekt:\n\nhttps://crowd.asideas.de#/project/proj3ctId\n\nBei Fragen wende Dich an: support@crowd.asideas.de\n\nMit freundlichen Grüßen\nDein AS ideas Crowd Team\n\nAS ideAS Engineering\nAxel-Springer-Straße 65\n10888 Berlin\n\nAxel Springer ideAS Engineering GmbH\nEin Unternehmen der Axel Springer SE\nSitz Berlin, Amtsgericht Charlottenburg, HRB 138466 B\nGeschäftsführer: Daniel Keller, Niels Matusch"));
     }
 
     @Test
-    public void testSendUserNotificationMailForDefault() {
+    public void testSendUserNotificationMailForFallback() {
+        UserEntity user = new UserEntity("some.one@email.com");
 
-        userNotificationService.notifyUserOnProjectUpdate(project("some_id", ProjectStatus.FULLY_PLEDGED, user), EMAIL);
+        userNotificationService.notifyCreatorOnProjectUpdate(project("proj3ctId", ProjectStatus.PROPOSED, user, "My Super Project"));
 
-        verify(javaMailSender, times(1)).send(messageCaptor.capture());
-
-        SimpleMailMessage message = messageCaptor.getValue();
-        assertThat(message.getTo(), is(new String[]{EMAIL}));
-        assertThat(message.getFrom(), is(UserNotificationService.FROM_ADDRESS));
-        assertThat(message.getSubject(), is("Der Zustand des Projekts null hat sich geändert!"));
-        assertThat(message.getText(), is("Das Projekt null wurde in den Zustand FULLY_PLEDGED versetzt."));
+        SimpleMailMessage mail = getMessageFromMailSender();
+        assertThat(mail.getFrom(), is(UserNotificationService.FROM_ADDRESS));
+        assertThat(mail.getTo(), arrayContaining(user.getEmail()));
+        assertThat(mail.getSubject(), is("Der Zustand des Projekts My Super Project hat sich geändert!"));
+        assertThat(mail.getText(), is("Das Projekt My Super Project wurde in den Zustand PROPOSED versetzt."));
     }
 
     @Test
-    public void testSendAdminNotificationMail() {
+    public void testNotifyAdminOnProjectCreation() {
+        UserEntity user = new UserEntity("some.one@email.com");
 
-        userNotificationService.notifyAdminOnProjectCreation(project("some_id", ProjectStatus.PUBLISHED, user), EMAIL);
+        userNotificationService.notifyAdminOnProjectCreation(project("proj3ctId", ProjectStatus.PUBLISHED, user, "My Super Project"), ADMIN_EMAIL);
 
-        verify(javaMailSender, times(1)).send(messageCaptor.capture());
-        verify(newProjectEmailTemplate).getValue(contextCaptor.capture(), any());
-
-        final StandardEvaluationContext context = contextCaptor.getValue();
-        assertThat(context.lookupVariable("link"), is("http://test.de#/project/some_id"));
-
-        SimpleMailMessage message = messageCaptor.getValue();
-        assertThat(message.getTo(), is(new String[]{EMAIL}));
-        assertThat(message.getFrom(), is(UserNotificationService.FROM_ADDRESS));
-        assertThat(message.getSubject(), is("Neues Projekt erstellt"));
-        assertThat(message.getText(), is("the_mail_content_for_new_project"));
+        SimpleMailMessage mail = getMessageFromMailSender();
+        assertThat(mail.getFrom(), is(UserNotificationService.FROM_ADDRESS));
+        assertThat(mail.getTo(), arrayContaining(ADMIN_EMAIL));
+        assertThat(mail.getSubject(), is(UserNotificationService.NEW_PROJECT_SUBJECT));
+        assertThat(mail.getText(), is("Hallo Admin,\n\nes liegt ein neues Projekt zur Freigabe vor:\n\nhttps://crowd.asideas.de#/project/proj3ctId\n\nMit freundlichen Grüßen\nDein AS ideas Crowd Team\n\nAS ideAS Engineering\nAxel-Springer-Straße 65\n10888 Berlin\n\nAxel Springer ideAS Engineering GmbH\nEin Unternehmen der Axel Springer SE\nSitz Berlin, Amtsgericht Charlottenburg, HRB 138466 B\nGeschäftsführer: Daniel Keller, Niels Matusch"));
     }
 
-    private ProjectEntity project(String id, ProjectStatus status, UserEntity user) {
+
+    private SimpleMailMessage getMessageFromMailSender() {
+        ArgumentCaptor<SimpleMailMessage> messageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
+        verify(javaMailSender).send(messageCaptor.capture());
+
+        return messageCaptor.getValue();
+    }
+
+    private ProjectEntity project(String id, ProjectStatus status, UserEntity user, String title) {
         final ProjectEntity project = new ProjectEntity();
         project.setId(id);
         project.setCreator(user);
+        project.setTitle(title);
         project.setStatus(status);
         return project;
     }
+
+    @Configuration
+    static class Config {
+
+        @Bean
+        public UserNotificationService userNotificationService() {
+            return new UserNotificationService();
+        }
+
+        @Bean
+        public JavaMailSender javaMailSender() {
+            return mock(JavaMailSender.class);
+        }
+
+    }
+
 }

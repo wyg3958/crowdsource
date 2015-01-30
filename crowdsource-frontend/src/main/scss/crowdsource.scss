@@ -52,23 +52,20 @@ body {
 
 content-row {
     display: block;
-    padding: rem-calc(32px) rem-calc(10px);
+    padding: 0;
 
     @media #{$medium-up} {
-        padding: rem-calc(40px) rem-calc(16px);
+        padding: rem-calc(40px) 0;
     }
 
     .container {
         margin: 0 auto;
+        padding: rem-calc(16px);
         max-width: $row-width;
     }
 
-    &.box .container {
+    .box {
         @extend %box;
         max-width: rem-calc(500);
-    }
-
-    &.box-wide .container {
-        @extend %box;
     }
 }

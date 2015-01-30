@@ -70,7 +70,7 @@ public class ProjectServiceTest {
         final Project updateObject = project(projectEntity);
         updateObject.setStatus(ProjectStatus.PUBLISHED);
         projectService.updateProject("some_id", updateObject);
-        verify(userNotificationService).notifyUserOnProjectUpdate(any(ProjectEntity.class), eq(USER_EMAIL));
+        verify(userNotificationService).notifyCreatorOnProjectUpdate(any(ProjectEntity.class));
     }
 
     @Test
@@ -80,7 +80,7 @@ public class ProjectServiceTest {
         final Project updateObject = project(projectEntity);
         updateObject.setStatus(ProjectStatus.PROPOSED);
         projectService.updateProject("some_id", updateObject);
-        verify(userNotificationService, never()).notifyUserOnProjectUpdate(any(ProjectEntity.class), anyString());
+        verify(userNotificationService, never()).notifyCreatorOnProjectUpdate(any(ProjectEntity.class));
     }
 
     @Test

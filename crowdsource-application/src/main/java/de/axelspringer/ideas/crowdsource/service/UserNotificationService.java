@@ -77,7 +77,7 @@ public class UserNotificationService {
         sendMail(user.getEmail(), PASSWORD_FORGOTTEN_SUBJECT, mailContent);
     }
 
-    public void notifyUserOnProjectUpdate(ProjectEntity project, String emailAddress) {
+    public void notifyCreatorOnProjectUpdate(ProjectEntity project) {
 
         final StandardEvaluationContext context = new StandardEvaluationContext();
         final String projectLink = getProjectLink(project.getId());
@@ -85,7 +85,7 @@ public class UserNotificationService {
         String subject;
 
         context.setVariable("link", projectLink);
-        context.setVariable("userName", UserHelper.determineNameFromEmail(emailAddress));
+        context.setVariable("userName", UserHelper.determineNameFromEmail(project.getCreator().getEmail()));
 
         switch (project.getStatus()) {
             case PUBLISHED:
@@ -104,7 +104,7 @@ public class UserNotificationService {
                 break;
         }
 
-        sendMail(emailAddress, subject, mailContent);
+        sendMail(project.getCreator().getEmail(), subject, mailContent);
     }
 
     public void notifyAdminOnProjectCreation(ProjectEntity project, String emailAddress) {

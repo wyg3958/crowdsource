@@ -4,3 +4,5 @@ $.fn.foundation = function () {
 };
 $.fn.fdatepicker = function () {
 };
+var bowser = {
+};

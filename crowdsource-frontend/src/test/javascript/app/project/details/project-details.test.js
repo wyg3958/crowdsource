@@ -56,8 +56,8 @@ describe('project details', function () {
         expect(projectDetails.find('.project-status__creator strong').text()).toBe('Foo Bar');
         expect(projectDetails.find('.project-status__creator small')).not.toExist();
         expect(projectDetails.find('.project-status__funding progress-bar .cs-progress__meter').css('width')).toBe('69.265%');
-        expect(projectDetails.find('.project-status__pledge-goal').text()).toBe('AS$20.000');
-        expect(projectDetails.find('.project-status__pledged-amount').text()).toBe('AS$13.853');
+        expect(projectDetails.find('.project-status__pledge-goal').text()).toBe('20.000');
+        expect(projectDetails.find('.project-status__pledged-amount').text()).toBe('13.853');
         expect(projectDetails.find('.project-status__backers').text()).toBe('7');
         expect(projectDetails.find('h2').text()).toBe('Short description');
         expect(projectDetails.find('.project-description').text()).toBe('Looong description');

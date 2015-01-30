@@ -77,10 +77,10 @@ describe('project pledging form', function () {
         expect(elements.pledgeButton).not.toBeDisabled();
         expect(elements.pledgeButton).toHaveText('Jetzt finanzieren');
         expect(elements.notification).toHaveClass('ng-hide');
-        expect(elements.pledgedAmount).toHaveText('AS$90');
-        expect(elements.pledgeGoal).toHaveText('AS$100');
-        expect(elements.budget).toHaveText('AS$170');
-        expect(elements.pledgableAmount).toHaveText('AS$40');
+        expect(elements.pledgedAmount).toHaveText('90');
+        expect(elements.pledgeGoal).toHaveText('100');
+        expect(elements.budget).toHaveText('170 AS$');
+        expect(elements.pledgableAmount).toHaveText('40 AS$');
 
         // prepare for backend calls
         $httpBackend.expectPOST('/project/123/pledge', { amount: 30 }).respond(200);
@@ -98,10 +98,10 @@ describe('project pledging form', function () {
         expect(elements.notification).not.toHaveClass('ng-hide');
         expect(elements.notification).toHaveText('Deine Finanzierung war erfolgreich.');
         expect(elements.pledgeAmount.getInputField()).toHaveValue("0");
-        expect(elements.pledgedAmount).toHaveText('AS$90');
-        expect(elements.pledgeGoal).toHaveText('AS$100');
-        expect(elements.budget).toHaveText('AS$170');
-        expect(elements.pledgableAmount).toHaveText('AS$10');
+        expect(elements.pledgedAmount).toHaveText('90');
+        expect(elements.pledgeGoal).toHaveText('100');
+        expect(elements.budget).toHaveText('170 AS$');
+        expect(elements.pledgableAmount).toHaveText('10 AS$');
 
         expectNoValidationError(elements.pledgeAmount);
         expect(elements.pledgeButton).toBeDisabled();
@@ -138,10 +138,10 @@ describe('project pledging form', function () {
         expect(elements.notification).not.toHaveClass('ng-hide');
         expect(elements.notification.text().trim()).toBe('Deine Finanzierung war erfolgreich. Das Projekt ist jetzt zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich.');
         expect(elements.pledgeAmount.getInputField()).toHaveValue("0");
-        expect(elements.pledgedAmount).toHaveText('AS$100');
-        expect(elements.pledgeGoal).toHaveText('AS$100');
-        expect(elements.budget).toHaveText('AS$160');
-        expect(elements.pledgableAmount).toHaveText('AS$0');
+        expect(elements.pledgedAmount).toHaveText('100');
+        expect(elements.pledgeGoal).toHaveText('100');
+        expect(elements.budget).toHaveText('160 AS$');
+        expect(elements.pledgableAmount).toHaveText('0 AS$');
 
         expect(elements.slider).toHaveClass('disabled');
         expectNoValidationError(elements.pledgeAmount);
@@ -213,8 +213,8 @@ describe('project pledging form', function () {
 
         expect(elements.slider).toHaveClass('disabled');
         expect(elements.pledgeAmount.getInputField()).toBeDisabled();
-        expect(elements.pledgableAmount).toHaveText('AS$0');
-        expect(elements.budget).toHaveText('AS$0');
+        expect(elements.pledgableAmount).toHaveText('0 AS$');
+        expect(elements.budget).toHaveText('0 AS$');
         expectNoValidationError(elements.pledgeAmount);
     });
 
@@ -331,10 +331,10 @@ describe('project pledging form', function () {
         // expect form to be updated with the new values from backend
         expect(elements.notification).toHaveClass('ng-hide');
         expect(elements.pledgeAmount.getInputField()).toHaveValue("0");
-        expect(elements.pledgedAmount).toHaveText('AS$480');
-        expect(elements.pledgeGoal).toHaveText('AS$500');
-        expect(elements.budget).toHaveText('AS$200');
-        expect(elements.pledgableAmount).toHaveText('AS$20');
+        expect(elements.pledgedAmount).toHaveText('480');
+        expect(elements.pledgeGoal).toHaveText('500');
+        expect(elements.budget).toHaveText('200 AS$');
+        expect(elements.pledgableAmount).toHaveText('20 AS$');
 
         expect(elements.root.find('.general-error')).toExist();
         expect(getGeneralError(elements, 'remote_pledge_goal_exceeded')).toExist();
@@ -366,10 +366,10 @@ describe('project pledging form', function () {
         expect(elements.notification).not.toHaveClass('ng-hide');
         expect(elements.notification).toHaveText('Deine Finanzierung war erfolgreich.');
         expect(elements.pledgeAmount.getInputField()).toHaveValue("0");
-        expect(elements.pledgedAmount).toHaveText('AS$490');
-        expect(elements.pledgeGoal).toHaveText('AS$500');
-        expect(elements.budget).toHaveText('AS$190');
-        expect(elements.pledgableAmount).toHaveText('AS$10');
+        expect(elements.pledgedAmount).toHaveText('490');
+        expect(elements.pledgeGoal).toHaveText('500');
+        expect(elements.budget).toHaveText('190 AS$');
+        expect(elements.pledgableAmount).toHaveText('10 AS$');
 
         expectNoValidationError(elements.pledgeAmount);
         expect(elements.pledgeButton).toBeDisabled();

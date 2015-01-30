@@ -3,7 +3,7 @@ module.exports = function (config) {
         basePath: '../../../',
 
         files: [
-            // foundation library is mocked via testsupport/foundation.testsupport.js
+            // foundation library is mocked via testsupport/mocked-libraries.testsupport.js
             'bower_components/jquery/dist/jquery.js',
             'bower_components/jasmine-jquery/lib/jasmine-jquery.js',
             'bower_components/angular/angular.js',
@@ -20,6 +20,7 @@ module.exports = function (config) {
             // actually, this file would have been picked up by the wildcard pattern app/**/*.js
             // but maybe in a wrong order. crowdsource.js defines the single crowdsource angular module and
             // must come first.
+            'src/test/javascript/testsupport/mocked-libraries.testsupport.js',
             'src/main/resources/public/app/crowdsource.js',
             'src/main/resources/public/app/**/*.js',
             'src/test/javascript/**/*.js',

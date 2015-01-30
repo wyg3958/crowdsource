@@ -138,7 +138,7 @@ public class ProjectDetailSteps {
         projectDetailPage.waitForDetailsToBeLoaded();
 
         ProjectStatusWidget projectStatusWidget = projectDetailPage.getProjectStatusWidget();
-        assertThat(projectStatusWidget.getPledgedAmount(), is(PLEDGED_AMOUNT));
+        assertThat(projectStatusWidget.getPledgedAmount(), is(Integer.toString(PLEDGED_AMOUNT)));
     }
 
     @Then("^the pledged amount is zero$")

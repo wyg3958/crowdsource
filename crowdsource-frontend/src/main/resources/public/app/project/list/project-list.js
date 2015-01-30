@@ -1,9 +1,10 @@
 angular.module('crowdsource')
 
-    .controller('ProjectListController', function ($location, Project) {
+    .controller('ProjectListController', function ($location, Authentication, Project) {
 
         var vm = this;
 
+        vm.auth = Authentication;
         vm.projects = Project.getAll();
 
         vm.showProjectDetails = function (project) {

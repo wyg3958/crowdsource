@@ -127,8 +127,8 @@ public class ProjectDetailSteps {
 
         ProjectStatusWidget projectStatusWidget = projectDetailPage.getProjectStatusWidget();
         assertThat(projectStatusWidget.getProgressBarValue(), is("0px"));
-        assertThat(projectStatusWidget.getPledgedAmount(), is("AS$0"));
-        assertThat(projectStatusWidget.getPledgeGoal(), is("AS$25"));
+        assertThat(projectStatusWidget.getPledgedAmount(), is("0"));
+        assertThat(projectStatusWidget.getPledgeGoal(), is("25"));
         assertThat(projectStatusWidget.getBackers(), is("0"));
         assertThat(projectStatusWidget.getUserName(), is("Crowdsource"));
     }
@@ -138,7 +138,7 @@ public class ProjectDetailSteps {
         projectDetailPage.waitForDetailsToBeLoaded();
 
         ProjectStatusWidget projectStatusWidget = projectDetailPage.getProjectStatusWidget();
-        assertThat(projectStatusWidget.getPledgedAmount(), is("AS$" + PLEDGED_AMOUNT));
+        assertThat(projectStatusWidget.getPledgedAmount(), is(PLEDGED_AMOUNT));
     }
 
     @Then("^the pledged amount is zero$")
@@ -146,7 +146,7 @@ public class ProjectDetailSteps {
         projectDetailPage.waitForDetailsToBeLoaded();
 
         ProjectStatusWidget projectStatusWidget = projectDetailPage.getProjectStatusWidget();
-        assertThat(projectStatusWidget.getPledgedAmount(), is("AS$0"));
+        assertThat(projectStatusWidget.getPledgedAmount(), is("0"));
     }
 
     @Given("^the user requests the project detail page with a non existant project id$")

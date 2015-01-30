@@ -163,6 +163,8 @@ public class ProjectDetailSteps {
         projectsPage.waitForPageLoad();
 
         the_user_clicks_on_the_tile_of_this_project();
+
+        projectDetailPage.waitForDetailsToBeLoaded();
     }
 
     @When("^the user clicks the funding button in status widget$")

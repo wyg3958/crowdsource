@@ -11,15 +11,28 @@
     <script src="app/libs.min.js"></script>
     <script src="app/crowdsource.min.js"></script>
 </head>
-<body ng-app="crowdsource">
-
+<body>
 <div class="page-wrapper">
 
     <nav-bar></nav-bar>
     <teaser></teaser>
     <status-bar></status-bar>
 
-    <div class="content" ng-view autoscroll="true"></div>
+    <div class="content" ng-view autoscroll="true">
+        <div class="browser-fallback" style="display: none">
+            <div class="project-list">
+
+                <h2 class="plist__heading">AS ideas Crowdsource</h2>
+
+                <p class="plist__intro--has-divider">Dein Browser wird in seiner aktuellen Version nicht von uns
+                    unterstützt. Bitte update ihn, um teilnehmen zu können.</p>
+
+                <p class="plist__intro--has-divider">Wir unterstützen Chrome ab Version 39, Firefox ab Version 28,
+                    Safari ab Version 8, Internet Explorer ab Version 10.</p>
+            </div>
+
+        </div>
+    </div>
 
     <footer></footer>
 </div>

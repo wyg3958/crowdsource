@@ -115,7 +115,7 @@ $black: #000000;
 // $primary-color: #008CBA;
 // $secondary-color: #e7e7e7;
 // $alert-color: #f04124;
-$success-color: #43AC6A;
+$success-color: #4BD489; //#43AC6A;
 // $warning-color: #f08a24;
 // $info-color: #a0d3e8;
 
@@ -251,8 +251,8 @@ $success-color: #43AC6A;
 // We use these to style anchors
 $anchor-text-decoration: underline;
 $anchor-text-decoration-hover: underline;
-$anchor-font-color: $black;
-$anchor-font-color-hover: $crowd-color-purple;
+$anchor-font-color: #2D2D2D;
+$anchor-font-color-hover: #4B51D4;
 
 // We use these to style the <hr> element
 // $hr-border-width: 1px;
@@ -1360,7 +1360,7 @@ $topbar-bg-color: $white;
 // $topbar-bg: $topbar-bg-color;
 
 // Height and margin
-$topbar-height: 45px;
+$topbar-height: 48px;
 // $topbar-margin-bottom: 0;
 
 // Controlling the styles for the title in the top bar
@@ -1378,7 +1378,7 @@ $topbar-dropdown-bg: $white;
 
 // Set the link colors and styles for top-level nav
 $topbar-link-color: $black;
-$topbar-link-color-hover: $crowd-color-purple;
+$topbar-link-color-hover: #000;
 //$topbar-link-color-active: $crowd-color-orange;
 //$topbar-link-color-active-hover: $crowd-color-orange;
 //$topbar-link-color-active-hover: $crowd-color-orange;

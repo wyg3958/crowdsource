@@ -1,6 +1,6 @@
-<content-row class="financing-round-overview box-wide">
+<content-row class="financing-round-overview">
 
-    <h1 class="plist__heading push-dble--bottom">Administration der Finanzierungsrunden</h1>
+    <h2 class="plist__heading push-dble--bottom">Administration der Finanzierungsrunden</h2>
 
     <div class="alert-box info" ng-if="financingRounds.info">
         {{ financingRounds.info }}
@@ -9,10 +9,14 @@
 
     <form name="financingRounds.form" class="newround-form form-horizontal" novalidate>
         <div class="panel">
-            <h2>Neue Finanzierungsrunde starten</h2>
+            <div class="row">
+                <div class="small-12 columns">
+                    <h4>Neue Finanzierungsrunde starten</h4>
 
-            <div class="notification" ng-if="!financingRounds.canStartNewRound()">
-                Es läuft bereits eine Finanzierungsrunde. Daher kann keine neue Runde gestartet werden.
+                    <div class="notification" ng-if="!financingRounds.canStartNewRound()">
+                        Es läuft bereits eine Finanzierungsrunde. Daher kann keine neue Runde gestartet werden.
+                    </div>
+                </div>
             </div>
 
             <div class="row" ng-if="financingRounds.canStartNewRound()">

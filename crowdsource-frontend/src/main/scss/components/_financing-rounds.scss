@@ -1,17 +1,17 @@
+.financing-round-overview {
+    background-color: $white;
+}
+
 .financingrounds {
 
-    .startdate, .enddate {
-        width: 150px;
-    }
+    width: 100%;
 
     .budget {
         text-align: right;
-        wdith: 50px;
     }
 
     .action {
         text-align: center;
-        min-width: 200px;
 
         span {
             margin-right: 20px;

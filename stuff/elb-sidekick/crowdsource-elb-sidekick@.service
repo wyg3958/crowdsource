@@ -1,0 +1,32 @@
+[Unit]
+Description=CrowdSource AWS elb (de-)registration sidekick
+BindsTo=crowdsource.%i.service
+After=crowdsource.%i.service
+
+# See http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html
+# on how to get the current instance id on AWS EC2
+
+[Service]
+ExecStartPre=/usr/bin/docker run --rm ulich/httpavail http://$COREOS_PRIVATE_IPV4
+
+ExecStart=/bin/bash -c "/usr/bin/docker run --rm --entrypoint=aws \
+                -e AWS_ACCESS_KEY_ID=$(etcdctl get /aws/accessKey) \
+                -e AWS_SECRET_ACCESS_KEY=$(etcdctl get /aws/secretAccessKey) \
+                -e AWS_DEFAULT_REGION=$(etcdctl get /aws/defaultRegion) \
+                yaronr/awscli elb register-instances-with-load-balancer \
+                --load-balancer-name $(etcdctl get /aws/loadBalancerName) \
+                --instances $(curl http://169.254.169.254/latest/meta-data/instance-id) \
+                \
+                && tail -f /dev/null"
+
+ExecStop=/bin/bash -c "/usr/bin/docker run --rm --entrypoint=aws \
+                -e AWS_ACCESS_KEY_ID=$(etcdctl get /aws/accessKey) \
+                -e AWS_SECRET_ACCESS_KEY=$(etcdctl get /aws/secretAccessKey) \
+                -e AWS_DEFAULT_REGION=$(etcdctl get /aws/defaultRegion) \
+                yaronr/awscli elb deregister-instances-from-load-balancer \
+                --load-balancer-name $(etcdctl get /aws/loadBalancerName) \
+                --instances $(curl http://169.254.169.254/latest/meta-data/instance-id)"
+
+
+[X-Fleet]
+MachineOf=crowdsource.%i.service

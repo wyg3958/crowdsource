@@ -6,6 +6,7 @@
         <div class="project-status__creator">
             <img class="project-status__user-avatar" src="app/user/avatar.svg">
             von <strong class="text--strong">{{ projectDetails.project.creator.name }}</strong>
+            <div ng-if="projectDetails.auth.currentUser.hasRole('ADMIN')"><small>{{ projectDetails.project.creator.email }}</small></div>
         </div>
 
         <div class="project-status__funding">

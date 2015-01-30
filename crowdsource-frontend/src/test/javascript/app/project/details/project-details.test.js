@@ -38,7 +38,7 @@ describe('project details', function () {
             title: 'Title',
             shortDescription: 'Short description',
             description: 'Looong description',
-            creator: {name: 'Foo Bar'},
+            creator: {name: 'Foo Bar', email: 'foo.bar@axel.de'},
             pledgedAmount: 13853,
             pledgeGoal: 20000,
             backers: 7
@@ -52,18 +52,35 @@ describe('project details', function () {
         $scope.$digest();
         $httpBackend.flush();
 
-        expect(projectDetails.find('h1')).toHaveText('Title');
-        expect(projectDetails.find('.project-status__creator strong')).toHaveText('Foo Bar');
-        expect(projectDetails.find('.project-status__funding progress-bar .cs-progress__meter')).toHaveCss({width: '69.265%'});
-        expect(projectDetails.find('.project-status__pledge-goal')).toHaveText('AS$20.000');
-        expect(projectDetails.find('.project-status__pledged-amount')).toHaveText('AS$13.853');
-        expect(projectDetails.find('.project-status__backers')).toHaveText('7');
-        expect(projectDetails.find('h2')).toHaveText('Short description');
-        expect(projectDetails.find('.project-description')).toHaveText('Looong description');
-        expect(projectDetails.find('.to-pledging-form-button')).not.toBeDisabled();
-        expect(projectDetails.find('.to-pledging-form-button')).toHaveText('Zur Finanzierung');
+        expect(projectDetails.find('h1').text()).toBe('Title');
+        expect(projectDetails.find('.project-status__creator strong').text()).toBe('Foo Bar');
+        expect(projectDetails.find('.project-status__creator small')).not.toExist();
+        expect(projectDetails.find('.project-status__funding progress-bar .cs-progress__meter').css('width')).toBe('69.265%');
+        expect(projectDetails.find('.project-status__pledge-goal').text()).toBe('AS$20.000');
+        expect(projectDetails.find('.project-status__pledged-amount').text()).toBe('AS$13.853');
+        expect(projectDetails.find('.project-status__backers').text()).toBe('7');
+        expect(projectDetails.find('h2').text()).toBe('Short description');
+        expect(projectDetails.find('.project-description').text()).toBe('Looong description');
+        expect(projectDetails.find('.to-pledging-form-button').text()).not.toBeDisabled();
+        expect(projectDetails.find('.to-pledging-form-button').text().trim()).toBe('Zur Finanzierung');
 
         expect(projectDetails.find('project-comments')).not.toExist();
+    });
+
+    it("should display the project creator's email if an admin views the details", function () {
+
+        spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(true);
+
+        prepareBackendMock('PUBLISHED');
+        $httpBackend.expectGET('/user/current').respond(200, {budget: 55, roles: ['ROLE_USER', 'ROLE_ADMIN']});
+        $httpBackend.expectGET('/project/xyz/comments').respond(200, []);
+
+        $scope.$digest();
+        $httpBackend.flush();
+
+        expect(projectDetails.find('.project-status__creator strong').text()).toBe('Foo Bar');
+        expect(projectDetails.find('.project-status__creator small')).toExist();
+        expect(projectDetails.find('.project-status__creator small').text()).toBe('foo.bar@axel.de');
     });
 
     it("should show a not found page if no project was found", function () {

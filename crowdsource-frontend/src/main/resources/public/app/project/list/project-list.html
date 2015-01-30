@@ -2,7 +2,9 @@
 
     <h2 class="plist__heading">Crowd Projekte</h2>
 
-    <p class="plist__intro--has-divider">Erfahre mehr über unsere aktuellen Crowd Projekte und stimme mit ab!</p>
+    <p class="plist__intro--has-divider" ng-show="projectList.projects.$resolved && projectList.projects.length > 0">
+        Erfahre mehr über unsere aktuellen Crowd Projekte und stimme mit ab!
+    </p>
 
     <ul class="project__ul" data-equalizer>
 
@@ -29,11 +31,8 @@
     </ul>
 
     <div class="no-projects text-center" ng-show="projectList.projects.$resolved && projectList.projects.length == 0">
-        <p>Oops. Noch sind keine Projekte eingestellt. Erstelle das erste Projekt!</p>
-
-        <div class="divider"></div>
-
-        <a class="button crwd-success radius shadow" href="#/project/new">Jetzt neues Crowd Projekt starten</a>
+        <p class="plist__intro--has-divider">Oops. Noch sind keine Projekte eingestellt. Erstelle das erste Projekt!</p>
+        <a class="button crwd-success radius shadow flush" href="#/project/new">Jetzt neues Crowd Projekt starten</a>
     </div>
 
 </content-row>

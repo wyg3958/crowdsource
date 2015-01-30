@@ -9,38 +9,31 @@
 // Define Extends
 //
 
-
 %teaser {
     position: relative;
     background-color: #39c277;
 }
 
-
 %teaser-visual-gradient {
     &::after {
         content: '';
         position: absolute;
-        width:  100%;
+        width: 100%;
         height: 100%;
-        top:  0;
+        top: 0;
         left: 0;
         background-image: linear-gradient(135deg, #292484, #dc4225);
         opacity: .25;
     }
 }
 
-
-
-
 //
 // Define Teaser Variations: Hero and Slim
 //
 
-
 .teaser--hero {
     @extend %teaser;
 }
-
 
 .teaser--slim {
     @extend %teaser;
@@ -56,21 +49,17 @@
     }
 }
 
-
-
-
 //
 // Teaser Structure: Visual and Content
 //
-
 
 .teaser__visual {
     @extend %teaser-visual-gradient;
 
     position: absolute;
-    width:  100%;
+    width: 100%;
     height: 100%;
-    top:  0;
+    top: 0;
     left: 0;
 
     @media #{$medium-up} {
@@ -78,37 +67,33 @@
     }
 }
 
-
 .teaser__content {
     position: relative;
-    padding:  3rem 1rem;
+    padding: 3rem 1rem;
     text-align: center;
 }
-
-
-
 
 //
 // Teaser Content Text Components
 //
 
-
-/*h1*/.teaser__heading {
+/*h1*/
+.teaser__heading {
     @extend %font-smoothing;
 
-    margin:      0;
-    font-size:   $fs-medium;
+    margin: 0;
+    font-size: $fs-medium;
     font-weight: 600;
     line-height: 1.33;
-    color:       $white;
+    color: $white;
 
     @media #{$medium-up} {
         font-size: $fs-hero;
     }
 }
 
-
-/*p*/.teaser__intro {
+/*p*/
+.teaser__intro {
     @extend %font-smoothing;
 
     margin-bottom: 0;
@@ -120,13 +105,9 @@
     }
 }
 
-
-
-
 //
 // Teaser Content Metrics Components
 //
-
 
 // Default container for displaying 3 metrics' items
 
@@ -138,11 +119,10 @@
     @media #{$medium-up} {
         display: table;
         table-layout: fixed;
-        width:  100%;
+        width: 100%;
         max-width: 1040px;
     }
 }
-
 
 // Slimmer container for displaying 2 metrics' items
 
@@ -153,7 +133,6 @@
         max-width: 750px;
     }
 }
-
 
 // Metrics item container
 
@@ -167,12 +146,11 @@
     }
 }
 
-
 // Metrics' divider
 
 .metrics__divider {
     position: relative;
-    height:   26px;
+    height: 26px;
     margin-bottom: rem-calc(4px);
     background: url('../images/icon-div.svg') center center no-repeat;
 
@@ -180,17 +158,17 @@
         content: '';
         position: absolute;
 
-        top:   0;
-        left:  0;
-        width:  100%;
+        top: 0;
+        left: 0;
+        width: 100%;
         height: 100%;
 
         background-position: center center;
-        background-repeat:   no-repeat;
-        background-size:     18px;
+        background-repeat: no-repeat;
+        background-size: 18px;
 
         @media #{$medium-up} {
-            background-size: 26px;
+            background-size: 24px;
         }
     }
 
@@ -199,60 +177,54 @@
 
     &.capital {
         &:before {
-          background-image: url('../images/icon-$$.svg');
+            background-image: url('../images/icon-$$.svg');
         }
     }
 
     &.time {
         &:before {
-          background-image: url('../images/icon-clock.svg');
+            background-image: url('../images/icon-clock.svg');
         }
     }
 
     &.user {
         &:before {
-          background-image: url('../images/icon-user.svg')
+            background-image: url('../images/icon-user.svg')
         }
     }
 }
 
-
 // Metrics text styles
 
 %metrics-text-layout {
-  margin: 0;
+    margin: 0;
 }
-
 
 .metrics__heading {
-  @extend %metrics-text-layout;
-  font-size: 1.25rem;
-  line-height: 1.33;
-  font-weight: 600;
-  color: $white;
+    @extend %metrics-text-layout;
+    font-size: 1.25rem;
+    line-height: 1.33;
+    font-weight: 600;
+    color: $white;
 
-  @media #{$medium-up} {
-    font-size: 1.5rem;
-  }
+    @media #{$medium-up} {
+        font-size: 1.5rem;
+    }
 }
-
 
 .metrics__subhead {
-  @extend %metrics-text-layout;
-  color: #3c3c3c;
+    @extend %metrics-text-layout;
+    color: #3c3c3c;
 }
-
-
-
 
 //
 // Teaser Button
 //
 
-
-/*a*/.teaser__btn {
-  @extend .button; // Foundation' styles
-  @extend .round;  // Foundation' styles
-  @extend .dark;
-  @extend .flush--bottom;
+/*a*/
+.teaser__btn {
+    @extend .button; // Foundation' styles
+    @extend .round; // Foundation' styles
+    @extend .dark;
+    @extend .flush--bottom;
 }

@@ -91,7 +91,7 @@ public class ProjectService {
 
             projectEntity.setStatus(project.getStatus());
             projectEntity = projectRepository.save(projectEntity);
-            userNotificationService.notifyUserOnProjectUpdate(projectEntity, projectEntity.getCreator().getEmail());
+            userNotificationService.notifyCreatorOnProjectUpdate(projectEntity);
         }
 
         log.debug("Project updated: {}", projectEntity);

@@ -12,6 +12,7 @@ accordion-item {
     a {
         text-decoration: none;
         position: relative;
+        padding-right: 2.5rem !important;
 
         &::after {
             transition: all 0.2s;

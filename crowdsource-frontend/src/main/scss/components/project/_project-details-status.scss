@@ -54,7 +54,7 @@
   @extend %project-status__cell;
   white-space: nowrap;
   @media #{$medium-up} {
-    @include css-table-cell((width: 180px));
+    @include css-table-cell((width: 195px));
   }
 }
 

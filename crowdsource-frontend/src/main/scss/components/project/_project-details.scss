@@ -96,6 +96,7 @@ $pd-icon-dimension: 24px;
     margin: 3rem 0;
     border-radius: 3px;
     border: 1px solid $clr-border;
+    box-shadow: 0 2px 0 0 rgba(0,0,0,.075);
 }
 
 
@@ -345,11 +346,13 @@ $pd-icon-dimension: 24px;
     $options: map-merge(
         (
             word-width: 80px,
+            border-color: rgb(130,130,130)
         ),
 
     $options);
 
     $half-word-width: map-get($options, word-width) / 2;
+    $border: 1px solid map-get($options, border-color);
 
     position: relative;
     font-size: rem-calc(14px);
@@ -363,7 +366,7 @@ $pd-icon-dimension: 24px;
         width: calc(50% - #{$half-word-width});
         left: 0;
         top:  50%;
-        border-bottom: 1px solid #000;
+        border-bottom: $border;
     }
 
     &::after {
@@ -372,7 +375,7 @@ $pd-icon-dimension: 24px;
         width: calc(50% - #{$half-word-width});
         right: 0;
         top:   50%;
-        border-bottom: 1px solid #000;
+        border-bottom: $border;
     }
 }
 
@@ -381,13 +384,11 @@ $pd-icon-dimension: 24px;
     @include divider--with-text((word-width: 60px));
     margin-top:    rem-calc(-8px);
     margin-bottom: rem-calc(16px);
-
-    font-size: rem-calc(12px);
     font-weight: 600;
 
     // @media > smartphone
     @media #{$medium-up} {
-        margin-bottom: rem-calc(44px);
+        margin-bottom: rem-calc(42px);
     }
 }
 
@@ -399,6 +400,8 @@ $pd-icon-dimension: 24px;
 //
 
 %project-text-layout {
+
+    // @media > smartphone
     @media #{$medium-up} {
         margin-right: 1rem;
         margin-left:  1rem;
@@ -407,15 +410,12 @@ $pd-icon-dimension: 24px;
 
 /*p*/.project-short-description {
     @extend %project-text-layout;
-
     margin-top:    3rem;
     margin-bottom: 3rem;
     padding-left:  1.5rem;
-
-    font-size: $fs-medium;
-    line-height: 1.5;
-
-    border-left: 4px solid $clr-body;
+    font-size:   $fs-medium;
+    line-height: 1.3333;
+    border-left: rem-calc(4px) solid $clr-body;
 }
 
 .project-description {

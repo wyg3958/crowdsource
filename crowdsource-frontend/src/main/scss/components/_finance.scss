@@ -3,9 +3,13 @@
 *
 */
 
-// ---
+
+
+
+//
 // Finance Widget
-// ---
+//
+
 
 // Finance Container
 
@@ -13,7 +17,9 @@
     color: $clr-body;
     border: 1px solid $clr-border;
     border-radius: $border-radius;
+    box-shadow: 0 2px 0 0 rgba(0,0,0,.075);
 }
+
 
 // Sections
 
@@ -25,6 +31,7 @@
         border-bottom: none;
     }
 }
+
 
 // List items
 
@@ -72,6 +79,7 @@
     }
 }
 
+
 // Type
 
 /*span*/
@@ -81,6 +89,9 @@
     font-weight: $fw-bold;
     color: $clr-body-light;
 }
+
+
+
 
 // Button, extends Foundation's button styles
 
@@ -94,6 +105,7 @@
     }
 }
 
+
 // Add a disabled style, otherwise Foundation trumps
 
 .finance__btn[disabled] {
@@ -102,6 +114,7 @@
         background-color: $clr-alto;
     }
 }
+
 
 // Fields
 
@@ -155,41 +168,71 @@
     -moz-appearance: textfield;
 }
 
-// ---
-// Range Slider
-// ---
 
-// These classes extend Foundation's range slider
+
+
+//
+// Range Slider Styling to Add on Foundation's Slider
+//
+
+
+$rs-height:        rem-calc(2px);
+$rs-active-height: rem-calc(12px);
+$rs-handle-size:   rem-calc(32px);
+$rs-handle-bg:     $clr-body;
+
 
 .range-slider {
-    height: rem-calc(4px);
+    height: $rs-height;
     background-color: #000;
+    border: none;
+    border-right: 2px solid $white; // This fixes a strange pixel offset
+    // on the right side of the range-slider
+
+    border-top-left-radius:    $rs-height / 2;
+    border-bottom-left-radius: $rs-height / 2;
+
+    &.disabled,
+    &[disabled] {
+        opacity: 0.25;
+        background-color: $black;
+    }
 }
 
+
 .range-slider-active-segment {
-    height: rem-calc(12px);
-    top: -4px; // Offset (height active slider el - height slider) / 2
-    left: -1px; // Fix a strange pixel offset
-    border-top-left-radius: rem-calc(6px);
-    border-bottom-left-radius: rem-calc(6px);
+    height: $rs-active-height;
+    top:  -#{($rs-active-height - $rs-height) / 2};
+    left: -1px;  // This fixes a strange pixel offset
+    border-top-left-radius:    $rs-active-height / 2;
+    border-bottom-left-radius: $rs-active-height / 2;
     background: $clr-green-shade-2;
 }
 
-.range-slider-handle {
-    $range-slider-handle-bg: url('../images/range-slider-handle.svg') center center no-repeat;
-    // the oversize causes the round image to be displayed as a square as the display area is defined by $range-slider-handle-width/height in _settings.scss
-    // we did this as we could not find a size that works properly in ie/firefox and chrome (chrome being the last bitchy as always)
-    $range-slider-handle-size: rem-calc(32px);
 
-    background: $range-slider-handle-bg;
-    background-size: $range-slider-handle-size;
+.range-slider-handle {
+    $handle-bg: url('../images/range-slider-handle.svg') #{$rs-handle-bg} calc(50% + 1px) center no-repeat;
+
+    top: -#{($rs-handle-size / 2) - ($rs-height / 2)};
+    width:  $rs-handle-size;
+    height: $rs-handle-size;
+    background:    $handle-bg;
+    border-radius: 50%;
 
     &:hover {
-        background: $range-slider-handle-bg;
-        background-size: $range-slider-handle-size;
+        background: $handle-bg;
     }
 
-    .range-slider.disabled & {
-        display: none;
+    .range-slider.disabled  &,
+    .range-slider[disabled] & {
+
+        opacity: 1;
+        background: $handle-bg;
+        background-color: $black;
+
+        &:hover {
+            background: $handle-bg;
+            background-color: $black;
+        }
     }
 }

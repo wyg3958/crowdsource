@@ -1,14 +1,29 @@
-.project-details {
-    & > * {
-        &:first-child {
-            margin-top: 0;
-        }
+/***
+ * Project Details Page
+ *
+ *
+ */
 
-        &:last-child {
-            margin-bottom: 0;
-        }
-    }
+
+
+
+//
+//  Project Details Container
+//
+
+
+.project-details {
+    background-color: $white;
 }
+
+
+
+
+// Define icon dimensions and p text values
+
+$pd-fontsize: 16px;
+$pd-line-height: 1.5;
+$pd-icon-dimension: 24px;
 
 
 
@@ -16,13 +31,6 @@
 //
 //  Text Styles
 //
-
-
-// Define icon dimensions and p text values
-
-$pd-line-height: 1.5;
-$pd-fontsize:    16px;
-$pd-icon-dimension: 24px;
 
 
 /*h1*/.pd-heading {
@@ -251,6 +259,18 @@ $pd-icon-dimension: 24px;
     &:hover {
         border-color: darken($clr-border, 10%);
     }
+
+    &[disabled] {
+        color:  $clr-body;
+        border: 1px solid $clr-border;
+        background-color: $white;
+
+        &:hover {
+            background-color: $white;
+            color: $clr-body;
+        }
+
+    }
 }
 
 
@@ -293,6 +313,7 @@ $pd-icon-dimension: 24px;
     width: 100%;
 
     background-color: rgba($clr-green-shade-2, 0.65);
+
     &:hover {
         background-color: rgba($clr-green-shade-2, 1);
     }
@@ -306,6 +327,7 @@ $pd-icon-dimension: 24px;
     width: 100%;
 
     background-color: rgba(255, 60, 60, 0.65);
+
     &:hover {
         background-color: rgba(255, 60, 60, 1);
     }
@@ -356,16 +378,49 @@ $pd-icon-dimension: 24px;
 
 
 .pm-divider {
-    @include divider--with-text();
+    @include divider--with-text((word-width: 60px));
     margin-top:    rem-calc(-8px);
     margin-bottom: rem-calc(16px);
 
+    font-size: rem-calc(12px);
+    font-weight: 600;
+
     // @media > smartphone
     @media #{$medium-up} {
-        margin-bottom: rem-calc(42px);
+        margin-bottom: rem-calc(44px);
     }
 }
 
+
+
+
+//
+// Project Description
+//
+
+%project-text-layout {
+    @media #{$medium-up} {
+        margin-right: 1rem;
+        margin-left:  1rem;
+    }
+}
+
+/*p*/.project-short-description {
+    @extend %project-text-layout;
+
+    margin-top:    3rem;
+    margin-bottom: 3rem;
+    padding-left:  1.5rem;
+
+    font-size: $fs-medium;
+    line-height: 1.5;
+
+    border-left: 4px solid $clr-body;
+}
+
+.project-description {
+    @extend %project-text-layout;
+}
 
 
 
@@ -375,10 +430,10 @@ $pd-icon-dimension: 24px;
 //
 
 
-.project-details {
+.project-details__ {
     background: $white;
 
-    .h1 {
+    h1 {
         font-size: rem-calc(32);
         line-height: rem-calc(40);
         margin-bottom: rem-calc(16);

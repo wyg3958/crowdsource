@@ -85,8 +85,9 @@
 /*span*/
 .finance__subtitle {
     display: block;
-    font-size: $fs-small;
+    font-size:   $fs-small;
     font-weight: $fw-bold;
+    line-height: 1.2;
     color: $clr-body-light;
 }
 

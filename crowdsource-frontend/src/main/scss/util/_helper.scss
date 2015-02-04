@@ -110,6 +110,16 @@
 }
 
 
+.text--icon-back {
+    margin-left:  rem-calc(4px);
+    padding-left: rem-calc(14px);
+    background:   url('../images/icon-back.svg')  left center no-repeat;
+}
+
+
+.text--anchor-plain {
+    text-decoration: none;
+}
 
 
 //
@@ -145,6 +155,32 @@
 
 
 
+
+//
+// Shadows
+//
+
+
+@mixin box-shadow($options:()) {
+  $options: map-merge((
+    x:      0,
+    y:      2px,
+    blur:   0,
+    spread: 0,
+    color:  rgba(0,0,0,0.25)
+  ), $options);
+
+  box-shadow:
+    map-get($options, x)
+    map-get($options, y)
+    map-get($options, blur)
+    map-get($options, spread)
+    map-get($options, color);
+}
+
+
+
+
 //
 // List + List items
 //
@@ -168,6 +204,19 @@
 
     &:last-child {
         margin-bottom: 0;
+    }
+}
+
+
+%set-v-margins {
+    & > * {
+        &:first-child {
+            margin-top: 0;
+        }
+
+        &:first-child {
+            margin-bottom: 0;
+        }
     }
 }
 

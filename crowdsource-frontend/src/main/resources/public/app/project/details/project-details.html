@@ -106,11 +106,15 @@
 
     <project-pledging-form id="project-pledging-form" project="projectDetails.project"></project-pledging-form>
 
-    <p class="push-down">
-        <a href="#/projects">zurück zur Übersicht</a>
+    <p class="push-dble--ends push--sides">
+        <a href="#/projects" class="text--strong  text--icon-back  text--anchor-plain">Zurück zur Übersicht</a>
     </p>
 
     <div ng-if="projectDetails.auth.currentUser.loggedIn">
+        <h2 class="plist__heading">Say! Say! Say!</h2>
+        <p class="plist__intro--has-divider">
+            Gefällt Dir dieses Projekt? Hast Du Verbesserungsvorschläge? <br>Dann schreibe hier Deinen Kommentar.
+        </p>
         <project-comments project="projectDetails.project"></project-comments>
     </div>
 

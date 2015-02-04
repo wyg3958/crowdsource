@@ -43,14 +43,15 @@
 // Extends
 
 %btn-crwd {
-  background-color: $clr-blue-shade-2;
-  &:hover { background-color: $clr-blue-shade-1; }
+  background-color: $clr-blue-shade-3;
+  &:hover { background-color: $clr-blue-shade-2; }
 }
 
 
 %btn-crwd-success {
-  background-color: $clr-green-shade-2;
-  &:hover { background-color: #35EA87; }
+    color: $clr-body;
+    background-color: $clr-green-shade-2;
+    &:hover { background-color: #35EA87; color: $clr-body; }
 }
 
 
@@ -66,6 +67,10 @@
 
 button, .button {
 
+    padding: rem-calc(12px) rem-calc(32px);
+    font-size: rem-calc(14px);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   // Change Foundation's default transition, mixin in foundation/global.scss
   @include single-transition(background-color, 100ms);
 
@@ -87,6 +92,10 @@ button, .button {
   // Dark button
   &.dark {
     @extend %btn-dark;
+  }
+
+  &:focus {
+      outline: 0;
   }
 }
 

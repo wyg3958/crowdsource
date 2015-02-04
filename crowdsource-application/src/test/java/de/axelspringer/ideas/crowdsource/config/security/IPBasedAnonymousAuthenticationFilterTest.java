@@ -71,6 +71,22 @@ public class IPBasedAnonymousAuthenticationFilterTest {
         assertTrue(trustedAnonymousGranted(ipBasedAnonymousAuthenticationFilter.createAuthentication(mockRequest("10.5.4.9"))));
     }
 
+    @Test
+    public void testOneWildcardIps() {
+
+        trust("10.5.4.*");
+        assertTrue(trustedAnonymousGranted(ipBasedAnonymousAuthenticationFilter.createAuthentication(mockRequest("10.5.4.8"))));
+        assertFalse(trustedAnonymousGranted(ipBasedAnonymousAuthenticationFilter.createAuthentication(mockRequest("10.5.5.8"))));
+    }
+
+    @Test
+    public void testTwoWildcardIps() {
+
+        trust("10.5.*.*");
+        assertTrue(trustedAnonymousGranted(ipBasedAnonymousAuthenticationFilter.createAuthentication(mockRequest("10.5.4.8"))));
+        assertTrue(trustedAnonymousGranted(ipBasedAnonymousAuthenticationFilter.createAuthentication(mockRequest("10.5.5.8"))));
+    }
+
     private boolean trustedAnonymousGranted(Authentication authentication) {
         for (GrantedAuthority grantedAuthority : authentication.getAuthorities()) {
             if (Roles.ROLE_TRUSTED_ANONYMOUS.equals(grantedAuthority.getAuthority())) {

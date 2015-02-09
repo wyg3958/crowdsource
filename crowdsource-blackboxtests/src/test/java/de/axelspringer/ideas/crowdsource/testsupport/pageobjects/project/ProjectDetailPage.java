@@ -34,7 +34,7 @@ public class ProjectDetailPage {
     @FindBy(css = ".project-details h1")
     private WebElement title;
 
-    @FindBy(css = ".project-details h2")
+    @FindBy(className = "project-short-description")
     private WebElement shortDescription;
 
     @FindBy(css = ".project-details .project-description")

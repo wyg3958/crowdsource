@@ -37,7 +37,7 @@
 
         </div>
 
-        <div class="pm-l-cell-outer -cell-2nd"  ng-if="projectDetails.project.status !== 'FULLY_PLEDGED' && projectDetails.auth.currentUser.hasRole('ADMIN')">
+        <div class="pm-l-cell-outer -cell-2nd"  ng-if="(projectDetails.isRejectable() || projectDetails.isPublishable()) && projectDetails.auth.currentUser.hasRole('ADMIN')">
             <p class="pm-divider">Admin</p>
 
             <div ng-if="projectDetails.isRejectable() && projectDetails.auth.currentUser.hasRole('ADMIN')">

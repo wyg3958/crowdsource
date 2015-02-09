@@ -53,13 +53,13 @@ describe('project details', function () {
         $httpBackend.flush();
 
         expect(projectDetails.find('h1').text()).toBe('Title');
-        expect(projectDetails.find('.project-status__creator strong').text()).toBe('Foo Bar');
-        expect(projectDetails.find('.project-status__creator small')).not.toExist();
-        expect(projectDetails.find('.project-status__funding progress-bar .cs-progress__meter').css('width')).toBe('69.265%');
+        expect(projectDetails.find('.pd-creator strong').text()).toBe('Foo Bar');
+        expect(projectDetails.find('.pd-creator a')).not.toExist();
+        expect(projectDetails.find('progress-bar .cs-progress__meter').css('width')).toBe('69.265%');
         expect(projectDetails.find('.project-status__pledge-goal').text()).toBe('20.000');
         expect(projectDetails.find('.project-status__pledged-amount').text()).toBe('13.853');
         expect(projectDetails.find('.project-status__backers').text()).toBe('7');
-        expect(projectDetails.find('h2').text()).toBe('Short description');
+        expect(projectDetails.find('.project-short-description').text()).toBe('Short description');
         expect(projectDetails.find('.project-description').text()).toBe('Looong description');
         expect(projectDetails.find('.to-pledging-form-button').text()).not.toBeDisabled();
         expect(projectDetails.find('.to-pledging-form-button').text().trim()).toBe('Zur Finanzierung');
@@ -78,9 +78,9 @@ describe('project details', function () {
         $scope.$digest();
         $httpBackend.flush();
 
-        expect(projectDetails.find('.project-status__creator strong').text()).toBe('Foo Bar');
-        expect(projectDetails.find('.project-status__creator small')).toExist();
-        expect(projectDetails.find('.project-status__creator small').text()).toBe('foo.bar@axel.de');
+        expect(projectDetails.find('.pd-creator strong').text()).toBe('Foo Bar');
+        expect(projectDetails.find('.pd-creator a')).toExist();
+        expect(projectDetails.find('.pd-creator a').attr('href')).toBe('mailto:foo.bar@axel.de');
     });
 
     it("should show a not found page if no project was found", function () {

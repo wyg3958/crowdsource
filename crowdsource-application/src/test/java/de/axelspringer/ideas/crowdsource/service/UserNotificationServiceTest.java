@@ -53,7 +53,7 @@ public class UserNotificationServiceTest {
         assertThat(mail.getFrom(), is(UserNotificationService.FROM_ADDRESS));
         assertThat(mail.getTo(), arrayContaining(user.getEmail()));
         assertThat(mail.getSubject(), is(UserNotificationService.ACTIVATION_SUBJECT));
-        assertThat(mail.getText(), is("Hallo Some One,\n\nDu hast Dich gerade auf der AS ideas Crowd Platform angemeldet.\nUm Deine Registrierung abzuschließen, öffne bitte diesen Link und setze Dein Passwort:\n\nhttps://crowd.asideas.de#/signup/some.one@email.com/activation/activationTok3n\n\nBei Fragen wende dich an: support@crowd.asideas.de\n\nMit freundlichen Grüßen\nDein AS ideas Crowd Team\n\nAS ideAS Engineering\nAxel-Springer-Straße 65\n10888 Berlin\n\nAxel Springer ideAS Engineering GmbH\nEin Unternehmen der Axel Springer SE\nSitz Berlin, Amtsgericht Charlottenburg, HRB 138466 B\nGeschäftsführer: Daniel Keller, Niels Matusch"));
+        assertThat(mail.getText(), is("Hallo Some One,\n\nDu hast Dich gerade auf der AS ideas Crowd Platform angemeldet.\nUm Deine Registrierung abzuschließen, öffne bitte diesen Link und setze Dein Passwort:\n\nhttps://crowd.asideas.de#/signup/some.one@email.com/activation/activationTok3n\n\nBei Fragen wende dich an: support@crowd.asideas.de\n\nMit freundlichen Grüßen\nDein AS ideas Crowd Team\n\nAS Ideas Engineering\nAxel-Springer-Straße 65\n10888 Berlin\n\nAxel Springer Ideas Engineering GmbH\nEin Unternehmen der Axel Springer SE\nSitz Berlin, Amtsgericht Charlottenburg, HRB 138466 B\nGeschäftsführer: Daniel Keller, Niels Matusch"));
     }
 
     @Test
@@ -67,7 +67,7 @@ public class UserNotificationServiceTest {
         assertThat(mail.getFrom(), is(UserNotificationService.FROM_ADDRESS));
         assertThat(mail.getTo(), arrayContaining(user.getEmail()));
         assertThat(mail.getSubject(), is(UserNotificationService.PASSWORD_FORGOTTEN_SUBJECT));
-        assertThat(mail.getText(), is("Hallo Some One,\n\nDu hast soeben ein neues Passwort für Dein Konto bei der AS ideas Crowd Plattform angefordert.\n\nBitte öffne diesen Link:\n\nhttps://crowd.asideas.de#/login/password-recovery/some.one@email.com/activation/activationTok3n\n\nund setze Dein neues Passwort.\n\nBei Fragen wende Dich an: support@crowd.asideas.de\n\nMit freundlichen Grüßen\nDein AS ideas Crowd Team\n\nAS ideAS Engineering\nAxel-Springer-Straße 65\n10888 Berlin\n\nAxel Springer ideAS Engineering GmbH\nEin Unternehmen der Axel Springer SE\nSitz Berlin, Amtsgericht Charlottenburg, HRB 138466 B\nGeschäftsführer: Daniel Keller, Niels Matusch"));
+        assertThat(mail.getText(), is("Hallo Some One,\n\nDu hast soeben ein neues Passwort für Dein Konto bei der AS ideas Crowd Plattform angefordert.\n\nBitte öffne diesen Link:\n\nhttps://crowd.asideas.de#/login/password-recovery/some.one@email.com/activation/activationTok3n\n\nund setze Dein neues Passwort.\n\nBei Fragen wende Dich an: support@crowd.asideas.de\n\nMit freundlichen Grüßen\nDein AS ideas Crowd Team\n\nAS Ideas Engineering\nAxel-Springer-Straße 65\n10888 Berlin\n\nAxel Springer Ideas Engineering GmbH\nEin Unternehmen der Axel Springer SE\nSitz Berlin, Amtsgericht Charlottenburg, HRB 138466 B\nGeschäftsführer: Daniel Keller, Niels Matusch"));
     }
 
     @Test
@@ -80,7 +80,7 @@ public class UserNotificationServiceTest {
         assertThat(mail.getFrom(), is(UserNotificationService.FROM_ADDRESS));
         assertThat(mail.getTo(), arrayContaining(user.getEmail()));
         assertThat(mail.getSubject(), is(UserNotificationService.PROJECT_PUBLISHED_SUBJECT));
-        assertThat(mail.getText(), is("Hallo Some One,\n\nDein Projekt wurde erfolgreich freigegeben!\nWeitere Informationen hinsichtlich des Prozesses kannst Du der FAQ entnehmen.\n\nZu Deinem Projekt:\n\nhttps://crowd.asideas.de#/project/proj3ctId\n\nBei Fragen wende Dich an: support@crowd.asideas.de\n\nMit freundlichen Grüßen\nDein AS ideas Crowd Team\n\nAS ideAS Engineering\nAxel-Springer-Straße 65\n10888 Berlin\n\nAxel Springer ideAS Engineering GmbH\nEin Unternehmen der Axel Springer SE\nSitz Berlin, Amtsgericht Charlottenburg, HRB 138466 B\nGeschäftsführer: Daniel Keller, Niels Matusch"));
+        assertThat(mail.getText(), is("Hallo Some One,\n\nDein Projekt wurde erfolgreich freigegeben!\nWeitere Informationen hinsichtlich des Prozesses kannst Du der FAQ entnehmen.\n\nZu Deinem Projekt:\n\nhttps://crowd.asideas.de#/project/proj3ctId\n\nBei Fragen wende Dich an: support@crowd.asideas.de\n\nMit freundlichen Grüßen\nDein AS ideas Crowd Team\n\nAS Ideas Engineering\nAxel-Springer-Straße 65\n10888 Berlin\n\nAxel Springer Ideas Engineering GmbH\nEin Unternehmen der Axel Springer SE\nSitz Berlin, Amtsgericht Charlottenburg, HRB 138466 B\nGeschäftsführer: Daniel Keller, Niels Matusch"));
     }
 
     @Test
@@ -93,7 +93,7 @@ public class UserNotificationServiceTest {
         assertThat(mail.getFrom(), is(UserNotificationService.FROM_ADDRESS));
         assertThat(mail.getTo(), arrayContaining(user.getEmail()));
         assertThat(mail.getSubject(), is(UserNotificationService.PROJECT_REJECTED_SUBJECT));
-        assertThat(mail.getText(), is("Hallo Some One,\n\nDein Projekt wurde leider abgelehnt.\nDas AS Crowd Platform Team wird in Kürze mit Dir in Kontakt treten, um die nächsten Schritte zu besprechen.\n\nZu Deinem Projekt:\n\nhttps://crowd.asideas.de#/project/proj3ctId\n\nBei Fragen wende Dich an: support@crowd.asideas.de\n\nMit freundlichen Grüßen\nDein AS ideas Crowd Team\n\nAS ideAS Engineering\nAxel-Springer-Straße 65\n10888 Berlin\n\nAxel Springer ideAS Engineering GmbH\nEin Unternehmen der Axel Springer SE\nSitz Berlin, Amtsgericht Charlottenburg, HRB 138466 B\nGeschäftsführer: Daniel Keller, Niels Matusch"));
+        assertThat(mail.getText(), is("Hallo Some One,\n\nDein Projekt wurde leider abgelehnt.\nDas AS Crowd Platform Team wird in Kürze mit Dir in Kontakt treten, um die nächsten Schritte zu besprechen.\n\nZu Deinem Projekt:\n\nhttps://crowd.asideas.de#/project/proj3ctId\n\nBei Fragen wende Dich an: support@crowd.asideas.de\n\nMit freundlichen Grüßen\nDein AS ideas Crowd Team\n\nAS Ideas Engineering\nAxel-Springer-Straße 65\n10888 Berlin\n\nAxel Springer Ideas Engineering GmbH\nEin Unternehmen der Axel Springer SE\nSitz Berlin, Amtsgericht Charlottenburg, HRB 138466 B\nGeschäftsführer: Daniel Keller, Niels Matusch"));
     }
 
     @Test
@@ -119,7 +119,7 @@ public class UserNotificationServiceTest {
         assertThat(mail.getFrom(), is(UserNotificationService.FROM_ADDRESS));
         assertThat(mail.getTo(), arrayContaining(ADMIN_EMAIL));
         assertThat(mail.getSubject(), is(UserNotificationService.NEW_PROJECT_SUBJECT));
-        assertThat(mail.getText(), is("Hallo Admin,\n\nes liegt ein neues Projekt zur Freigabe vor:\n\nhttps://crowd.asideas.de#/project/proj3ctId\n\nMit freundlichen Grüßen\nDein AS ideas Crowd Team\n\nAS ideAS Engineering\nAxel-Springer-Straße 65\n10888 Berlin\n\nAxel Springer ideAS Engineering GmbH\nEin Unternehmen der Axel Springer SE\nSitz Berlin, Amtsgericht Charlottenburg, HRB 138466 B\nGeschäftsführer: Daniel Keller, Niels Matusch"));
+        assertThat(mail.getText(), is("Hallo Admin,\n\nes liegt ein neues Projekt zur Freigabe vor:\n\nhttps://crowd.asideas.de#/project/proj3ctId\n\nMit freundlichen Grüßen\nDein AS ideas Crowd Team\n\nAS Ideas Engineering\nAxel-Springer-Straße 65\n10888 Berlin\n\nAxel Springer Ideas Engineering GmbH\nEin Unternehmen der Axel Springer SE\nSitz Berlin, Amtsgericht Charlottenburg, HRB 138466 B\nGeschäftsführer: Daniel Keller, Niels Matusch"));
     }
 
 

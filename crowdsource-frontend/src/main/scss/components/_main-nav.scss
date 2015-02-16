@@ -79,10 +79,3 @@ nav.top-bar {
         }
     }
 }
-
-
-// Move burger icon up otherwise it will break when an image is inserted
-// in html .title-area .site-logo
-.top-bar .toggle-topbar.menu-icon {
-    margin-top: -50px;
-}

@@ -53,53 +53,6 @@
         </div>
     </div>
 
-    <div class="project-status" style="display: none">
-
-        <div class="project-status__creator">
-            <img class="project-status__user-avatar" src="app/user/avatar.svg">
-            von <strong class="text--strong">{{ projectDetails.project.creator.name }}</strong>
-            <div ng-if="projectDetails.auth.currentUser.hasRole('ADMIN')"><small>{{ projectDetails.project.creator.email }}</small></div>
-        </div>
-
-        <div class="project-status__funding">
-            <progress-bar value="projectDetails.project.pledgedAmount" maximum="projectDetails.project.pledgeGoal"></progress-bar>
-
-            <ul class="project-status__funding-list">
-                <li>
-                    <span class="project-status__pledged-amount">{{ projectDetails.project.pledgedAmount | number }}</span> /
-                    <span class="project-status__pledge-goal">{{ projectDetails.project.pledgeGoal | number }}</span>&nbsp;AS$
-                    <span class="project-status__funding-cat">Finanzierung</span>
-                </li>
-                <li>
-                    <span class="project-status__backers">{{ projectDetails.project.backers }}</span>
-                    <span class="project-status__funding-cat">Förderer</span>
-                </li>
-            </ul>
-        </div>
-
-        <div class="project-status__cta">
-            <div>
-                <button class="project-status__btn  to-pledging-form-button"
-                        scroll-to="project-pledging-form"
-                        ng-disabled="projectDetails.project.status == 'FULLY_PLEDGED'">
-                    <span ng-if="projectDetails.project.status == 'FULLY_PLEDGED'">Zu 100% finanziert!</span>
-                    <span ng-if="projectDetails.project.status != 'FULLY_PLEDGED'">Zur Finanzierung</span>
-                </button>
-            </div>
-            <div ng-if="projectDetails.isPublishable() && projectDetails.auth.currentUser.hasRole('ADMIN')">
-                <button class="project-status__btn  publish-button" ng-click="projectDetails.publish()" ng-disabled="projectDetails.publishing">
-                    {{ projectDetails.publishing ? 'Veröffentlichen...' : 'Veröffentlichen' }}
-                </button>
-            </div>
-            <div ng-if="projectDetails.isRejectable() && projectDetails.auth.currentUser.hasRole('ADMIN')">
-                <button class="project-status__btn  reject-button" ng-click="projectDetails.reject()" ng-disabled="projectDetails.rejecting">
-                    {{ projectDetails.rejecting ? 'Ablehnen...' : 'Ablehnen'}}
-                </button>
-            </div>
-        </div>
-
-    </div>
-
     <p class="project-short-description">{{ projectDetails.project.shortDescription}}</p>
 
     <div class="project-description">{{ projectDetails.project.description }}</div>
@@ -111,7 +64,7 @@
     </p>
 
     <div ng-if="projectDetails.auth.currentUser.loggedIn">
-        <h2 class="plist__heading">Say! Say! Say!</h2>
+        <h2 class="plist__heading">Dein Kommentar</h2>
         <p class="plist__intro--has-divider">
             Gefällt Dir dieses Projekt? Hast Du Verbesserungsvorschläge? <br>Dann schreibe hier Deinen Kommentar.
         </p>

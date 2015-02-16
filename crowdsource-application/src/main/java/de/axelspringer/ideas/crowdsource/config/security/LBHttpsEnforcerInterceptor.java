@@ -16,12 +16,14 @@ import javax.servlet.http.HttpServletResponse;
 @Conditional(AppProfiles.ProductionCondition.class)
 public class LBHttpsEnforcerInterceptor extends HandlerInterceptorAdapter {
 
+    public static final String X_FORWARDED_PROTO_HEADER = "X-FORWARDED-PROTO";
+
     @Value("${de.axelspringer.ideas.crowdsource.baseUrl}")
     private String applicationUrl;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        final String forwardedHeader = request.getHeader("X-FORWARDED-PROTO");
+        final String forwardedHeader = request.getHeader(X_FORWARDED_PROTO_HEADER);
         if (StringUtils.isBlank(forwardedHeader) || !"HTTPS".equalsIgnoreCase(forwardedHeader)) {
             log.debug("redirecting non-https request with header: {}", forwardedHeader);
             response.sendRedirect(applicationUrl);

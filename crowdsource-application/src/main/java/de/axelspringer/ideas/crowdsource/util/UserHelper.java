@@ -9,9 +9,6 @@ import static java.util.stream.Collectors.joining;
 
 public class UserHelper {
 
-    private UserHelper() {
-    }
-
     public static String determineNameFromEmail(String email) {
         if (email == null) {
             return null;

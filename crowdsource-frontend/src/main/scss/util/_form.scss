@@ -20,37 +20,18 @@
 // ---
 
 
-// Mixins
-
-@mixin box-shadow($options:()) {
-  $options: map-merge((
-    x:      0,
-    y:      2px,
-    blur:   0,
-    spread: 0,
-    color:  rgba(0,0,0,0.25)
-  ), $options);
-
-  box-shadow:
-    map-get($options, x)
-    map-get($options, y)
-    map-get($options, blur)
-    map-get($options, spread)
-    map-get($options, color);
-}
-
-
 // Extends
 
 %btn-crwd {
-  background-color: $clr-blue-shade-2;
-  &:hover { background-color: $clr-blue-shade-1; }
+  background-color: $clr-blue-shade-3;
+  &:hover { background-color: $clr-blue-shade-2; }
 }
 
 
 %btn-crwd-success {
-  background-color: $clr-green-shade-2;
-  &:hover { background-color: #35EA87; }
+    color: $clr-body;
+    background-color: $clr-green-shade-2;
+    &:hover { background-color: #35EA87; color: $clr-body; }
 }
 
 
@@ -66,6 +47,10 @@
 
 button, .button {
 
+    padding: rem-calc(12px) rem-calc(32px);
+    font-size: rem-calc(14px);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   // Change Foundation's default transition, mixin in foundation/global.scss
   @include single-transition(background-color, 100ms);
 
@@ -87,6 +72,10 @@ button, .button {
   // Dark button
   &.dark {
     @extend %btn-dark;
+  }
+
+  &:focus {
+      outline: 0;
   }
 }
 

@@ -10,6 +10,9 @@
 // ---
 
 .alert-box {
+
+  border-radius: $border-radius;
+
   a {
     text-decoration: none;
     font-weight: $fw-bold;
@@ -21,10 +24,5 @@
 
   &.alert {
     color: $white;
-  }
-
-  &.info {
-    color: $white;
-    background-color: $clr-blue-shade-2;
   }
 }

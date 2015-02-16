@@ -51,22 +51,31 @@
 
 
 @mixin css-table($options: ()) {
-  $options: map-merge((
-      width: 100%,
-      table-layout: initial
-    ), $options);
+    $options: map-merge(
 
-  display: table;
-  border-collapse: collapse;
-  table-layout: map-get($options, table-layout);
-  width: map-get($options, width);
+        (
+            width: 100%,
+            table-layout: initial,
+            border-collapse: initial
+        ),
+
+        $options);
+
+    display: table;
+    border-collapse: map-get($options, border-collapse);
+    table-layout: map-get($options, table-layout);
+    width: map-get($options, width);
 }
 
 
 @mixin css-table-cell($options: ()) {
-  $options: map-merge((
-    valign: middle
-  ), $options);
+    $options: map-merge(
+        (
+            valign: middle,
+            width : auto
+        ),
+
+        $options);
 
   display: table-cell;
   width: map-get($options, width);
@@ -96,6 +105,21 @@
 }
 
 
+.text--right {
+    text-align: right;
+}
+
+
+.text--icon-back {
+    margin-left:  rem-calc(4px);
+    padding-left: rem-calc(14px);
+    background:   url('../images/icon-back.svg')  left center no-repeat;
+}
+
+
+.text--anchor-plain {
+    text-decoration: none;
+}
 
 
 //
@@ -131,12 +155,97 @@
 
 
 
+
+//
+// Shadows
+//
+
+
+@mixin box-shadow($options:()) {
+  $options: map-merge((
+    x:      0,
+    y:      2px,
+    blur:   0,
+    spread: 0,
+    color:  rgba(0,0,0,0.25)
+  ), $options);
+
+  box-shadow:
+    map-get($options, x)
+    map-get($options, y)
+    map-get($options, blur)
+    map-get($options, spread)
+    map-get($options, color);
+}
+
+
+
+
 //
 // List + List items
 //
 
 
-%list--plain {
+%child-reset-margins-h {
+    &:first-child {
+        margin-left: 0;
+    }
+
+    &:last-child {
+        margin-right: 0;
+    }
+}
+
+
+%child-reset-margins-v {
+    &:first-child {
+        margin-top: 0;
+    }
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+
+%set-v-margins {
+    & > * {
+        &:first-child {
+            margin-top: 0;
+        }
+
+        &:first-child {
+            margin-bottom: 0;
+        }
+    }
+}
+
+
+%list--plain,
+.list--plain {
     margin: 0;  // Reset margins
     list-style-type: none;
+}
+
+
+@mixin list-item--inline($options:()) {
+
+    $options: map-merge(
+        (
+            margin-right: 1rem,
+            float: false
+        ),
+
+    $options);
+
+    @extend %child-reset-margins-h;
+
+    @if (map-get($options, float)) {
+        float: left;
+    }
+    @else {
+        display: inline-block;
+    }
+
+    margin-right: map-get($options, margin-right);
 }

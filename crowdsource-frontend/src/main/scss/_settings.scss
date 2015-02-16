@@ -125,7 +125,7 @@ $clr-blue-bell: #8C82C8;
 
 $clr-body: $clr-mine-shaft;
 $clr-body-light: $clr-boulder;
-$clr-border: $clr-alto;
+$clr-border: lighten($clr-alto, 2.5%);
 $clr-bg: $clr-gallery;
 $clr-teaser-start: $clr-bossanova;
 $clr-teaser-end: $clr-blue-shade-5;

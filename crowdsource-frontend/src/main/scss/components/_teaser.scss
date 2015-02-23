@@ -53,7 +53,7 @@
 // Teaser Structure: Visual and Content
 //
 
-.teaser__visual {
+.teaser-visual {
     @extend %teaser-visual-gradient;
 
     position: absolute;
@@ -67,9 +67,9 @@
     }
 }
 
-.teaser__content {
+.teaser-content {
     position: relative;
-    padding: 3rem 1rem;
+    padding: 2rem 1rem;
     text-align: center;
 }
 
@@ -78,7 +78,7 @@
 //
 
 /*h1*/
-.teaser__heading {
+.teaser-heading {
     @extend %font-smoothing;
 
     margin: 0;
@@ -93,7 +93,7 @@
 }
 
 /*p*/
-.teaser__intro {
+.teaser-subhead {
     @extend %font-smoothing;
 
     margin-bottom: 0;
@@ -104,6 +104,80 @@
         font-size: rem-calc(20px);
     }
 }
+
+
+//
+// Teaser Action Bar: Start, Ideate, Make it real
+//
+
+.teaser-action-bar {
+    display: none;
+
+    @media #{$medium-up} {
+        @include css-table();
+        position: relative;
+        max-width: 62.5rem;
+        margin: 3rem auto;
+        counter-reset: teaser-counter;
+
+        &::before {
+            // Draws a line to cut the diamnond bg images in
+            // .teaser-action-bar__heading
+            content: '';
+            position: absolute;
+            width: 100%;
+            left: 0;
+            top: #{16px + 12px};  // > Padding for .teaser-action-bar__item +
+            // top of diamond image
+            border-bottom: 1px solid rgba($clr-yellow-shade-1, .5);
+        }
+    }
+
+}
+
+.teaser-action-bar__item {
+    @include css-table-cell((valign: top));
+    counter-increment: teaser-counter;
+    padding: 1rem;
+}
+
+/*h2*/.teaser-action-bar__heading {
+    @extend %font-smoothing;
+    position: relative;
+    margin: 0 0 rem-calc(4px) 0;
+    padding-top: rem-calc(50px);
+    font-size:   rem-calc(18px);
+    font-weight: 600;
+    line-height: 1.3333;
+    text-transform: uppercase;
+    background: url('../images/icon-teaser-diamond.svg') center top no-repeat;
+
+    &::after {
+        content: counter(teaser-counter);
+        position: absolute;
+        width: 100%;
+        top:   rem-calc(3px);
+        left:  0;
+        color: $clr-yellow-shade-1;
+    }
+}
+
+/*p*/.teaser-action-bar__lede {
+    @extend %font-smoothing;
+    font-size: rem-calc(18px);
+    line-height: 1.3333;
+    color: $white;
+}
+
+
+
+
+
+
+
+
+
+
 
 //
 // Teaser Content Metrics Components

@@ -9,19 +9,9 @@
 // Main Nav
 // ---
 
-/*a*/.site-logo {
-    font-size: rem-calc(22px);
-    font-weight: 700 !important;  // Overrule Foundation
-
-    img {
-        position: relative;
-        top: -2px;
-        width: 150px;
-    }
-
-    /*img*/.beta {
-        width: 220px;
-    }
+/*img*/.site-logo {
+    width:  auto;
+    height: rem-calc(25px);
 }
 
 

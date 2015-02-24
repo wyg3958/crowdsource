@@ -80,16 +80,13 @@
 /*h1*/
 .teaser-heading {
     @extend %font-smoothing;
-
     margin: 0;
     font-size: $fs-medium;
     font-weight: 600;
     line-height: 1.33;
     color: $white;
-
-    @media #{$medium-up} {
-        font-size: $fs-hero;
-    }
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 /*p*/
@@ -97,6 +94,7 @@
     @extend %font-smoothing;
 
     margin-bottom: 0;
+    font-size: rem-calc(18px);
     font-weight: 400;
     color: $clr-body;
 
@@ -117,39 +115,61 @@
         @include css-table();
         position: relative;
         max-width: 62.5rem;
-        margin: 3rem auto;
+        margin: 1.5rem auto;
         counter-reset: teaser-counter;
 
         &::before {
-            // Draws a line to cut the diamnond bg images in
+            // Draws a line to visually connect the diamond bg images in
             // .teaser-action-bar__heading
             content: '';
             position: absolute;
             width: 100%;
+            height: 1px;
             left: 0;
-            top: #{16px + 12px};  // > Padding for .teaser-action-bar__item +
+            top: rem-calc(12px);  // > Padding for .teaser-action-bar__item +
             // top of diamond image
-            border-bottom: 1px solid rgba($clr-yellow-shade-1, .5);
+            background-image: linear-gradient(135deg, rgba($clr-yellow-shade-1,0.25), rgba($clr-yellow-shade-1,1), rgba($clr-yellow-shade-1,0.25));
         }
     }
 
 }
 
 .teaser-action-bar__item {
-    @include css-table-cell((valign: top));
+    @include css-table-cell((valign: top, table-layout:fixed));
+    @extend %set-v-margins;
     counter-increment: teaser-counter;
-    padding: 1rem;
+    padding: 0 5%;
+
+    &.-side  {
+        @extend %teaser-action-bar__item--smaller;
+    }
+
+    &.-center {
+        @extend %teaser-action-bar__item--bigger;
+    }
+}
+
+// Variations of action-bar items with various widths
+// small item
+%teaser-action-bar__item--smaller {
+    width: 28%;
+}
+
+// And a bigger item
+%teaser-action-bar__item--bigger {
+    width: 44%;
 }
 
 /*h2*/.teaser-action-bar__heading {
     @extend %font-smoothing;
     position: relative;
     margin: 0 0 rem-calc(4px) 0;
-    padding-top: rem-calc(50px);
+    padding-top: rem-calc(56px);
     font-size:   rem-calc(18px);
     font-weight: 600;
     line-height: 1.3333;
     text-transform: uppercase;
+    color: $clr-yellow-shade-1;
     background: url('../images/icon-teaser-diamond.svg') center top no-repeat;
 
     &::after {
@@ -163,14 +183,65 @@
 }
 
 /*p*/.teaser-action-bar__lede {
+    @include typographic-divider((width: 3rem, height: .25rem, offset-bottom: 1rem));
     @extend %font-smoothing;
     font-size: rem-calc(18px);
     line-height: 1.3333;
     color: $white;
+
+
+}
+
+/*p*/.teaser-action-bar__metrics {
+    @extend %font-smoothing;
+    font-size: rem-calc(18px);
+    line-height: 1;
+    // color: $clr-yellow-shade-1;
 }
 
 
 
+
+.teaser-metrics-bar {
+    margin: 1rem 0;
+
+    @extend %set-v-margins;
+
+    @media #{$medium-up} {
+        @include css-table((table-layout:fixed));
+        @extend %font-smoothing;
+        max-width: 62.5rem;
+        margin: 2rem auto;
+        border: 1px solid rgba($clr-yellow-shade-1, .5);
+    }
+}
+
+/*ul*/.teaser-metrics-bar__item {
+
+    margin: 1rem 0;
+
+    > li {
+        color: $clr-green-shade-5;
+    }
+
+    /*li*/.-text-highlight {
+        font-size: rem-calc(20px);
+        color: $clr-yellow-shade-1;
+    }
+
+    @media #{$small-only} {
+        &:not(:last-child) {
+            @include typographic-divider((height: .125rem, offset-bottom: 1rem, color: $clr-yellow-shade-1));
+        }
+
+    }
+
+    @media #{$medium-up} {
+        @include css-table-cell((valign: top));
+        @extend %list--plain;
+        padding: 1rem;
+    }
+}
 
 
 

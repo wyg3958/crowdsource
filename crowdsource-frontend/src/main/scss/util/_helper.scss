@@ -131,13 +131,14 @@
     $options: map-merge((
         width:  rem-calc(96px),
         height: rem-calc(4px),
-        offset-bottom: rem-calc(24px)
+        offset-bottom: rem-calc(24px),
+        color: #2d2d2d
         ), $options
     );
 
-    $offset-bottom: map-get($options, offset-bottom) + map-get($options, height) / 2;
+    $offset-bottom: map-get($options, offset-bottom) + map-get($options, height);
     $margin-left:   map-get($options, width) / 2;
-    $margin-bottom: map-get($options, offset-bottom) * 2.5;
+    $margin-bottom: map-get($options, offset-bottom) * 2 + map-get($options, height);
 
     position: relative;
     margin-bottom: $margin-bottom;
@@ -146,10 +147,11 @@
         content:  '';
         position: absolute;
         left:   50%;
-        bottom: #{-$offset-bottom};
+        bottom: -#{$offset-bottom};
         width:  map-get($options, width);
         margin-left:   #{-$margin-left};
-        border-bottom: map-get($options, height) solid #2D2D2D;
+        border-bottom: map-get($options, height) solid map-get($options, color);
+        // border-color: map-get($options, color);
     }
 }
 
@@ -214,7 +216,7 @@
             margin-top: 0;
         }
 
-        &:first-child {
+        &:last-child {
             margin-bottom: 0;
         }
     }

@@ -19,6 +19,12 @@
 }
 
 
+.no-flexbox .team {
+    display: block;
+    @extend %another-clearfix;
+}
+
+
 
 
 //
@@ -43,6 +49,11 @@ $team-width:  ($team-container-width - ($team-gutter * $team-items * 2)) / $team
     position: relative;
     width:  $team-width;
     margin: $team-gutter;
+}
+
+
+.no-flexbox .team__member {
+    float: left;
 }
 
 

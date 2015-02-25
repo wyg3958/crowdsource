@@ -47,7 +47,7 @@
                     </label>
                 </li>
                 <li class="right  finance__li-important pledgable-amount">
-                    {{ pledgingForm.getPledgableAmount() | number }} &euro;
+                    {{ pledgingForm.getPledgableAmount() | number }} EUR
                 </li>
             </ul>
         </div>
@@ -55,11 +55,11 @@
             <ul class="finance__ul">
                 <li class="finance__li">
                     <span class="pledged-amount">{{ pledgingForm.project.pledgedAmount + pledgingForm.pledge.amount | number }}</span> /
-                    <span class="pledge-goal">{{ pledgingForm.project.pledgeGoal | number }}</span> &euro;
+                    <span class="pledge-goal">{{ pledgingForm.project.pledgeGoal | number }}</span> EUR
                     <span class="finance__subtitle">Finanzierung</span>
                 </li>
                 <li class="finance__li">
-                    <span class="budget">{{ pledgingForm.user.budget - pledgingForm.pledge.amount | number }} &euro;</span>
+                    <span class="budget">{{ pledgingForm.user.budget - pledgingForm.pledge.amount | number }} EUR</span>
                     <span class="finance__subtitle">Dein Budget</span>
                 </li>
                 <li class="finance__li--cta">

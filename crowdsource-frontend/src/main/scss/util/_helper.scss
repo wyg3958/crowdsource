@@ -151,7 +151,6 @@
         width:  map-get($options, width);
         margin-left:   #{-$margin-left};
         border-bottom: map-get($options, height) solid map-get($options, color);
-        // border-color: map-get($options, color);
     }
 }
 

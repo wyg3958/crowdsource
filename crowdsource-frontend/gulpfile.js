@@ -39,7 +39,7 @@ gulp.task('sass', function () {
         }))
 
         .pipe(autoprefixer({
-            browsers: ['last 2 versions'],
+            browsers: ['last 2 versions', 'Firefox 24'],
             cascade: false
         }))
 

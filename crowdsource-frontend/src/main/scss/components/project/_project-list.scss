@@ -2,10 +2,6 @@
  * Project List & Home
  */
 
-.project-list {
-    //display: none;
-}
-
 //
 // Global vars and calculations
 //
@@ -17,7 +13,7 @@ $tiles: 3;
 // Tiles on one row
 $tile-gutter: 0.5rem;
 // Horizonatal margins
-$tile-width: ($content-width - ($tile-gutter * $tiles * 2)) / $tiles;
+$tile-width: ($content-width - ($tile-gutter * 2 * $tiles)) / $tiles;
 
 // Other tile vars
 
@@ -29,8 +25,10 @@ $metrics-height: rem-calc(42px);
 // 1) tile width: 100% for browser widths that can contain only 1 tile, and
 // 2) fixed width (see above) for browser widths that can contain more than 1 tile
 
-$page-padding: rem-calc(40px);
-$tile-break: "only screen and (min-width: #{$tile-width * 2 + $tile-gutter * 4 + $page-padding * 2 + rem-calc(1px)})";
+$container-padding: rem-calc(16px);  // Padding on one side of the surrounding
+// container that wraps our tiles
+$two-tiles: "only screen and (min-width: #{$tile-width * 2 + $tile-gutter * 4 + $container-padding * 2 + rem-calc(1px)}) and (max-width: #{$tile-width * 3 + $tile-gutter * 6 + $container-padding * 2})";
+$two-tiles-up:  "only screen and (min-width: #{$tile-width * 2 + $tile-gutter * 4 + $container-padding * 2 + rem-calc(1px)})";
 $intro-box-break: "only screen and (max-width: 740px)";
 
 //
@@ -107,7 +105,7 @@ $intro-box-break: "only screen and (max-width: 740px)";
     border: none;
     border-radius: $border-radius;
     background-color: $white;
-    box-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.1), // Shadow below 0 0 2px 0 rgba(0, 0, 0, 0.1); // Outline-like shadow
+    box-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.1);
 }
 
 // This is our flex container housing a list projects
@@ -116,10 +114,28 @@ $intro-box-break: "only screen and (max-width: 740px)";
 .project__ul {
     @extend %list--plain;
 
-    @media #{$tile-break} {
+    @media #{$two-tiles-up} {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
+    }
+
+    @extend %another-clearfix; // Alternative clearfix for flexbox fallback: items (project__li's)
+    // are floated for browsers, that don't get it (flexbox :)) Standard micro clearfix
+    // doesn't seem to work with flexbox's display: flex in webkit browsers
+}
+
+
+// Modernizr fallback for browsers that don't know flexbox (eg. FF24 doesn't know about flex-wrap)
+
+.no-flexbox .project__ul {
+    @media #{$two-tiles-up} {
+        display: block; // Reset display: flex;
+    }
+
+    @media #{$two-tiles} {
+        width: $tile-width * 2 + $tile-gutter * 4;
+        margin: 0 auto;
     }
 }
 
@@ -129,7 +145,8 @@ $intro-box-break: "only screen and (max-width: 740px)";
 .project__li {
     margin: ($tile-gutter * 2) 0;
 
-    @media #{$tile-break} {
+    @media #{$two-tiles-up} {
+        float: left; // Fallback for browsers that don't know flexbox...
         margin: $tile-gutter;
     }
 }
@@ -156,7 +173,7 @@ $intro-box-break: "only screen and (max-width: 740px)";
         }
     }
 
-    @media #{$tile-break} {
+    @media #{$two-tiles-up} {
         width: $tile-width;
     }
 }
@@ -265,7 +282,8 @@ $intro-box-break: "only screen and (max-width: 740px)";
     margin: 2rem 0;
     border: 1px solid $clr-border;
     border-radius: $border-radius;
-
+    text-align: center;
+    
     @media #{$intro-box-break} {
         flex-wrap: wrap;
     }
@@ -360,39 +378,4 @@ $intro-box-break: "only screen and (max-width: 740px)";
 .intro-box__item-icon--clock {
     @extend %intro-box__item-icon;
     background-image: url('../images/icon-clock-white.svg');
-}
-
-.intro-section {
-    text-align: center;
-
-    .container > p {
-        max-width: rem-calc(700);
-        text-align: center;
-        margin-left: auto;
-        margin-right: auto;
-
-    }
-
-    .info-boxes {
-        @media #{$small-up} {
-            @include block-grid(
-            $per-row: 1,
-            $spacing: 5px
-            );
-        }
-        @media #{$medium-up} {
-            @include block-grid(
-            $per-row: 3,
-            $spacing: 20px
-            );
-        }
-
-        h2 {
-            font-size: rem-calc(20);
-        }
-
-        .divider {
-            margin-bottom: 10px;
-        }
-    }
 }

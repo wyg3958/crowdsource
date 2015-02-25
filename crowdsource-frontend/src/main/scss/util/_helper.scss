@@ -250,3 +250,20 @@
 
     margin-right: map-get($options, margin-right);
 }
+
+
+
+
+//
+// Clearfix alternative
+//
+
+.another-clearfix, %another-clearfix {
+    &::after {
+        content: "";
+        visibility: hidden;
+	    display: block;
+	    clear: both;
+	    height: 0;
+    }
+}

@@ -5,7 +5,7 @@
         if (bowser.chrome && bowser.version < 39) {
             return false;
         }
-        if (bowser.firefox && bowser.version < 28) {
+        if (bowser.firefox && bowser.version < 24) {
             return false;
         }
         if (bowser.safari && bowser.version < 8) {

@@ -47,7 +47,6 @@ public class TeaserSteps {
         remainingTimeString = teaser.getRemainingTimeString();
         remainingBudget = teaser.getRemainingBudget();
 
-        assertThat(teaser.isRemainingBudgetItemVisible(), is(true));
         assertThat(remainingBudget, is(greaterThan(0)));
         assertThat(remainingTimeString, is(not("Keine aktive Runde")));
         assertThat(teaser.getUserCount(), is(greaterThan(0)));
@@ -59,7 +58,6 @@ public class TeaserSteps {
         assertThat(teaser.isVisible(), is(true));
         teaser.waitForContentLoaded();
 
-        assertThat(teaser.isRemainingBudgetItemVisible(), is(false));
         assertThat(teaser.getRemainingTimeString(), is("Keine aktive Runde"));
         assertThat(teaser.getUserCount(), is(greaterThan(0)));
     }

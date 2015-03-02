@@ -16,32 +16,25 @@ public class Teaser {
     @FindBy(css = "teaser > div")
     private WebElement teaserContainer;
 
-    @FindBy(css = "teaser .remaining-budget")
-    private WebElement remainingBudgetContainer;
-
-    @FindBy(css = "teaser .remaining-budget .metrics__heading")
+    @FindBy(css = "teaser .test-remaining-budget")
     private WebElement remainingBudget;
 
-    @FindBy(css = "teaser .remaining-time .metrics__heading")
+    @FindBy(css = "teaser .test-remaining-time")
     private WebElement remainingTime;
 
-    @FindBy(css = "teaser .user-count .metrics__heading")
+    @FindBy(css = "teaser .test-user-count")
     private WebElement userCount;
 
     @Autowired
     private SeleniumWait wait;
 
     public void waitForContentLoaded() {
-        wait.until(interpolationCompletedOfElementLocated(By.cssSelector("teaser .remaining-time .metrics__heading")));
-        wait.until(interpolationCompletedOfElementLocated(By.cssSelector("teaser .user-count .metrics__heading")));
+        wait.until(interpolationCompletedOfElementLocated(By.cssSelector("teaser .test-remaining-time")));
+        wait.until(interpolationCompletedOfElementLocated(By.cssSelector("teaser .test-user-count")));
     }
 
     public boolean isVisible() {
         return ElementUtils.hasClass(teaserContainer, "teaser--hero");
-    }
-
-    public boolean isRemainingBudgetItemVisible() {
-        return remainingBudgetContainer.isDisplayed();
     }
 
     public int getRemainingBudget() {
@@ -53,10 +46,6 @@ public class Teaser {
     }
 
     public int getUserCount() {
-        String[] words = userCount.getText().split(" ");
-        if (words.length != 3) {
-            throw new IllegalStateException("Expected 3 words, was: " + userCount.getText());
-        }
-        return Integer.parseInt(words[0]);
+        return ElementUtils.parseNumber(userCount.getText());
     }
 }

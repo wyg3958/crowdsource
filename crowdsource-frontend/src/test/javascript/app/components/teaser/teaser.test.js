@@ -39,9 +39,9 @@ describe('teaser metrics service', function () {
         return {
             root: root,
             container: root.find('> div'),
-            remainingBudget: root.find('.test-remaining-budget .teaser-action-bar__metrics'),
-            remainingTime: root.find('.test-remaining-time .teaser-action-bar__metrics'),
-            userCount: root.find('.test-user-count .teaser-action-bar__metrics')
+            remainingBudget: root.find('.test-remaining-budget'),
+            remainingTime: root.find('.test-remaining-time'),
+            userCount: root.find('.test-user-count')
         }
     }
 
@@ -60,15 +60,15 @@ describe('teaser metrics service', function () {
         currentRouteWantsTeaser(true);
         var teaser = renderDirective();
 
-        expect(teaser.remainingBudget.text()).toBe(' € im Umlauf');
+        expect(teaser.remainingBudget.text()).toBe('');
         expect(teaser.remainingTime.text()).toBe('Noch  ');
 
         $httpBackend.flush();
 
         expect(teaser.container).toHaveClass('teaser--hero');
-        expect(teaser.remainingBudget.text()).toBe('54.321 € im Umlauf');
+        expect(teaser.remainingBudget.text()).toBe('54.321');
         expect(teaser.remainingTime.text()).toBe('Noch 1d 7h 55m 35s');
-        expect(teaser.userCount.text()).toBe('33 aktive Nutzer');
+        expect(teaser.userCount.text()).toBe('33');
     });
 
     it("should only render the directive once if the directive is initialized before the $routeChangeStart event fired", function () {
@@ -128,7 +128,7 @@ describe('teaser metrics service', function () {
 
         expect(teaser.container).toHaveClass('teaser--hero');
         expect(teaser.remainingTime.text()).toBe('Keine aktive Runde');
-        expect(teaser.userCount.text()).toBe('33 aktive Nutzer');
+        expect(teaser.userCount.text()).toBe('33');
     });
 
     it("should show the teaser when the route changes and the next routes wants a teaser to be shown", function () {
@@ -172,7 +172,7 @@ describe('teaser metrics service', function () {
         var teaser = renderDirective();
         $httpBackend.flush();
 
-        expect(teaser.remainingBudget.text()).toBe('54.321 € im Umlauf');
+        expect(teaser.remainingBudget.text()).toBe('54.321');
 
         // new route wants no teaser
         changeRoute({showTeaser: false}, {showTeaser: true});
@@ -188,7 +188,7 @@ describe('teaser metrics service', function () {
         $httpBackend.flush();
 
         expect(teaser.container).toHaveClass('teaser--hero');
-        expect(teaser.remainingBudget.text()).toBe('123 € im Umlauf');
+        expect(teaser.remainingBudget.text()).toBe('123');
         expect(teaser.remainingTime.text()).toBe('Noch 2d 7h 55m 35s');
     });
 

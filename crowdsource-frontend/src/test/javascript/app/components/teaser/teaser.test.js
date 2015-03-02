@@ -39,11 +39,9 @@ describe('teaser metrics service', function () {
         return {
             root: root,
             container: root.find('> div'),
-            remainingBudgetItem: root.find('.remaining-budget'),
-            remainingBudget: root.find('.remaining-budget .metrics__heading'),
-            remainingTime: root.find('.remaining-time .metrics__heading'),
-            remainingTimeLabel: root.find('.remaining-time .metrics__subhead'),
-            userCount: root.find('.user-count .metrics__heading')
+            remainingBudget: root.find('.test-remaining-budget .teaser-action-bar__metrics'),
+            remainingTime: root.find('.test-remaining-time .teaser-action-bar__metrics'),
+            userCount: root.find('.test-user-count .teaser-action-bar__metrics')
         }
     }
 
@@ -62,18 +60,14 @@ describe('teaser metrics service', function () {
         currentRouteWantsTeaser(true);
         var teaser = renderDirective();
 
-        expect(teaser.remainingBudgetItem).not.toHaveClass('ng-hide');
-        expect(teaser.remainingBudget.text()).toBe(' AS$');
-        expect(teaser.remainingTime.text()).toBe(' ');
-        expect(teaser.remainingTimeLabel.text()).toBe('Noch in dieser Runde');
+        expect(teaser.remainingBudget.text()).toBe(' € im Umlauf');
+        expect(teaser.remainingTime.text()).toBe('Noch  ');
 
         $httpBackend.flush();
 
         expect(teaser.container).toHaveClass('teaser--hero');
-        expect(teaser.remainingBudgetItem).not.toHaveClass('ng-hide');
-        expect(teaser.remainingBudget.text()).toBe('54.321 AS$');
-        expect(teaser.remainingTime.text()).toBe('1d 7h 55m 35s');
-        expect(teaser.remainingTimeLabel.text()).toBe('Noch in dieser Runde');
+        expect(teaser.remainingBudget.text()).toBe('54.321 € im Umlauf');
+        expect(teaser.remainingTime.text()).toBe('Noch 1d 7h 55m 35s');
         expect(teaser.userCount.text()).toBe('33 aktive Nutzer');
     });
 
@@ -100,11 +94,11 @@ describe('teaser metrics service', function () {
         var teaser = renderDirective();
         $httpBackend.flush();
 
-        expect(teaser.remainingTime.text()).toBe('1d 7h 55m 35s');
+        expect(teaser.remainingTime.text()).toBe('Noch 1d 7h 55m 35s');
 
         elapseTime(1000);
 
-        expect(teaser.remainingTime.text()).toBe('1d 7h 55m 34s');
+        expect(teaser.remainingTime.text()).toBe('Noch 1d 7h 55m 34s');
     });
 
     it("should show the remaining time based on the server time", function () {
@@ -116,11 +110,11 @@ describe('teaser metrics service', function () {
         var teaser = renderDirective();
         $httpBackend.flush();
 
-        expect(teaser.remainingTime.text()).toBe('1d 7h 55m 28s'); // 7 seconds less than before
+        expect(teaser.remainingTime.text()).toBe('Noch 1d 7h 55m 28s'); // 7 seconds less than before
 
         elapseTime(1000);
 
-        expect(teaser.remainingTime.text()).toBe('1d 7h 55m 27s');
+        expect(teaser.remainingTime.text()).toBe('Noch 1d 7h 55m 27s');
     });
 
     it("should show a different information if no financing round is currently active", function () {
@@ -133,9 +127,7 @@ describe('teaser metrics service', function () {
         $httpBackend.flush();
 
         expect(teaser.container).toHaveClass('teaser--hero');
-        expect(teaser.remainingBudgetItem).toHaveClass('ng-hide');
         expect(teaser.remainingTime.text()).toBe('Keine aktive Runde');
-        expect(teaser.remainingTimeLabel.text()).toBe("Bald geht's los mit einer neuen Runde.");
         expect(teaser.userCount.text()).toBe('33 aktive Nutzer');
     });
 
@@ -180,7 +172,7 @@ describe('teaser metrics service', function () {
         var teaser = renderDirective();
         $httpBackend.flush();
 
-        expect(teaser.remainingBudget.text()).toBe('54.321 AS$');
+        expect(teaser.remainingBudget.text()).toBe('54.321 € im Umlauf');
 
         // new route wants no teaser
         changeRoute({showTeaser: false}, {showTeaser: true});
@@ -196,8 +188,8 @@ describe('teaser metrics service', function () {
         $httpBackend.flush();
 
         expect(teaser.container).toHaveClass('teaser--hero');
-        expect(teaser.remainingBudget.text()).toBe('123 AS$');
-        expect(teaser.remainingTime.text()).toBe('2d 7h 55m 35s');
+        expect(teaser.remainingBudget.text()).toBe('123 € im Umlauf');
+        expect(teaser.remainingTime.text()).toBe('Noch 2d 7h 55m 35s');
     });
 
     it("should reload the data when the time runs out", function () {
@@ -209,9 +201,9 @@ describe('teaser metrics service', function () {
         var teaser = renderDirective();
         $httpBackend.flush();
 
-        expect(teaser.remainingTime.text()).toBe('2s');
+        expect(teaser.remainingTime.text()).toBe('Noch 2s');
         elapseTime(1000);
-        expect(teaser.remainingTime.text()).toBe('1s');
+        expect(teaser.remainingTime.text()).toBe('Noch 1s');
         elapseTime(1000);
         expect(teaser.remainingTime.text()).toBe('Keine aktive Runde');
 

@@ -11,7 +11,7 @@
         if (bowser.safari && bowser.version < 8) {
             return false;
         }
-        if (bowser.msie && bowser.version < 10) {
+        if (bowser.msie && bowser.version < 9) {
             return false;
         }
         return true;

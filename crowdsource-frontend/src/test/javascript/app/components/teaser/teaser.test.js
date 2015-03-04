@@ -119,7 +119,7 @@ describe('teaser metrics service', function () {
 
     it("should show a different information if no financing round is currently active", function () {
         expectMetricsBECall().respond(200, {remainingBudget: 54321, count: 33});
-        expectServerTimeBECall().respond(200, { dateTime: '2015-01-21T15:04:23.003Z' });
+        expectServerTimeBECall().respond(200, { dateTime: '2015-01-21T15:01:23.003Z' });
         expectFinancingRoundBECall().respond(404);
 
         currentRouteWantsTeaser(true);

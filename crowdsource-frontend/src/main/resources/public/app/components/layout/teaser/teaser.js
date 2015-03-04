@@ -57,7 +57,12 @@ angular.module('crowdsource')
                     return;
                 }
 
-                vm.remainingTime = TeaserMetrics.formatRemainingTime(ServerTime.getInterpolatedTimeOfServer(), FinancingRound.current.endDate);
+                if (FinancingRound.current.active) {
+                    vm.remainingTime = TeaserMetrics.formatRemainingTime(ServerTime.getInterpolatedTimeOfServer(), FinancingRound.current.endDate);
+                }
+                else {
+                    vm.remainingTime = null;
+                }
 
                 // financing round time is now over
                 if (FinancingRound.current.active && !vm.remainingTime) {

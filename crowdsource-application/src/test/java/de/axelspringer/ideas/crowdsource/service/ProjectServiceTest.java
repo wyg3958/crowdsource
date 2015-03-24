@@ -1,7 +1,6 @@
 package de.axelspringer.ideas.crowdsource.service;
 
 import de.axelspringer.ideas.crowdsource.config.security.Roles;
-import de.axelspringer.ideas.crowdsource.enums.ProjectStatus;
 import de.axelspringer.ideas.crowdsource.model.persistence.FinancingRoundEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
@@ -64,26 +63,6 @@ public class ProjectServiceTest {
     }
 
     @Test
-    public void testUpdateProjectWithUpdatedStateTriggersUserNotification() throws Exception {
-
-        final ProjectEntity projectEntity = project("some_id", ProjectStatus.PROPOSED, user(USER_EMAIL));
-        final Project updateObject = project(projectEntity);
-        updateObject.setStatus(ProjectStatus.PUBLISHED);
-        projectService.updateProject("some_id", updateObject);
-        verify(userNotificationService).notifyCreatorOnProjectUpdate(any(ProjectEntity.class));
-    }
-
-    @Test
-    public void testUpdateProjectWithNonUpdatedStateDoesNotTriggerUserNotification() throws Exception {
-
-        final ProjectEntity projectEntity = project("some_id", ProjectStatus.PROPOSED, user(USER_EMAIL));
-        final Project updateObject = project(projectEntity);
-        updateObject.setStatus(ProjectStatus.PROPOSED);
-        projectService.updateProject("some_id", updateObject);
-        verify(userNotificationService, never()).notifyCreatorOnProjectUpdate(any(ProjectEntity.class));
-    }
-
-    @Test
     public void testCreateProjectTriggersAdminNotification() throws Exception {
 
         final Project newProject = new Project();
@@ -92,19 +71,6 @@ public class ProjectServiceTest {
         verify(userNotificationService).notifyAdminOnProjectCreation(any(ProjectEntity.class), eq(ADMIN2_EMAIL));
         verify(userNotificationService, never()).notifyAdminOnProjectCreation(any(ProjectEntity.class), eq(USER_EMAIL));
         verify(userNotificationService, times(2)).notifyAdminOnProjectCreation(any(ProjectEntity.class), anyString());
-    }
-
-    private Project project(ProjectEntity projectEntity) {
-        return new Project(projectEntity, new ArrayList<>());
-    }
-
-    private ProjectEntity project(String id, ProjectStatus status, UserEntity user) {
-        final ProjectEntity project = new ProjectEntity();
-        project.setId(id);
-        project.setCreator(user);
-        project.setStatus(status);
-        when(projectRepository.findOne(id)).thenReturn(project);
-        return project;
     }
 
     private UserEntity user(String email) {

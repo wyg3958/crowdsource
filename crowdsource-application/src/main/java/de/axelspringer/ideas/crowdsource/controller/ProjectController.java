@@ -9,6 +9,7 @@ import de.axelspringer.ideas.crowdsource.model.presentation.Pledge;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.ProjectSummaryView;
 import de.axelspringer.ideas.crowdsource.service.ProjectService;
+import de.axelspringer.ideas.crowdsource.service.ProjectUpdateService;
 import de.axelspringer.ideas.crowdsource.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,9 @@ public class ProjectController {
 
     @Autowired
     private ProjectService projectService;
+
+    @Autowired
+    private ProjectUpdateService projectUpdateService;
 
     @Autowired
     private UserService userService;
@@ -85,11 +89,16 @@ public class ProjectController {
     @Secured(Roles.ROLE_ADMIN)
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/project/{projectId}", method = RequestMethod.PATCH)
-    public Project updateProject(@PathVariable("projectId") String projectId, @RequestBody @Validated(Project.UpdateProject.class) Project projectWithUpdateData) {
-
-        return projectService.updateProject(projectId, projectWithUpdateData);
+    public Project updateProjectStatus(@PathVariable("projectId") String projectId, @RequestBody @Validated(Project.UpdateProject.class) Project projectWithUpdateData) {
+        return projectUpdateService.updateProjectStatus(projectId, projectWithUpdateData);
     }
 
+    @Secured(Roles.ROLE_USER)
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/project/{projectId}", method = RequestMethod.PUT)
+    public Project updateProject(@PathVariable("projectId") String projectId, @RequestBody @Validated(Project.UpdateProject.class) Project projectWithUpdateData) {
+        return projectUpdateService.updateProject(projectId, projectWithUpdateData);
+    }
 
     private boolean mayViewProjectFilter(Project project, Authentication auth) {
 

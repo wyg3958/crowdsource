@@ -76,28 +76,6 @@ public class ProjectService {
                 .forEach(emailAddress -> userNotificationService.notifyAdminOnProjectCreation(projectEntity, emailAddress));
     }
 
-    public Project updateProject(String projectId, Project project) {
-
-        ProjectEntity projectEntity = projectRepository.findOne(projectId);
-        if (projectEntity == null) {
-            throw new ResourceNotFoundException();
-        }
-
-        if (projectEntity.getStatus() != project.getStatus()) {
-
-            if (projectEntity.getStatus() == ProjectStatus.FULLY_PLEDGED) {
-                throw InvalidRequestException.projectAlreadyFullyPledged();
-            }
-
-            projectEntity.setStatus(project.getStatus());
-            projectEntity = projectRepository.save(projectEntity);
-            userNotificationService.notifyCreatorOnProjectUpdate(projectEntity);
-        }
-
-        log.debug("Project updated: {}", projectEntity);
-        return project(projectEntity);
-    }
-
     public void pledge(String projectId, UserEntity userEntity, Pledge pledge) {
 
         ProjectEntity projectEntity = projectRepository.findOne(projectId);

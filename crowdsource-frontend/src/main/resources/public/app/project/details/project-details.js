@@ -25,6 +25,11 @@ angular.module('crowdsource')
             }
         });
 
+        vm.goToEdit = function () {
+            var path = '/project/' + vm.project.id + '/edit';
+            $location.path(path);
+        };
+
         vm.publish = function () {
             if (!$window.confirm('Willst Du das Projekt wirklich veröffentlichen?')) {
                 return;
@@ -70,6 +75,6 @@ angular.module('crowdsource')
             if (!vm.project.$resolved) {
                 return false;
             }
-            return vm.project.status == 'PROPOSED' || vm.project.status == 'PUBLISHED';
+            return vm.project.status == 'PROPOSED' || vm.project.status == 'PUBLISHED';
         };
     });

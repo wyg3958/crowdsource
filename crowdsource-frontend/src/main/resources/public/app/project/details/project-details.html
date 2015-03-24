@@ -1,5 +1,6 @@
 <content-row class="project-details">
     <h1 class="pd-heading">{{ projectDetails.project.title }}</h1>
+
     <p class="pd-creator">
         von <strong class="text--strong">{{ projectDetails.project.creator.name }}</strong>
         <a href="mailto:{{ projectDetails.project.creator.email }}" ng-if="projectDetails.auth.currentUser.hasRole('ADMIN')"><span class="pd-icon-mail"></span></a>
@@ -26,18 +27,29 @@
                 </div>
 
                 <div class="pm-l-cell--2nd">
-                    <button class="pm-btn-simple  to-pledging-form-button"
-                            scroll-to="project-pledging-form"
-                            ng-disabled="projectDetails.project.status == 'FULLY_PLEDGED'">
-                        <span ng-if="projectDetails.project.status == 'FULLY_PLEDGED'">Zu 100% finanziert!</span>
-                        <span ng-if="projectDetails.project.status != 'FULLY_PLEDGED'">Zur Finanzierung</span>
-                    </button>
+                    <div>
+                        <button class="pm-btn-simple  to-pledging-form-button"
+                                scroll-to="project-pledging-form"
+                                ng-disabled="projectDetails.project.status == 'FULLY_PLEDGED'">
+                            <span ng-if="projectDetails.project.status == 'FULLY_PLEDGED'">Zu 100% finanziert!</span>
+                            <span ng-if="projectDetails.project.status != 'FULLY_PLEDGED'">Zur Finanzierung</span>
+                        </button>
+                    </div>
+
+                    <!-- EDIT Button-->
+                    <div ng-if="projectDetails.project.status == 'PROPOSED'">
+                        <button class="pm-btn-simple--success  to-edit-form-button"
+                                ng-click="projectDetails.goToEdit()"
+                                ng-disabled="projectDetails.project.status != 'PROPOSED'">
+                            <span>Edit</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
         </div>
 
-        <div class="pm-l-cell-outer -cell-2nd"  ng-if="(projectDetails.isRejectable() || projectDetails.isPublishable()) && projectDetails.auth.currentUser.hasRole('ADMIN')">
+        <div class="pm-l-cell-outer -cell-2nd" ng-if="(projectDetails.isRejectable() || projectDetails.isPublishable()) && projectDetails.auth.currentUser.hasRole('ADMIN')">
             <p class="pm-divider">Admin</p>
 
             <div ng-if="projectDetails.isRejectable() && projectDetails.auth.currentUser.hasRole('ADMIN')">
@@ -65,6 +77,7 @@
 
     <div ng-if="projectDetails.auth.currentUser.loggedIn">
         <h2 class="plist__heading">Dein Kommentar</h2>
+
         <p class="plist__intro--has-divider">
             Gefällt Dir dieses Projekt? Hast Du Verbesserungsvorschläge? <br>Dann schreibe hier Deinen Kommentar.
         </p>

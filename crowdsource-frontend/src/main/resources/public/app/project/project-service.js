@@ -7,6 +7,9 @@ angular.module('crowdsource')
         var projectResource = $resource('/project/:id', {}, {
             patch: {
                 method: 'PATCH'
+            },
+            update: {
+                method: 'PUT'
             }
         });
         var projectsResource = $resource('/projects');
@@ -14,6 +17,10 @@ angular.module('crowdsource')
 
         service.add = function (project) {
             return projectResource.save(project).$promise;
+        };
+
+        service.edit = function (project) {
+            return projectResource.update({id: project.id}, project).$promise;
         };
 
         service.getAll = function () {

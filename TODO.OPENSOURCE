@@ -1,0 +1,10 @@
+What is to be done to opensource this code?
+
+- remove dependency on running mailserver (in memorey replacement via profile)
+- remove dependency on running mongo (in memory replacement via profile)
+- remove dev/cons-profiles (instead make explicit config for stuff)
+- remove/simplify complicated test-setup (url-providers, ports aso)
+- provide and document token signing key config
+- make email-templates generic and overwriteable
+- make blackboxtests run (w/o docker or such)
+- put stuff on heroku with example app

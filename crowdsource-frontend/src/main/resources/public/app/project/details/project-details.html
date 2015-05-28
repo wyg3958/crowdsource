@@ -1,0 +1,76 @@
+<content-row class="project-details">
+    <h1 class="pd-heading">{{ projectDetails.project.title }}</h1>
+
+    <p class="pd-creator">
+        von <strong class="text--strong">{{ projectDetails.project.creator.name }}</strong>
+        <a href="mailto:{{ projectDetails.project.creator.email }}" ng-if="projectDetails.auth.currentUser.hasRole('ADMIN')"><span class="pd-icon-mail"></span></a>
+    </p>
+
+    <div class="project-metrics  l-table">
+        <div class="pm-l-cell-outer -border">
+
+            <progress-bar value="projectDetails.project.pledgedAmount" maximum="projectDetails.project.pledgeGoal"></progress-bar>
+
+            <div class="l-table">
+                <div class="pm-l-cell">
+                    <ul class="pm-list">
+                        <li class="pm-item  pm-text-1st">
+                            <span class="project-status__pledged-amount">{{ projectDetails.project.pledgedAmount | number }}</span> /
+                            <span class="project-status__pledge-goal">{{ projectDetails.project.pledgeGoal | number }}</span>&nbsp;&euro;
+                            <span class="pm-text-2nd">Finanzierung</span>
+                        </li>
+                        <li class="pm-item  pm-text-1st">
+                            <span class="project-status__backers">{{ projectDetails.project.backers }}</span>
+                            <span class="pm-text-2nd">Förderer</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="pm-l-cell--2nd">
+                    <button class="pm-btn-simple  to-pledging-form-button"
+                            scroll-to="project-pledging-form"
+                            ng-disabled="projectDetails.project.status == 'FULLY_PLEDGED'">
+                        <span ng-if="projectDetails.project.status == 'FULLY_PLEDGED'">Zu 100% finanziert!</span>
+                        <span ng-if="projectDetails.project.status != 'FULLY_PLEDGED'">Zur Finanzierung</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="pm-l-cell-outer -cell-2nd" ng-if="(projectDetails.isRejectable() || projectDetails.isPublishable()) && projectDetails.auth.currentUser.hasRole('ADMIN')">
+            <p class="pm-divider">Admin</p>
+
+            <div ng-if="projectDetails.isRejectable() && projectDetails.auth.currentUser.hasRole('ADMIN')">
+                <button class="pm-btn--alert  reject-button" ng-click="projectDetails.reject()" ng-disabled="projectDetails.rejecting">
+                    {{ projectDetails.rejecting ? 'Ablehnen...' : 'Ablehnen'}}
+                </button>
+            </div>
+            <div ng-if="projectDetails.isPublishable() && projectDetails.auth.currentUser.hasRole('ADMIN')">
+                <button class="pm-btn--success  publish-button" ng-click="projectDetails.publish()" ng-disabled="projectDetails.publishing">
+                    {{ projectDetails.publishing ? 'Veröffentlichen...' : 'Veröffentlichen' }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <p class="project-short-description">{{ projectDetails.project.shortDescription}}</p>
+
+    <div class="project-description">{{ projectDetails.project.description }}</div>
+
+    <project-pledging-form id="project-pledging-form" project="projectDetails.project"></project-pledging-form>
+
+    <p class="push-dble--ends push--sides">
+        <a href="#/projects" class="text--strong  text--icon-back  text--anchor-plain">Zurück zur Übersicht</a>
+    </p>
+
+    <div ng-if="projectDetails.auth.currentUser.loggedIn">
+        <h2 class="plist__heading">Dein Kommentar</h2>
+
+        <p class="plist__intro--has-divider">
+            Gefällt Dir dieses Projekt? Hast Du Verbesserungsvorschläge? <br>Dann schreibe hier Deinen Kommentar.
+        </p>
+        <project-comments project="projectDetails.project"></project-comments>
+    </div>
+
+</content-row>

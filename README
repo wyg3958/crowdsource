@@ -1,0 +1,54 @@
+# crowdsource
+a collaborative crowd sourcing and funding tool using virtual currency
+
+
+crowdsource
+===========
+
+DEVELOPERS!
+
+Enable dev-profile providing "spring.profiles.active=dev" in your run configuration to use a local mail server and a local mongodb.
+
+
+MONGO-DB for local development
+
+docker run -d -p 27017:27017 --name crowdsourcetestdb mongo:2.6.6
+
+
+MAIL-Server for local development
+
+docker run -d -p 1025:1025 -p 18080:8080 --name crowdsourcetestmailserver gaffa/restmail
+
+
+DOCKER
+
+Enable docker-profile (-Pdocker) to boot the application for integration tests (works only on linux hosts with docker installed)
+=> If you want to run the integration tests on windows or mac you need to run CrowdSourceConfig.main() to have the app running
+
+
+FRONTEND
+
+1: install node.js/npm
+2: run 'npm install -g karma-cli'
+
+During maven build, the maven-exec-plugin will execute 'npm install' in the crowdsource-frontend directory, which also executes 'bower install'
+(see postinstall script in package.json). After this, maven-exec-plugin will execute 'npm run package' (again, a script configured in package.json).
+This builds the frontend code by calling gulp.
+
+For local development, 'npm run package' can be run at any time inside the crowdsource-frontend directory to recompile the frontend code. 'npm run watch' helps even more
+(which actually calls 'gulp watch') to automatically watch for any changes made to frontend source files and recompile on the fly.
+
+The reason for running 'npm run ...' commands instead of the command directly (e.g. 'gulp') is that gulp must not be installed globally on the developer's machine or on the
+CI server. npm will still find the locally installed executables from node_modules/.bin.
+
+
+PHANTOMJS/CHROME/FIREFOX
+
+Enable phantomjs-profile (-Pphantomjs) to use phantomjs (will be downloaded).
+Specifiy path to chromedriver/chrom in test.properties to use chrome (untested).
+Firefox is the fallback. Do nothing and use the worst possible browser by default.
+
+
+CI-Server
+
+Give this parameter in your build's maven step: clean verify -Pdocker,phantomjs  -Dde.axelspringer.ideas.crowdsource.test.applicationhost=54.154.213.220.

@@ -5,10 +5,17 @@ a collaborative crowd sourcing and funding tool using virtual currency
 crowdsource
 ===========
 
-DEVELOPERS!
+Spring Profiles
 
-Enable dev-profile providing "spring.profiles.active=dev" in your run configuration to use a local mail server and a local mongodb.
+ALLOW_HTTP
+When the spring profile ALLOW_HTTP is enabled the default behaviour of redirecting http requests to https will be disabled.
 
+CREATE_USERS
+Will cause creation of default users configured in MongoUserDetailsService.java on application startup.
+
+
+---
+TODO: review below
 
 MONGO-DB for local development
 

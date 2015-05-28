@@ -1,20 +1,18 @@
 package de.axelspringer.ideas.crowdsource.config;
 
-import org.springframework.context.annotation.Condition;
-import org.springframework.context.annotation.ConditionContext;
-import org.springframework.core.type.AnnotatedTypeMetadata;
+import de.axelspringer.ideas.crowdsource.config.security.MongoUserDetailsService;
 
 public interface AppProfiles {
 
     String NOT = "!";
-    String DEV = "dev";
-    String CONS = "cons";
 
+    /**
+     * Will disable enforcement of https
+     */
+    String ALLOW_HTTP = "ALLOW_HTTP";
 
-    public class ProductionCondition implements Condition {
-        @Override
-        public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-            return !context.getEnvironment().acceptsProfiles(CONS, DEV);
-        }
-    }
+    /**
+     * Will create default users ({@link MongoUserDetailsService#DEFAULT_USER_EMAIL}, {@link MongoUserDetailsService#DEFAULT_ADMIN_EMAIL}) on application startup
+     */
+    String CREATE_USERS = "CREATE_USERS";
 }

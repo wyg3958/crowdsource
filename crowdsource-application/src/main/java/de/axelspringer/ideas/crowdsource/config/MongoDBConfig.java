@@ -36,7 +36,7 @@ public class MongoDBConfig extends AbstractMongoConfiguration {
     @Value("${de.axelspringer.ideas.crowdsource.db.username:crowdsource}")
     private String username;
 
-    @Value("${de.axelspringer.ideas.crowdsource.db.password:foo}")
+    @Value("${de.axelspringer.ideas.crowdsource.db.password:}")
     private String password;
 
 

@@ -49,6 +49,16 @@
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>2.7</version>
                 </plugin>
+                <plugin>
+                    <groupId>com.github.joelittlejohn.embedmongo</groupId>
+                    <artifactId>embedmongo-maven-plugin</artifactId>
+                    <version>0.1.12</version>
+                    <configuration>
+                        <port>27017</port>
+                        <databaseDirectory>${project.build.directory}/mongo</databaseDirectory>
+                        <bindIp>127.0.0.1</bindIp>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>

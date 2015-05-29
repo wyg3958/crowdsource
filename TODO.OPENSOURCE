@@ -1,7 +1,7 @@
 What is to be done to opensource this code?
 
+- extract core/example app in separate modules
 - remove dependency on running mailserver (in memory-replacement via profile?)
-- remove dependency on running mongo if possible (in memory replacement via profile). if not use docker run.
 - remove/simplify complicated test-setup (url-providers, ports aso)
 - provide and document token signing key config
 - make email-templates generic and overwriteable

@@ -6,3 +6,6 @@ What is to be done to opensource this code?
 - make blackboxtests run (w/o docker or such)
 - put stuff on heroku with example app
 - deploy core (maven repo, potentially @github)
+- make as-specific stuff configurable
+- integrate core with as-specific configuration and deployment to get as-crowd deployable again
+- if any time is left: fix existing bugs (and f*** up persistence)

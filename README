@@ -5,9 +5,16 @@ a collaborative crowd sourcing and funding tool using virtual currency
 crowdsource
 ===========
 
+
 Example developer run config
 ----------------------------
-java -jar crowdsource.jar -Dspring.profiles.active=ALLOW_HTTP,CREATE_USERS -Dde.axelspringer.ideas.crowdsource.db.hosts=127.0.0.1
+java -jar crowdsource-example.jar -Dspring.profiles.active=ALLOW_HTTP,CREATE_USERS -Dde.axelspringer.ideas.crowdsource.db.hosts=127.0.0.1
+
+
+Token signing
+-------------
+CrowdSource uses JWT with a token signing key. These (tokensigningkey/tokensigningkey.pub) must be present under /src/main/resources.
+You can generate a pair of your own using ssh-keygen.
 
 
 Persistence

@@ -12,19 +12,19 @@ import java.util.Properties;
 @Configuration
 public class MailSenderConfig {
 
-    @Value("${de.axelspringer.ideas.crowdsource.mail.host:smtp.mailgun.org}")
+    @Value("${de.axelspringer.ideas.crowdsource.mail.host:localhost}")
     private String host;
 
-    @Value("${de.axelspringer.ideas.crowdsource.mail.port:587}")
+    @Value("${de.axelspringer.ideas.crowdsource.mail.port:1025}")
     private Integer port;
 
-    @Value("${de.axelspringer.ideas.crowdsource.mail.username:postmaster@crowd.asideas.de}")
+    @Value("${de.axelspringer.ideas.crowdsource.mail.username:}")
     private String username;
 
-    @Value("${de.axelspringer.ideas.crowdsource.mail.password:foo}")
+    @Value("${de.axelspringer.ideas.crowdsource.mail.password:}")
     private String password;
 
-    @Value("${de.axelspringer.ideas.crowdsource.mail.starttls:true}")
+    @Value("${de.axelspringer.ideas.crowdsource.mail.starttls:false}")
     private boolean useStartTls;
 
     @Bean

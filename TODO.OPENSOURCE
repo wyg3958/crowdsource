@@ -1,11 +1,15 @@
 What is to be done to opensource this code?
 
-- remove dependency on running mailserver (in memory-replacement via profile?)
-- remove/simplify complicated test-setup (url-providers, ports aso)
-- make email-templates generic and overwriteable
-- make blackboxtests run (w/o docker or such)
+- make frontend-module build under windows (currently [INFO] cmd /C karma start C:\Users\hgross\projects\crowdsource\crowdsource-frontend\src\test\javascript\karma.conf.js --browsers PhantomJS --single-run
+                                                      Der Befehl "karma" ist entweder falsch geschrieben oder
+                                                      konnte nicht gefunden werden. )
+- make blackboxtests run (complete build on parent w/o docker or such)
+- make trustedhosts default to *
 - put stuff on heroku with example app
 - deploy core (maven repo, potentially @github)
-- make as-specific stuff configurable
 - integrate core with as-specific configuration and deployment to get as-crowd deployable again
+- in as-version: set trustedhosts to springer ips
+- make as-specific stuff configurable
+- remove/simplify complicated test-setup (url-providers, ports aso)
+- make email-templates generic and overwriteable
 - if any time is left: fix existing bugs (and f*** up persistence)

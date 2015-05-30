@@ -28,6 +28,7 @@ describe('teaser metrics service', function () {
             Route = _Route_;
 
             // freeze the time. All calls to new Date() return this time
+            jasmine.clock().uninstall();
             jasmine.clock().mockDate(new Date('2015-01-21T15:04:23.003Z'));
             jasmine.clock().install();
         });

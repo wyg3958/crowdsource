@@ -1,8 +1,5 @@
 What is to be done to opensource this code?
 
-- make frontend-module build under windows (currently [INFO] cmd /C karma start C:\Users\hgross\projects\crowdsource\crowdsource-frontend\src\test\javascript\karma.conf.js --browsers PhantomJS --single-run
-                                                      Der Befehl "karma" ist entweder falsch geschrieben oder
-                                                      konnte nicht gefunden werden. )
 - make blackboxtests run (complete build on parent w/o docker or such)
 - make trustedhosts default to *
 - put stuff on heroku with example app

@@ -13,6 +13,7 @@ describe('authentication service', function () {
         localTime = moment();
 
         // freeze the time. All calls to new Date() return this time
+        jasmine.clock().uninstall();
         jasmine.clock().mockDate(localTime.toDate());
         jasmine.clock().install();
     });

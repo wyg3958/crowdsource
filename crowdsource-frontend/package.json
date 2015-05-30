@@ -21,6 +21,7 @@
   },
   "scripts": {
     "postinstall": "bower install --allow-root --config.interactive=false",
+    "test": "karma start src/test/javascript/karma.conf.js --single-run",
     "test-watch": "karma start src/test/javascript/karma.conf.js",
     "package": "gulp",
     "watch": "gulp watch"

@@ -13,6 +13,7 @@ What is to be done to opensource this code?
 - remove/simplify complicated test-setup (url-providers, ports aso)
 - make email-templates generic and overwriteable
 - if any time is left: fix existing bugs (and f*** up persistence)
+- consider using: https://github.com/jirutka/embedmongo-spring instead of maven mongo stuff (simplification)
 - reduce readme, hint at property files (mail.properties, foo.properties, ...)
 - delombok?
 - optimize (heroku?) build if too slow

@@ -5,7 +5,14 @@ What is to be done to opensource this code?
 - deploy core (maven repo, potentially @github)
 - integrate core with as-specific configuration and deployment to get as-crowd deployable again
 - in as-version: set trustedhosts to springer ips
+- in as-version: specify db hosts property
+- in as-version: set de.axelspringer.ideas.crowdsource.baseUrl to https://crowd.asideas.de
+- document mail-config
+- in as-version: set mail config
 - make as-specific stuff configurable
 - remove/simplify complicated test-setup (url-providers, ports aso)
 - make email-templates generic and overwriteable
 - if any time is left: fix existing bugs (and f*** up persistence)
+- reduce readme, hint at property files (mail.properties, foo.properties, ...)
+- delombok?
+- optimize (heroku?) build if too slow

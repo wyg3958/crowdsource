@@ -30,7 +30,7 @@ public class UserNotificationService {
     public static final String PROJECT_PUBLISHED_SUBJECT = "Freigabe Deines Projektes";
     public static final String PROJECT_REJECTED_SUBJECT = "Freigabe Deines Projektes";
 
-    @Value("${de.axelspringer.ideas.crowdsource.baseUrl}")
+    @Value("${de.axelspringer.ideas.crowdsource.baseUrl:http://localhost:8080}")
     private String applicationUrl;
 
     @Autowired

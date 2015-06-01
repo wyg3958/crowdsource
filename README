@@ -57,19 +57,9 @@ Will cause creation of default users configured in MongoUserDetailsService.java 
 Frontend
 --------
 
-1: install node.js/npm
-2: run 'npm install -g karma-cli'
-
-During maven build, the maven-exec-plugin will execute 'npm install' in the crowdsource-frontend directory, which also executes 'bower install'
-(see postinstall script in package.json). After this, maven-exec-plugin will execute 'npm run package' (again, a script configured in package.json).
-This builds the frontend code by calling gulp.
-
-For local development, 'npm run package' can be run at any time inside the crowdsource-frontend directory to recompile the frontend code. 'npm run watch' helps even more
-(which actually calls 'gulp watch') to automatically watch for any changes made to frontend source files and recompile on the fly.
-
-The reason for running 'npm run ...' commands instead of the command directly (e.g. 'gulp') is that gulp must not be installed globally on the developer's machine or on the
-CI server. npm will still find the locally installed executables from node_modules/.bin.
-
+During maven build, frontend-maven-plugin will take care of downloading all tools and dependencies required for the frontend build.
+To execute manually you will need node/npm. See scripts in package.json for npm.
+You will also need to run 'npm install -g karma-cli'.
 
 ---
 TODO: review below (old docu)
@@ -80,8 +70,3 @@ PHANTOMJS/CHROME/FIREFOX
 Enable phantomjs-profile (-Pphantomjs) to use phantomjs (will be downloaded).
 Specifiy path to chromedriver/chrom in test.properties to use chrome (untested).
 Firefox is the fallback. Do nothing and use the worst possible browser by default.
-
-
-CI-Server
-
-Give this parameter in your build's maven step: clean verify -Pphantomjs  -Dde.axelspringer.ideas.crowdsource.test.applicationhost=54.154.213.220.

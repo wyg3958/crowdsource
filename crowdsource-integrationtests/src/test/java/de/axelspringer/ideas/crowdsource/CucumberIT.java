@@ -27,7 +27,6 @@ public class CucumberIT {
 
     @AfterClass
     public static void closeApp() {
-        EXAMPLE_APP.close();
         EXAMPLE_APP.stop();
     }
 

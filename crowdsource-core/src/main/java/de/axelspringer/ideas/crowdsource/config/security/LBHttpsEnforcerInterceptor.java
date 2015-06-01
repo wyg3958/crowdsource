@@ -21,7 +21,7 @@ public class LBHttpsEnforcerInterceptor extends HandlerInterceptorAdapter {
 
     public static final String X_FORWARDED_PROTO_HEADER = "X-FORWARDED-PROTO";
 
-    @Value("${de.axelspringer.ideas.crowdsource.baseUrl}")
+    @Value("${de.axelspringer.ideas.crowdsource.baseUrl:http://localhost:8080}")
     private String applicationUrl;
 
     @Override

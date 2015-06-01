@@ -29,9 +29,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <mainClass>de.axelspringer.ideas.de.axelspringer.ideas.crowdsource.CrowdSourceExample</mainClass>
-                </configuration>
             </plugin>
         </plugins>
     </build>

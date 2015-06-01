@@ -1,5 +1,6 @@
 package de.axelspringer.ideas.crowdsource;
 
+import de.axelspringer.ideas.crowdsource.config.AppProfiles;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.util.CrowdSourceClient;
@@ -8,9 +9,11 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -24,7 +27,9 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = CrowdSourceTestConfig.class)
+@WebIntegrationTest
+@SpringApplicationConfiguration(classes = {CrowdSourceExample.class, CrowdSourceTestConfig.class})
+@ActiveProfiles({AppProfiles.CREATE_USERS, AppProfiles.ALLOW_HTTP})
 public class AuthenticationIT {
 
     @Autowired

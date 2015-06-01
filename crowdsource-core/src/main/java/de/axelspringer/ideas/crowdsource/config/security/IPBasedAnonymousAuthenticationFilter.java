@@ -17,7 +17,7 @@ import java.util.ArrayList;
 @Slf4j
 public class IPBasedAnonymousAuthenticationFilter extends AnonymousAuthenticationFilter {
 
-    @Value("${de.axelspringer.ideas.crowdsource.trustedips:145.243.*.*}")
+    @Value("${de.axelspringer.ideas.crowdsource.trustedips:*}")
     private String trustedIps;
 
     public IPBasedAnonymousAuthenticationFilter() {

@@ -18,7 +18,7 @@ public class UrlProvider {
 
     public String mailserverUrl() {
 
-        final String mailserverUrl = "http://" + applicationHost + ":18080/mails";
+        final String mailserverUrl = "http://" + applicationHost + ":" + applicationPort + "/mails";
         log.debug("providing mailserver url ({})", mailserverUrl);
         return mailserverUrl;
     }

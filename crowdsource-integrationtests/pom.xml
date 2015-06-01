@@ -33,29 +33,22 @@
             <plugin>
                 <groupId>com.github.joelittlejohn.embedmongo</groupId>
                 <artifactId>embedmongo-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>start app for integration testing</id>
+                        <id>start mongo for integration testing</id>
                         <goals>
                             <goal>start</goal>
                         </goals>
                         <phase>pre-integration-test</phase>
                     </execution>
                     <execution>
-                        <id>stop app after integration testing</id>
+                        <id>stop mongo after integration testing</id>
                         <goals>
                             <goal>stop</goal>
                         </goals>
                         <phase>post-integration-test</phase>
                     </execution>
                 </executions>
-                <configuration>
-                    <mainClass>de.axelspringer.ideas.crowdsource.CrowdSourceExample</mainClass>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

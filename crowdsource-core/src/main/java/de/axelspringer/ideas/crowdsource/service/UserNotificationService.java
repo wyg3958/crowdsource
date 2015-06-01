@@ -81,30 +81,27 @@ public class UserNotificationService {
 
         final StandardEvaluationContext context = new StandardEvaluationContext();
         final String projectLink = getProjectLink(project.getId());
-        String mailContent;
-        String subject;
 
         context.setVariable("link", projectLink);
         context.setVariable("userName", UserHelper.determineNameFromEmail(project.getCreator().getEmail()));
 
         switch (project.getStatus()) {
             case PUBLISHED:
-                mailContent = projectPublishedEmailTemplate.getValue(context, String.class);
-                subject = PROJECT_PUBLISHED_SUBJECT;
+                final String publishMessage = projectPublishedEmailTemplate.getValue(context, String.class);
+                sendMail(project.getCreator().getEmail(), PROJECT_PUBLISHED_SUBJECT, publishMessage);
                 break;
 
             case REJECTED:
-                mailContent = projectRejectedEmailTemplate.getValue(context, String.class);
-                subject = PROJECT_REJECTED_SUBJECT;
+                final String rejectedMessage = projectRejectedEmailTemplate.getValue(context, String.class);
+                sendMail(project.getCreator().getEmail(), PROJECT_REJECTED_SUBJECT, rejectedMessage);
                 break;
 
             default:
-                mailContent = "Das Projekt " + project.getTitle() + " wurde in den Zustand " + project.getStatus().name() + " versetzt.";
-                subject = "Der Zustand des Projekts " + project.getTitle() + " hat sich geändert!";
+                final String defaultMessage = "Das Projekt " + project.getTitle() + " wurde in den Zustand " + project.getStatus().name() + " versetzt.";
+                final String defaultSubject = "Der Zustand des Projekts " + project.getTitle() + " hat sich geändert!";
+                sendMail(project.getCreator().getEmail(), defaultSubject, defaultMessage);
                 break;
         }
-
-        sendMail(project.getCreator().getEmail(), subject, mailContent);
     }
 
     public void notifyAdminOnProjectCreation(ProjectEntity project, String emailAddress) {

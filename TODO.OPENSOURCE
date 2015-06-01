@@ -1,7 +1,6 @@
 What is to be done to opensource this code?
 
 - make blackboxtests run (complete build on parent w/o docker or such)
-- make trustedhosts default to *
 - put stuff on heroku with example app
 - deploy core (maven repo, potentially @github)
 - integrate core with as-specific configuration and deployment to get as-crowd deployable again

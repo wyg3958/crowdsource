@@ -27,14 +27,4 @@ public class ContentDeliveryController {
         result.put("de.axelspringer.ideas.crowdsource.content.company.name", companyName);
         return result;
     }
-
-    public static class Entry {
-        public String key;
-        public String value;
-
-        public Entry(String key, String value) {
-            this.key = key;
-            this.value = value;
-        }
-    }
 }

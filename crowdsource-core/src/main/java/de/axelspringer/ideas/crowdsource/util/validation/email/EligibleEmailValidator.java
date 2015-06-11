@@ -28,14 +28,10 @@ public class EligibleEmailValidator implements ConstraintValidator<EligibleEmail
     public boolean isValid(String email, ConstraintValidatorContext context) {
 
         email = email.toLowerCase();
-// FIXME Remove System.out
-        System.out.println("##########################");
-        System.out.println("##########################: " + getEligibleEmailDomain());
-        System.out.println("##########################: " + emailBlacklistPatterns);
+
         if (email.contains(getEligibleEmailDomain()) && doesNotMatchBlacklistPatterns(email)) {
             return true;
         }
-
 
         context.buildConstraintViolationWithTemplate("eligible").addConstraintViolation();
 

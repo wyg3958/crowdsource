@@ -30,6 +30,27 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>com.heroku.sdk</groupId>
+                <artifactId>heroku-maven-plugin</artifactId>
+                <version>0.4.3</version>
+                <configuration>
+                    <appName>crowd-source</appName>
+                    <jdkVersion>1.8</jdkVersion>
+                    <processTypes>
+                        <web>java -Dserver.port=$PORT -Dde.axelspringer.ideas.crowdsource.baseUrl=http://crowd-source.herokuapp.com -jar target/${artifactId}.jar</web>
+                    </processTypes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>deploy to heroku</id>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                        <phase>deploy</phase>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <dependencies>

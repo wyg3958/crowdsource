@@ -65,14 +65,6 @@ For the configuration you need the following entries in your application.propert
 
 The default-configuration uses localhost:1025 with no username and no password. StartTls is false per default.
 
-Spring Profiles
----------------
-ALLOW_HTTP
-When the spring profile ALLOW_HTTP is enabled the default behaviour of redirecting http requests to https will be disabled.
-
-CREATE_USERS
-Will cause creation of default users configured in MongoUserDetailsService.java on application startup.
-
 
 Frontend
 --------

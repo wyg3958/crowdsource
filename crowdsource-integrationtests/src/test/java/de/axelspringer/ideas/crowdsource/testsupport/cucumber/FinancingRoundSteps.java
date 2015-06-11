@@ -93,8 +93,9 @@ public class FinancingRoundSteps {
      * helper that finds out which hour in local time a given hour in berlin would be
      */
     private int hourInBerlinToLocalHour(int hour) {
-        return new DateTime(2000, 12, 1, hour, 59, 0, DateTimeZone.forID("Europe/Berlin")).toLocalDateTime().getHourOfDay();
+        return new DateTime(2000, 12, 1, hour, 59, 0, DateTimeZone.forID("Europe/Berlin")).withZone(DateTimeZone.getDefault()).getHourOfDay();
     }
+    
 
     @And("^the new financing round can be stopped$")
     public void the_new_financing_round_can_be_stopped() throws Throwable {

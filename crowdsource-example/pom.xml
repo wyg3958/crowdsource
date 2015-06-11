@@ -39,9 +39,7 @@
                     <appName>crowd-source</appName>
                     <jdkVersion>1.8</jdkVersion>
                     <processTypes>
-                        <web>java -Dserver.port=$PORT -Dspring.profiles.active=ALLOW_HTTP,CREATE_USERS -Dde.axelspringer.ideas.crowdsource.baseUrl=http://crowd-source.herokuapp.com
-                            -jar target/${artifactId}.jar
-                        </web>
+                        <web>java -Dserver.port=$PORT -Dspring.profiles.active=ALLOW_HTTP,CREATE_USERS -Dde.axelspringer.ideas.crowdsource.baseUrl=http://crowd-source.herokuapp.com -jar target/${artifactId}.jar</web>
                     </processTypes>
                 </configuration>
                 <executions>

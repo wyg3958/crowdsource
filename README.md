@@ -6,29 +6,6 @@ Current build status: [![Build Status](https://travis-ci.org/as-ideas/crowdsourc
 documentation
 =============
 
-Maven-Repo
----------------------------
-```xml
-<dependencies>
-    <dependency>
-        <groupId>de.axelspringer.ideas.crowdsource</groupId>
-        <artifactId>crowdsource-core</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </dependency>
-</dependencies>
-
-<repositories>
-    <repository>
-        <id>crowdsource</id>
-        <url>https://raw.github.com/as-ideas/crowdsource/mvn-repo/</url>
-        <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>always</updatePolicy>
-        </snapshots>
-    </repository>
-</repositories>
-```
-
 Modules
 -------
 crowdsource-frontend
@@ -92,3 +69,26 @@ AT-Browsers: PHANTOMJS/CHROME/FIREFOX
 There were some issues with phantomjs. Feel free to give it another try. Maybe its fixed?
 Specifiy path to chromedriver/chrome in test.properties to use chrome (environment variable also possible).
 Firefox is the fallback. Do nothing and use the worst browser in the world by default.
+
+Maven
+-----
+```xml
+<dependencies>
+    <dependency>
+        <groupId>de.axelspringer.ideas.crowdsource</groupId>
+        <artifactId>crowdsource-core</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+</dependencies>
+
+<repositories>
+    <repository>
+        <id>crowdsource</id>
+        <url>https://raw.github.com/as-ideas/crowdsource/mvn-repo/</url>
+        <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+        </snapshots>
+    </repository>
+</repositories>
+```

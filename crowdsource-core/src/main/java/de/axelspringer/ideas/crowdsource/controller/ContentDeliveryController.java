@@ -22,6 +22,9 @@ public class ContentDeliveryController {
     @Value("${de.axelspringer.ideas.crowdsource.content.allowed.email.domain}")
     private String allowedEmailDomain;
 
+    @Value("${de.axelspringer.ideas.crowdsource.content.email.blacklist.patterns}")
+    private String emailBlacklistPatterns;
+
     @Cacheable
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Map<String, String> content() {
@@ -29,6 +32,8 @@ public class ContentDeliveryController {
         result.put("de.axelspringer.ideas.crowdsource.content.application.name", applicationName);
         result.put("de.axelspringer.ideas.crowdsource.content.company.name", companyName);
         result.put("de.axelspringer.ideas.crowdsource.content.allowed.email.domain", allowedEmailDomain);
+        result.put("de.axelspringer.ideas.crowdsource.content.email.blacklist.patterns", allowedEmailDomain);
+        result.put("de.axelspringer.ideas.crowdsource.content.email.blacklist.patterns", emailBlacklistPatterns);
         return result;
     }
 

@@ -39,7 +39,6 @@ public class MongoDBConfig extends AbstractMongoConfiguration {
     @Value("${de.axelspringer.ideas.crowdsource.db.password:}")
     private String password;
 
-
     @Override
     protected String getDatabaseName() {
         return databaseName;

@@ -13,6 +13,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.expression.Expression;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +27,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -37,9 +40,9 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration(classes = AbstractUserControllerTest.Config.class)
 public abstract class AbstractUserControllerTest {
 
-    protected static final String NEW_USER_MAIL_ADDRESS = "new@axelspringer.de";
-    protected static final String EXISTING_BUT_NOT_YET_ACTIVATED_USER_MAIL_ADDRESS = "existing.not.yet.activated@axelspringer.de";
-    protected static final String ACTIVATED_USER_MAIL_ADDRESS = "existing.and.activated@axelspringer.de";
+    protected static final String NEW_USER_MAIL_ADDRESS = "new@crowd.source.de";
+    protected static final String EXISTING_BUT_NOT_YET_ACTIVATED_USER_MAIL_ADDRESS = "existing.not.yet.activated@crowd.source.de";
+    protected static final String ACTIVATED_USER_MAIL_ADDRESS = "existing.and.activated@crowd.source.de";
     protected static final String INVALID_USER_MAIL_ADDRESS = "test@test.de";
     protected static final String ENCODED_PASSWORD = "3nc0d3d";
 
@@ -67,7 +70,6 @@ public abstract class AbstractUserControllerTest {
     public void setup() {
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-
         reset(userNotificationService);
         reset(userRepository);
         reset(financingRoundRepository);
@@ -122,6 +124,14 @@ public abstract class AbstractUserControllerTest {
         public JavaMailSender javaMailSender() {
             // this is here to make the app context to boot up (transitive dependency of UserActivationService)
             return mock(JavaMailSender.class);
+        }
+
+        @Bean
+        public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() throws IOException {
+            PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
+            propertySourcesPlaceholderConfigurer.setIgnoreUnresolvablePlaceholders(Boolean.FALSE);
+            propertySourcesPlaceholderConfigurer.setLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:*.properties"));
+            return propertySourcesPlaceholderConfigurer;
         }
 
         @Bean

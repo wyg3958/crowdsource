@@ -14,6 +14,8 @@
 
     <properties>
         <spring.security.version>3.2.5.RELEASE</spring.security.version>
+        <github.global.server>github</github.global.server>
+        <deploy.to.git>true</deploy.to.git>
     </properties>
 
     <build>

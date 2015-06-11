@@ -21,7 +21,7 @@ describe('user activation view', function () {
             $controller('UserActivationController as activation', {
                 $scope: $scope,
                 $routeParams: {
-                    email: "test@axelspringer.de",
+                    email: "test@crowd.source.de",
                     activationToken: "12345"
                 },
                 $location: $location,
@@ -59,8 +59,8 @@ describe('user activation view', function () {
     }
 
     function expectBackendActivationCallAndRespond(statusCode, responseBody) {
-        $httpBackend.expectPOST('/user/test@axelspringer.de/activation', {
-            "email": "test@axelspringer.de", // actually not needed, but will be ignored by the backend
+        $httpBackend.expectPOST('/user/test@crowd.source.de/activation', {
+            "email": "test@crowd.source.de", // actually not needed, but will be ignored by the backend
             "password": "secret!!!",
             "repeatedPassword": "secret!!!", // actually not needed for the backend, but will be ignored by the backend
             "activationToken": "12345"
@@ -69,7 +69,7 @@ describe('user activation view', function () {
     }
 
     function expectBackendLoginCallAndRespond(statusCode, responseBody) {
-        $httpBackend.expectPOST('/oauth/token', 'username=test%40axelspringer.de&password=secret!!!&client_id=web&grant_type=password')
+        $httpBackend.expectPOST('/oauth/token', 'username=test%40crowd.source.de&password=secret!!!&client_id=web&grant_type=password')
             .respond(statusCode, responseBody);
     }
 

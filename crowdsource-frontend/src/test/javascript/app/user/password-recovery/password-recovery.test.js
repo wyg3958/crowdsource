@@ -5,6 +5,10 @@ describe('password recovery view', function () {
     beforeEach(function () {
         module('crowdsource');
         module('crowdsource.templates');
+        module(function($provide) {
+            $provide.value('emailDomain', '@crowd.source.de');
+            $provide.value('emailBlacklistPatterns', ["_extern"])
+        });
 
         localStorage.clear(); // reset
 
@@ -29,7 +33,7 @@ describe('password recovery view', function () {
     });
 
     function expectBackendCallAndRespond(statusCode, responseBody) {
-        $httpBackend.expectGET('/user/test@axelspringer.de/password-recovery').respond(statusCode, responseBody);
+        $httpBackend.expectGET('/user/test@crowd.source.de/password-recovery').respond(statusCode, responseBody);
     }
 
 
@@ -50,7 +54,7 @@ describe('password recovery view', function () {
         $httpBackend.flush();
 
         // make sure location was changed
-        expect($location.path()).toBe('/login/password-recovery/test@axelspringer.de/success');
+        expect($location.path()).toBe('/login/password-recovery/test@crowd.source.de/success');
     });
 
     it('should disable the submit button and change it\'s text while loading', function () {
@@ -104,7 +108,7 @@ describe('password recovery view', function () {
     it('should show a validation error if an email address containting "_extern" is entered', function () {
         form.email.getInputField().val('invalid_extern').trigger('input');
 
-        expectValidationError('email', 'non_external_email');
+        expectValidationError('email', 'non_blacklisted_email');
     });
 
     it('should show the remote_not_found error if the server responds with 404', function () {

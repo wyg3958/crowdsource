@@ -1,7 +1,5 @@
 angular.module('crowdsource')
 
-    .value('emailDomain', '@axelspringer.de')
-
 /**
  * A form group (label + input field) for the crowdsource email input where the user
  * only has to enter the local part of the email address
@@ -57,13 +55,23 @@ angular.module('crowdsource')
 /**
  * Custom validator that does not allow the local email part to contain "_extern"
  */
-    .directive('nonExternalEmail', function () {
+    .directive('nonExternalEmail', function (emailBlacklistPatterns) {
         return {
             restrict: 'A',
             require: 'ngModel',
             link: function (scope, element, attributes, ngModel) {
-                ngModel.$validators.non_external_email = function (modelValue) {
-                    return !modelValue || modelValue.indexOf('_extern') < 0;
+                ngModel.$validators.non_blacklisted_email = function (modelValue) {
+                    if (!modelValue) {
+                        return true;
+                    }
+
+                    for (var i = 0; i < emailBlacklistPatterns.length; i++) {
+                        if (modelValue.indexOf(emailBlacklistPatterns[i]) >= 0) {
+                            return false;
+                        }
+                    }
+
+                    return true;
                 }
             }
         };

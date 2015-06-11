@@ -8,6 +8,7 @@ script: "mvn deploy --settings settings.xml"
 cache:
   directories:
     - '$HOME/.m2/repository'
+    - 'crowdsource-frontend/node'
     - 'crowdsource-frontend/node_modules'
     - 'crowdsource-frontend/bower_components'
 

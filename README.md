@@ -30,7 +30,7 @@ Some end-to-end-, integration-, acceptance-, blackbox-, you-name-it-tests.
 
 Example developer run config
 ----------------------------
-java -jar crowdsource-example.jar -Dspring.profiles.active=ALLOW_HTTP,CREATE_USERS
+java -jar crowdsource-example.jar
 
 
 Token signing
@@ -83,14 +83,6 @@ Mail-Templates: There are currently five different templates used for mailing. C
     This mail is sent to the user, after his project was published/accepted.
 - project-rejected.template
     This mail is sent to the user, after his project was rejected.
-
-Spring Profiles
----------------
-ALLOW_HTTP
-When the spring profile ALLOW_HTTP is enabled the default behaviour of redirecting http requests to https will be disabled.
-
-CREATE_USERS
-Will cause creation of default users configured in MongoUserDetailsService.java on application startup.
 
 
 Frontend

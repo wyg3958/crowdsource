@@ -13,14 +13,22 @@ import java.util.Map;
 @RequestMapping("/content")
 public class ContentDeliveryController {
 
+    @Value("${de.axelspringer.ideas.crowdsource.content.application.name}")
+    private String applicationName;
+
     @Value("${de.axelspringer.ideas.crowdsource.content.company.name}")
     private String companyName;
+
+    @Value("${de.axelspringer.ideas.crowdsource.content.allowed.email.domain}")
+    private String allowedEmailDomain;
 
     @Cacheable
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Map<String, String> content() {
         Map<String, String> result = new HashMap<>();
+        result.put("de.axelspringer.ideas.crowdsource.content.application.name", applicationName);
         result.put("de.axelspringer.ideas.crowdsource.content.company.name", companyName);
+        result.put("de.axelspringer.ideas.crowdsource.content.allowed.email.domain", allowedEmailDomain);
         return result;
     }
 

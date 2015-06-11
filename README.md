@@ -3,6 +3,13 @@ a collaborative crowd sourcing and funding tool using virtual currency
 
 Current build status: [![Build Status](https://travis-ci.org/as-ideas/crowdsource.svg?branch=master)](https://travis-ci.org/as-ideas/crowdsource)
 
+Example installation: https://crowd-source.herokuapp.com 
+You can register with anything. To "receive" activation emails and such please go to: https://crowd-source.herokuapp.com/mails.
+A regular user:  crowdsource@axelspringer.de:einEselGehtZumBaecker!
+An admin:  cs_admin@axelspringer.de:einAdminGehtZumBaecker!
+
+Please feel free to mess around with this installation :)
+
 documentation
 =============
 

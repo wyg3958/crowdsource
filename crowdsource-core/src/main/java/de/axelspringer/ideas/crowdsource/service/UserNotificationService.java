@@ -24,9 +24,9 @@ public class UserNotificationService {
     public static final String ACTIVATION_LINK_PATTERN = "/signup/{emailAddress}/activation/{activationToken}";
     public static final String PASSWORD_RECOVERY_LINK_PATTERN = "/login/password-recovery/{emailAddress}/activation/{activationToken}";
 
-    public static final String ACTIVATION_SUBJECT = "Bitte vergib ein Passwort für Dein Konto auf der AS ideas Crowd Platform";
+    public static final String ACTIVATION_SUBJECT = "Bitte vergib ein Passwort für Dein Konto auf der CrowdSource Platform";
     public static final String NEW_PROJECT_SUBJECT = "Neues Projekt erstellt";
-    public static final String PASSWORD_FORGOTTEN_SUBJECT = "Bitte vergib ein Passwort für Dein Konto auf der AS ideas Crowd Platform";
+    public static final String PASSWORD_FORGOTTEN_SUBJECT = "Bitte vergib ein Passwort für Dein Konto auf der CrowdSource Platform";
     public static final String PROJECT_PUBLISHED_SUBJECT = "Freigabe Deines Projektes";
     public static final String PROJECT_REJECTED_SUBJECT = "Freigabe Deines Projektes";
 

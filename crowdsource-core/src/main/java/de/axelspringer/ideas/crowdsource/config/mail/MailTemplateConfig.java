@@ -1,6 +1,7 @@
 package de.axelspringer.ideas.crowdsource.config.mail;
 
 import de.axelspringer.ideas.crowdsource.exceptions.ResourceNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +12,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import java.io.IOException;
 import java.io.InputStream;
 
+@Slf4j
 @Configuration
 public class MailTemplateConfig {
 
@@ -43,7 +45,7 @@ public class MailTemplateConfig {
 
     private Expression createExpressionFromFile(final String templatePath) {
         try {
-            final InputStream resourceAsStream = getClass().getResourceAsStream(templatePath);
+            final InputStream resourceAsStream = getInputStreamForTemplateOrDefaultTemplate(templatePath);
             final String fileContent = IOUtils.toString(resourceAsStream, "UTF-8");
 
             return parser.parseExpression(fileContent, ParserContext.TEMPLATE_EXPRESSION);
@@ -51,5 +53,18 @@ public class MailTemplateConfig {
         } catch (IOException e) {
             throw new ResourceNotFoundException();
         }
+    }
+
+    private InputStream getInputStreamForTemplateOrDefaultTemplate(String templatePath) {
+        InputStream resourceAsStream = getClass().getResourceAsStream(templatePath);
+        if (resourceAsStream == null) {
+            log.warn("No template found, using default template for: " + templatePath);
+            resourceAsStream = getClass().getResourceAsStream(toDefaultTemplatePath(templatePath));
+        }
+        return resourceAsStream;
+    }
+
+    String toDefaultTemplatePath(String templatePath) {
+        return templatePath + ".default";
     }
 }

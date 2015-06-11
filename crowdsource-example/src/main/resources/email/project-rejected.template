@@ -1,0 +1,11 @@
+Hallo #{#userName},
+
+Dein Projekt wurde leider abgelehnt.
+Das CrowdSource Team wird in Kürze mit Dir in Kontakt treten, um die nächsten Schritte zu besprechen.
+
+Zu Deinem Projekt:
+
+#{#link}
+
+Mit freundlichen Grüßen
+Dein CrowdSource Team

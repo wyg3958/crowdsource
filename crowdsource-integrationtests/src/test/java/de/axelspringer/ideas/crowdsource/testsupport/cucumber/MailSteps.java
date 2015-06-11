@@ -53,7 +53,7 @@ public class MailSteps {
         assertEquals(UserNotificationService.FROM_ADDRESS, receivedMessage.from);
         assertThat(receivedMessage.to, is(equalToIgnoringCase(userEmail + EligibleEmailValidator.ELIGIBLE_EMAIL_DOMAIN)));
         assertEquals(UserNotificationService.ACTIVATION_SUBJECT, receivedMessage.subject);
-        assertThat(receivedMessage.message, containsString("Du hast Dich gerade auf der AS ideas Crowd Platform angemeldet."));
+        assertThat(receivedMessage.message, containsString("Du hast Dich gerade auf der CrowdSource Platform angemeldet."));
         assertThat(receivedMessage.message, containsString("Um Deine Registrierung abzuschließen, öffne bitte diesen Link und setze Dein Passwort:"));
     }
 
@@ -70,7 +70,7 @@ public class MailSteps {
         assertEquals(UserNotificationService.FROM_ADDRESS, receivedMessage.from);
         assertEquals(MongoUserDetailsService.DEFAULT_USER_EMAIL, receivedMessage.to);
         assertEquals(UserNotificationService.PASSWORD_FORGOTTEN_SUBJECT, receivedMessage.subject);
-        assertThat(receivedMessage.message, containsString("Du hast soeben ein neues Passwort für Dein Konto bei der AS ideas Crowd Plattform angefordert."));
+        assertThat(receivedMessage.message, containsString("Du hast soeben ein neues Passwort für Dein Konto bei der CrowdSource Plattform angefordert."));
         assertThat(receivedMessage.message, containsString("Bitte öffne diesen Link:"));
     }
 

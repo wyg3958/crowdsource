@@ -66,4 +66,14 @@ public class UserActivationValidationTest {
         final UserActivation userActivation = new UserActivation("activation_token", "12345678");
         assertEquals(1, validator.validate(userActivation).size());
     }
+
+    /**
+     * here for <a href="https://asideas-crowd.atlassian.net/browse/CROWD-195">CROWD-195</a>
+     */
+    @Test
+    public void regressionTestCrowd195_secureConsideredInsecure() {
+
+        final UserActivation userActivation = new UserActivation("activation_token", "oG(Ew/oiB;E%kuS{oS#Ge&hyK");
+        assertEquals(0, validator.validate(userActivation).size());
+    }
 }

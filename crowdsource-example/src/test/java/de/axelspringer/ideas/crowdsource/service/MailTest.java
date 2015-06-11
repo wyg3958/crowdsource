@@ -4,7 +4,6 @@ import de.axelspringer.ideas.crowdsource.config.mail.MailTemplateConfig;
 import de.axelspringer.ideas.crowdsource.enums.ProjectStatus;
 import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,15 +24,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
-@Slf4j
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {MailTemplateConfig.class, UserNotificationServiceTest.Config.class})
-public class UserNotificationServiceTest {
+@ContextConfiguration(classes = {MailTemplateConfig.class, MailTest.Config.class})
+public class MailTest {
 
     private static final String ADMIN_EMAIL = "some.admin@email.com";
 
     @Autowired
     private UserNotificationService userNotificationService;
+
     @Autowired
     private JavaMailSender javaMailSender;
 
@@ -174,7 +173,6 @@ public class UserNotificationServiceTest {
     private String replaceLineBreaksIfWindows(String message) {
 
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
-            log.debug("replacing \\r\\n with \\n :)");
             return message.replace("\r\n", "\n");
         }
         return message;

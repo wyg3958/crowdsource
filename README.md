@@ -3,6 +3,13 @@ a collaborative crowd sourcing and funding tool using virtual currency
 
 Current build status: [![Build Status](https://travis-ci.org/as-ideas/crowdsource.svg?branch=master)](https://travis-ci.org/as-ideas/crowdsource)
 
+Example installation: https://crowd-source.herokuapp.com 
+You can register with anything. To "receive" activation emails and such please go to: https://crowd-source.herokuapp.com/mails.
+A regular user:  crowdsource@axelspringer.de:einEselGehtZumBaecker!
+An admin:  cs_admin@axelspringer.de:einAdminGehtZumBaecker!
+
+Please feel free to mess around with this installation :)
+
 documentation
 =============
 
@@ -64,6 +71,18 @@ For the configuration you need the following entries in your application.propert
 > de.axelspringer.ideas.crowdsource.mail.starttls=true
 
 The default-configuration uses localhost:1025 with no username and no password. StartTls is false per default.
+
+Mail-Templates: There are currently five different templates used for mailing. CrowdSource comes with default templates, but you can just create your own templates.
+- activation.template
+    This template is the mail sent after you registered your account.
+- new-project.template
+    This template is send to the administrator after someone created a new project.
+- password-forgotten.template
+    A mail with the new password link, sent to the user.
+- project-published.template
+    This mail is sent to the user, after his project was published/accepted.
+- project-rejected.template
+    This mail is sent to the user, after his project was rejected.
 
 
 Frontend

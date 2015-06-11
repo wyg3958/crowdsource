@@ -1,0 +1,9 @@
+Hallo #{#userName},
+
+Du hast Dich gerade auf der CrowdSource Platform angemeldet.
+Um Deine Registrierung abzuschließen, öffne bitte diesen Link und setze Dein Passwort:
+
+#{#link}
+
+Mit freundlichen Grüßen
+Dein CrowdSource Team

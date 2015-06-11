@@ -30,7 +30,7 @@ public class UserNotificationService {
     public static final String PROJECT_PUBLISHED_SUBJECT = "Freigabe Deines Projektes";
     public static final String PROJECT_REJECTED_SUBJECT = "Freigabe Deines Projektes";
 
-    private static final Logger log = LoggerFactory.getLogger(UserNotificationService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserNotificationService.class);
 
     @Value("${de.axelspringer.ideas.crowdsource.baseUrl:http://localhost:8080}")
     private String applicationUrl;
@@ -56,7 +56,7 @@ public class UserNotificationService {
     public void sendActivationMail(UserEntity user) {
 
         String activationLink = buildLink(ACTIVATION_LINK_PATTERN, user.getEmail(), user.getActivationToken());
-        log.debug("Sending activation link {} to {}", activationLink, user.getEmail());
+        LOG.debug("Sending activation link {} to {}", activationLink, user.getEmail());
 
         StandardEvaluationContext context = new StandardEvaluationContext();
         context.setVariable("link", activationLink);
@@ -69,7 +69,7 @@ public class UserNotificationService {
     public void sendPasswordRecoveryMail(UserEntity user) {
 
         String passwordRecoveryLink = buildLink(PASSWORD_RECOVERY_LINK_PATTERN, user.getEmail(), user.getActivationToken());
-        log.debug("Sending password recovery link {} to {}", passwordRecoveryLink, user.getEmail());
+        LOG.debug("Sending password recovery link {} to {}", passwordRecoveryLink, user.getEmail());
 
         StandardEvaluationContext context = new StandardEvaluationContext();
         context.setVariable("link", passwordRecoveryLink);

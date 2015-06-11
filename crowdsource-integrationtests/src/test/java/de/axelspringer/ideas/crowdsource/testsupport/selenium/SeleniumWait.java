@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SeleniumWait {
 
-    private static final Logger log = LoggerFactory.getLogger(SeleniumWait.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SeleniumWait.class);
     private static final int TIME_OUT_IN_SECONDS = 10;
 
     @Autowired

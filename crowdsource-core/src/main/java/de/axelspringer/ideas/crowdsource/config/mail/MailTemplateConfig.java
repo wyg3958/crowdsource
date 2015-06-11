@@ -3,6 +3,7 @@ package de.axelspringer.ideas.crowdsource.config.mail;
 import de.axelspringer.ideas.crowdsource.exceptions.ResourceNotFoundException;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.expression.Expression;
@@ -15,7 +16,8 @@ import java.io.InputStream;
 @Configuration
 public class MailTemplateConfig {
 
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(MailTemplateConfig.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MailTemplateConfig.class);
+
     private final SpelExpressionParser parser = new SpelExpressionParser();
 
     @Bean
@@ -58,7 +60,7 @@ public class MailTemplateConfig {
     private InputStream getInputStreamForTemplateOrDefaultTemplate(String templatePath) {
         InputStream resourceAsStream = getClass().getResourceAsStream(templatePath);
         if (resourceAsStream == null) {
-            log.warn("No template found, using default template for: " + templatePath);
+            LOG.warn("No template found, using default template for: " + templatePath);
             resourceAsStream = getClass().getResourceAsStream(toDefaultTemplatePath(templatePath));
         }
         return resourceAsStream;

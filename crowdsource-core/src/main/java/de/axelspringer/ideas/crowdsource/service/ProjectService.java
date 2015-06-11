@@ -27,7 +27,7 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class ProjectService {
 
-    private static final Logger log = LoggerFactory.getLogger(ProjectService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectService.class);
 
     @Autowired
     private ProjectRepository projectRepository;
@@ -67,7 +67,7 @@ public class ProjectService {
 
         notifyAdminsOnNewProject(projectEntity);
 
-        log.debug("Project added: {}", projectEntity);
+        LOG.debug("Project added: {}", projectEntity);
         return project(projectEntity);
     }
 
@@ -96,7 +96,7 @@ public class ProjectService {
             userNotificationService.notifyCreatorOnProjectUpdate(projectEntity);
         }
 
-        log.debug("Project updated: {}", projectEntity);
+        LOG.debug("Project updated: {}", projectEntity);
         return project(projectEntity);
     }
 
@@ -146,7 +146,7 @@ public class ProjectService {
         userRepository.save(userEntity);
         pledgeRepository.save(pledgeEntity);
 
-        log.debug("Project pledged: {}", pledgeEntity);
+        LOG.debug("Project pledged: {}", pledgeEntity);
     }
 
     private Project project(ProjectEntity projectEntity) {

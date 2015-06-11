@@ -35,7 +35,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @RequestMapping(value = "/user")
 public class UserController {
 
-    private static final Logger log = LoggerFactory.getLogger(UserController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -60,7 +60,7 @@ public class UserController {
         if (userEntity == null) {
             userEntity = new UserEntity(email);
         } else {
-            log.debug("A user with the address {} already exists, assigning a new activation token", email);
+            LOG.debug("A user with the address {} already exists, assigning a new activation token", email);
         }
 
         userService.assignActivationTokenForRegistration(userEntity);
@@ -75,20 +75,20 @@ public class UserController {
 
         UserEntity userEntity = userRepository.findByEmail(email);
         if (userEntity == null) {
-            log.debug("userentity with id {} does not exist and can therefore not be activated.", email);
+            LOG.debug("userentity with id {} does not exist and can therefore not be activated.", email);
             throw new ResourceNotFoundException();
         }
 
         // The activation token may be set to non blank when using password recovery.
         // In this case, the user is still activated but has a token set.
         if (isBlank(userEntity.getActivationToken()) && userEntity.isActivated()) {
-            log.debug("user {} is already activated", userEntity);
+            LOG.debug("user {} is already activated", userEntity);
             throw InvalidRequestException.userAlreadyActivated();
         }
 
         if (isBlank(userEntity.getActivationToken())
                 || !userEntity.getActivationToken().equals(userActivation.getActivationToken())) {
-            log.debug("token mismatch on activation request for user with email: {} (was {}, expected: {})",
+            LOG.debug("token mismatch on activation request for user with email: {} (was {}, expected: {})",
                     email, userActivation.getActivationToken(), userEntity.getActivationToken());
 
             throw InvalidRequestException.activationTokenInvalid();
@@ -99,7 +99,7 @@ public class UserController {
         userEntity.setPassword(passwordEncoder.encode(userActivation.getPassword()));
 
         userRepository.save(userEntity);
-        log.debug("User activated: {}", userEntity);
+        LOG.debug("User activated: {}", userEntity);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -110,7 +110,7 @@ public class UserController {
 
         UserEntity userEntity = userRepository.findByEmail(email);
         if (userEntity == null) {
-            log.debug("userentity with id {} does not exist and a password can therefore not be recovered.", email);
+            LOG.debug("userentity with id {} does not exist and a password can therefore not be recovered.", email);
             throw new ResourceNotFoundException();
         }
 

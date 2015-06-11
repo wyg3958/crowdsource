@@ -11,20 +11,20 @@ import org.slf4j.LoggerFactory;
 
 public class WebDriverUtils {
 
-    private static final Logger log = LoggerFactory.getLogger(WebDriverUtils.class);
+    private static final Logger LOG = LoggerFactory.getLogger(WebDriverUtils.class);
 
     public static void makeScreenshot(WebDriver driver, Scenario scenario) {
-        log.debug("Capturing screenshot for scenario {}", scenario.getName());
+        LOG.debug("Capturing screenshot for scenario {}", scenario.getName());
         if (driver instanceof TakesScreenshot) {
             TakesScreenshot screenshotableDriver = (TakesScreenshot) driver;
             try {
                 byte[] screenshot = screenshotableDriver.getScreenshotAs(OutputType.BYTES);
                 scenario.embed(screenshot, "image/png");
             } catch (WebDriverException somePlatformsDontSupportScreenshots) {
-                log.error(somePlatformsDontSupportScreenshots.getMessage());
+                LOG.error(somePlatformsDontSupportScreenshots.getMessage());
             }
         } else {
-            log.warn("This web driver implementation {} cannot create screenshots", driver.getClass().getName());
+            LOG.warn("This web driver implementation {} cannot create screenshots", driver.getClass().getName());
         }
     }
 

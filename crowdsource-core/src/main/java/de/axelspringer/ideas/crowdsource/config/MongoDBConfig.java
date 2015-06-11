@@ -22,7 +22,7 @@ import static java.util.stream.Collectors.toList;
 @EnableMongoAuditing
 public class MongoDBConfig extends AbstractMongoConfiguration {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     @Value("#{'${de.axelspringer.ideas.crowdsource.db.hosts:127.0.0.1}'.split(',')}")
     private List<String> hosts;
@@ -52,7 +52,7 @@ public class MongoDBConfig extends AbstractMongoConfiguration {
                 .map(this::createServerAddress)
                 .collect(toList());
 
-        log.debug("connecting to db hosts: {}...", serverAddresses);
+        LOG.debug("connecting to db hosts: {}...", serverAddresses);
 
         if (serverAddresses.size() == 1) {
             // create a mongo client that connects to a single database,

@@ -14,7 +14,7 @@ import static java.util.stream.Collectors.joining;
 
 public class BrowserLogFetchHook {
 
-    private static final Logger log = LoggerFactory.getLogger(BrowserLogFetchHook.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BrowserLogFetchHook.class);
 
     @Autowired
     private WebDriverProvider webDriverProvider;
@@ -27,12 +27,12 @@ public class BrowserLogFetchHook {
             if (result != null) {
                 LogEntries logs = webDriver.manage().logs().get(LogType.BROWSER);
 
-                if (log.isInfoEnabled()) {
+                if (LOG.isInfoEnabled()) {
                     String logOutput = logs.getAll().stream()
                             .map(LogEntry::toString)
                             .collect(joining("\n"));
 
-                    log.info("Browser console.log output: {}", "\n" + logOutput);
+                    LOG.info("Browser console.log output: {}", "\n" + logOutput);
                 }
             }
         }

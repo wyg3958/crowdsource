@@ -14,7 +14,7 @@ public class UserService {
 
     public final static int ACTIVATION_TOKEN_LENGTH = 32;
 
-    private static final Logger log = LoggerFactory.getLogger(UserService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -54,6 +54,6 @@ public class UserService {
 
     private void saveUser(UserEntity userEntity) {
         userRepository.save(userEntity);
-        log.debug("User saved: {}", userEntity);
+        LOG.debug("User saved: {}", userEntity);
     }
 }

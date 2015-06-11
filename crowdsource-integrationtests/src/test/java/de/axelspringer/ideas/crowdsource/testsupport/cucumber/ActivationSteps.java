@@ -32,7 +32,7 @@ import static org.hamcrest.Matchers.hasSize;
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
 public class ActivationSteps {
 
-    private static final Logger log = LoggerFactory.getLogger(ActivationSteps.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ActivationSteps.class);
 
     private String activationLink;
 
@@ -97,7 +97,7 @@ public class ActivationSteps {
 
         activationLink = getActivationLinkFromFirstEmail();
 
-        log.debug("Email activation link: {}", activationLink);
+        LOG.debug("Email activation link: {}", activationLink);
 
         webDriver.get(activationLink);
     }

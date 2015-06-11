@@ -13,7 +13,6 @@ import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.ActivationForm;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.axelspringer.ideas.crowdsource.testsupport.util.CrowdSourceClient;
 import de.axelspringer.ideas.crowdsource.testsupport.util.MailServerClient;
-import de.axelspringer.ideas.crowdsource.util.validation.email.EligibleEmailValidator;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.hamcrest.Matchers;
 import org.openqa.selenium.WebDriver;
@@ -21,6 +20,7 @@ import org.openqa.selenium.support.PageFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 
 import static org.hamcrest.CoreMatchers.containsString;
@@ -47,6 +47,9 @@ public class ActivationSteps {
 
     @Autowired
     private ActivationForm activationForm;
+
+    @Value("${de.axelspringer.ideas.crowdsource.content.allowed.email.domain}")
+    private String allowedEmailDomain;
 
     private WebDriver webDriver;
     private String emailName;
@@ -180,7 +183,7 @@ public class ActivationSteps {
     }
 
     public String getGeneratedEmail() {
-        return emailName + EligibleEmailValidator.ELIGIBLE_EMAIL_DOMAIN;
+        return emailName + "@" + allowedEmailDomain;
     }
 
     public String getGeneratedEmailName() {

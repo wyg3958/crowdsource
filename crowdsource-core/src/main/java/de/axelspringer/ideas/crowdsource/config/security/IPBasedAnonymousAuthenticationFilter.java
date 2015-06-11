@@ -2,6 +2,7 @@ package de.axelspringer.ideas.crowdsource.config.security;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,7 +17,8 @@ import java.util.ArrayList;
 @Component
 public class IPBasedAnonymousAuthenticationFilter extends AnonymousAuthenticationFilter {
 
-    private static final Logger LOG = org.slf4j.LoggerFactory.getLogger(IPBasedAnonymousAuthenticationFilter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(IPBasedAnonymousAuthenticationFilter.class);
+
     @Value("${de.axelspringer.ideas.crowdsource.trustedips:*}")
     private String trustedIps;
 

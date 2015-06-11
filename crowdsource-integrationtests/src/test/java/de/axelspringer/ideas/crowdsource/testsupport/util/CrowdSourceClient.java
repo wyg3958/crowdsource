@@ -10,11 +10,11 @@ import de.axelspringer.ideas.crowdsource.model.presentation.Pledge;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.UserActivation;
 import de.axelspringer.ideas.crowdsource.model.presentation.user.UserRegistration;
-import de.axelspringer.ideas.crowdsource.util.validation.email.EligibleEmailValidator;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -39,6 +39,9 @@ public class CrowdSourceClient {
     @Autowired
     private UrlProvider urlProvider;
 
+    @Value("${de.axelspringer.ideas.crowdsource.content.allowed.email.domain}")
+    private String allowedEmailDomain;
+
     public AuthToken authorizeWithDefaultUser() {
         return authorize(MongoUserDetailsService.DEFAULT_USER_EMAIL, MongoUserDetailsService.DEFAULT_USER_PASS);
     }
@@ -60,14 +63,14 @@ public class CrowdSourceClient {
     public void registerUser(String emailName) {
         // create a user via the REST API
         UserRegistration userRegistration = new UserRegistration();
-        userRegistration.setEmail(emailName + EligibleEmailValidator.ELIGIBLE_EMAIL_DOMAIN);
+        userRegistration.setEmail(emailName + "@" + allowedEmailDomain);
         userRegistration.setTermsOfServiceAccepted(true);
 
         restTemplate.postForObject(urlProvider.applicationUrl() + "/user", userRegistration, Void.class);
     }
 
     public void activateUser(String emailName, UserActivation userActivation) {
-        restTemplate.postForObject(urlProvider.applicationUrl() + "/user/{email}/activation", userActivation, Void.class, emailName + EligibleEmailValidator.ELIGIBLE_EMAIL_DOMAIN);
+        restTemplate.postForObject(urlProvider.applicationUrl() + "/user/{email}/activation", userActivation, Void.class, emailName + "@" + allowedEmailDomain);
     }
 
     public void recoverPassword(String userEmail) {

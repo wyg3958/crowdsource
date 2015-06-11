@@ -17,7 +17,7 @@ angular.module('crowdsource')
                 });
 
                 function updateView(currentRoute) {
-                    var title = "AS CrowdSource";
+                    var title = "CrowdSource";
                     if (currentRoute.title) {
                         title += " - " + currentRoute.title;
                     }

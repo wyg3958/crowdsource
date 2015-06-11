@@ -12,9 +12,9 @@ import de.axelspringer.ideas.crowdsource.service.UserNotificationService;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.util.CrowdSourceClient;
 import de.axelspringer.ideas.crowdsource.testsupport.util.MailServerClient;
-import de.axelspringer.ideas.crowdsource.util.validation.email.EligibleEmailValidator;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
@@ -34,6 +34,9 @@ public class MailSteps {
     @Autowired
     private MailServerClient mailServerClient;
 
+    @Value("${de.axelspringer.ideas.crowdsource.content.allowed.email.domain}")
+    private String allowedEmailDomain;
+
     private String userEmail;
 
     private Project createdProject;
@@ -51,7 +54,7 @@ public class MailSteps {
         final MailServerClient.Message receivedMessage = grabMessage();
 
         assertEquals(UserNotificationService.FROM_ADDRESS, receivedMessage.from);
-        assertThat(receivedMessage.to, is(equalToIgnoringCase(userEmail + EligibleEmailValidator.ELIGIBLE_EMAIL_DOMAIN)));
+        assertThat(receivedMessage.to, is(equalToIgnoringCase(userEmail + "@" + allowedEmailDomain)));
         assertEquals(UserNotificationService.ACTIVATION_SUBJECT, receivedMessage.subject);
         assertThat(receivedMessage.message, containsString("Du hast Dich gerade auf der CrowdSource Platform angemeldet."));
         assertThat(receivedMessage.message, containsString("Um Deine Registrierung abzuschließen, öffne bitte diesen Link und setze Dein Passwort:"));

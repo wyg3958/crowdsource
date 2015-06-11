@@ -8,7 +8,7 @@ describe('project list', function () {
 
         localStorage.clear(); // reset
 
-        inject(function ($compile, $rootScope, $templateCache, $controller, _$httpBackend_, _$location_, Project) {
+        inject(function ($compile, $rootScope, $templateCache, $controller, $q, _$httpBackend_, _$location_, Project, Content) {
             $scope = $rootScope.$new();
             $httpBackend = _$httpBackend_;
             $location = _$location_;
@@ -17,6 +17,12 @@ describe('project list', function () {
                 $scope: $scope,
                 $location: _$location_,
                 Project: Project
+            });
+
+            spyOn(Content, "get").and.callFake(function() {
+                var deferred = $q.defer();
+                deferred.resolve("foo");
+                return deferred.promise;
             });
 
             var template = $templateCache.get('app/project/list/project-list.html');

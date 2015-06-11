@@ -6,6 +6,10 @@ describe('user login view', function () {
 
         module('crowdsource');
         module('crowdsource.templates');
+        module(function($provide) {
+            $provide.value('emailDomain', '@crowd.source.de');
+            $provide.value('emailBlacklistPatterns', ["_extern"])
+        });
 
         localStorage.clear(); // reset
 
@@ -51,7 +55,7 @@ describe('user login view', function () {
     }
 
     function expectBackendCallAndRespond(statusCode, responseBody) {
-        $httpBackend.expectPOST('/oauth/token', 'username=test%40axelspringer.de&password=secret!!!&client_id=web&grant_type=password')
+        $httpBackend.expectPOST('/oauth/token', 'username=test%40crowd.source.de&password=secret!!!&client_id=web&grant_type=password')
             .respond(statusCode, responseBody);
     }
 
@@ -152,6 +156,6 @@ describe('user login view', function () {
     it('should show a validation error if an email address containting "_extern" is entered', function () {
         loginForm.email.getInputField().val('invalid_extern').trigger('input');
 
-        expectValidationError('email', 'non_external_email');
+        expectValidationError('email', 'non_blacklisted_email');
     });
 });

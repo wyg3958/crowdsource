@@ -5,6 +5,10 @@ describe('user signup view', function () {
     beforeEach(function () {
         module('crowdsource');
         module('crowdsource.templates');
+        module(function($provide) {
+            $provide.value('emailDomain', '@crowd.source.de');
+            $provide.value('emailBlacklistPatterns', ["_extern"])
+        });
 
         localStorage.clear(); // reset
 
@@ -49,7 +53,7 @@ describe('user signup view', function () {
     }
 
     function expectBackendCallAndRespond(statusCode, responseBody) {
-        $httpBackend.expectPOST('/user', {"email": "test@axelspringer.de", "termsOfServiceAccepted": true}).respond(statusCode, responseBody);
+        $httpBackend.expectPOST('/user', {"email": "test@crowd.source.de", "termsOfServiceAccepted": true}).respond(statusCode, responseBody);
     }
 
 
@@ -71,7 +75,7 @@ describe('user signup view', function () {
         $httpBackend.flush();
 
         // make sure location was changed
-        expect($location.path()).toBe('/signup/test@axelspringer.de/success');
+        expect($location.path()).toBe('/signup/test@crowd.source.de/success');
     });
 
     it('should disable the submit button and change it\'s text while loading', function () {
@@ -126,7 +130,7 @@ describe('user signup view', function () {
     it('should show a validation error if an email address containting "_extern" is entered', function () {
         signupForm.email.getInputField().val('invalid_extern').trigger('input');
 
-        expectValidationError('email', 'non_external_email');
+        expectValidationError('email', 'non_blacklisted_email');
     });
 
     it('should show a validation error if the terms of service checkbox was unchecked', function () {

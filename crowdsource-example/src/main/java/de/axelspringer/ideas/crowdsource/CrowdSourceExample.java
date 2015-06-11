@@ -23,8 +23,9 @@ public class CrowdSourceExample {
 
     private static void extractHerokuMongoLabsArgs() {
 
-        final String mongolab_uri = System.getenv("MONGOLAB_URI").replace("mongodb://", "");
-        if (!StringUtils.isEmpty(mongolab_uri)) {
+        String mongolabUriProperty = System.getenv("MONGOLAB_URI");
+        if (StringUtils.isNotBlank(mongolabUriProperty)) {
+            final String mongolab_uri = mongolabUriProperty.replace("mongodb://", "");
             System.setProperty("de.axelspringer.ideas.crowdsource.db.username", extractMongoUser(mongolab_uri));
             System.setProperty("de.axelspringer.ideas.crowdsource.db.password", extractMongoPass(mongolab_uri));
             System.setProperty("de.axelspringer.ideas.crowdsource.db.hosts", extractMongoHost(mongolab_uri));

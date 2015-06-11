@@ -4,12 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>AS CrowdSource</title>
+    <title>CrowdSource</title>
 
     <link rel="stylesheet" href="css/crowdsource.css">
 
     <script src="app/libs.min.js"></script>
     <script src="app/crowdsource.min.js"></script>
+    <script src="/config.js"></script>
 </head>
 <body>
 <div class="page-wrapper">
@@ -19,7 +20,7 @@
 
     <div class="content" ng-view autoscroll="true">
         <div class="browser-fallback" style="display: none">
-            <h2 class="plist__heading">Axel Springer Crowd</h2>
+            <h2 class="plist__heading"><content key="de.axelspringer.ideas.crowdsource.content.application.name" /></h2>
 
             <p class="plist__intro--has-divider">Dein Browser wird in seiner aktuellen Version nicht von uns
                 unterstützt. Bitte update ihn, um teilnehmen zu können.</p>

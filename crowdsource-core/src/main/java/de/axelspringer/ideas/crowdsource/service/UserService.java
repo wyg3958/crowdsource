@@ -3,18 +3,22 @@ package de.axelspringer.ideas.crowdsource.service;
 import de.axelspringer.ideas.crowdsource.exceptions.NotAuthorizedException;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
 public class UserService {
 
     public final static int ACTIVATION_TOKEN_LENGTH = 32;
+
+    private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private UserNotificationService userNotificationService;
 
@@ -50,6 +54,6 @@ public class UserService {
 
     private void saveUser(UserEntity userEntity) {
         userRepository.save(userEntity);
-        log.debug("User saved: {}", userEntity);
+        LOG.debug("User saved: {}", userEntity);
     }
 }

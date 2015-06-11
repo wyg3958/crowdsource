@@ -1,13 +1,13 @@
 package de.axelspringer.ideas.crowdsource.model.presentation.user;
 
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.List;
 
-@Data
-@NoArgsConstructor // required for serialization
+// required for serialization
 public class UserMetrics {
 
     private int count;
@@ -20,5 +20,39 @@ public class UserMetrics {
         remainingBudget = users.stream()
                 .mapToInt(UserEntity::getBudget)
                 .sum();
+    }
+
+    public UserMetrics() {
+    }
+
+    public int getCount() {
+        return this.count;
+    }
+
+    public int getRemainingBudget() {
+        return this.remainingBudget;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public void setRemainingBudget(int remainingBudget) {
+        this.remainingBudget = remainingBudget;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return EqualsBuilder.reflectionEquals(this, o);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }

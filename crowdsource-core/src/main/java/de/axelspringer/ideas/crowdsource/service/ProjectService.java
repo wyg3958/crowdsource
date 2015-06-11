@@ -14,8 +14,9 @@ import de.axelspringer.ideas.crowdsource.repository.FinancingRoundRepository;
 import de.axelspringer.ideas.crowdsource.repository.PledgeRepository;
 import de.axelspringer.ideas.crowdsource.repository.ProjectRepository;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +24,10 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-@Slf4j
 @Service
 public class ProjectService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectService.class);
 
     @Autowired
     private ProjectRepository projectRepository;
@@ -65,7 +67,7 @@ public class ProjectService {
 
         notifyAdminsOnNewProject(projectEntity);
 
-        log.debug("Project added: {}", projectEntity);
+        LOG.debug("Project added: {}", projectEntity);
         return project(projectEntity);
     }
 
@@ -94,7 +96,7 @@ public class ProjectService {
             userNotificationService.notifyCreatorOnProjectUpdate(projectEntity);
         }
 
-        log.debug("Project updated: {}", projectEntity);
+        LOG.debug("Project updated: {}", projectEntity);
         return project(projectEntity);
     }
 
@@ -144,7 +146,7 @@ public class ProjectService {
         userRepository.save(userEntity);
         pledgeRepository.save(pledgeEntity);
 
-        log.debug("Project pledged: {}", pledgeEntity);
+        LOG.debug("Project pledged: {}", pledgeEntity);
     }
 
     private Project project(ProjectEntity projectEntity) {

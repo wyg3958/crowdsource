@@ -2,17 +2,19 @@ package de.axelspringer.ideas.crowdsource.testsupport.cucumber.hooks;
 
 import cucumber.api.Scenario;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static java.util.stream.Collectors.joining;
 
-@Slf4j
 public class BrowserLogFetchHook {
+
+    private static final Logger LOG = LoggerFactory.getLogger(BrowserLogFetchHook.class);
 
     @Autowired
     private WebDriverProvider webDriverProvider;
@@ -25,12 +27,12 @@ public class BrowserLogFetchHook {
             if (result != null) {
                 LogEntries logs = webDriver.manage().logs().get(LogType.BROWSER);
 
-                if (log.isInfoEnabled()) {
+                if (LOG.isInfoEnabled()) {
                     String logOutput = logs.getAll().stream()
                             .map(LogEntry::toString)
                             .collect(joining("\n"));
 
-                    log.info("Browser console.log output: {}", "\n" + logOutput);
+                    LOG.info("Browser console.log output: {}", "\n" + logOutput);
                 }
             }
         }

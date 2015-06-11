@@ -1,7 +1,7 @@
 package de.axelspringer.ideas.crowdsource.config.security;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,9 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 
 @Component
-@Slf4j
 public class IPBasedAnonymousAuthenticationFilter extends AnonymousAuthenticationFilter {
 
+    private static final Logger LOG = org.slf4j.LoggerFactory.getLogger(IPBasedAnonymousAuthenticationFilter.class);
     @Value("${de.axelspringer.ideas.crowdsource.trustedips:*}")
     private String trustedIps;
 
@@ -69,7 +69,7 @@ public class IPBasedAnonymousAuthenticationFilter extends AnonymousAuthenticatio
         String[] trustedSegments = trustedPattern.split("\\.");
 
         if (ipSegments.length != 4 || trustedSegments.length != 4) {
-            log.error("invalid segment length for either ip: {} or trusted pattern: {}", ip, trustedPattern);
+            LOG.error("invalid segment length for either ip: {} or trusted pattern: {}", ip, trustedPattern);
             return false;
         }
 

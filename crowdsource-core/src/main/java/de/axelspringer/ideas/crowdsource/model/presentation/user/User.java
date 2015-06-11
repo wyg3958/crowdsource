@@ -2,17 +2,13 @@ package de.axelspringer.ideas.crowdsource.model.presentation.user;
 
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.util.UserHelper;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.List;
 
-@Getter
-@ToString
-@EqualsAndHashCode
-@NoArgsConstructor // required for serialization
+// required for serialization
 public class User {
 
     private String email;
@@ -25,5 +21,39 @@ public class User {
         this.budget = userEntity.getBudget();
         this.roles = userEntity.getRoles();
         this.name = UserHelper.determineNameFromEmail(email);
+    }
+
+    public User() {
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public List<String> getRoles() {
+        return this.roles;
+    }
+
+    public int getBudget() {
+        return this.budget;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return EqualsBuilder.reflectionEquals(this, o);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }

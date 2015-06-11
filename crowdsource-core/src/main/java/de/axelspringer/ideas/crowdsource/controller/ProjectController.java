@@ -10,7 +10,6 @@ import de.axelspringer.ideas.crowdsource.model.presentation.project.Project;
 import de.axelspringer.ideas.crowdsource.model.presentation.project.ProjectSummaryView;
 import de.axelspringer.ideas.crowdsource.service.ProjectService;
 import de.axelspringer.ideas.crowdsource.service.UserService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,7 +32,6 @@ import java.util.stream.Collectors;
 import static de.axelspringer.ideas.crowdsource.enums.ProjectStatus.FULLY_PLEDGED;
 import static de.axelspringer.ideas.crowdsource.enums.ProjectStatus.PUBLISHED;
 
-@Slf4j
 @RestController
 public class ProjectController {
 

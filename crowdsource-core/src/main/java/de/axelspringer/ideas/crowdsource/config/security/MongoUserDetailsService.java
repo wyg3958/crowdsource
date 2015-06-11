@@ -2,7 +2,7 @@ package de.axelspringer.ideas.crowdsource.config.security;
 
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -19,7 +19,6 @@ import java.util.Collections;
 
 import static java.util.stream.Collectors.toList;
 
-@Slf4j
 @Service
 public class MongoUserDetailsService implements UserDetailsService {
 
@@ -28,6 +27,7 @@ public class MongoUserDetailsService implements UserDetailsService {
 
     public final static String DEFAULT_ADMIN_EMAIL = "cs_admin@axelspringer.de";
     public final static String DEFAULT_ADMIN_PASS = "einAdminGehtZumBaecker!";
+    private static final Logger LOG = org.slf4j.LoggerFactory.getLogger(MongoUserDetailsService.class);
 
     @Value("${de.axelspringer.ideas.crowdsource.createusers:false}")
     private boolean createUsers;
@@ -42,11 +42,11 @@ public class MongoUserDetailsService implements UserDetailsService {
     public void createUsers() {
 
         if (!createUsers) {
-            log.info("not creating or updating any users.");
+            LOG.info("not creating or updating any users.");
             return;
         }
 
-        log.info("creating or updating users: {}:{} and {}:{}", DEFAULT_USER_EMAIL, DEFAULT_USER_PASS, DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_PASS);
+        LOG.info("creating or updating users: {}:{} and {}:{}", DEFAULT_USER_EMAIL, DEFAULT_USER_PASS, DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_PASS);
 
         // default user
         UserEntity defaultUser = userRepository.findByEmail(DEFAULT_USER_EMAIL);

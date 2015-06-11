@@ -2,13 +2,14 @@ package de.axelspringer.ideas.crowdsource.model.presentation.user;
 
 import de.axelspringer.ideas.crowdsource.util.validation.email.EligibleEmail;
 import de.axelspringer.ideas.crowdsource.util.validation.email.NotActivated;
-import lombok.Data;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.AssertTrue;
 
-@Data
 public class UserRegistration {
 
     @NotEmpty
@@ -19,4 +20,38 @@ public class UserRegistration {
 
     @AssertTrue
     private boolean termsOfServiceAccepted;
+
+    public UserRegistration() {
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public boolean isTermsOfServiceAccepted() {
+        return this.termsOfServiceAccepted;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setTermsOfServiceAccepted(boolean termsOfServiceAccepted) {
+        this.termsOfServiceAccepted = termsOfServiceAccepted;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return EqualsBuilder.reflectionEquals(this, o);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
 }

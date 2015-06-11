@@ -8,6 +8,7 @@ import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.pageobjects.FinancingRoundsPage;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.SeleniumWait;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -83,9 +84,16 @@ public class FinancingRoundSteps {
         assertThat(financingRound, is(notNullValue()));
         assertThat(financingRound.getBudget(), is(budget));
         assertThat(financingRound.getEndDate().toLocalDate(), is(endDate.toLocalDate()));
-        assertThat(financingRound.getEndDate().getHourOfDay(), is(23));
+        assertThat(financingRound.getEndDate().getHourOfDay(), is(hourInBerlinToLocalHour(23)));
         assertThat(financingRound.getEndDate().getMinuteOfHour(), is(59));
         assertThat(financingRound.getEndDate().getSecondOfMinute(), is(0));
+    }
+
+    /**
+     * helper that finds out which hour in local time a given hour in berlin would be
+     */
+    private int hourInBerlinToLocalHour(int hour) {
+        return new DateTime(2000, 12, 1, hour, 59, 0, DateTimeZone.forID("Europe/Berlin")).toLocalDateTime().getHourOfDay();
     }
 
     @And("^the new financing round can be stopped$")

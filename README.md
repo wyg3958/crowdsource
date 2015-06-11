@@ -6,6 +6,29 @@ Current build status: [![Build Status](https://travis-ci.org/as-ideas/crowdsourc
 documentation
 =============
 
+Maven-Repo
+---------------------------
+```xml
+<dependencies>
+    <dependency>
+        <groupId>de.axelspringer.ideas.crowdsource</groupId>
+        <artifactId>crowdsource-core</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+</dependencies>
+
+<repositories>
+    <repository>
+        <id>crowdsource</id>
+        <url>https://raw.github.com/as-ideas/crowdsource/mvn-repo/</url>
+        <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+        </snapshots>
+    </repository>
+</repositories>
+```
+
 Modules
 -------
 crowdsource-frontend
@@ -36,8 +59,8 @@ Persistence
 -----------
 CrowdSource uses MongoDB. You should provide the DB hosts comma-separated via property de.axelspringer.ideas.crowdsource.db.hosts.
 Eg java -jar ... -Dde.axelspringer.ideas.crowdsource.db.hosts=hosta,hostb,hostc
-For local development you can use the embed-mongo-maven-plugin that is used in the blackbox-tests as well.
-Simply run mvn com.github.joelittlejohn.embedmongo:embedmongo-maven-plugin:0.1.12:start -Dembedmongo.wait.
+For local development you can use the embed-mongo-maven-plugin that is used in the integrationstests as well.
+Simply run mvn com.github.joelittlejohn.embedmongo:embedmongo-maven-plugin:0.1.12:start -Dembedmongo.wait in the crowdsource-integrationtests module.
 
 
 Mailserver
@@ -62,12 +85,10 @@ During maven build, frontend-maven-plugin will take care of downloading all tool
 To execute manually you will need node/npm. See scripts in package.json for npm.
 You will also need to run 'npm install -g karma-cli'.
 
----
-TODO: review below (old docu)
 
+AT-Browsers: PHANTOMJS/CHROME/FIREFOX
+-------------------------------------
 
-PHANTOMJS/CHROME/FIREFOX
-
-Enable phantomjs-profile (-Pphantomjs) to use phantomjs (will be downloaded).
-Specifiy path to chromedriver/chrom in test.properties to use chrome (untested).
-Firefox is the fallback. Do nothing and use the worst possible browser by default.
+There were some issues with phantomjs. Feel free to give it another try. Maybe its fixed?
+Specifiy path to chromedriver/chrome in test.properties to use chrome (environment variable also possible).
+Firefox is the fallback. Do nothing and use the worst browser in the world by default.

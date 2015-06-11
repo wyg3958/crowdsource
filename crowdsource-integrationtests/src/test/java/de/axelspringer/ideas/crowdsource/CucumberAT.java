@@ -22,7 +22,7 @@ public class CucumberAT {
 
     @BeforeClass
     public static void initApp() {
-        EXAMPLE_APP = SpringApplication.run(CrowdSourceExample.class, "--spring.profiles.active=ALLOW_HTTP,CREATE_USERS");
+        EXAMPLE_APP = SpringApplication.run(CrowdSourceExample.class);
     }
 
     @AfterClass

@@ -3,7 +3,8 @@ package de.axelspringer.ideas.crowdsource.service;
 import de.axelspringer.ideas.crowdsource.model.persistence.ProjectEntity;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.util.UserHelper;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.expression.Expression;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Slf4j
 @Service
 public class UserNotificationService {
 
@@ -29,6 +29,8 @@ public class UserNotificationService {
     public static final String PASSWORD_FORGOTTEN_SUBJECT = "Bitte vergib ein Passwort für Dein Konto auf der CrowdSource Platform";
     public static final String PROJECT_PUBLISHED_SUBJECT = "Freigabe Deines Projektes";
     public static final String PROJECT_REJECTED_SUBJECT = "Freigabe Deines Projektes";
+
+    private static final Logger log = LoggerFactory.getLogger(UserNotificationService.class);
 
     @Value("${de.axelspringer.ideas.crowdsource.baseUrl:http://localhost:8080}")
     private String applicationUrl;

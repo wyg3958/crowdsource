@@ -1,8 +1,9 @@
 package de.axelspringer.ideas.crowdsource.model.persistence;
 
 import de.axelspringer.ideas.crowdsource.config.security.Roles;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.joda.time.DateTime;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -13,9 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Arrays;
 import java.util.List;
 
-@Data
 // needed for serialization
-@NoArgsConstructor
 @Document(collection = "users")
 public class UserEntity {
 
@@ -50,11 +49,101 @@ public class UserEntity {
         this.password = password;
     }
 
+    public UserEntity() {
+    }
+
     public void reduceBudget(int reductionAmount) {
         if ((budget - reductionAmount) < 0) {
             throw new IllegalArgumentException("User budget may not drop below 0");
         }
 
         budget -= reductionAmount;
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public String getActivationToken() {
+        return this.activationToken;
+    }
+
+    public List<String> getRoles() {
+        return this.roles;
+    }
+
+    public boolean isActivated() {
+        return this.activated;
+    }
+
+    public int getBudget() {
+        return this.budget;
+    }
+
+    public DateTime getCreatedDate() {
+        return this.createdDate;
+    }
+
+    public DateTime getLastModifiedDate() {
+        return this.lastModifiedDate;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setActivationToken(String activationToken) {
+        this.activationToken = activationToken;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
+
+    public void setActivated(boolean activated) {
+        this.activated = activated;
+    }
+
+    public void setBudget(int budget) {
+        this.budget = budget;
+    }
+
+    public void setCreatedDate(DateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public void setLastModifiedDate(DateTime lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return EqualsBuilder.reflectionEquals(this, o);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }

@@ -1,7 +1,8 @@
 package de.axelspringer.ideas.crowdsource.model.persistence;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.joda.time.DateTime;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -9,8 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Data
-@NoArgsConstructor // needed for serialization
+// needed for serialization
 @Document(collection = "comments")
 public class CommentEntity {
 
@@ -36,5 +36,71 @@ public class CommentEntity {
         this.project = projectEntity;
         this.user = userEntity;
         this.comment = comment;
+    }
+
+    public CommentEntity() {
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public ProjectEntity getProject() {
+        return this.project;
+    }
+
+    public UserEntity getUser() {
+        return this.user;
+    }
+
+    public String getComment() {
+        return this.comment;
+    }
+
+    public DateTime getCreatedDate() {
+        return this.createdDate;
+    }
+
+    public DateTime getLastModifiedDate() {
+        return this.lastModifiedDate;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setProject(ProjectEntity project) {
+        this.project = project;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public void setCreatedDate(DateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public void setLastModifiedDate(DateTime lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return EqualsBuilder.reflectionEquals(this, o);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }

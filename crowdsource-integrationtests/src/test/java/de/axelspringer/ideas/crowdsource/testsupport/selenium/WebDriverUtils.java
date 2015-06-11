@@ -1,15 +1,17 @@
 package de.axelspringer.ideas.crowdsource.testsupport.selenium;
 
 import cucumber.api.Scenario;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Slf4j
 public class WebDriverUtils {
+
+    private static final Logger log = LoggerFactory.getLogger(WebDriverUtils.class);
 
     public static void makeScreenshot(WebDriver driver, Scenario scenario) {
         log.debug("Capturing screenshot for scenario {}", scenario.getName());

@@ -2,15 +2,12 @@ package de.axelspringer.ideas.crowdsource.model.presentation;
 
 import de.axelspringer.ideas.crowdsource.model.persistence.CommentEntity;
 import de.axelspringer.ideas.crowdsource.util.UserHelper;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Comment {
 
     private DateTime created;
@@ -24,5 +21,54 @@ public class Comment {
         this.created = commentEntity.getCreatedDate();
         this.userName = UserHelper.determineNameFromEmail(commentEntity.getUser().getEmail());
         this.comment = commentEntity.getComment();
+    }
+
+    @java.beans.ConstructorProperties({"created", "userName", "comment"})
+    public Comment(DateTime created, String userName, String comment) {
+        this.created = created;
+        this.userName = userName;
+        this.comment = comment;
+    }
+
+    public Comment() {
+    }
+
+    public DateTime getCreated() {
+        return this.created;
+    }
+
+    public String getUserName() {
+        return this.userName;
+    }
+
+    public String getComment() {
+        return this.comment;
+    }
+
+    public void setCreated(DateTime created) {
+        this.created = created;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return EqualsBuilder.reflectionEquals(this, o);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }

@@ -4,7 +4,6 @@ import de.axelspringer.ideas.crowdsource.config.MongoDBConfig;
 import de.axelspringer.ideas.crowdsource.config.mail.MailSenderConfig;
 import de.axelspringer.ideas.crowdsource.config.mail.MailTemplateConfig;
 import de.axelspringer.ideas.crowdsource.config.security.SecurityConfig;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +18,6 @@ import java.util.List;
 @Configuration
 @Import({MongoDBConfig.class, SecurityConfig.class, MailSenderConfig.class, MailTemplateConfig.class})
 @ComponentScan(basePackages = "de.axelspringer.ideas.crowdsource", excludeFilters = @ComponentScan.Filter(Configuration.class))
-@Slf4j
 public class CrowdSource extends WebMvcConfigurerAdapter {
 
     @Autowired(required = false)

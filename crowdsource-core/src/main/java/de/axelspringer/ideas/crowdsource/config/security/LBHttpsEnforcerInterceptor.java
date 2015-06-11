@@ -1,8 +1,8 @@
 package de.axelspringer.ideas.crowdsource.config.security;
 
 import de.axelspringer.ideas.crowdsource.config.AppProfiles;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -14,12 +14,12 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Ensures https by redirecting http requests to https://{@link #applicationUrl}
  */
-@Slf4j
 @Component
 @Profile(AppProfiles.NOT + AppProfiles.ALLOW_HTTP)
 public class LBHttpsEnforcerInterceptor extends HandlerInterceptorAdapter {
 
     public static final String X_FORWARDED_PROTO_HEADER = "X-FORWARDED-PROTO";
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(LBHttpsEnforcerInterceptor.class);
 
     @Value("${de.axelspringer.ideas.crowdsource.baseUrl:http://localhost:8080}")
     private String applicationUrl;

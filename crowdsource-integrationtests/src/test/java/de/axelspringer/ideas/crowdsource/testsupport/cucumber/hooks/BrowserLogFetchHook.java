@@ -2,17 +2,19 @@ package de.axelspringer.ideas.crowdsource.testsupport.cucumber.hooks;
 
 import cucumber.api.Scenario;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static java.util.stream.Collectors.joining;
 
-@Slf4j
 public class BrowserLogFetchHook {
+
+    private static final Logger log = LoggerFactory.getLogger(BrowserLogFetchHook.class);
 
     @Autowired
     private WebDriverProvider webDriverProvider;

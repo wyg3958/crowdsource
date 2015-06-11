@@ -1,8 +1,8 @@
 package de.axelspringer.ideas.crowdsource.config.mail;
 
 import de.axelspringer.ideas.crowdsource.exceptions.ResourceNotFoundException;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.expression.Expression;
@@ -12,10 +12,10 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import java.io.IOException;
 import java.io.InputStream;
 
-@Slf4j
 @Configuration
 public class MailTemplateConfig {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(MailTemplateConfig.class);
     private final SpelExpressionParser parser = new SpelExpressionParser();
 
     @Bean

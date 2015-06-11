@@ -3,7 +3,7 @@ package de.axelspringer.ideas.crowdsource.config.security;
 import de.axelspringer.ideas.crowdsource.config.AppProfiles;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,7 +19,6 @@ import java.util.Collections;
 
 import static java.util.stream.Collectors.toList;
 
-@Slf4j
 @Service
 public class MongoUserDetailsService implements UserDetailsService {
 
@@ -28,6 +27,7 @@ public class MongoUserDetailsService implements UserDetailsService {
 
     public final static String DEFAULT_ADMIN_EMAIL = "cs_admin@axelspringer.de";
     public final static String DEFAULT_ADMIN_PASS = "einAdminGehtZumBaecker!";
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(MongoUserDetailsService.class);
 
     @Autowired
     private UserRepository userRepository;

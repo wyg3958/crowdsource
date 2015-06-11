@@ -41,11 +41,14 @@ Simply run mvn com.github.joelittlejohn.embedmongo:embedmongo-maven-plugin:0.1.1
 
 For configuration your own application:
 - Create a appication.properties with following entries
-> de.axelspringer.ideas.crowdsource.db.hosts=127.0.0.1,127.0.0.2
+> de.axelspringer.ideas.crowdsource.db.hosts=127.0.0.1
 > de.axelspringer.ideas.crowdsource.db.port=27017
 > de.axelspringer.ideas.crowdsource.db.name=crowdsource
 > de.axelspringer.ideas.crowdsource.db.username=crowdsource
 > de.axelspringer.ideas.crowdsource.db.password=
+
+You can use a comma seperated list for multiple db-hosts, eg.
+> de.axelspringer.ideas.crowdsource.db.hosts=127.0.0.1,127.0.0.2
 
 
 Mailserver
@@ -53,6 +56,14 @@ Mailserver
 CrowdSource sends Mails for some occassions. In the example-app a mailserver is started and the mails are exposed via a rest endpoint under /mails.
 This is handy for local development as well as integration testing.
 
+For the configuration you need the following entries in your application.properties:
+> de.axelspringer.ideas.crowdsource.mail.host=smtp.xyzn.org
+> de.axelspringer.ideas.crowdsource.mail.port=587
+> de.axelspringer.ideas.crowdsource.mail.username=admin@crowd.yourname.de
+> de.axelspringer.ideas.crowdsource.mail.password=
+> de.axelspringer.ideas.crowdsource.mail.starttls=true
+
+The default-configuration uses localhost:1025 with no username and no password. StartTls is false per default.
 
 Spring Profiles
 ---------------

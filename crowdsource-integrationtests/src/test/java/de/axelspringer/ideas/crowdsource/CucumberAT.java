@@ -16,7 +16,7 @@ import org.springframework.context.ConfigurableApplicationContext;
         features = "classpath:features",
         strict = true,
         format = {"pretty", "html:target/cucumber", "json:target/cucumber/cucumber.json"})
-public class CucumberIT {
+public class CucumberAT {
 
     private static ConfigurableApplicationContext EXAMPLE_APP;
 

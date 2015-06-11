@@ -56,6 +56,7 @@
                 <version>2.17</version>
                 <executions>
                     <execution>
+                        <id>run integration tests</id>
                         <goals>
                             <goal>test</goal>
                         </goals>
@@ -63,6 +64,18 @@
                         <configuration>
                             <includes>
                                 <include>**/**IT.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>run acceptance tests</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <phase>integration-test</phase>
+                        <configuration>
+                            <includes>
+                                <include>**/**AT.java</include>
                             </includes>
                         </configuration>
                     </execution>

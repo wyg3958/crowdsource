@@ -62,6 +62,14 @@ Eg java -jar ... -Dde.axelspringer.ideas.crowdsource.db.hosts=hosta,hostb,hostc
 For local development you can use the embed-mongo-maven-plugin that is used in the integrationstests as well.
 Simply run mvn com.github.joelittlejohn.embedmongo:embedmongo-maven-plugin:0.1.12:start -Dembedmongo.wait in the crowdsource-integrationtests module.
 
+For configuration your own application:
+- Create a appication.properties with following entries
+> de.axelspringer.ideas.crowdsource.db.hosts=127.0.0.1,127.0.0.2
+> de.axelspringer.ideas.crowdsource.db.port=27017
+> de.axelspringer.ideas.crowdsource.db.name=crowdsource
+> de.axelspringer.ideas.crowdsource.db.username=crowdsource
+> de.axelspringer.ideas.crowdsource.db.password=
+
 
 Mailserver
 ----------

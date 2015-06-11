@@ -8,6 +8,8 @@ You can register with anything. To "receive" activation emails and such please g
 A regular user:  crowdsource@axelspringer.de:einEselGehtZumBaecker!
 An admin:  cs_admin@axelspringer.de:einAdminGehtZumBaecker!
 
+Please feel free to mess around with this installation :)
+
 documentation
 =============
 

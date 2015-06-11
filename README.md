@@ -23,7 +23,7 @@ Some end-to-end-, integration-, acceptance-, blackbox-, you-name-it-tests.
 
 Example developer run config
 ----------------------------
-java -jar crowdsource-example.jar -Dspring.profiles.active=ALLOW_HTTP,CREATE_USERS
+java -jar crowdsource-example.jar
 
 
 Token signing

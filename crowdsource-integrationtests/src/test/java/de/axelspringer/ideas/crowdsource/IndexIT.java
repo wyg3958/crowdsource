@@ -1,6 +1,5 @@
 package de.axelspringer.ideas.crowdsource;
 
-import de.axelspringer.ideas.crowdsource.config.AppProfiles;
 import de.axelspringer.ideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.axelspringer.ideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.axelspringer.ideas.crowdsource.testsupport.util.UrlProvider;
@@ -19,7 +18,6 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebIntegrationTest
 @SpringApplicationConfiguration(classes = {CrowdSourceExample.class, CrowdSourceTestConfig.class})
-@ActiveProfiles({AppProfiles.CREATE_USERS, AppProfiles.ALLOW_HTTP})
 public class IndexIT {
 
     @Autowired

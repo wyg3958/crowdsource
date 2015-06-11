@@ -1,10 +1,10 @@
 package de.axelspringer.ideas.crowdsource.config.security;
 
-import de.axelspringer.ideas.crowdsource.config.AppProfiles;
 import de.axelspringer.ideas.crowdsource.model.persistence.UserEntity;
 import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,19 +29,19 @@ public class MongoUserDetailsService implements UserDetailsService {
     public final static String DEFAULT_ADMIN_EMAIL = "cs_admin@axelspringer.de";
     public final static String DEFAULT_ADMIN_PASS = "einAdminGehtZumBaecker!";
 
+    @Value("${de.axelspringer.ideas.crowdsource.createusers:false}")
+    private boolean createUsers;
+
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private Environment environment;
-
     @PostConstruct
     public void createUsers() {
 
-        if (!environment.acceptsProfiles(AppProfiles.CREATE_USERS)) {
+        if (!createUsers) {
             log.info("not creating or updating any users.");
             return;
         }

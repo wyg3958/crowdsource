@@ -1,7 +1,7 @@
 angular.module('crowdsource')
 
-    .factory('Content', function () {
-        var service;
+    .factory('Content', function ($http) {
+        var service = {};
 
         // TODO: optimize performance ?
         service.getAll = function () {
@@ -11,16 +11,16 @@ angular.module('crowdsource')
         return service;
     })
 
-    .directive('content', function () {
+    .directive('content', function (Content) {
         return {
-            restrict: 'A',
+            restrict: 'E',
             scope: {
-                key: '='
+                key: '@'
             },
             template: '<span>{{ content }}</span>',
             controller: function ($scope) {
-                Content.getAll().then(function(content) {
-                    $scope.content = content[$scope.key];
+                Content.getAll().then(function(response) {
+                    $scope.content = response.data[$scope.key];
                 });
             }
         }

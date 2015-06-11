@@ -1,9 +1,10 @@
 # crowdsource
 a collaborative crowd sourcing and funding tool using virtual currency
 
+Current build status: [![Build Status](https://travis-ci.org/as-ideas/crowdsource.svg?branch=master)](https://travis-ci.org/as-ideas/crowdsource)
 
-crowdsource
-===========
+documentation
+=============
 
 Modules
 -------

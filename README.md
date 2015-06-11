@@ -5,8 +5,8 @@ Current build status: [![Build Status](https://travis-ci.org/as-ideas/crowdsourc
 
 Example installation: https://crowd-source.herokuapp.com 
 You can register with anything. To "receive" activation emails and such please go to: https://crowd-source.herokuapp.com/mails.
-A regular user:  crowdsource@axelspringer.de:einEselGehtZumBaecker!
-An admin:  cs_admin@axelspringer.de:einAdminGehtZumBaecker!
+A regular user:  crowdsource@crowd.source.de:einEselGehtZumBaecker!
+An admin:  cs_admin@crowd.source.de:einAdminGehtZumBaecker!
 
 Please feel free to mess around with this installation :)
 

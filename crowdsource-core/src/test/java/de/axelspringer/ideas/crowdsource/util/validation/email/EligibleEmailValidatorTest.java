@@ -20,13 +20,13 @@ public class EligibleEmailValidatorTest {
     public void beforeMethod() throws Exception {
         eligibleEmailValidator = spy(new EligibleEmailValidator());
         Whitebox.setInternalState(eligibleEmailValidator, "emailBlacklistPatterns", Arrays.asList("_extern"));
-        doReturn("@axelspringer.de").when(eligibleEmailValidator).getEligibleEmailDomain();
+        doReturn("@crowd.source.de").when(eligibleEmailValidator).getEligibleEmailDomain();
     }
 
     @Test
     public void testIsValidValidEmail() throws Exception {
 
-        assertTrue(eligibleEmailValidator.isValid("test@axelspringer.de", ValidatorTestUtil.constraintValidatorContext()));
+        assertTrue(eligibleEmailValidator.isValid("test@crowd.source.de", ValidatorTestUtil.constraintValidatorContext()));
     }
 
     @Test
@@ -38,7 +38,7 @@ public class EligibleEmailValidatorTest {
     @Test
     public void testIsValidConsultantEmail() throws Exception {
 
-        assertFalse(eligibleEmailValidator.isValid("test_extern@axelspringer.de", ValidatorTestUtil.constraintValidatorContext()));
+        assertFalse(eligibleEmailValidator.isValid("test_extern@crowd.source.de", ValidatorTestUtil.constraintValidatorContext()));
     }
 
 }

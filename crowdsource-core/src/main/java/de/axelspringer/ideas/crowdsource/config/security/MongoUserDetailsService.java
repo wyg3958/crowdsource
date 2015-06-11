@@ -5,7 +5,6 @@ import de.axelspringer.ideas.crowdsource.repository.UserRepository;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,10 +21,10 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class MongoUserDetailsService implements UserDetailsService {
 
-    public final static String DEFAULT_USER_EMAIL = "crowdsource@axelspringer.de";
+    public final static String DEFAULT_USER_EMAIL = "crowdsource@crowd.source.de";
     public final static String DEFAULT_USER_PASS = "einEselGehtZumBaecker!";
 
-    public final static String DEFAULT_ADMIN_EMAIL = "cs_admin@axelspringer.de";
+    public final static String DEFAULT_ADMIN_EMAIL = "cs_admin@crowd.source.de";
     public final static String DEFAULT_ADMIN_PASS = "einAdminGehtZumBaecker!";
     private static final Logger LOG = org.slf4j.LoggerFactory.getLogger(MongoUserDetailsService.class);
 

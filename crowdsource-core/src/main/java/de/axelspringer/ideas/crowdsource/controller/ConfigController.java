@@ -18,7 +18,7 @@ public class ConfigController {
     @Autowired
     public ConfigController(
             @Value("${de.axelspringer.ideas.crowdsource.content.allowed.email.domain}") String allowedEmailDomain,
-            @Value("#{${de.axelspringer.ideas.crowdsource.content.email.blacklist.patterns}.split(',')}") List<String> emailBlacklistPatterns) {
+            @Value("#{'${de.axelspringer.ideas.crowdsource.content.email.blacklist.patterns}'.split(',')}") List<String> emailBlacklistPatterns) {
 
         this.allowedEmailDomain = allowedEmailDomain;
         this.emailBlacklistPatterns = emailBlacklistPatterns;

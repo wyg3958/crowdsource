@@ -92,6 +92,13 @@ During maven build, frontend-maven-plugin will take care of downloading all tool
 To execute manually you will need node/npm. See scripts in package.json for npm.
 You will also need to run 'npm install -g karma-cli'.
 
+To be able to develop quickly, run those 2 commands in two separate shells
+
+```
+npm run watch
+npm run test-watch
+```
+
 
 AT-Browsers: PHANTOMJS/CHROME/FIREFOX
 -------------------------------------

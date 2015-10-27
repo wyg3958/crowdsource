@@ -12,6 +12,11 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>crowdsource-frontend</artifactId>
 
+    <properties>
+        <github.global.server>github</github.global.server>
+        <deploy.to.git>true</deploy.to.git>
+    </properties>
+
     <build>
         <resources>
             <resource>

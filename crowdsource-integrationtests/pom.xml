@@ -87,6 +87,13 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- Do not push this module to maven repo on project deploy -->
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -105,7 +112,7 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>2.44.0</version>
+            <version>2.48.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>

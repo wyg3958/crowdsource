@@ -17,7 +17,7 @@
     </properties>
 
     <build>
-        <finalName>${artifactId}</finalName>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -39,7 +39,7 @@
                     <appName>crowd-source</appName>
                     <jdkVersion>1.8</jdkVersion>
                     <processTypes>
-                        <web>java -Dserver.port=$PORT -Dde.axelspringer.ideas.crowdsource.baseUrl=http://crowd-source.herokuapp.com -jar target/${artifactId}.jar</web>
+                        <web>java -Dserver.port=$PORT -Dde.axelspringer.ideas.crowdsource.baseUrl=http://crowd-source.herokuapp.com -jar target/${project.artifactId}.jar</web>
                     </processTypes>
                 </configuration>
                 <executions>

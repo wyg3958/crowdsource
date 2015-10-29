@@ -1,6 +1,6 @@
 #!/bin/bash
 set -ev
-BRANCH_TO_RELEASE="refactor/test-release-source"
+BRANCH_TO_RELEASE="refactor/toPubMvnCentral"
 if [ "${TRAVIS_BRANCH}" = "release-trigger" ]; then
   git clone --depth=50 --branch=${BRANCH_TO_RELEASE} git://github.com/as-ideas/crowdsource.git release_src
   cd release_src
@@ -19,5 +19,7 @@ if [ "${TRAVIS_BRANCH}" = "release-trigger" ]; then
   PASSPHRASE_STRING="-Darguments=-Dgpg.passphrase="${GPG_PASSPHRASE}
   mvn -B release:clean release:prepare --settings release-res/settings.xml -DskipTests
   mvn -B -Prelease -Prelease-sign-artifacts release:perform ${PASSPHRASE_STRING} --settings release-res/settings.xml -DskipTests
-  exit $?
+else
+  mvn deploy --settings release-res/settings.xml
 fi
+exit $?

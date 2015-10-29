@@ -20,6 +20,6 @@ if [ "${TRAVIS_BRANCH}" = "release-trigger" ]; then
   mvn -B release:clean release:prepare --settings release-res/settings.xml -DskipTests
   mvn -B -Prelease -Prelease-sign-artifacts release:perform ${PASSPHRASE_STRING} --settings release-res/settings.xml -DskipTests
 else
-  mvn deploy --settings release-res/settings.xml
+  mvn deploy -Prelease --settings release-res/settings.xml
 fi
 exit $?

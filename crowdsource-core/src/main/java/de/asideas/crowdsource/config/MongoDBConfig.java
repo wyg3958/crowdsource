@@ -8,10 +8,12 @@ import com.mongodb.WriteConcern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.authentication.UserCredentials;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import java.net.UnknownHostException;
 import java.util.List;
@@ -20,6 +22,8 @@ import static java.util.stream.Collectors.toList;
 
 @Configuration
 @EnableMongoAuditing
+@ComponentScan(basePackages = "de.asideas.crowdsource", excludeFilters = @ComponentScan.Filter(Configuration.class))
+@EnableMongoRepositories( basePackages = "de.asideas.crowdsource.repository" )
 public class MongoDBConfig extends AbstractMongoConfiguration {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
@@ -51,7 +55,7 @@ public class MongoDBConfig extends AbstractMongoConfiguration {
                 .map(this::createServerAddress)
                 .collect(toList());
 
-        LOG.debug("connecting to db hosts: {}...", serverAddresses);
+        LOG.debug("connecting to DB hosts: {}...", serverAddresses);
 
         if (serverAddresses.size() == 1) {
             // create a mongo client that connects to a single database,

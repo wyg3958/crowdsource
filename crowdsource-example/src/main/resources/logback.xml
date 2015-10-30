@@ -11,6 +11,6 @@
         <appender-ref ref="STDOUT"/>
     </root>
 
-    <logger name="de.axelspringer.ideas.crowdsource" level="INFO"/>
+    <logger name="de.asideas.crowdsource" level="INFO"/>
 
 </configuration>

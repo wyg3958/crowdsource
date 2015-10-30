@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>crowdsource-parent</artifactId>
-        <groupId>de.axelspringer.ideas.crowdsource</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <groupId>de.asideas.crowdsource</groupId>
+        <version>1.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -17,7 +15,7 @@
     </properties>
 
     <build>
-        <finalName>${artifactId}</finalName>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -39,7 +37,7 @@
                     <appName>crowd-source</appName>
                     <jdkVersion>1.8</jdkVersion>
                     <processTypes>
-                        <web>java -Dserver.port=$PORT -Dde.axelspringer.ideas.crowdsource.baseUrl=http://crowd-source.herokuapp.com -jar target/${artifactId}.jar</web>
+                        <web>java -Dserver.port=$PORT -Dde.axelspringer.ideas.crowdsource.baseUrl=http://crowd-source.herokuapp.com -jar target/${project.artifactId}.jar</web>
                     </processTypes>
                 </configuration>
                 <executions>
@@ -54,9 +52,10 @@
             </plugin>
         </plugins>
     </build>
+
     <dependencies>
         <dependency>
-            <groupId>de.axelspringer.ideas.crowdsource</groupId>
+            <groupId>de.asideas.crowdsource</groupId>
             <artifactId>crowdsource-core</artifactId>
             <version>${project.version}</version>
         </dependency>

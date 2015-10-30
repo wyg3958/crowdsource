@@ -66,7 +66,7 @@ public class MailTemplateConfig {
         return resourceAsStream;
     }
 
-    String toDefaultTemplatePath(String templatePath) {
+    public String toDefaultTemplatePath(String templatePath) {
         return templatePath + ".default";
     }
 }

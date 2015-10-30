@@ -1,7 +1,14 @@
 # Contains Resources for releasing to Public Maven Centreal Repository
  
- The `release.sh` script checks whether the branch that was commited to conforms to the branch that is supposed to trigger releases.
- If true it starts to prepare and perform the actual release.
+### Release mode
+ The `release.sh` script, executed in travis build, checks whether the branch that was commited to conforms to the branch `${BRANCH_TRIGGERING_RELEASE}` that is supposed to trigger releases.
+ If true it starts to prepare and perform the actual release from `${BRANCH_TO_RELEASE}` which usually corresponds to `master`.
+ When the build succeeds the artifacts to release have been uploaded to oss.sonatype.org. In order to finally release and make the artifacts public, it needs to be "closed" and "released". 
+ To achieve that login to https://oss.sonatype.org/, navigate to "Staging Repositories", find the artifact(s) and perform the close and release tasks. For login credentials ask
+ your Product Owner of trust.
+ 
+### Standard Snapshot mode
+ If the commit that caused travis execution does not match `${BRANCH_TRIGGERING_RELEASE}` a snapshot release from the current commit is deployed to the central repositry by `mvn deploy -Prelease ..`
  
 ## Strings that are encrypted by and for use of travis-ci
  * `NEXUS_OSSRH_USER` - The (sonatype.org - JIRA) User that is permitted to release artifacts by groupId de.asideas 

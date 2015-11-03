@@ -1,6 +1,6 @@
 package de.asideas.crowdsource.service;
 
-import de.asideas.crowdsource.config.security.Roles;
+import de.asideas.crowdsource.security.Roles;
 import de.asideas.crowdsource.enums.ProjectStatus;
 import de.asideas.crowdsource.model.persistence.FinancingRoundEntity;
 import de.asideas.crowdsource.model.persistence.ProjectEntity;

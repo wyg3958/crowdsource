@@ -2,7 +2,6 @@ package de.asideas.crowdsource.testsupport.util;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import de.asideas.crowdsource.config.security.MongoUserDetailsService;
 import de.asideas.crowdsource.enums.ProjectStatus;
 import de.asideas.crowdsource.model.presentation.Comment;
 import de.asideas.crowdsource.model.presentation.FinancingRound;
@@ -36,6 +35,11 @@ public class CrowdSourceClient {
 
     private static final RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
 
+    public static final String DEFAULT_USER_EMAIL = "crowdsource@crowd.source.de";
+    public static final String DEFAULT_USER_PASS = "einEselGehtZumBaecker!";
+    public static final String DEFAULT_ADMIN_EMAIL = "cs_admin@crowd.source.de";
+    public static final String DEFAULT_ADMIN_PASS = "einAdminGehtZumBaecker!";
+
     @Autowired
     private UrlProvider urlProvider;
 
@@ -43,11 +47,11 @@ public class CrowdSourceClient {
     private String allowedEmailDomain;
 
     public AuthToken authorizeWithDefaultUser() {
-        return authorize(MongoUserDetailsService.DEFAULT_USER_EMAIL, MongoUserDetailsService.DEFAULT_USER_PASS);
+        return authorize(DEFAULT_USER_EMAIL, DEFAULT_USER_PASS);
     }
 
     public AuthToken authorizeWithAdminUser() {
-        return authorize(MongoUserDetailsService.DEFAULT_ADMIN_EMAIL, MongoUserDetailsService.DEFAULT_ADMIN_PASS);
+        return authorize(DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_PASS);
     }
 
     public AuthToken authorize(String email, String password) {

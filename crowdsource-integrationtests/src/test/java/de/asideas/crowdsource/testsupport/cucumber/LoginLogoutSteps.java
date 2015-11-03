@@ -5,7 +5,6 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import de.asideas.crowdsource.config.security.MongoUserDetailsService;
 import de.asideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.asideas.crowdsource.testsupport.pageobjects.LoginForm;
 import de.asideas.crowdsource.testsupport.pageobjects.LogoutPage;
@@ -20,6 +19,10 @@ import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
+import static de.asideas.crowdsource.testsupport.util.CrowdSourceClient.DEFAULT_ADMIN_EMAIL;
+import static de.asideas.crowdsource.testsupport.util.CrowdSourceClient.DEFAULT_ADMIN_PASS;
+import static de.asideas.crowdsource.testsupport.util.CrowdSourceClient.DEFAULT_USER_EMAIL;
+import static de.asideas.crowdsource.testsupport.util.CrowdSourceClient.DEFAULT_USER_PASS;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -64,7 +67,7 @@ public class LoginLogoutSteps {
     public void an_admin_is_logged_in() throws Throwable {
         the_index_page_is_visited();
         he_clicks_on_the_Login_link_in_the_navigation_bar();
-        login(MongoUserDetailsService.DEFAULT_ADMIN_EMAIL, MongoUserDetailsService.DEFAULT_ADMIN_PASS);
+        login(DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_PASS);
         he_is_redirected_to_the_index_page();
     }
 
@@ -83,7 +86,7 @@ public class LoginLogoutSteps {
 
     @When("^he enters valid credentials$")
     public void he_enters_valid_credentials() throws Throwable {
-        login(MongoUserDetailsService.DEFAULT_USER_EMAIL, MongoUserDetailsService.DEFAULT_USER_PASS);
+        login(DEFAULT_USER_EMAIL, DEFAULT_USER_PASS);
     }
 
     private void login(String email, String password) {
@@ -96,7 +99,7 @@ public class LoginLogoutSteps {
     public void he_enters_invalid_credentials() throws Throwable {
 
         PageFactory.initElements(webDriver, loginForm);
-        loginForm.login("foooooooaaaahhhh", MongoUserDetailsService.DEFAULT_USER_PASS);
+        loginForm.login("foooooooaaaahhhh", DEFAULT_USER_PASS);
     }
 
     @Then("^he is redirected to the index page$")

@@ -1,6 +1,6 @@
 package de.asideas.crowdsource.controller;
 
-import de.asideas.crowdsource.config.security.Roles;
+import de.asideas.crowdsource.security.Roles;
 import de.asideas.crowdsource.exceptions.InvalidRequestException;
 import de.asideas.crowdsource.exceptions.ResourceNotFoundException;
 import de.asideas.crowdsource.model.persistence.FinancingRoundEntity;

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.asideas.crowdsource.model.persistence.UserEntity;
 import de.asideas.crowdsource.repository.UserRepository;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -20,7 +21,7 @@ import java.util.List;
  */
 @Component
 public class DefaultUsersService {
-    private static final Logger LOG = org.slf4j.LoggerFactory.getLogger(DefaultUsersService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultUsersService.class);
 
     @Value("${de.asideas.crowdsource.createusers.fixtures.path}")
     private ClassPathResource defaultUserFixtures;

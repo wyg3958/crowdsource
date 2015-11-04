@@ -24,7 +24,7 @@
   "scripts": {
     "postinstall": "bower install --allow-root --config.interactive=false",
     "test": "karma start src/test/javascript/karma.conf.js --single-run --browsers PhantomJS",
-    "test-watch": "karma start src/test/javascript/karma.conf.js --browsers PhantomJS",
+    "test-watch": "karma start src/test/javascript/karma.conf.js --browsers Chrome",
     "package": "gulp",
     "watch": "gulp && gulp watch"
   }

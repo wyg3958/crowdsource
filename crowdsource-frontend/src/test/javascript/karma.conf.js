@@ -24,10 +24,7 @@ module.exports = function (config) {
             'src/main/resources/public/app/crowdsource.js',
             'src/main/resources/public/app/**/*.js',
 
-            //'src/test/javascript/**/*.js',
-            'src/test/javascript/app/project/details/project-pledging-form.test.js',
-            'src/test/javascript/testsupport/**/*.js',
-
+            'src/test/javascript/**/*.js',
             'src/main/resources/public/app/**/*.html'
         ],
 

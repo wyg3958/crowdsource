@@ -25,7 +25,7 @@ angular.module('crowdsource')
                     vm.saving = true;
                     RemoteFormValidation.clearRemoteErrors(vm);
 
-                    Project.pledge(vm.project.id, vm.pledge).$promise
+                    Project.pledge(vm.project.id, normalizePledge(vm.pledge)).$promise
                         .then(function () {
                             // load the project and user again to update the project details view to the new state
                             return reloadUserAndProject();
@@ -105,6 +105,12 @@ angular.module('crowdsource')
 
                 function getPledgedAmountByCurrentUser () {
                     return vm.project.pledgedAmountByRequestingUser || 0;
+                }
+
+                function normalizePledge(pledge) {
+                    return {
+                        amount : parseInt(pledge.amount) - getPledgedAmountByCurrentUser()
+                    };
                 }
 
                 function isLoading() {

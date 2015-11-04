@@ -1,5 +1,7 @@
-package de.asideas.crowdsource.config.security;
+package de.asideas.crowdsource.config;
 
+import de.asideas.crowdsource.security.IPBasedAnonymousAuthenticationFilter;
+import de.asideas.crowdsource.security.MongoUserDetailsService;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

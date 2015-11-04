@@ -1,0 +1,19 @@
+[
+  {
+    "email": "crowdsource@crowd.source.de",
+    "password": "einEselGehtZumBaecker!",
+    "roles": [
+      "ROLE_USER"
+    ],
+    "activated": true
+  },
+  {
+    "email": "cs_admin@crowd.source.de",
+    "password": "einAdminGehtZumBaecker!",
+    "roles": [
+      "ROLE_USER",
+      "ROLE_ADMIN"
+    ],
+    "activated": true
+  }
+]

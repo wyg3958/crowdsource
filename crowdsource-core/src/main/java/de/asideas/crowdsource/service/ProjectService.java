@@ -1,6 +1,6 @@
 package de.asideas.crowdsource.service;
 
-import de.asideas.crowdsource.config.security.Roles;
+import de.asideas.crowdsource.security.Roles;
 import de.asideas.crowdsource.enums.ProjectStatus;
 import de.asideas.crowdsource.exceptions.InvalidRequestException;
 import de.asideas.crowdsource.exceptions.ResourceNotFoundException;

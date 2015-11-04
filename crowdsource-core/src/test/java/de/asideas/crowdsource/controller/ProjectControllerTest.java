@@ -2,7 +2,7 @@ package de.asideas.crowdsource.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
-import de.asideas.crowdsource.config.security.Roles;
+import de.asideas.crowdsource.security.Roles;
 import de.asideas.crowdsource.enums.ProjectStatus;
 import de.asideas.crowdsource.model.persistence.FinancingRoundEntity;
 import de.asideas.crowdsource.model.persistence.PledgeEntity;

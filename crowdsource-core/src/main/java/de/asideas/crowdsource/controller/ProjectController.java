@@ -1,7 +1,7 @@
 package de.asideas.crowdsource.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import de.asideas.crowdsource.config.security.Roles;
+import de.asideas.crowdsource.security.Roles;
 import de.asideas.crowdsource.enums.ProjectStatus;
 import de.asideas.crowdsource.exceptions.ForbiddenException;
 import de.asideas.crowdsource.model.persistence.UserEntity;

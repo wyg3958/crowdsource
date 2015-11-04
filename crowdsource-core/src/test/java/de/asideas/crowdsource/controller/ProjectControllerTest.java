@@ -4,34 +4,30 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import de.asideas.crowdsource.config.security.Roles;
 import de.asideas.crowdsource.enums.ProjectStatus;
-import de.asideas.crowdsource.model.persistence.FinancingRoundEntity;
-import de.asideas.crowdsource.model.persistence.PledgeEntity;
-import de.asideas.crowdsource.model.persistence.ProjectEntity;
+import de.asideas.crowdsource.exceptions.InvalidRequestException;
+import de.asideas.crowdsource.exceptions.ResourceNotFoundException;
 import de.asideas.crowdsource.model.persistence.UserEntity;
+import de.asideas.crowdsource.model.presentation.ErrorResponse;
 import de.asideas.crowdsource.model.presentation.Pledge;
 import de.asideas.crowdsource.model.presentation.project.Project;
-import de.asideas.crowdsource.repository.FinancingRoundRepository;
-import de.asideas.crowdsource.repository.PledgeRepository;
-import de.asideas.crowdsource.repository.ProjectRepository;
+import de.asideas.crowdsource.model.presentation.user.ProjectCreator;
 import de.asideas.crowdsource.repository.UserRepository;
 import de.asideas.crowdsource.service.ProjectService;
-import de.asideas.crowdsource.service.UserNotificationService;
 import de.asideas.crowdsource.service.UserService;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.expression.Expression;
 import org.springframework.http.MediaType;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -44,15 +40,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.UUID;
+import java.util.Date;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -67,16 +65,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ProjectControllerTest {
 
     @Autowired
-    private ProjectRepository projectRepository;
-
-    @Autowired
-    private PledgeRepository pledgeRepository;
-
-    @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    private FinancingRoundRepository financingRoundRepository;
+    private ProjectService projectService;
 
     @Resource
     private WebApplicationContext webApplicationContext;
@@ -86,29 +78,18 @@ public class ProjectControllerTest {
 
     @Before
     public void setup() {
-
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        reset(projectRepository);
-        reset(pledgeRepository);
-        reset(userRepository);
-        reset(financingRoundRepository);
-
+        reset(projectService, userRepository);
         mapper.registerModule(new JodaModule());
-
-        // make sure that the project is returned that is request to save
-        when(projectRepository.save(any(ProjectEntity.class))).thenAnswer(invocationOnMock -> invocationOnMock.getArguments()[0]);
     }
 
     @Test
     public void addProject_shouldReturnSuccessfully() throws Exception {
-
-        final Project project = project("myTitle", "theFullDescription", "theShortDescription", 50);
-
         final String email = "some@mail.com";
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
-
-        FinancingRoundEntity currentFinancingRound = financingRound();
-        when(financingRoundRepository.findActive(any())).thenReturn(currentFinancingRound);
+        final Project project = project("myTitle", "theFullDescription", "theShortDescription", 50, ProjectStatus.PROPOSED);
+        final Project expFullProjcet = toCreatedProject(project, user);
+        when(projectService.addProject(project, user)).thenReturn(expFullProjcet);
 
         MvcResult mvcResult = mockMvc.perform(post("/project")
                 .principal(authentication(user))
@@ -117,57 +98,12 @@ public class ProjectControllerTest {
                 .andExpect(status().isCreated())
                 .andReturn();
 
-        ProjectEntity projectEntity = new ProjectEntity(user, project, currentFinancingRound);
-        verify(projectRepository).save(eq(projectEntity));
-
-        assertThat(mvcResult.getResponse().getContentAsString(), is("{" +
-                "\"id\":null," + // actually this is non null, but the projectRepository is a mock and does not generate an id
-                "\"status\":\"PROPOSED\"," +
-                "\"title\":\"myTitle\"," +
-                "\"shortDescription\":\"theShortDescription\"," +
-                "\"description\":\"theFullDescription\"," +
-                "\"pledgeGoal\":50,\"pledgedAmount\":0," +
-                "\"backers\":0," +
-                "\"creator\":{\"id\":\"id_" + email + "\",\"name\":\"Some\",\"email\":\"" + email + "\"}," +
-                "\"lastModifiedDate\":null}"));
-    }
-
-    @Test
-    public void addProject_shouldWorkIfNoFinancingRoundIsCurrentlyActive() throws Exception {
-
-        final Project project = project("myTitle", "theFullDescription", "theShortDescription", 50);
-
-        final String email = "some@mail.com";
-        final UserEntity user = userEntity(email, Roles.ROLE_USER);
-
-        when(financingRoundRepository.findActive(any())).thenReturn(null);
-
-        MvcResult mvcResult = mockMvc.perform(post("/project")
-                .principal(authentication(user))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(project)))
-                .andExpect(status().isCreated())
-                .andReturn();
-
-        ProjectEntity projectEntity = new ProjectEntity(user, project, null);
-        verify(projectRepository).save(eq(projectEntity));
-
-        assertThat(mvcResult.getResponse().getContentAsString(), is("{" +
-                "\"id\":null," + // actually this is non null, but the projectRepository is a mock and does not generate an id
-                "\"status\":\"PROPOSED\"," +
-                "\"title\":\"myTitle\"," +
-                "\"shortDescription\":\"theShortDescription\"," +
-                "\"description\":\"theFullDescription\"," +
-                "\"pledgeGoal\":50,\"pledgedAmount\":0," +
-                "\"backers\":0," +
-                "\"creator\":{\"id\":\"id_" + email + "\",\"name\":\"Some\",\"email\":\"" + email + "\"}," +
-                "\"lastModifiedDate\":null}"));
+        assertThat(expFullProjcet, is(equalTo(mapper.readValue(mvcResult.getResponse().getContentAsString(), Project.class))));
     }
 
     @Test
     public void addProject_shouldRespondWith401IfUserWasNotFound() throws Exception {
-
-        final Project project = project("myTitle", "theFullDescription", "theShortDescription", 50);
+        final Project project = project("myTitle", "theFullDescription", "theShortDescription", 50, ProjectStatus.PROPOSED);
 
         mockMvc.perform(post("/project")
                 .principal(new UsernamePasswordAuthenticationToken("foo@bar.de", "somepassword"))
@@ -176,12 +112,9 @@ public class ProjectControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 
-
     @Test
     public void addProject_shouldRespondWith400IfRequestWasInvalid() throws Exception {
-
         final Project project = new Project();
-
         final String email = "some@mail.com";
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
 
@@ -193,210 +126,178 @@ public class ProjectControllerTest {
     }
 
     @Test
+    public void addProject_shouldRespondWith400IfProjectWasMissing() throws Exception {
+        final String email = "some@mail.com";
+        final UserEntity user = userEntity(email, Roles.ROLE_USER);
+
+        mockMvc.perform(post("/project")
+                .principal(authentication(user))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void getProject_shouldRespondWith404OnInvalidProjectId() throws Exception {
+        when(projectService.getProject(anyString(), any(UserEntity.class))).thenThrow(new ResourceNotFoundException());
         mockMvc.perform(get("/project/{projectId}", "foo bah bah"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     public void getProject_shouldRespondWith403IfTheUserMayNotSeeThisProject() throws Exception {
-
-        final String email = "some@mail.com";
-        final UserEntity userEntity = userEntity(email, Roles.ROLE_USER);
+        final UserEntity userEntity = userEntity("some@mail.com", Roles.ROLE_USER);
+        final UserEntity creator = userEntity("creator@mail.com", Roles.ROLE_USER);
 
         final String projectId = "existingProjectId";
-        projectEntity(userEntity, projectId, "title", 44, "short description", "description", ProjectStatus.PROPOSED, null);
+        when(projectService.getProject(eq(projectId), eq(userEntity)))
+                .thenReturn(toCreatedProject(project("title", "descr", "shortDescr", 44, ProjectStatus.PROPOSED), creator));
 
-        mockMvc.perform(get("/project/{projectId}", projectId))
-                .andExpect(status().isForbidden());
+        mockMvc.perform(get("/project/{projectId}", projectId)
+                        .principal(authentication(userEntity))
+        ).andExpect(status().isForbidden());
     }
 
     @Test
     public void getProject_shouldReturnSingleProjectSuccessfullyWhenProjectIsPublished() throws Exception {
-
-        final String email = "some@mail.com";
-        final UserEntity userEntity = userEntity(email, Roles.ROLE_USER);
-
+        final UserEntity userEntity = userEntity("some@mail.com", Roles.ROLE_USER);
+        final UserEntity creator = userEntity("creator@mail.com", Roles.ROLE_USER);
         final String projectId = "existingProjectId";
-        projectEntity(userEntity, projectId, "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
+        final Project expProjcet = toCreatedProject(project("title", "descr", "shortDescr", 44, ProjectStatus.PUBLISHED), creator);
 
-        MvcResult mvcResult = mockMvc.perform(get("/project/{projectId}", projectId))
+        when(projectService.getProject(eq(projectId), eq(userEntity))).thenReturn(expProjcet);
+
+        MvcResult mvcResult = mockMvc.perform(get("/project/{projectId}", projectId)
+                .principal(authentication(userEntity)))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        assertThat(mvcResult.getResponse().getContentAsString(), is("{" +
-                "\"id\":\"" + projectId + "\"," +
-                "\"status\":\"PUBLISHED\"," +
-                "\"title\":\"title\"," +
-                "\"shortDescription\":\"short description\"," +
-                "\"description\":\"description\"," +
-                "\"pledgeGoal\":44," +
-                "\"pledgedAmount\":0," +
-                "\"backers\":0," +
-                "\"creator\":{\"id\":\"id_" + email + "\",\"name\":\"Some\",\"email\":\"" + email + "\"}," +
-                "\"lastModifiedDate\":null}"));
+        assertThat(mapper.readValue(mvcResult.getResponse().getContentAsString(), Project.class), is(equalTo(expProjcet)));
     }
 
     @Test
-    public void shouldReturnProjectInProjectsQueryWhenProjectIsPublished() throws Exception {
+    public void getProject_shouldReturnSingleProjectSuccessfullyWhenProjectIsPublishedForAnonymousToo() throws Exception {
+        final UserEntity creator = userEntity("creator@mail.com", Roles.ROLE_USER);
+        final String projectId = "existingProjectId";
+        final Project expProjcet = toCreatedProject(project("title", "descr", "shortDescr", 44, ProjectStatus.PUBLISHED), creator);
 
-        DateTime now = DateTime.now();
-        final String email = "some@mail.com";
-        final UserEntity user = userEntity(email, Roles.ROLE_USER);
+        when(projectService.getProject(eq(projectId), eq(null))).thenReturn(expProjcet);
+
+        MvcResult mvcResult = mockMvc.perform(get("/project/{projectId}", projectId)
+                .principal(anonymousAuthentication()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        assertThat(mapper.readValue(mvcResult.getResponse().getContentAsString(), Project.class), is(equalTo(expProjcet)));
+    }
+
+    @Test
+    public void getProjects_shouldReturnPublishedProjectsOnly() throws Exception {
+        final UserEntity user = userEntity("some@mail.com", Roles.ROLE_USER);
+        final UserEntity creator = userEntity("creator@mail.com", Roles.ROLE_USER);
 
         final String projectId = "existingProjectId";
-        final ProjectEntity projectEntity = projectEntity(user, projectId, "title", 44, "short description", "description", ProjectStatus.PUBLISHED, now);
-        when(projectRepository.findAll()).thenReturn(Collections.singletonList(projectEntity));
+        final Project expProjcet = toCreatedProject(project("title", "descr", "shortDescr", 44, ProjectStatus.PUBLISHED), creator);
+        final Project unexpProjcet = toCreatedProject(project("title", "descr", "shortDescr", 44, ProjectStatus.PROPOSED), creator);
+        when(projectService.getProjects(user)).thenReturn(Arrays.asList(expProjcet, unexpProjcet));
 
         MvcResult mvcResult = mockMvc.perform(get("/projects", projectId)
                 .principal(authentication(user)))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        assertThat(mvcResult.getResponse().getContentAsString(), is("[{" +
-                "\"id\":\"" + projectId + "\"," +
-                "\"status\":\"PUBLISHED\"," +
-                "\"title\":\"title\"," +
-                "\"shortDescription\":\"short description\"," +
-                "\"pledgeGoal\":44," +
-                "\"pledgedAmount\":0," +
-                "\"backers\":0," +
-                "\"creator\":{\"name\":\"Some\",\"email\":\"" + email + "\"}," +
-                "\"lastModifiedDate\":" + now.getMillis() + "}]"));
+        toProjectSummaryViewRepresentation(expProjcet);
+        assertThat(mapper.readValue(mvcResult.getResponse().getContentAsString(), Project[].class)[0], is(equalTo(expProjcet)));
     }
 
     @Test
-    public void shouldReturnNothingInProjectsQueryWhenProjectNotPublishedAndProjectCreatorNotRequestor() throws Exception {
-
-        final String creatorEmail = "some@mail.com";
-        final UserEntity creator = userEntity(creatorEmail, Roles.ROLE_USER);
+    public void getProjects_shouldReturnPublishedProjectsForAnonymousUsersToo() throws Exception {
+        final UserEntity user = userEntity("some@mail.com", Roles.ROLE_USER);
+        final UserEntity creator = userEntity("creator@mail.com", Roles.ROLE_USER);
 
         final String projectId = "existingProjectId";
-        final ProjectEntity projectEntity = projectEntity(creator, projectId, "title", 44, "short description", "description", ProjectStatus.PROPOSED, null);
-        when(projectRepository.findAll()).thenReturn(Collections.singletonList(projectEntity));
+        final Project expProjcet = toCreatedProject(project("title", "descr", "shortDescr", 44, ProjectStatus.PUBLISHED), creator);
+        final Project unexpProjcet = toCreatedProject(project("title", "descr", "shortDescr", 44, ProjectStatus.PROPOSED), creator);
+        when(projectService.getProjects(null)).thenReturn(Arrays.asList(expProjcet, unexpProjcet));
 
-        final String requestorEmail = "other@mail.com";
-        userEntity(requestorEmail, Roles.ROLE_USER);
-
-        final MvcResult mvcResult = mockMvc.perform(get("/projects")
-                .principal(new UsernamePasswordAuthenticationToken(requestorEmail, "somepassword")))
+        MvcResult mvcResult = mockMvc.perform(get("/projects", projectId)
+                .principal(anonymousAuthentication()))
                 .andExpect(status().isOk())
                 .andReturn();
 
+        toProjectSummaryViewRepresentation(expProjcet);
+        assertThat(mapper.readValue(mvcResult.getResponse().getContentAsString(), Project[].class)[0], is(equalTo(expProjcet)));
+    }
+
+    @Test
+    public void getProjects_shouldReturnNothingWhenProjectNotPublishedAndProjectCreatorNotRequestor() throws Exception {
+
+        final UserEntity user = userEntity("some@mail.com", Roles.ROLE_USER);
+        final UserEntity creator = userEntity("creator@mail.com", Roles.ROLE_USER);
+
+        final String projectId = "existingProjectId";
+        final Project expProjcet = toCreatedProject(project("title", "descr", "shortDescr", 44, ProjectStatus.PROPOSED), creator);
+        when(projectService.getProjects(user)).thenReturn(Collections.singletonList(expProjcet));
+
+        MvcResult mvcResult = mockMvc.perform(get("/projects", projectId)
+                .principal(authentication(user)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        toProjectSummaryViewRepresentation(expProjcet);
         assertThat(mvcResult.getResponse().getContentAsString(), is("[]"));
     }
 
     @Test
-    public void shouldReturnUnpublishedProjectInProjectsQueryWhenRequestorIsAdmin() throws Exception {
-
-        final String creatorEmail = "some@mail.com";
-        final UserEntity creator = userEntity(creatorEmail, Roles.ROLE_USER);
-
+    public void getProjects_shouldReturnUnpublishedProjectsWhenRequestorIsAdmin() throws Exception {
+        final UserEntity user = userEntity("some@mail.com", Roles.ROLE_ADMIN);
+        final UserEntity creator = userEntity("creator@mail.com", Roles.ROLE_USER);
         final String projectId = "existingProjectId";
-        final ProjectEntity projectEntity = projectEntity(creator, projectId, "title", 44, "short description", "description", ProjectStatus.PROPOSED, null);
-        when(projectRepository.findAll()).thenReturn(Collections.singletonList(projectEntity));
+        final Project expProjcet = toCreatedProject(project("title", "descr", "shortDescr", 44, ProjectStatus.PROPOSED), creator);
+        when(projectService.getProjects(user)).thenReturn(Collections.singletonList(expProjcet));
 
-        final String requestorEmail = "other@mail.com";
-        final UserEntity requestor = userEntity(requestorEmail, Roles.ROLE_USER, Roles.ROLE_ADMIN);
-
-        final MvcResult mvcResult = mockMvc.perform(get("/projects")
-                .principal(authentication(requestor)))
+        MvcResult mvcResult = mockMvc.perform(get("/projects", projectId)
+                .principal(authentication(user)))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        assertThat(mvcResult.getResponse().getContentAsString(), is("[{" +
-                "\"id\":\"existingProjectId\"," +
-                "\"status\":\"PROPOSED\"," +
-                "\"title\":\"title\"," +
-                "\"shortDescription\":\"short description\"," +
-                "\"pledgeGoal\":44," +
-                "\"pledgedAmount\":0," +
-                "\"backers\":0," +
-                "\"creator\":{\"name\":\"Some\",\"email\":\"some@mail.com\"}," +
-                "\"lastModifiedDate\":null}]"));
+        toProjectSummaryViewRepresentation(expProjcet);
+        assertThat(mapper.readValue(mvcResult.getResponse().getContentAsString(), Project[].class)[0], is(equalTo(expProjcet)));
     }
 
     @Test
-    public void shouldReturnUnpublishedProjectInProjectsQueryWhenRequestorIsCreator() throws Exception {
-
-        final String creatorEmail = "some@mail.com";
-        final UserEntity creator = userEntity(creatorEmail, Roles.ROLE_USER);
-
+    public void getProjects_shouldReturnUnpublishedProjectWhenRequestorIsCreator() throws Exception {
+        final UserEntity creator = userEntity("creator@mail.com", Roles.ROLE_USER);
+        final UserEntity anotherCreator = userEntity("creator2@mail.com", Roles.ROLE_USER);
         final String projectId = "existingProjectId";
-        final ProjectEntity projectEntity = projectEntity(creator, projectId, "title", 44, "short description", "description", ProjectStatus.PROPOSED, null);
-        when(projectRepository.findAll()).thenReturn(Collections.singletonList(projectEntity));
+        final Project expProjcet = toCreatedProject(project("title", "descr", "shortDescr", 44, ProjectStatus.PROPOSED), creator);
+        final Project nonExpProjcet = toCreatedProject(project("title2", "descr2", "shortDescr2", 45, ProjectStatus.PROPOSED), anotherCreator);
+        when(projectService.getProjects(creator)).thenReturn(Arrays.asList(expProjcet, nonExpProjcet));
 
-        final MvcResult mvcResult = mockMvc.perform(get("/projects")
-                .principal(new UsernamePasswordAuthenticationToken(creatorEmail, "somepassword")))
+        MvcResult mvcResult = mockMvc.perform(get("/projects", projectId)
+                .principal(authentication(creator)))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        assertThat(mvcResult.getResponse().getContentAsString(), is("[{" +
-                "\"id\":\"existingProjectId\"," +
-                "\"status\":\"PROPOSED\"," +
-                "\"title\":\"title\"," +
-                "\"shortDescription\":\"short description\"," +
-                "\"pledgeGoal\":44," +
-                "\"pledgedAmount\":0," +
-                "\"backers\":0," +
-                "\"creator\":{\"name\":\"Some\",\"email\":\"some@mail.com\"}," +
-                "\"lastModifiedDate\":null}]"));
+        toProjectSummaryViewRepresentation(expProjcet);
+        List<Project> projects = Arrays.asList(mapper.readValue(mvcResult.getResponse().getContentAsString(), Project[].class));
+        assertThat(projects.size(), is(1));
+        assertThat("Result should contain creator's proposed project", projects.contains(expProjcet));
     }
 
     @Test
-    public void pledgeProject_shouldPledgeCorrectly() throws Exception {
-
+    public void pledgeProject() throws Exception {
         final String email = "some@mail.com";
+        final String projectId = "some_id";
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
-        final ProjectEntity project = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
-        Pledge pledge = new Pledge(project.getPledgeGoal() - 4);
+        Pledge pledge = new Pledge(13);
 
-        int budgetBeforePledge = user.getBudget();
-
-        FinancingRoundEntity activeFinancingRound = financingRound();
-        when(financingRoundRepository.findActive(any())).thenReturn(activeFinancingRound);
-
-        mockMvc.perform(post("/project/{projectId}/pledge", "some_id")
+        mockMvc.perform(post("/project/{projectId}/pledge", projectId)
                 .principal(authentication(user))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(pledge)))
                 .andExpect(status().isCreated());
 
-        PledgeEntity pledgeEntity = new PledgeEntity(project, user, pledge, activeFinancingRound);
-        verify(pledgeRepository).save(pledgeEntity);
-        verify(userRepository).save(user);
-        verify(projectRepository, never()).save(any(ProjectEntity.class));
-
-        assertThat(user.getBudget(), is(budgetBeforePledge - pledge.getAmount()));
-        assertThat(project.getStatus(), is(not(ProjectStatus.FULLY_PLEDGED)));
-    }
-
-    @Test
-    public void pledgeProject_shouldSetTheProjectStatusToFullyPledged() throws Exception {
-
-        final String email = "some@mail.com";
-        final UserEntity user = userEntity(email, Roles.ROLE_USER);
-        final ProjectEntity project = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
-
-        final int budgetBeforePledge = user.getBudget();
-        pledgeProject(project, user, project.getPledgeGoal() - 1);
-
-        assertThat(project.getStatus(), is(not(ProjectStatus.FULLY_PLEDGED)));
-
-        when(financingRoundRepository.findActive(any())).thenReturn(new FinancingRoundEntity());
-
-        mockMvc.perform(post("/project/{projectId}/pledge", "some_id")
-                .principal(authentication(user))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(1)))
-                .andExpect(status().isCreated());
-
-        verify(pledgeRepository).save(any(PledgeEntity.class));
-        verify(userRepository).save(user);
-        verify(projectRepository).save(project);
-
-        assertThat(user.getBudget(), is(budgetBeforePledge - 1));
-        assertThat(project.getStatus(), is(ProjectStatus.FULLY_PLEDGED));
+        verify(projectService).pledge(projectId, user, pledge);
     }
 
     @Test
@@ -413,18 +314,20 @@ public class ProjectControllerTest {
     public void pledgeProject_shouldRespondWith404IfTheProjectWasNotFound() throws Exception {
 
         final String email = "some@mail.com";
+        final String projectId = "some_foo_id";
+        final Pledge pledge = new Pledge(1);
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
+        doThrow(ResourceNotFoundException.class).when(projectService).pledge(projectId, user, pledge);
 
-        mockMvc.perform(post("/project/{projectId}/pledge", "some_foo_id")
+        mockMvc.perform(post("/project/{projectId}/pledge", projectId)
                 .principal(authentication(user))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(new Pledge(1))))
+                .content(mapper.writeValueAsString(pledge)))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     public void pledgeProject_shouldRespondWith400IfTheRequestObjectIsInvalid() throws Exception {
-
         final String email = "some@mail.com";
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
 
@@ -435,21 +338,16 @@ public class ProjectControllerTest {
                 .andExpect(status().isBadRequest())
                 .andReturn();
 
-        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"errorCode\":\"field_errors\",\"fieldViolations\":{\"amount\":\"must be greater than or equal to 1\"}}"));
+        ErrorResponse expError = new ErrorResponse("field_errors");
+        expError.addConstraintViolation("amount", "must be greater than or equal to 1");
+        assertThat(mapper.readValue(mvcResult.getResponse().getContentAsString(), ErrorResponse.class), is(expError));
     }
 
     @Test
-    public void pledgeProject_shouldRespondWith400IfThePledgeGoalIsExceeded() throws Exception {
-
+    public void pledgeProject_shouldRespondWith400WhenProjectServiceThrowsInvalidRequestEx() throws Exception {
         final String email = "some@mail.com";
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
-
-        final ProjectEntity project = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
-
-        // pledge project nearly fully
-        pledgeProject(project, user, project.getPledgeGoal() - 1);
-
-        when(financingRoundRepository.findActive(any())).thenReturn(new FinancingRoundEntity());
+        doThrow(InvalidRequestException.pledgeGoalExceeded()).when(projectService).pledge(anyString(), eq(user), any(Pledge.class));
 
         MvcResult mvcResult = mockMvc.perform(post("/project/{projectId}/pledge", "some_id")
                 .principal(authentication(user))
@@ -458,156 +356,37 @@ public class ProjectControllerTest {
                 .andExpect(status().isBadRequest())
                 .andReturn();
 
-        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"errorCode\":\"pledge_goal_exceeded\",\"fieldViolations\":{}}"));
+        ErrorResponse expError = new ErrorResponse(InvalidRequestException.pledgeGoalExceeded().getMessage());
+        assertThat(mapper.readValue(mvcResult.getResponse().getContentAsString(), ErrorResponse.class), is(expError));
     }
 
     @Test
-    public void pledgeProject_shouldRespondWith400IfTheProjectIsAlreadyFullyPledged() throws Exception {
-
-        final String email = "some@mail.com";
-        final UserEntity user = userEntity(email, Roles.ROLE_USER);
-
-        final ProjectEntity project = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PROPOSED, null);
-
-        when(financingRoundRepository.findActive(any())).thenReturn(new FinancingRoundEntity());
-
-        // fully pledge
-        pledgeProject(project, user, project.getPledgeGoal());
-
-        MvcResult mvcResult = mockMvc.perform(post("/project/{projectId}/pledge", "some_id")
-                .principal(authentication(user))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(new Pledge(1))))
-                .andExpect(status().isBadRequest())
-                .andReturn();
-
-        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"errorCode\":\"project_already_fully_pledged\",\"fieldViolations\":{}}"));
-    }
-
-    @Test
-    public void pledgeProject_shouldRespondWith400IfTheProjectIsNotPublished() throws Exception {
-
-        final String email = "some@mail.com";
-        final UserEntity user = userEntity(email, Roles.ROLE_USER);
-
-        final ProjectEntity project = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PROPOSED, null);
-
-        when(financingRoundRepository.findActive(any())).thenReturn(new FinancingRoundEntity());
-        when(pledgeRepository.findByProjectAndFinancingRound(eq(project), any(FinancingRoundEntity.class)))
-                .thenReturn(Collections.singletonList(new PledgeEntity(project, user, new Pledge(1), new FinancingRoundEntity())));
-
-        project.setStatus(ProjectStatus.REJECTED);
-        MvcResult mvcResult = getMvcResultForPledgedProject(user);
-        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"errorCode\":\"project_not_published\",\"fieldViolations\":{}}"));
-
-        project.setStatus(ProjectStatus.PROPOSED);
-        mvcResult = getMvcResultForPledgedProject(user);
-        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"errorCode\":\"project_not_published\",\"fieldViolations\":{}}"));
-    }
-
-    @Test
-    public void pledgeProject_shouldRespondWith400IfTheUserBudgetIsExceeded() throws Exception {
-
-        final String email = "some@mail.com";
-        final UserEntity user = userEntity(email, Roles.ROLE_USER);
-        user.setBudget(1);
-
-        projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
-
-        when(financingRoundRepository.findActive(any())).thenReturn(new FinancingRoundEntity());
-
-        MvcResult mvcResult = mockMvc.perform(post("/project/{projectId}/pledge", "some_id")
-                .principal(authentication(user))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(2)))
-                .andExpect(status().isBadRequest())
-                .andReturn();
-
-        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"errorCode\":\"user_budget_exceeded\",\"fieldViolations\":{}}"));
-    }
-
-    @Test
-    public void pledgeProject_shouldRespondWith400IfThereIsNoActiveFinancingRound() throws Exception {
-
-        final String email = "some@mail.com";
-        final UserEntity user = userEntity(email, Roles.ROLE_USER);
-
-        projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
-
-        when(financingRoundRepository.findActive(any())).thenReturn(null);
-
-        MvcResult mvcResult = mockMvc.perform(post("/project/{projectId}/pledge", "some_id")
-                .principal(authentication(user))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(new Pledge(user.getBudget() + 1))))
-                .andExpect(status().isBadRequest())
-                .andReturn();
-
-        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"errorCode\":\"no_financing_round_currently_active\",\"fieldViolations\":{}}"));
-    }
-
-    @Test
-    public void testUpdateProjectToPublish() throws Exception {
-
+    public void modifyProjectStatus() throws Exception {
         final String email = "some@mail.com";
         final UserEntity user = userEntity(email, Roles.ROLE_USER, Roles.ROLE_ADMIN);
-        final ProjectEntity projectEntity = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.PROPOSED, null);
-        final Project project = new Project(projectEntity, new ArrayList<>());
-        project.setStatus(ProjectStatus.PUBLISHED);
+        final Project expProject = toCreatedProject(project("title2", "descr2", "shortDescr2", 45, ProjectStatus.PROPOSED), user);
 
-        mockMvc.perform(patch("/project/{projectId}", "some_id")
+        when(projectService.modifyProjectStatus(anyString(), eq(expProject), eq(user))).thenReturn(expProject);
+
+        MvcResult mvcResult = mockMvc.perform(patch("/project/{projectId}", "some_id")
                 .principal(authentication(user))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(project)))
-                .andExpect(status().isOk());
-
-        verify(projectRepository).save(projectEntity);
-    }
-
-    @Test
-    public void testUpdateProjectToPublishIfAlreadyFullyPledged() throws Exception {
-
-        final String email = "some@mail.com";
-        final UserEntity user = userEntity(email, Roles.ROLE_USER, Roles.ROLE_ADMIN);
-        final ProjectEntity projectEntity = projectEntity(user, "some_id", "title", 44, "short description", "description", ProjectStatus.FULLY_PLEDGED, null);
-        final Project project = new Project(projectEntity, new ArrayList<>());
-        project.setStatus(ProjectStatus.PUBLISHED);
-
-        MvcResult result = mockMvc.perform(patch("/project/{projectId}", "some_id")
-                .principal(authentication(user))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(project)))
-                .andExpect(status().isBadRequest())
+                .content(mapper.writeValueAsString(expProject)))
+                .andExpect(status().isOk())
                 .andReturn();
 
-        verify(projectRepository, never()).save(projectEntity);
-        assertThat(result.getResponse().getContentAsString(), is("{\"errorCode\":\"project_already_fully_pledged\",\"fieldViolations\":{}}"));
-    }
-
-    private MvcResult getMvcResultForPledgedProject(UserEntity user) throws Exception {
-        return mockMvc.perform(post("/project/{projectId}/pledge", "some_id")
-                .principal(authentication(user))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(new Pledge(1))))
-                .andExpect(status().isBadRequest())
-                .andReturn();
+        assertThat(mapper.readValue(mvcResult.getResponse().getContentAsString(), Project.class), is(expProject));
     }
 
     private Principal authentication(UserEntity userEntity) {
-
         final Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         userEntity.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
         return new UsernamePasswordAuthenticationToken(userEntity.getEmail(), "somepassword", authorities);
     }
 
-    private void pledgeProject(ProjectEntity project, UserEntity user, int amount) {
-
-        when(pledgeRepository.findByProjectAndFinancingRound(eq(project), any()))
-                .thenReturn(Collections.singletonList(new PledgeEntity(project, user, new Pledge(amount), new FinancingRoundEntity())));
-
-        if (project.getPledgeGoal() == amount) {
-            project.setStatus(ProjectStatus.FULLY_PLEDGED);
-        }
+    private Principal anonymousAuthentication() {
+        return new AnonymousAuthenticationToken("ANONYMOUS", "ANONYMOUS",
+                Collections.singletonList(new SimpleGrantedAuthority(Roles.ROLE_TRUSTED_ANONYMOUS)));
     }
 
     private UserEntity userEntity(String email, String... roles) {
@@ -620,40 +399,47 @@ public class ProjectControllerTest {
         return userEntity;
     }
 
-    private Project project(String title, String description, String shortDescription, int pledgeGoal) {
-
+    private Project project(String title, String description, String shortDescription, int pledgeGoal, ProjectStatus projectStatus) {
         final Project project = new Project();
         project.setTitle(title);
         project.setDescription(description);
         project.setShortDescription(shortDescription);
         project.setPledgeGoal(pledgeGoal);
+        project.setStatus(projectStatus);
+
         return project;
     }
 
-    private ProjectEntity projectEntity(UserEntity userEntity, String id, String title, int pledgeGoal, String shortDescription, String description, ProjectStatus status, DateTime lastModifiedDate) {
-        ProjectEntity projectEntity = new ProjectEntity();
-        projectEntity.setId(id);
-        projectEntity.setTitle(title);
-        projectEntity.setPledgeGoal(pledgeGoal);
-        projectEntity.setShortDescription(shortDescription);
-        projectEntity.setDescription(description);
-        projectEntity.setCreator(userEntity);
-        projectEntity.setStatus(status);
-        projectEntity.setLastModifiedDate(lastModifiedDate);
-        when(projectRepository.findOne(id)).thenReturn(projectEntity);
-        return projectEntity;
+    private Project toCreatedProject(Project project, UserEntity creator) {
+        Project res = new Project();
+        res.setBackers(0);
+        res.setCreator(new ProjectCreator(creator));
+        res.setDescription(project.getDescription());
+        res.setLastModifiedDate(new Date());
+        res.setId(project.getId());
+        res.setPledgedAmount(0);
+        res.setPledgeGoal(project.getPledgeGoal());
+        res.setShortDescription(project.getShortDescription());
+        res.setStatus(project.getStatus());
+        res.setTitle(project.getTitle());
+        res.setPledgedAmountByRequestingUser(12);
+        return res;
     }
 
-    private FinancingRoundEntity financingRound() {
-        FinancingRoundEntity financingRound = new FinancingRoundEntity();
-        financingRound.setId(UUID.randomUUID().toString());
-        return financingRound;
+    /**
+     * @param expProject to be prepared
+     * @return <code>expProject</code>
+     */
+    private Project toProjectSummaryViewRepresentation(Project expProject) {
+        // As it's not part of ProjectSummaryView we remove the concerning fields for assertion purposes
+        expProject.setDescription(null);
+        ReflectionTestUtils.setField(expProject.getCreator(), "id", null);
+        return expProject;
     }
 
     @Configuration
     @EnableWebMvc
     static class Config {
-
         @Bean
         public ControllerExceptionAdvice controllerExceptionAdvice() {
             return new ControllerExceptionAdvice();
@@ -666,67 +452,16 @@ public class ProjectControllerTest {
 
         @Bean
         public ProjectService projectService() {
-            return new ProjectService();
+            return mock(ProjectService.class);
         }
 
         @Bean
-        public ProjectRepository projectRepository() {
-            return mock(ProjectRepository.class);
+        public UserService userService(UserRepository userRepository) {
+            return new UserService(userRepository, null);
         }
-
-        @Bean
-        public PledgeRepository pledgeRepository() {
-            return mock(PledgeRepository.class);
-        }
-
         @Bean
         public UserRepository userRepository() {
             return mock(UserRepository.class);
-        }
-
-        @Bean
-        public FinancingRoundRepository financingRoundRepository() {
-            return mock(FinancingRoundRepository.class);
-        }
-
-        @Bean
-        public UserNotificationService userNotificationService() {
-            return mock(UserNotificationService.class);
-        }
-
-        @Bean
-        public JavaMailSender javaMailSender() {
-            return mock(JavaMailSender.class);
-        }
-
-        @Bean
-        public UserService userService() {
-            return new UserService();
-        }
-
-        @Bean
-        public Expression activationEmailTemplate() {
-            return mock(Expression.class);
-        }
-
-        @Bean
-        public Expression newProjectEmailTemplate() {
-            return mock(Expression.class);
-        }
-
-        @Bean
-        public Expression passwordForgottenEmailTemplate() {
-            return mock(Expression.class);
-        }
-
-        @Bean
-        public Expression projectPublishedEmailTemplate() {
-            return mock(Expression.class);
-        }
-
-        @Bean
-        public Expression projectRejectedEmailTemplate() {
-            return mock(Expression.class);
         }
     }
 }

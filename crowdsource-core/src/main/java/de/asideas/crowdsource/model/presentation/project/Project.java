@@ -4,15 +4,16 @@ import com.fasterxml.jackson.annotation.JsonView;
 import de.asideas.crowdsource.enums.ProjectStatus;
 import de.asideas.crowdsource.model.persistence.PledgeEntity;
 import de.asideas.crowdsource.model.persistence.ProjectEntity;
+import de.asideas.crowdsource.model.persistence.UserEntity;
 import de.asideas.crowdsource.model.presentation.user.ProjectCreator;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.joda.time.DateTime;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.List;
 
 // needed for serialization
@@ -57,21 +58,33 @@ public class Project {
 
     // no validation here on purpose, as this is only filled on response and ignored in request
     @JsonView(ProjectSummaryView.class)
-    private DateTime lastModifiedDate;
+    private Date lastModifiedDate;
 
-    public Project(ProjectEntity projectEntity, List<PledgeEntity> pledges) {
+    @JsonView(ProjectSummaryView.class)
+    private int pledgedAmountByRequestingUser;
+
+    public Project(ProjectEntity projectEntity, List<PledgeEntity> pledges, UserEntity requestingUser) {
         this.id = projectEntity.getId();
         this.status = projectEntity.getStatus();
         this.title = projectEntity.getTitle();
         this.shortDescription = projectEntity.getShortDescription();
         this.description = projectEntity.getDescription();
         this.pledgeGoal = projectEntity.getPledgeGoal();
-        this.lastModifiedDate = projectEntity.getLastModifiedDate();
+        this.lastModifiedDate = projectEntity.getLastModifiedDate() != null ? projectEntity.getLastModifiedDate().toDate() : null;
 
         this.pledgedAmount = pledges.stream().mapToInt(PledgeEntity::getAmount).sum();
         this.backers = pledges.stream().map(PledgeEntity::getUser).distinct().count();
+        this.pledgedAmountByRequestingUser = determinePledgeAmountByUser(pledges, requestingUser);
 
         this.creator = new ProjectCreator(projectEntity.getCreator());
+    }
+
+    private int determinePledgeAmountByUser(List<PledgeEntity> pledges, UserEntity user) {
+        if (user == null || pledges == null || pledges.isEmpty()) {
+            return 0;
+        }
+        return pledges.stream().filter(p -> user.getId().equals(p.getUser().getId()))
+                .mapToInt(PledgeEntity::getAmount).sum();
     }
 
     public Project() {
@@ -113,7 +126,7 @@ public class Project {
         return this.creator;
     }
 
-    public DateTime getLastModifiedDate() {
+    public Date getLastModifiedDate() {
         return this.lastModifiedDate;
     }
 
@@ -153,8 +166,16 @@ public class Project {
         this.creator = creator;
     }
 
-    public void setLastModifiedDate(DateTime lastModifiedDate) {
+    public void setLastModifiedDate(Date lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public int getPledgedAmountByRequestingUser() {
+        return pledgedAmountByRequestingUser;
+    }
+
+    public void setPledgedAmountByRequestingUser(int pledgedAmountByRequestingUser) {
+        this.pledgedAmountByRequestingUser = pledgedAmountByRequestingUser;
     }
 
     @Override

@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.util.List;
 
@@ -29,46 +30,50 @@ public class ProjectService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ProjectService.class);
 
-    @Autowired
     private ProjectRepository projectRepository;
-
-    @Autowired
     private PledgeRepository pledgeRepository;
-
-    @Autowired
     private UserRepository userRepository;
-
-    @Autowired
     private FinancingRoundRepository financingRoundRepository;
-
-    @Autowired
     private UserNotificationService userNotificationService;
 
-    public Project getProject(String projectId) {
+    @Autowired
+    public ProjectService(ProjectRepository projectRepository, PledgeRepository pledgeRepository,
+                          UserRepository userRepository, FinancingRoundRepository financingRoundRepository,
+                          UserNotificationService userNotificationService) {
+        this.projectRepository = projectRepository;
+        this.pledgeRepository = pledgeRepository;
+        this.userRepository = userRepository;
+        this.financingRoundRepository = financingRoundRepository;
+        this.userNotificationService = userNotificationService;
+    }
+
+    public Project getProject(String projectId, UserEntity requestingUser) {
 
         ProjectEntity projectEntity = projectRepository.findOne(projectId);
         if (projectEntity == null) {
             throw new ResourceNotFoundException();
         }
 
-        return project(projectEntity);
+        return project(projectEntity, requestingUser);
     }
 
-    public List<Project> getProjects() {
+    public List<Project> getProjects(UserEntity requestingUser) {
 
         final List<ProjectEntity> projects = projectRepository.findAll();
-        return projects.stream().map(this::project).collect(toList());
+        return projects.stream().map(p -> project(p, requestingUser)).collect(toList());
     }
 
-    public Project addProject(Project project, UserEntity userEntity) {
+    public Project addProject(Project project, UserEntity creator) {
+        Assert.notNull(project);
+        Assert.notNull(creator);
 
-        ProjectEntity projectEntity = new ProjectEntity(userEntity, project, currentFinancingRound());
+        ProjectEntity projectEntity = new ProjectEntity(creator, project, currentFinancingRound());
         projectEntity = projectRepository.save(projectEntity);
 
         notifyAdminsOnNewProject(projectEntity);
 
         LOG.debug("Project added: {}", projectEntity);
-        return project(projectEntity);
+        return project(projectEntity, creator);
     }
 
     private void notifyAdminsOnNewProject(final ProjectEntity projectEntity) {
@@ -78,7 +83,7 @@ public class ProjectService {
                 .forEach(emailAddress -> userNotificationService.notifyAdminOnProjectCreation(projectEntity, emailAddress));
     }
 
-    public Project updateProject(String projectId, Project project) {
+    public Project modifyProjectStatus(String projectId, Project project, UserEntity requestingUser) {
 
         ProjectEntity projectEntity = projectRepository.findOne(projectId);
         if (projectEntity == null) {
@@ -97,7 +102,7 @@ public class ProjectService {
         }
 
         LOG.debug("Project updated: {}", projectEntity);
-        return project(projectEntity);
+        return project(projectEntity, requestingUser);
     }
 
     public void pledge(String projectId, UserEntity userEntity, Pledge pledge) {
@@ -128,7 +133,7 @@ public class ProjectService {
             throw InvalidRequestException.userBudgetExceeded();
         }
 
-        Project project = project(projectEntity);
+        Project project = project(projectEntity, userEntity);
         int newPledgedAmount = pledge.getAmount() + project.getPledgedAmount();
         if (newPledgedAmount > project.getPledgeGoal()) {
             throw InvalidRequestException.pledgeGoalExceeded();
@@ -149,9 +154,9 @@ public class ProjectService {
         LOG.debug("Project pledged: {}", pledgeEntity);
     }
 
-    private Project project(ProjectEntity projectEntity) {
+    private Project project(ProjectEntity projectEntity, UserEntity requestingUser) {
         List<PledgeEntity> pledges = pledgeRepository.findByProjectAndFinancingRound(projectEntity, projectEntity.getFinancingRound());
-        return new Project(projectEntity, pledges);
+        return new Project(projectEntity, pledges, requestingUser);
     }
 
     private FinancingRoundEntity currentFinancingRound() {

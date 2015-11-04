@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,8 +46,9 @@ public class ProjectController {
     @RequestMapping(value = "/projects", method = RequestMethod.GET)
     @JsonView(ProjectSummaryView.class)
     public List<Project> getProjects(Authentication auth) {
+        UserEntity userEntity = userFromAuthentication(auth);
 
-        final List<Project> projects = projectService.getProjects();
+        final List<Project> projects = projectService.getProjects(userEntity);
         // filter projects. only return projects that are published, fully pledged or created by the requesting user (or if requestor is admin)
         return projects.stream().filter(project -> mayViewProjectFilter(project, auth)).collect(Collectors.toList());
     }
@@ -54,8 +56,9 @@ public class ProjectController {
     @Secured({Roles.ROLE_TRUSTED_ANONYMOUS, Roles.ROLE_USER})
     @RequestMapping(value = "/project/{projectId}", method = RequestMethod.GET)
     public Project getProject(@PathVariable String projectId, Authentication auth) {
+        UserEntity userEntity = userFromAuthentication(auth);
 
-        final Project project = projectService.getProject(projectId);
+        final Project project = projectService.getProject(projectId, userEntity);
         if (!mayViewProjectFilter(project, auth)) {
             throw new ForbiddenException();
         }
@@ -66,31 +69,27 @@ public class ProjectController {
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/project", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public Project addProject(@RequestBody @Valid Project project, Principal principal) {
-
-        UserEntity userEntity = userService.getUserByEmail(principal.getName());
+        UserEntity userEntity = userByPrincipal(principal);
         return projectService.addProject(project, userEntity);
     }
 
+    //TODO Tom: rename endpoint to pledges!!
     @Secured(Roles.ROLE_USER)
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/project/{projectId}/pledge", method = RequestMethod.POST)
     public void pledgeProject(@PathVariable String projectId, @RequestBody @Valid Pledge pledge, Principal principal) {
-
-        UserEntity userEntity = userService.getUserByEmail(principal.getName());
-        projectService.pledge(projectId, userEntity, pledge);
+        projectService.pledge(projectId, userByPrincipal(principal), pledge);
     }
 
+    //TODO Tom: Adapt request mapping to actual project status
     @Secured(Roles.ROLE_ADMIN)
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/project/{projectId}", method = RequestMethod.PATCH)
-    public Project updateProject(@PathVariable("projectId") String projectId, @RequestBody @Validated(Project.UpdateProject.class) Project projectWithUpdateData) {
-
-        return projectService.updateProject(projectId, projectWithUpdateData);
+    public Project modifyProjectStatus(@PathVariable("projectId") String projectId, @RequestBody @Validated(Project.UpdateProject.class) Project projectWithUpdateData, Principal principal) {
+        return projectService.modifyProjectStatus(projectId, projectWithUpdateData, userByPrincipal(principal));
     }
 
-
     private boolean mayViewProjectFilter(Project project, Authentication auth) {
-
         // fully pledged and published are always visible
         final ProjectStatus status = project.getStatus();
         if (status == FULLY_PLEDGED || status == PUBLISHED) {
@@ -110,5 +109,21 @@ public class ProjectController {
 
         // the creator always may see his project
         return project.getCreator().getEmail().equals(auth.getName());
+    }
+
+    private UserEntity userByPrincipal(Principal principal) {
+        return userService.getUserByEmail(principal.getName());
+    }
+
+    private UserEntity userFromAuthentication(Authentication auth) {
+        UserEntity userEntity = null;
+
+        if (auth != null && auth.isAuthenticated()) {
+            if (auth.getAuthorities().contains(new SimpleGrantedAuthority(Roles.ROLE_TRUSTED_ANONYMOUS))) {
+                return null;
+            }
+            userEntity = userService.getUserByEmail(auth.getName());
+        }
+        return userEntity;
     }
 }

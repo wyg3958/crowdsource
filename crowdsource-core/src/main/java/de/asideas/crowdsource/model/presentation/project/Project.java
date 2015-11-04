@@ -72,19 +72,11 @@ public class Project {
         this.pledgeGoal = projectEntity.getPledgeGoal();
         this.lastModifiedDate = projectEntity.getLastModifiedDate() != null ? projectEntity.getLastModifiedDate().toDate() : null;
 
-        this.pledgedAmount = pledges.stream().mapToInt(PledgeEntity::getAmount).sum();
-        this.backers = pledges.stream().map(PledgeEntity::getUser).distinct().count();
-        this.pledgedAmountByRequestingUser = determinePledgeAmountByUser(pledges, requestingUser);
+        this.pledgedAmount = projectEntity.pledgedAmount(pledges);
+        this.backers = projectEntity.countBackers(pledges);
+        this.pledgedAmountByRequestingUser = projectEntity.pledgedAmountOfUser(pledges, requestingUser);
 
         this.creator = new ProjectCreator(projectEntity.getCreator());
-    }
-
-    private int determinePledgeAmountByUser(List<PledgeEntity> pledges, UserEntity user) {
-        if (user == null || pledges == null || pledges.isEmpty()) {
-            return 0;
-        }
-        return pledges.stream().filter(p -> user.getId().equals(p.getUser().getId()))
-                .mapToInt(PledgeEntity::getAmount).sum();
     }
 
     public Project() {

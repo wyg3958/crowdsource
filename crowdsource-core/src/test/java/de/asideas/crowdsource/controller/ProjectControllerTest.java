@@ -331,16 +331,12 @@ public class ProjectControllerTest {
         final String email = "some@mail.com";
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
 
-        MvcResult mvcResult = mockMvc.perform(post("/project/{projectId}/pledge", "some_id")
+        mockMvc.perform(post("/project/{projectId}/pledge", "some_id")
                 .principal(authentication(user))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(new Pledge(0))))
+                .content("\"amount\":\"invalidAmount\""))
                 .andExpect(status().isBadRequest())
                 .andReturn();
-
-        ErrorResponse expError = new ErrorResponse("field_errors");
-        expError.addConstraintViolation("amount", "must be greater than or equal to 1");
-        assertThat(mapper.readValue(mvcResult.getResponse().getContentAsString(), ErrorResponse.class), is(expError));
     }
 
     @Test

@@ -113,41 +113,21 @@ public class ProjectService {
         if (projectEntity == null) {
             throw new ResourceNotFoundException();
         }
-
-        final ProjectStatus projectStatus = projectEntity.getStatus();
-
-        // potential problem: race condition. Two simultaneous requests could lead to "over-pledging"
-        if (projectStatus == ProjectStatus.FULLY_PLEDGED) {
-            throw InvalidRequestException.projectAlreadyFullyPledged();
-        }
-
-        if (projectStatus != ProjectStatus.PUBLISHED) {
-            throw InvalidRequestException.projectNotPublished();
-        }
-
         if (activeFinancingRoundEntity == null) {
             throw InvalidRequestException.noFinancingRoundCurrentlyActive();
         }
 
-        if (pledge.getAmount() > userEntity.getBudget()) {
-            throw InvalidRequestException.userBudgetExceeded();
-        }
+        List<PledgeEntity> pledgesSoFar = pledgeRepository.findByProjectAndFinancingRound(
+                projectEntity, projectEntity.getFinancingRound());
 
-        Project project = project(projectEntity, userEntity);
-        int newPledgedAmount = pledge.getAmount() + project.getPledgedAmount();
-        if (newPledgedAmount > project.getPledgeGoal()) {
-            throw InvalidRequestException.pledgeGoalExceeded();
-        }
+        // potential problem: race condition. Two simultaneous requests could lead to "over-pledging"
+        PledgeEntity pledgeEntity = projectEntity.pledge(
+                pledge, activeFinancingRoundEntity, userEntity, pledgesSoFar);
 
-        PledgeEntity pledgeEntity = new PledgeEntity(projectEntity, userEntity, pledge, activeFinancingRoundEntity);
-        userEntity.reduceBudget(pledge.getAmount());
-
-        if (newPledgedAmount == project.getPledgeGoal()) {
-            projectEntity.setStatus(ProjectStatus.FULLY_PLEDGED);
+        if(projectEntity.pledgeGoalAchieved()){
             projectRepository.save(projectEntity);
         }
-
-        // potential problem: no transaction -> no rollback
+        // potential problem: no transaction -> no rollback -- Possible Solution -> sort of mini event sourcing?
         userRepository.save(userEntity);
         pledgeRepository.save(pledgeEntity);
 

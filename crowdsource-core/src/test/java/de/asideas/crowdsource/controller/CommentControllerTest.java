@@ -32,7 +32,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
+import java.util.Collections;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -84,7 +84,7 @@ public class CommentControllerTest {
         final ProjectEntity projectEntity = new ProjectEntity(userEntity, new Project(), new FinancingRoundEntity());
         when(userRepository.findByEmail(EXISTING_USER_MAIL)).thenReturn(userEntity);
         when(projectRepository.findOne(EXISTING_PROJECT_ID)).thenReturn(projectEntity);
-        when(commentRepository.findByProject(projectEntity)).thenReturn(Arrays.asList(new CommentEntity(projectEntity, userEntity, "some comment")));
+        when(commentRepository.findByProject(projectEntity)).thenReturn(Collections.singletonList(new CommentEntity(projectEntity, userEntity, "some comment")));
     }
 
     @Test
@@ -208,8 +208,8 @@ public class CommentControllerTest {
         }
 
         @Bean
-        public UserService userService() {
-            return new UserService();
+        public UserService userService(UserRepository userRepository, UserNotificationService userNotificationService) {
+            return new UserService(userRepository, userNotificationService);
         }
 
         @Bean

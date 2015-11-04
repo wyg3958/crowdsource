@@ -19,39 +19,44 @@ angular.module('crowdsource')
 
     .directive('rangeSlider', function (RangeSliderService) {
         return {
-            require: 'ngModel',
             scope: {
                 start: '@',
                 end: '@',
-                disabled: '='
+                disabled: '=',
+                pledge: '='
             },
-            template: '<div class="range-slider" data-slider="0" data-options="start: 0; end: {{ sliderMax }}" ng-class="{ disabled: disabled }" foundation-reflow="slider">' +
+            template: '<div class="range-slider" data-slider="0" data-current-real="{{ currentRealValue }}" data-options="start: 0; end: {{ sliderMax }}" ng-class="{ disabled: disabled }" foundation-reflow="slider">' +
             '<span class="range-slider-handle" role="slider" tabindex="0"></span>' +
             '<span class="range-slider-active-segment"></span>' +
             '</div>',
-            link: function (scope, element, attributes, ngModel) {
-
+            link: function (scope, element, attributes) {
                 // The foundation slider is fixed to 0 <-> RangeSliderService.sliderMaxValue and the real value is computed with the help of the start and end directive attributes.
                 // The reason is, that foundation cannot handle the change of start and or end values properly after the slider was initialized
                 scope.sliderMax = RangeSliderService.sliderMaxValue;
+                scope.currentRealValue = scope.pledge.amount;
 
                 var slider = element.find('[data-slider]');
 
-                scope.$watchGroup(['start', 'end'], function () {
+                scope.$watch('pledge.amount', function () {
                     // re-render the slider when start or end changes
-                    ngModel.$render();
+                    render();
                 });
 
-                ngModel.$render = function () {
-                    if (ngModel.$viewValue !== undefined) {
-                        var sliderValue = RangeSliderService.calcSliderValue(ngModel.$viewValue, parseInt(scope.start), parseInt(scope.end));
+                function render () {
+                    if (scope.pledge.amount !== undefined) {
+                        var sliderValue = RangeSliderService.calcSliderValue(scope.pledge.amount, parseInt(scope.start), parseInt(scope.end));
 
-                        slider.foundation('slider', 'set_value', sliderValue);
+                        if (typeof sliderValue === "number" && isFinite(sliderValue)) {
+                            slider.foundation('slider', 'set_value', sliderValue);
 
-                        // http://www.bradleyhamilton.com/blog/foundation-range-slider-callback-not-firing-after-setting-the-data-slider-value-dynamically
-                        registerChangeListener();
+                            scope.currentRealValue = scope.pledge.amount;
+                            scope.currentSliderValue = sliderValue;
+
+                            // http://www.bradleyhamilton.com/blog/foundation-range-slider-callback-not-firing-after-setting-the-data-slider-value-dynamically
+                            registerChangeListener();
+                        }
                     }
-                };
+                }
 
                 function registerChangeListener() {
                     slider.on('change.fndtn.slider', function () {
@@ -59,11 +64,9 @@ angular.module('crowdsource')
 
                         var realValue = RangeSliderService.calcRealValue(parseInt(sliderValue), parseInt(scope.start), parseInt(scope.end));
 
-                        ngModel.$setViewValue(realValue);
+                        scope.pledge.amount = realValue;
                     });
                 }
-
-                registerChangeListener();
             }
         };
     });

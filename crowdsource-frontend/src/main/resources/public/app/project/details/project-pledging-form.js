@@ -11,6 +11,10 @@ angular.module('crowdsource')
             controller: function (Project, Authentication, RemoteFormValidation, FinancingRound, $q) {
                 var vm = this;
 
+                vm.pledge = {
+                    amount: getPledgedAmountByCurrentUser()
+                };
+
                 FinancingRound.reloadCurrentRound();
 
                 // to get the current user's budget
@@ -39,13 +43,16 @@ angular.module('crowdsource')
                             vm.success = true;
                         })
                         .finally(function () {
-                            vm.pledge.amount = 0;
+                            vm.pledge.amount = getPledgedAmountByCurrentUser();
                             vm.saving = false;
                             vm.form.$setPristine();
                         });
                 };
 
                 vm.getPledgableAmount = function () {
+                    var remainingProjectGoal,
+                        pledgedByCurrentUserSum = getPledgedAmountByCurrentUser();
+
                     if (isLoading()) {
                         return 0;
                     }
@@ -54,9 +61,11 @@ angular.module('crowdsource')
                         return 0;
                     }
 
-                    var remainingProjectGoal = vm.project.pledgeGoal - vm.project.pledgedAmount;
-                    return Math.min(remainingProjectGoal, vm.user.budget);
+                    remainingProjectGoal = vm.project.pledgeGoal - vm.project.pledgedAmount;
+
+                    return pledgedByCurrentUserSum + Math.min(remainingProjectGoal, vm.user.budget);
                 };
+
 
                 vm.getNotification = function () {
                     if (isLoading()) {
@@ -94,6 +103,9 @@ angular.module('crowdsource')
                     return null;
                 };
 
+                function getPledgedAmountByCurrentUser () {
+                    return vm.project.pledgedAmountByRequestingUser || 0;
+                }
 
                 function isLoading() {
                     return !vm.project.$resolved || !vm.user.$resolved || !FinancingRound.current.$resolved;

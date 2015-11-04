@@ -23,7 +23,10 @@ module.exports = function (config) {
             'src/test/javascript/testsupport/mocked-libraries.testsupport.js',
             'src/main/resources/public/app/crowdsource.js',
             'src/main/resources/public/app/**/*.js',
-            'src/test/javascript/**/*.js',
+
+            //'src/test/javascript/**/*.js',
+            'src/test/javascript/app/project/details/project-pledging-form.test.js',
+            'src/test/javascript/testsupport/**/*.js',
 
             'src/main/resources/public/app/**/*.html'
         ],
@@ -45,10 +48,12 @@ module.exports = function (config) {
 
         frameworks: ['jasmine'],
 
-        browsers: ['PhantomJS'],
+        browsers: ['PhantomJS', 'Firefox', 'Chrome'],
 
         plugins: [
             'karma-phantomjs-launcher',
+            'karma-firefox-launcher',
+            'karma-chrome-launcher',
             'karma-ng-html2js-preprocessor',
             'karma-jasmine',
             'karma-jasmine-jquery',

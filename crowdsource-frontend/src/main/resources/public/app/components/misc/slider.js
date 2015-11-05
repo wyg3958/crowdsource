@@ -23,7 +23,7 @@ angular.module('crowdsource')
                 start: '@',
                 end: '@',
                 disabled: '=',
-                pledge: '='
+                model: '='
             },
             template: '<div class="range-slider" data-slider="0" data-current-real="{{ initialRealValue }}" data-options="start: 0; end: {{ sliderMax }}" ng-class="{ disabled: disabled }" foundation-reflow="slider">' +
             '<span class="range-slider-handle" role="slider" tabindex="0"></span>' +
@@ -33,14 +33,14 @@ angular.module('crowdsource')
                 // The foundation slider is fixed to 0 <-> RangeSliderService.sliderMaxValue and the real value is computed with the help of the start and end directive attributes.
                 // The reason is, that foundation cannot handle the change of start and or end values properly after the slider was initialized
                 scope.sliderMax = RangeSliderService.sliderMaxValue;
-                scope.initialRealValue = scope.pledge.amount;
+                scope.initialRealValue = scope.model;
 
                 var slider = element.find('[data-slider]');
 
-                scope.$watch('pledge.amount', function () {
+                scope.$watch('model', function () {
                     // Prevent rerender if invalid data provided.
-                    if (typeof scope.pledge.amount !== 'undefined') {
-                        var newSliderValue = RangeSliderService.calcSliderValue(scope.pledge.amount, parseInt(scope.start), parseInt(scope.end)),
+                    if (typeof scope.model !== 'undefined') {
+                        var newSliderValue = RangeSliderService.calcSliderValue(scope.model, parseInt(scope.start), parseInt(scope.end)),
                             oldSliderValue = slider.data('slider');
                         if (typeof newSliderValue === "number" && isFinite(newSliderValue) && newSliderValue !== oldSliderValue) {
                             // re-render the slider when start or end changes
@@ -61,7 +61,7 @@ angular.module('crowdsource')
 
                         var realValue = RangeSliderService.calcRealValue(parseInt(sliderValue), parseInt(scope.start), parseInt(scope.end));
 
-                        scope.pledge.amount = realValue;
+                        scope.model = realValue;
                     });
                 }
 

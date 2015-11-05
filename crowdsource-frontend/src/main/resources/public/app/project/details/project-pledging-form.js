@@ -8,12 +8,16 @@ angular.module('crowdsource')
             scope: {
                 project: '='
             },
-            controller: function (Project, Authentication, RemoteFormValidation, FinancingRound, $q) {
+            controller: function (Project, Authentication, RemoteFormValidation, FinancingRound, $q, $scope, $timeout) {
                 var vm = this;
 
                 vm.pledge = {
-                    amount: getPledgedAmountByCurrentUser()
+                    amount: 0
                 };
+                
+                $timeout(function() {
+                    vm.pledge.amount = getPledgedAmountByCurrentUser();
+                }, 100);
 
                 FinancingRound.reloadCurrentRound();
 

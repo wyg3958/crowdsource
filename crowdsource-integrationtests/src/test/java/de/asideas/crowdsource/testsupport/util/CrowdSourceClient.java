@@ -105,7 +105,7 @@ public class CrowdSourceClient {
 
     public ResponseEntity<Void> pledgeProject(Project project, Pledge pledge, AuthToken authToken) {
         HttpEntity<Pledge> requestEntity = createRequestEntity(pledge, authToken);
-        return restTemplate.exchange(urlProvider.applicationUrl() + "/project/{id}/pledge", HttpMethod.POST, requestEntity, Void.class, project.getId());
+        return restTemplate.exchange(urlProvider.applicationUrl() + "/project/{id}/pledges", HttpMethod.POST, requestEntity, Void.class, project.getId());
     }
 
     public void comment(Project project, String comment, AuthToken token) {

@@ -73,10 +73,9 @@ public class ProjectController {
         return projectService.addProject(project, userEntity);
     }
 
-    //TODO Tom: rename endpoint to pledges!!
     @Secured(Roles.ROLE_USER)
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(value = "/project/{projectId}/pledge", method = RequestMethod.POST)
+    @RequestMapping(value = "/project/{projectId}/pledges", method = RequestMethod.POST)
     public void pledgeProject(@PathVariable String projectId, @RequestBody @Valid Pledge pledge, Principal principal) {
         projectService.pledge(projectId, userByPrincipal(principal), pledge);
     }

@@ -291,7 +291,7 @@ public class ProjectControllerTest {
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
         Pledge pledge = new Pledge(13);
 
-        mockMvc.perform(post("/project/{projectId}/pledge", projectId)
+        mockMvc.perform(post("/project/{projectId}/pledges", projectId)
                 .principal(authentication(user))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(pledge)))
@@ -303,7 +303,7 @@ public class ProjectControllerTest {
     @Test
     public void pledgeProject_shouldRespondWith401IfTheUserWasNotFound() throws Exception {
 
-        mockMvc.perform(post("/project/{projectId}/pledge", "some_id")
+        mockMvc.perform(post("/project/{projectId}/pledges", "some_id")
                 .principal(new UsernamePasswordAuthenticationToken("foo@bar.com", "somepassword"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(new Pledge(1))))
@@ -319,7 +319,7 @@ public class ProjectControllerTest {
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
         doThrow(ResourceNotFoundException.class).when(projectService).pledge(projectId, user, pledge);
 
-        mockMvc.perform(post("/project/{projectId}/pledge", projectId)
+        mockMvc.perform(post("/project/{projectId}/pledges", projectId)
                 .principal(authentication(user))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(pledge)))
@@ -331,7 +331,7 @@ public class ProjectControllerTest {
         final String email = "some@mail.com";
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
 
-        mockMvc.perform(post("/project/{projectId}/pledge", "some_id")
+        mockMvc.perform(post("/project/{projectId}/pledges", "some_id")
                 .principal(authentication(user))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("\"amount\":\"invalidAmount\""))
@@ -345,7 +345,7 @@ public class ProjectControllerTest {
         final UserEntity user = userEntity(email, Roles.ROLE_USER);
         doThrow(InvalidRequestException.pledgeGoalExceeded()).when(projectService).pledge(anyString(), eq(user), any(Pledge.class));
 
-        MvcResult mvcResult = mockMvc.perform(post("/project/{projectId}/pledge", "some_id")
+        MvcResult mvcResult = mockMvc.perform(post("/project/{projectId}/pledges", "some_id")
                 .principal(authentication(user))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(new Pledge(2))))

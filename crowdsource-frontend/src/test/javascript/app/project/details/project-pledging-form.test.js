@@ -83,7 +83,7 @@ describe('project pledging form', function () {
         expect(elements.pledgableAmount).toHaveText('40 €');
 
         // prepare for backend calls
-        $httpBackend.expectPOST('/project/123/pledge', {amount: 30}).respond(200);
+        $httpBackend.expectPOST('/project/123/pledges', {amount: 30}).respond(200);
         $httpBackend.expectGET('/project/123').respond(200, {id: 123, pledgeGoal: 100, pledgedAmount: 90, status: 'PUBLISHED'});
         $httpBackend.expectGET('/user/current').respond(200, {budget: 170});
         $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
@@ -125,7 +125,7 @@ describe('project pledging form', function () {
         elements.pledgeAmount.getInputField().val('40').trigger('input');
 
         // prepare for backend calls
-        $httpBackend.expectPOST('/project/123/pledge', {amount: 40}).respond(200);
+        $httpBackend.expectPOST('/project/123/pledges', {amount: 40}).respond(200);
         $httpBackend.expectGET('/project/123').respond(200, {id: 123, pledgeGoal: 100, pledgedAmount: 100, status: 'FULLY_PLEDGED'});
         $httpBackend.expectGET('/user/current').respond(200, {budget: 160});
         $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
@@ -315,7 +315,7 @@ describe('project pledging form', function () {
         elements.pledgeAmount.getInputField().val('30').trigger('input');
 
         // prepare for backend call
-        $httpBackend.expectPOST('/project/123/pledge', {amount: 30}).respond(400, {errorCode: 'pledge_goal_exceeded'});
+        $httpBackend.expectPOST('/project/123/pledges', {amount: 30}).respond(400, {errorCode: 'pledge_goal_exceeded'});
         $httpBackend.expectGET('/project/123').respond(200, {id: 123, pledgeGoal: 500, pledgedAmount: 480, status: 'PUBLISHED'}); // the pledged amount is 480 now!
         $httpBackend.expectGET('/user/current').respond(200, {budget: 200});
         $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
@@ -347,7 +347,7 @@ describe('project pledging form', function () {
         expect(elements.pledgeButton).not.toBeDisabled();
 
         // prepare for backend calls
-        $httpBackend.expectPOST('/project/123/pledge', {amount: 10}).respond(200);
+        $httpBackend.expectPOST('/project/123/pledges', {amount: 10}).respond(200);
         $httpBackend.expectGET('/project/123').respond(200, {id: 123, pledgeGoal: 500, pledgedAmount: 490, status: 'PUBLISHED'});
         $httpBackend.expectGET('/user/current').respond(200, {budget: 190});
         $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
@@ -387,7 +387,7 @@ describe('project pledging form', function () {
         var elements = compileDirective();
         $httpBackend.flush();
 
-        $httpBackend.expectPOST('/project/123/pledge', {amount: 30}).respond(400, {errorCode: 'no_financing_round_currently_active'});
+        $httpBackend.expectPOST('/project/123/pledges', {amount: 30}).respond(400, {errorCode: 'no_financing_round_currently_active'});
         $httpBackend.expectGET('/project/123').respond(200, {id: 123, pledgeGoal: 500, pledgedAmount: 50});
         $httpBackend.expectGET('/user/current').respond(200, {budget: 190});
         $httpBackend.expectGET('/financinground/active').respond(404);

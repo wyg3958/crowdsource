@@ -1,4 +1,4 @@
-package de.asideas.crowdsource.config.security;
+package de.asideas.crowdsource.security;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

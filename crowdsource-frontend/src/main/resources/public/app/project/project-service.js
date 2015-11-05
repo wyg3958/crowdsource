@@ -10,7 +10,7 @@ angular.module('crowdsource')
             }
         });
         var projectsResource = $resource('/projects');
-        var projectPledgeResource = $resource('/project/:id/pledge');
+        var projectPledgeResource = $resource('/project/:id/pledges');
 
         service.add = function (project) {
             return projectResource.save(project).$promise;

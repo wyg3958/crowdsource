@@ -65,7 +65,7 @@ public class ProjectIT {
         Pledge pledge = new Pledge(1);
 
         try {
-            restTemplate.postForObject(urlProvider.applicationUrl() + "/project/{projectId}/pledge", pledge, Void.class, "some-project-id");
+            restTemplate.postForObject(urlProvider.applicationUrl() + "/project/{projectId}/pledges", pledge, Void.class, "some-project-id");
             Assert.fail("Accessing a protected resource should fail");
         } catch (HttpClientErrorException e) {
             assertThat(e.getStatusCode(), is(HttpStatus.UNAUTHORIZED));

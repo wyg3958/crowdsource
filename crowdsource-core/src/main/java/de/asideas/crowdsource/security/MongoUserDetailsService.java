@@ -1,4 +1,4 @@
-package de.asideas.crowdsource.config.security;
+package de.asideas.crowdsource.security;
 
 import de.asideas.crowdsource.model.persistence.UserEntity;
 import de.asideas.crowdsource.repository.UserRepository;
@@ -13,29 +13,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.Arrays;
-import java.util.Collections;
 
 import static java.util.stream.Collectors.toList;
 
 @Service
 public class MongoUserDetailsService implements UserDetailsService {
 
-    public final static String DEFAULT_USER_EMAIL = "crowdsource@crowd.source.de";
-    public final static String DEFAULT_USER_PASS = "einEselGehtZumBaecker!";
-
-    public final static String DEFAULT_ADMIN_EMAIL = "cs_admin@crowd.source.de";
-    public final static String DEFAULT_ADMIN_PASS = "einAdminGehtZumBaecker!";
     private static final Logger LOG = org.slf4j.LoggerFactory.getLogger(MongoUserDetailsService.class);
-
-    @Value("${de.asideas.crowdsource.createusers:false}")
-    private boolean createUsers;
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private DefaultUsersService defaultUsersService;
+
+    @Value("${de.asideas.crowdsource.createusers:false}")
+    private boolean createUsers;
 
     @PostConstruct
     public void createUsers() {
@@ -45,27 +38,7 @@ public class MongoUserDetailsService implements UserDetailsService {
             return;
         }
 
-        LOG.info("creating or updating users: {}:{} and {}:{}", DEFAULT_USER_EMAIL, DEFAULT_USER_PASS, DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_PASS);
-
-        // default user
-        UserEntity defaultUser = userRepository.findByEmail(DEFAULT_USER_EMAIL);
-        if (defaultUser == null) {
-            defaultUser = new UserEntity(DEFAULT_USER_EMAIL);
-        }
-        defaultUser.setPassword(passwordEncoder.encode(DEFAULT_USER_PASS));
-        defaultUser.setActivated(true);
-        defaultUser.setRoles(Collections.singletonList(Roles.ROLE_USER));
-        userRepository.save(defaultUser);
-
-        // admin
-        UserEntity admin = userRepository.findByEmail(DEFAULT_ADMIN_EMAIL);
-        if (admin == null) {
-            admin = new UserEntity(DEFAULT_ADMIN_EMAIL);
-        }
-        admin.setPassword(passwordEncoder.encode(DEFAULT_ADMIN_PASS));
-        admin.setActivated(true);
-        admin.setRoles(Arrays.asList(Roles.ROLE_USER, Roles.ROLE_ADMIN));
-        userRepository.save(admin);
+        defaultUsersService.loadDefaultUsers();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package de.asideas.crowdsource.service;
 
-import de.asideas.crowdsource.config.security.Roles;
+import de.asideas.crowdsource.security.Roles;
 import de.asideas.crowdsource.enums.ProjectStatus;
 import de.asideas.crowdsource.exceptions.InvalidRequestException;
 import de.asideas.crowdsource.exceptions.ResourceNotFoundException;
@@ -241,6 +241,27 @@ public class ProjectServiceTest {
         }
 
         assertPledgeNotExecuted(res, InvalidRequestException.pledgeGoalExceeded(), project, user, budgetBeforePledge);
+    }
+    @Test
+    public void pledge_throwsInvalidRequestExOnPZeroPledge() {
+        final UserEntity user = user(USER_EMAIL);
+        final String projectId = "some_id";
+        final ProjectEntity project = projectEntity(user, projectId, "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
+        final Pledge pledge = new Pledge(0);
+        final int budgetBeforePledge = user.getBudget();
+        pledgedAssertionProject(project, user, project.getPledgeGoal() - 4);
+
+        prepareActiveFinanzingRound();
+
+        InvalidRequestException res = null;
+        try {
+            projectService.pledge(projectId, user, pledge);
+            fail("InvalidRequestException expected!");
+        } catch (InvalidRequestException e) {
+            res = e;
+        }
+
+        assertPledgeNotExecuted(res, InvalidRequestException.zeroPledgeNotValid(), project, user, budgetBeforePledge);
     }
 
     @Test

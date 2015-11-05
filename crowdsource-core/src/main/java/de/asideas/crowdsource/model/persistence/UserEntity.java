@@ -1,7 +1,7 @@
 package de.asideas.crowdsource.model.persistence;
 
-import de.asideas.crowdsource.config.security.Roles;
 import de.asideas.crowdsource.model.presentation.Pledge;
+import de.asideas.crowdsource.security.Roles;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;

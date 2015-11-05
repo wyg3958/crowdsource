@@ -3,7 +3,6 @@ package de.asideas.crowdsource.testsupport.cucumber;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import de.asideas.crowdsource.config.security.MongoUserDetailsService;
 import de.asideas.crowdsource.enums.ProjectStatus;
 import de.asideas.crowdsource.model.persistence.UserEntity;
 import de.asideas.crowdsource.model.presentation.project.Project;
@@ -19,6 +18,8 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 
+import static de.asideas.crowdsource.testsupport.util.CrowdSourceClient.DEFAULT_ADMIN_EMAIL;
+import static de.asideas.crowdsource.testsupport.util.CrowdSourceClient.DEFAULT_USER_EMAIL;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
@@ -63,7 +64,7 @@ public class MailSteps {
     @When("^the user claims to have forgotten his password$")
     public void the_user_claims_to_have_forgotten_his_password() throws Throwable {
 
-        crowdSourceClient.recoverPassword(MongoUserDetailsService.DEFAULT_USER_EMAIL);
+        crowdSourceClient.recoverPassword(DEFAULT_USER_EMAIL);
     }
 
     @Then("^he receives a 'password forgotten' email$")
@@ -71,7 +72,7 @@ public class MailSteps {
 
         final MailServerClient.Message receivedMessage = grabMessage();
         assertEquals(UserNotificationService.FROM_ADDRESS, receivedMessage.from);
-        assertEquals(MongoUserDetailsService.DEFAULT_USER_EMAIL, receivedMessage.to);
+        assertEquals(DEFAULT_USER_EMAIL, receivedMessage.to);
         assertEquals(UserNotificationService.PASSWORD_FORGOTTEN_SUBJECT, receivedMessage.subject);
         assertThat(receivedMessage.message, containsString("Du hast soeben ein neues Passwort für Dein Konto bei der CrowdSource Plattform angefordert."));
         assertThat(receivedMessage.message, containsString("Bitte öffne diesen Link:"));
@@ -82,7 +83,7 @@ public class MailSteps {
 
         final CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithDefaultUser();
         final Project project = new Project();
-        project.setCreator(new ProjectCreator(new UserEntity(MongoUserDetailsService.DEFAULT_USER_EMAIL)));
+        project.setCreator(new ProjectCreator(new UserEntity(DEFAULT_USER_EMAIL)));
         project.setStatus(ProjectStatus.PUBLISHED);
         project.setPledgeGoal(1000);
         project.setShortDescription("short description");
@@ -96,7 +97,7 @@ public class MailSteps {
 
         final MailServerClient.Message receivedMessage = grabMessage();
         assertEquals(UserNotificationService.FROM_ADDRESS, receivedMessage.from);
-        assertEquals(MongoUserDetailsService.DEFAULT_ADMIN_EMAIL, receivedMessage.to);
+        assertEquals(DEFAULT_ADMIN_EMAIL, receivedMessage.to);
         assertEquals(UserNotificationService.NEW_PROJECT_SUBJECT, receivedMessage.subject);
         assertThat(receivedMessage.message, containsString("es liegt ein neues Projekt zur Freigabe vor:"));
     }
@@ -120,7 +121,7 @@ public class MailSteps {
 
         final MailServerClient.Message receivedMessage = grabMessage();
         assertEquals(UserNotificationService.FROM_ADDRESS, receivedMessage.from);
-        assertEquals(MongoUserDetailsService.DEFAULT_USER_EMAIL, receivedMessage.to);
+        assertEquals(DEFAULT_USER_EMAIL, receivedMessage.to);
         assertEquals(UserNotificationService.PROJECT_REJECTED_SUBJECT, receivedMessage.subject);
         assertThat(receivedMessage.message, containsString("Dein Projekt wurde leider abgelehnt."));
     }
@@ -130,7 +131,7 @@ public class MailSteps {
 
         final MailServerClient.Message receivedMessage = grabMessage();
         assertEquals(UserNotificationService.FROM_ADDRESS, receivedMessage.from);
-        assertEquals(MongoUserDetailsService.DEFAULT_USER_EMAIL, receivedMessage.to);
+        assertEquals(DEFAULT_USER_EMAIL, receivedMessage.to);
         assertEquals(UserNotificationService.PROJECT_PUBLISHED_SUBJECT, receivedMessage.subject);
         assertThat(receivedMessage.message, containsString("Dein Projekt wurde erfolgreich freigegeben!"));
     }

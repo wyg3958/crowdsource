@@ -22,6 +22,10 @@ public class InvalidRequestException extends RuntimeException {
         return new InvalidRequestException("user_budget_exceeded");
     }
 
+    public static InvalidRequestException reversePledgeExceeded() {
+        return new InvalidRequestException("reverse_pledge_exceeded");
+    }
+
     public static InvalidRequestException projectAlreadyFullyPledged() {
         return new InvalidRequestException("project_already_fully_pledged");
     }

@@ -1,6 +1,7 @@
 package de.asideas.crowdsource.model.persistence;
 
 import de.asideas.crowdsource.config.security.Roles;
+import de.asideas.crowdsource.model.presentation.Pledge;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -52,12 +53,12 @@ public class UserEntity {
     public UserEntity() {
     }
 
-    public void reduceBudget(int reductionAmount) {
-        if ((budget - reductionAmount) < 0) {
+    public void accountPledge(Pledge pledge) {
+        if ((budget - pledge.getAmount()) < 0) {
             throw new IllegalArgumentException("User budget may not drop below 0");
         }
 
-        budget -= reductionAmount;
+        budget -= pledge.getAmount();
     }
 
     public String getId() {

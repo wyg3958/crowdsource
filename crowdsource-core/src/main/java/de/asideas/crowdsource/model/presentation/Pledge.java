@@ -4,12 +4,9 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import javax.validation.constraints.Min;
-
 // needed for serialization
 public class Pledge {
 
-    @Min(1)
     private int amount;
 
     public Pledge(int amount) {

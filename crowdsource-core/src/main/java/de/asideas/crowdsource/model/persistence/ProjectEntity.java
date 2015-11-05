@@ -1,6 +1,8 @@
 package de.asideas.crowdsource.model.persistence;
 
 import de.asideas.crowdsource.enums.ProjectStatus;
+import de.asideas.crowdsource.exceptions.InvalidRequestException;
+import de.asideas.crowdsource.model.presentation.Pledge;
 import de.asideas.crowdsource.model.presentation.project.Project;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -12,6 +14,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.List;
 
 // needed for serialization
 @Document(collection = "projects")
@@ -27,11 +31,8 @@ public class ProjectEntity {
     private FinancingRoundEntity financingRound;
 
     private String title;
-
     private String shortDescription;
-
     private String description;
-
     private ProjectStatus status;
 
     private int pledgeGoal;
@@ -54,6 +55,57 @@ public class ProjectEntity {
     }
 
     public ProjectEntity() {
+    }
+
+    public PledgeEntity pledge(Pledge pledge, FinancingRoundEntity activeFinancingRound,
+                               UserEntity pledgingUser, List<PledgeEntity> pledgesAlreadyDone){
+
+        if (this.status == ProjectStatus.FULLY_PLEDGED) {
+            throw InvalidRequestException.projectAlreadyFullyPledged();
+        }
+        if (this.status != ProjectStatus.PUBLISHED) {
+            throw InvalidRequestException.projectNotPublished();
+        }
+        if (pledge.getAmount() > pledgingUser.getBudget()) {
+            throw InvalidRequestException.userBudgetExceeded();
+        }
+        if (pledgedAmountOfUser(pledgesAlreadyDone, pledgingUser) + pledge.getAmount() < 0) {
+            throw InvalidRequestException.reversePledgeExceeded();
+        }
+
+        int newPledgedAmount = pledgedAmount(pledgesAlreadyDone) + pledge.getAmount();
+        if (newPledgedAmount > this.pledgeGoal) {
+            throw InvalidRequestException.pledgeGoalExceeded();
+        }
+
+        if (newPledgedAmount == this.pledgeGoal) {
+            setStatus(ProjectStatus.FULLY_PLEDGED);
+        }
+
+        pledgingUser.accountPledge(pledge);
+
+        PledgeEntity pledgeEntity = new PledgeEntity(this, pledgingUser, pledge, activeFinancingRound);
+        return pledgeEntity;
+    }
+
+    public boolean pledgeGoalAchieved() {
+        return this.status == ProjectStatus.FULLY_PLEDGED;
+    }
+
+    public int pledgedAmount(List<PledgeEntity> pledges) {
+        return pledges.stream().mapToInt(PledgeEntity::getAmount).sum();
+    }
+
+    public long countBackers(List<PledgeEntity> pledges) {
+        return pledges.stream().map(PledgeEntity::getUser).distinct().count();
+    }
+
+    public int pledgedAmountOfUser(List<PledgeEntity> pledges, UserEntity requestingUser) {
+        if (requestingUser == null || pledges == null || pledges.isEmpty()) {
+            return 0;
+        }
+        return pledges.stream().filter(p -> requestingUser.getId().equals(p.getUser().getId()))
+                .mapToInt(PledgeEntity::getAmount).sum();
     }
 
     public String getId() {
@@ -150,4 +202,5 @@ public class ProjectEntity {
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
+
 }

@@ -19,11 +19,9 @@ angular.module('crowdsource')
                     return vm.project.pledgedAmountByRequestingUser;
                 }, function() {
                     console.log(vm.project);
-                    if (vm.project !== undefined) {
-                        $timeout(function() {
-                            vm.pledge.amount = vm.project.pledgedAmountByRequestingUser;
-                        }, 0);
-                    }
+                    $timeout(function() {
+                        vm.pledge.amount = vm.project.pledgedAmountByRequestingUser;
+                    }, 100);
                 });
 
                 FinancingRound.reloadCurrentRound();
@@ -54,7 +52,7 @@ angular.module('crowdsource')
                             vm.success = true;
                         })
                         .finally(function () {
-                            vm.pledge.amount = getPledgedAmountByCurrentUser();
+                            vm.pledge.amount = vm.getPledgedAmountByCurrentUser();
                             vm.saving = false;
                             vm.form.$setPristine();
                         });
@@ -62,7 +60,7 @@ angular.module('crowdsource')
 
                 vm.getPledgableAmount = function () {
                     var remainingProjectGoal,
-                        pledgedByCurrentUserSum = getPledgedAmountByCurrentUser();
+                        pledgedByCurrentUserSum = vm.getPledgedAmountByCurrentUser();
 
                     if (isLoading()) {
                         return 0;
@@ -76,7 +74,6 @@ angular.module('crowdsource')
 
                     return pledgedByCurrentUserSum + Math.min(remainingProjectGoal, vm.user.budget);
                 };
-
 
                 vm.getNotification = function () {
                     if (isLoading()) {
@@ -114,13 +111,21 @@ angular.module('crowdsource')
                     return null;
                 };
 
-                function getPledgedAmountByCurrentUser () {
+                vm.getPledgedAmountByCurrentUser = function () {
                     return vm.project.pledgedAmountByRequestingUser || 0;
-                }
+                };
+
+                vm.getUserBudget = function () {
+                    return vm.user.budget - vm.pledge.amount + vm.getPledgedAmountByCurrentUser();
+                };
+
+                vm.getPledgedAmount = function () {
+                    return vm.project.pledgedAmount + vm.pledge.amount - vm.getPledgedAmountByCurrentUser();
+                };
 
                 function normalizePledge(pledge) {
                     return {
-                        amount : parseInt(pledge.amount) - getPledgedAmountByCurrentUser()
+                        amount : parseInt(pledge.amount) - vm.getPledgedAmountByCurrentUser()
                     };
                 }
 

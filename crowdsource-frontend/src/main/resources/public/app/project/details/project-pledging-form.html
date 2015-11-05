@@ -58,12 +58,12 @@
         <div class="finance__section">
             <ul class="finance__ul">
                 <li class="finance__li">
-                    <span class="pledged-amount">{{ pledgingForm.project.pledgedAmount + pledgingForm.pledge.amount | number }}</span> /
+                    <span class="pledged-amount">{{ pledgingForm.getPledgedAmount() | number }}</span> /
                     <span class="pledge-goal">{{ pledgingForm.project.pledgeGoal | number }}</span> &euro;
                     <span class="finance__subtitle">Finanzierung</span>
                 </li>
                 <li class="finance__li">
-                    <span class="budget">{{ pledgingForm.user.budget - pledgingForm.pledge.amount | number }} &euro;</span>
+                    <span class="budget">{{ pledgingForm.getUserBudget() | number }} &euro;</span>
                     <span class="finance__subtitle">Dein Budget</span>
                 </li>
                 <li class="finance__li--cta">

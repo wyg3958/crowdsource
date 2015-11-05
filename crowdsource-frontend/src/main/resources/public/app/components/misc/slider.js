@@ -31,11 +31,12 @@ angular.module('crowdsource')
             '<span class="range-slider-active-segment"></span>' +
             '</div>',
             link: function (scope, element, attributes, ngModel) {
+                var slider = element.find('[data-slider]'),
+                    throttleSliderChangeEventsTimer;
+
                 // The foundation slider is fixed to 0 <-> RangeSliderService.sliderMaxValue and the real value is computed with the help of the start and end directive attributes.
                 // The reason is, that foundation cannot handle the change of start and or end values properly after the slider was initialized
                 scope.sliderMax = RangeSliderService.sliderMaxValue;
-
-                var slider = element.find('[data-slider]');
 
                 scope.$watch('sliderValue', function () {
                     // Prevent rerender if invalid data provided.
@@ -58,20 +59,24 @@ angular.module('crowdsource')
 
                 function registerChangeListener() {
                     slider.on('change.fndtn.slider', function () {
-                        var sliderValue = slider.attr('data-slider');
+                        if (throttleSliderChangeEventsTimer) {
+                            clearTimeout(throttleSliderChangeEventsTimer);
+                        }
+                        throttleSliderChangeEventsTimer = setTimeout(function() {
+                            var sliderValue = slider.attr('data-slider');
 
-                        var realValue = RangeSliderService.calcRealValue(parseInt(sliderValue), parseInt(scope.start), parseInt(scope.end));
+                            var realValue = RangeSliderService.calcRealValue(parseInt(sliderValue), parseInt(scope.start), parseInt(scope.end));
 
-                        //scope.sliderValue = realValue;
-                        ngModel.$setViewValue(realValue);
+                            //scope.model = realValue;
+                            ngModel.$setViewValue(realValue);
 
-
+                            throttleSliderChangeEventsTimer = undefined;
+                        }, 10);
                     });
                 }
-
-                //if (scope.initialRealValue === 0) {
+                if (scope.sliderValue === 0) {
                     registerChangeListener();
-                //}
+                }
             }
         };
     });

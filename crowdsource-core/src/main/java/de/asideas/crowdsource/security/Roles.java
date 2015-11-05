@@ -1,4 +1,4 @@
-package de.asideas.crowdsource.config.security;
+package de.asideas.crowdsource.security;
 
 public interface Roles {
 

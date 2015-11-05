@@ -3,7 +3,7 @@ package de.asideas.crowdsource;
 import de.asideas.crowdsource.config.MongoDBConfig;
 import de.asideas.crowdsource.config.mail.MailSenderConfig;
 import de.asideas.crowdsource.config.mail.MailTemplateConfig;
-import de.asideas.crowdsource.config.security.SecurityConfig;
+import de.asideas.crowdsource.config.SecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

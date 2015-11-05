@@ -14,10 +14,17 @@ angular.module('crowdsource')
                 vm.pledge = {
                     amount: 0
                 };
-                
-                $timeout(function() {
-                    vm.pledge.amount = getPledgedAmountByCurrentUser();
-                }, 100);
+
+                $scope.$watch(function() {
+                    return vm.project.pledgedAmountByRequestingUser;
+                }, function() {
+                    console.log(vm.project);
+                    if (vm.project !== undefined) {
+                        $timeout(function() {
+                            vm.pledge.amount = vm.project.pledgedAmountByRequestingUser;
+                        }, 0);
+                    }
+                });
 
                 FinancingRound.reloadCurrentRound();
 

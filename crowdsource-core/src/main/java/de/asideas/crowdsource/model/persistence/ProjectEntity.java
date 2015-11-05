@@ -58,13 +58,16 @@ public class ProjectEntity {
     }
 
     public PledgeEntity pledge(Pledge pledge, FinancingRoundEntity activeFinancingRound,
-                               UserEntity pledgingUser, List<PledgeEntity> pledgesAlreadyDone){
+                               UserEntity pledgingUser, List<PledgeEntity> pledgesAlreadyDone) {
 
         if (this.status == ProjectStatus.FULLY_PLEDGED) {
             throw InvalidRequestException.projectAlreadyFullyPledged();
         }
         if (this.status != ProjectStatus.PUBLISHED) {
             throw InvalidRequestException.projectNotPublished();
+        }
+        if (pledge.getAmount() == 0) {
+            throw InvalidRequestException.zeroPledgeNotValid();
         }
         if (pledge.getAmount() > pledgingUser.getBudget()) {
             throw InvalidRequestException.userBudgetExceeded();

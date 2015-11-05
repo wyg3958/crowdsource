@@ -42,4 +42,7 @@ public class InvalidRequestException extends RuntimeException {
         return new InvalidRequestException("project_not_published");
     }
 
+    public static InvalidRequestException zeroPledgeNotValid() {
+        return new InvalidRequestException("zero_pledge_not_valid");
+    }
 }

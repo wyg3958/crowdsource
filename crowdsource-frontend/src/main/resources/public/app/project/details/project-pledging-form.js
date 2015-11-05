@@ -32,6 +32,8 @@ angular.module('crowdsource')
                 vm.pledgeProject = function () {
                     vm.success = false;
                     vm.saving = true;
+                    vm.wasReversePledge = vm.isReversePledge();
+
                     RemoteFormValidation.clearRemoteErrors(vm);
 
                     Project.pledge(vm.project.id, normalizePledge(vm.pledge)).$promise
@@ -87,7 +89,8 @@ angular.module('crowdsource')
                         };
                     }
                     if (vm.success) {
-                        return {type: 'success', message: 'Deine Finanzierung war erfolgreich.'};
+                        var msg = !vm.wasReversePledge ? 'Deine Finanzierung war erfolgreich.' : "Budget erfolgreich aus dem Projekt abgezogen.";
+                        return {type: 'success', message: msg};
                     }
                     if (vm.project.status == 'FULLY_PLEDGED') {
                         return {type: 'info', message: 'Das Projekt ist zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich.'};
@@ -121,6 +124,23 @@ angular.module('crowdsource')
 
                 vm.getPledgedAmount = function () {
                     return vm.project.pledgedAmount + vm.pledge.amount - vm.getPledgedAmountByCurrentUser();
+                };
+
+                vm.isReversePledge = function () {
+                    return normalizePledge(vm.pledge).amount < 0;
+                };
+
+                vm.isZeroPledge = function () {
+                    console.log("IsZeroPledge");
+                    return normalizePledge(vm.pledge).amount == 0;
+                };
+
+                vm.financeButtonLabel = function () {
+                    if (vm.saving) return  'Bitte warten...';
+                    if (vm.isReversePledge()) {
+                        return 'Jetzt Budget abziehen'
+                    }
+                    return 'Jetzt finanzieren';
                 };
 
                 function normalizePledge(pledge) {

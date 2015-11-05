@@ -38,7 +38,7 @@
                     <label form-group="amount">
                         <input class="finance__input" type="number" name="amount" ng-model="pledgingForm.pledge.amount"
                                ng-disabled="pledgingForm.getPledgableAmount() == 0"
-                               required min="1" ng-max="pledgingForm.getPledgableAmount()" ng-pattern="/^[0-9]+$/">
+                               required  ng-max="pledgingForm.getPledgableAmount()" ng-pattern="/^[0-9]+$/">
 
                         <span class="finance__subtitle" form-label-valid="amount">Dein Investment</span>
                         <span class="finance__subtitle" form-label-invalid="amount" ng-messages="pledgingForm.form.amount.$error">
@@ -68,9 +68,8 @@
                 </li>
                 <li class="finance__li--cta">
                     <button class="finance__btn crwd-success radius shadow" ng-click="pledgingForm.pledgeProject()"
-                            ng-disabled="pledgingForm.form.$invalid || pledgingForm.saving">
-
-                        {{ pledgingForm.saving ? 'Bitte warten...' : 'Jetzt finanzieren' }}
+                            ng-disabled="pledgingForm.form.$invalid || pledgingForm.saving || pledgingForm.isZeroPledge() ">
+                        {{ pledgingForm.financeButtonLabel() }}
                     </button>
                 </li>
             </ul>

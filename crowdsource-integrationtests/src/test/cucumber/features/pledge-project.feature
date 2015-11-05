@@ -20,10 +20,23 @@ Feature: Pledge project
     And there is a financing round active
     When the project detail page of this project is requested
     Then there is no notification message
-    When the user sets his desired pledge amount via the slider
+    When the user raises his desired pledge amount via the slider
     Then the displayed budget and financing infos are updated
     When the user submits the pledging form
     Then the notification message "Deine Finanzierung war erfolgreich." is displayed on the project pledging form
+    And the project pledging form is enabled
+
+  Scenario: A user reduces pledges she already made for a project
+    Given a project with a pledge goal of 250 is published
+    And a user is logged in
+    And there is a financing round active
+    And the user already pledged an amount of 240
+    When the project detail page of this project is requested
+    Then there is no notification message
+    When the user reduces his desired pledge amount via the slider
+    Then the displayed budget and financing infos are updated
+    When the user submits the pledging form
+    Then the notification message "Budget erfolgreich aus dem Projekt abgezogen." is displayed on the project pledging form
     And the project pledging form is enabled
 
   Scenario: A user fully pledges a project
@@ -48,7 +61,7 @@ Feature: Pledge project
     And a user is logged in
     When the project detail page of this project is requested
     And there is no financing round active
-    When the user sets his desired pledge amount via the slider
+    When the user raises his desired pledge amount via the slider
     Then the displayed budget and financing infos are updated
     When the user submits the pledging form
     Then the error message "Die Finanzierungsrunde ist mittlerweile leider beendet. Das Finanzieren ist erst wieder möglich, wenn die nächste Runde gestartet wurde." is displayed on the project pledging form

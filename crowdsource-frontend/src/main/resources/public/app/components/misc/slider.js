@@ -24,17 +24,17 @@ angular.module('crowdsource')
                 start: '@',
                 end: '@',
                 initSlider: '@',
+                reduced: '@',
                 disabled: '=',
                 sliderValue: '=ngModel'
             },
-            template: '<div class="range-slider" data-slider="0" data-current-real="{{ sliderValue }}" data-options="start: 0; end: {{ sliderMax }}" ng-class="{ disabled: disabled }" foundation-reflow="slider">' +
+            template: '<div class="range-slider" data-slider="0" data-current-real="{{ sliderValue }}" data-options="start: 0; end: {{ sliderMax }}" ng-class="{ disabled: disabled, reduced : reduced === \'true\' }" foundation-reflow="slider">' +
             '<span class="range-slider-handle" role="slider" tabindex="0"></span>' +
             '<span class="range-slider-active-segment"></span>' +
             '</div>',
             link: function (scope, element, attributes, ngModel) {
                 var slider = element.find('[data-slider]'),
                     throttleSliderChangeEventsTimer;
-
                 // The foundation slider is fixed to 0 <-> RangeSliderService.sliderMaxValue and the real value is computed with the help of the start and end directive attributes.
                 // The reason is, that foundation cannot handle the change of start and or end values properly after the slider was initialized
                 scope.sliderMax = RangeSliderService.sliderMaxValue;
@@ -43,7 +43,6 @@ angular.module('crowdsource')
 
                 scope.$watch('sliderValue', function () {
                     // Prevent rerender if invalid data provided.
-                    console.log("got slider value " + scope.sliderValue);
                     if (typeof scope.sliderValue !== 'undefined') {
                         var newSliderValue = RangeSliderService.calcSliderValue(scope.sliderValue, parseInt(scope.start), parseInt(scope.end)),
                             validNewValue = typeof newSliderValue === "number" && isFinite(newSliderValue);
@@ -56,7 +55,6 @@ angular.module('crowdsource')
 
                 scope.$watch('initSlider', function () {
                     if (scope.initSlider && scope.initialized === false) {
-                        console.log('init slider now');
                         registerChangeListener();
                         scope.initialized = true;
                     }
@@ -64,7 +62,6 @@ angular.module('crowdsource')
 
 
                 function render (sliderValue) {
-                    console.log("rerender slider");
                     slider.foundation('slider', 'set_value', sliderValue);
                     // http://www.bradleyhamilton.com/blog/foundation-range-slider-callback-not-firing-after-setting-the-data-slider-value-dynamically
                     registerChangeListener();
@@ -72,7 +69,6 @@ angular.module('crowdsource')
 
                 function registerChangeListener() {
                     slider.on('change.fndtn.slider', function () {
-                        console.log('got slider event');
                         if (throttleSliderChangeEventsTimer) {
                             clearTimeout(throttleSliderChangeEventsTimer);
                         }

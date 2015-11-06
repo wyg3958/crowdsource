@@ -181,6 +181,10 @@ $rs-handle-bg: $clr-body;
         opacity: 0.25;
         background-color: $black;
     }
+
+    &.reduced .range-slider-active-segment {
+        background: $crowd-color-orange;
+    }
 }
 
 .range-slider-active-segment {

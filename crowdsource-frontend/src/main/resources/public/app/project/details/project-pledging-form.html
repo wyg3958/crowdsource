@@ -30,7 +30,7 @@
         </div>
 
         <div class="finance__section">
-            <range-slider ng-model="pledgingForm.pledge.amount" start="0" end="{{ pledgingForm.getPledgableAmount() }}"
+            <range-slider ng-model="pledgingForm.pledge.amount" start="0" reduced="{{ pledgingForm.isReversePledge() }}" end="{{ pledgingForm.getPledgableAmount() }}"
                           disabled="pledgingForm.getPledgableAmount() == 0" init-slider="{{ pledgingForm.initslider }}"></range-slider>
 
             <ul class="finance__ul">

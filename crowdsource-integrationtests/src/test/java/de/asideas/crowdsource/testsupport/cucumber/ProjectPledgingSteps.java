@@ -87,8 +87,7 @@ public class ProjectPledgingSteps {
     public void the_user_raises_desired_pledge_amount_via_the_slider() throws Throwable {
         PageFactory.initElements(webDriver, pledgingForm);
 
-        budgetBeforeChange = pledgingForm.getUserBudget();
-        pledgedAmountBeforeChange = pledgingForm.getPledgedAmount();
+        keepAmountsBeforeChange();
         int amountBeforeChange = pledgingForm.getAmountFromInputField();
 
         pledgingForm.moveSliderBy(500); //pixels
@@ -105,9 +104,8 @@ public class ProjectPledgingSteps {
     public void the_user_reduces_desired_pledge_amount_via_the_slider() throws Throwable {
         PageFactory.initElements(webDriver, pledgingForm);
 
-        budgetBeforeChange = pledgingForm.getUserBudget();
-        pledgedAmountBeforeChange = pledgingForm.getPledgedAmount();
-        int amountBeforeChange = pledgingForm.getAmountFromInputField(); //Todo Tom: put lines into separate method?
+        keepAmountsBeforeChange();
+        int amountBeforeChange = pledgingForm.getAmountFromInputField();
 
         pledgingForm.moveSliderBy(-100); //pixels
 
@@ -123,8 +121,7 @@ public class ProjectPledgingSteps {
     public void the_user_sets_his_desired_pledge_amount_as_high_as_the_remaining_amount_of_the_project_goal() throws Throwable {
         PageFactory.initElements(webDriver, pledgingForm);
 
-        budgetBeforeChange = pledgingForm.getUserBudget();
-        pledgedAmountBeforeChange = pledgingForm.getPledgedAmount();
+        keepAmountsBeforeChange();
         pledgeAmount = pledgingForm.getPledgeGoalAmount() - pledgedAmountBeforeChange;
 
         if (pledgeAmount > budgetBeforeChange) {
@@ -137,8 +134,7 @@ public class ProjectPledgingSteps {
 
     @When("^the user enters (\\d+) as his desired pledge amount$")
     public void the_user_enters_as_his_desired_pledge_amount(int pledgeAmount) throws Throwable {
-        budgetBeforeChange = pledgingForm.getUserBudget();
-        pledgedAmountBeforeChange = pledgingForm.getPledgedAmount();
+        keepAmountsBeforeChange();
 
         PageFactory.initElements(webDriver, pledgingForm);
         pledgingForm.setAmountInputValue(pledgeAmount);
@@ -217,5 +213,10 @@ public class ProjectPledgingSteps {
 
         Pledge pledge = new Pledge(pledgeAmount);
         crowdSourceClient.pledgeProject(projectDetailSteps.getCreatedProject(), pledge, authToken);
+    }
+
+    private void keepAmountsBeforeChange() {
+        budgetBeforeChange = pledgingForm.getUserBudget();
+        pledgedAmountBeforeChange = pledgingForm.getPledgedAmount();
     }
 }

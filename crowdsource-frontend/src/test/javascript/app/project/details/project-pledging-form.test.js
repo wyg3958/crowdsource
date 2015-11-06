@@ -324,7 +324,7 @@ describe('project pledging form', function () {
         expect(elements.pledgeButton).toBeDisabled();
     });
 
-    it("should recover from a over-pledge", function () {
+    it("should recover from an over-pledge", function () {
 
         prepareMocks({
             project: {$resolved: true, id: 123, pledgeGoal: 500, pledgedAmount: 50, status: 'PUBLISHED'},
@@ -341,7 +341,7 @@ describe('project pledging form', function () {
 
         // prepare for backend call
         $httpBackend.expectPOST('/project/123/pledges', {amount: 30}).respond(400, {errorCode: 'pledge_goal_exceeded'});
-        $httpBackend.expectGET('/project/123').respond(200, {id: 123, pledgeGoal: 500, pledgedAmount: 480, status: 'PUBLISHED'}); // the pledged amount is 480 now!
+        $httpBackend.expectGET('/project/123').respond(200, {id: 123, pledgeGoal: 500, pledgedAmount: 480, pledgedAmountByRequestingUser: 0, status: 'PUBLISHED'}); // the pledged amount is 480 now!
         $httpBackend.expectGET('/user/current').respond(200, {budget: 200});
         $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
 
@@ -352,10 +352,12 @@ describe('project pledging form', function () {
         expect(elements.pledgeButton).toHaveText('Bitte warten...');
 
         $httpBackend.flush();
+        $timeout.flush();
 
         // expect form to be updated with the new values from backend
         expect(elements.notification).toHaveClass('ng-hide');
         expect(elements.pledgeAmount.getInputField()).toHaveValue("0");
+
         expect(elements.pledgedAmount).toHaveText('480');
         expect(elements.pledgeGoal).toHaveText('500');
         expect(elements.budget).toHaveText('200 €');
@@ -367,34 +369,32 @@ describe('project pledging form', function () {
         expect(elements.pledgeButton).toHaveText('Jetzt finanzieren');
 
         // retry with 20
-        elements.pledgeAmount.getInputField().val('10').trigger('input');
-
-        expect(elements.pledgeButton).not.toBeDisabled();
+        elements.pledgeAmount.getInputField().val('20').trigger('input');
 
         // prepare for backend calls
-        $httpBackend.expectPOST('/project/123/pledges', {amount: 10}).respond(200);
-        $httpBackend.expectGET('/project/123').respond(200, {id: 123, pledgeGoal: 500, pledgedAmount: 490, status: 'PUBLISHED'});
-        $httpBackend.expectGET('/user/current').respond(200, {budget: 190});
+        $httpBackend.expectPOST('/project/123/pledges', {amount: 20}).respond(200);
+        $httpBackend.expectGET('/project/123').respond(200, {id: 123, pledgeGoal: 500, pledgedAmount: 500, pledgedAmountByRequestingUser: 20, status: 'FULLY_PLEDGED'});
+        $httpBackend.expectGET('/user/current').respond(200, {budget: 180});
         $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
 
         // submit form
+        expect(elements.pledgeButton).not.toBeDisabled();
         elements.pledgeButton.click();
+
+        $httpBackend.flush();
+        $timeout.flush();
 
         expect(elements.root.find('.general-error')).not.toExist();
         expect(getGeneralError(elements, 'remote_pledge_goal_exceeded')).not.toExist();
-        expect(elements.pledgeButton).toBeDisabled();
-        expect(elements.pledgeButton).toHaveText('Bitte warten...');
-
-        $httpBackend.flush();
 
         // expect form to be in pristine state and with new values
         expect(elements.notification).not.toHaveClass('ng-hide');
-        expect(elements.notification).toHaveText('Deine Finanzierung war erfolgreich.');
-        expect(elements.pledgeAmount.getInputField()).toHaveValue("0");
-        expect(elements.pledgedAmount).toHaveText('490');
+        expect(elements.notification).toHaveText('Deine Finanzierung war erfolgreich. Das Projekt ist jetzt zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich.');
+        expect(elements.pledgeAmount.getInputField()).toHaveValue("20");
+        expect(elements.pledgedAmount).toHaveText('500');
         expect(elements.pledgeGoal).toHaveText('500');
-        expect(elements.budget).toHaveText('190 €');
-        expect(elements.pledgableAmount).toHaveText('10 €');
+        expect(elements.budget).toHaveText('180 €');
+        expect(elements.pledgableAmount).toHaveText('0 €');
 
         expectNoValidationError(elements.pledgeAmount);
         expect(elements.pledgeButton).toBeDisabled();

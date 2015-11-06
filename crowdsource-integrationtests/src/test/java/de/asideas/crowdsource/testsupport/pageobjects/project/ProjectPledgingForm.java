@@ -62,12 +62,12 @@ public class ProjectPledgingForm {
     }
 
     public int getUserBudget() {
-        wait.until( d -> (updatedWebElement(d, SELECTOR_BUDGET).getText().length() != 0) );
+        makeSureDataLoaded();
         return ElementUtils.parseCurrency(updatedWebElement(webDriverProvider.provideDriver(), SELECTOR_BUDGET));
     }
 
     public int getPledgedAmount() {
-        wait.until( d -> (updatedWebElement(d, SELECTOR_PLEDGED_AMOUNT).getText().length() != 0) );
+        makeSureDataLoaded();
         return ElementUtils.parseCurrency(updatedWebElement(webDriverProvider.provideDriver(), SELECTOR_PLEDGED_AMOUNT));
     }
 
@@ -112,5 +112,15 @@ public class ProjectPledgingForm {
 
     private WebElement updatedWebElement(WebDriver d, String cssSelector) {
         return d.findElement(By.cssSelector(cssSelector));
+    }
+    private void makeSureDataLoaded(){
+        wait.until( d -> {
+            try{
+                ElementUtils.parseCurrency(updatedWebElement(webDriverProvider.provideDriver(), SELECTOR_BUDGET));
+            }catch (Exception e){
+                return false;
+            }
+            return true;
+        } );
     }
 }

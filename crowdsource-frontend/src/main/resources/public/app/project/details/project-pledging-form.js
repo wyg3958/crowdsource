@@ -14,13 +14,16 @@ angular.module('crowdsource')
                 vm.pledge = {
                     amount: 0
                 };
+                vm.initslider = false;
 
                 $scope.$watch(function() {
-                    return vm.project.pledgedAmountByRequestingUser;
+                    return vm.project.$resolved;
                 }, function() {
                     console.log(vm.project);
+                    // lazy init slider after project data are available;
                     $timeout(function() {
                         vm.pledge.amount = vm.project.pledgedAmountByRequestingUser;
+                        vm.initslider = true;
                     }, 100);
                 });
 
@@ -131,7 +134,6 @@ angular.module('crowdsource')
                 };
 
                 vm.isZeroPledge = function () {
-                    console.log("IsZeroPledge");
                     return normalizePledge(vm.pledge).amount == 0;
                 };
 

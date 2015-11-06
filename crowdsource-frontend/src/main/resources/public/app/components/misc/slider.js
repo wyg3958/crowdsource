@@ -23,6 +23,7 @@ angular.module('crowdsource')
             scope: {
                 start: '@',
                 end: '@',
+                initSlider: '@',
                 disabled: '=',
                 sliderValue: '=ngModel'
             },
@@ -37,21 +38,33 @@ angular.module('crowdsource')
                 // The foundation slider is fixed to 0 <-> RangeSliderService.sliderMaxValue and the real value is computed with the help of the start and end directive attributes.
                 // The reason is, that foundation cannot handle the change of start and or end values properly after the slider was initialized
                 scope.sliderMax = RangeSliderService.sliderMaxValue;
+                scope.initialized = false;
+
 
                 scope.$watch('sliderValue', function () {
                     // Prevent rerender if invalid data provided.
-                    console.log(scope.sliderValue);
+                    console.log("got slider value " + scope.sliderValue);
                     if (typeof scope.sliderValue !== 'undefined') {
                         var newSliderValue = RangeSliderService.calcSliderValue(scope.sliderValue, parseInt(scope.start), parseInt(scope.end)),
-                            oldSliderValue = slider.data('slider');
-                        if (typeof newSliderValue === "number" && isFinite(newSliderValue) && newSliderValue !== oldSliderValue) {
+                            validNewValue = typeof newSliderValue === "number" && isFinite(newSliderValue);
+                        if (scope.initialized && validNewValue) {
                             // re-render the slider when start or end changes
                             render(newSliderValue);
                         }
                     }
                 });
 
+                scope.$watch('initSlider', function () {
+                    if (scope.initSlider && scope.initialized === false) {
+                        console.log('init slider now');
+                        registerChangeListener();
+                        scope.initialized = true;
+                    }
+                });
+
+
                 function render (sliderValue) {
+                    console.log("rerender slider");
                     slider.foundation('slider', 'set_value', sliderValue);
                     // http://www.bradleyhamilton.com/blog/foundation-range-slider-callback-not-firing-after-setting-the-data-slider-value-dynamically
                     registerChangeListener();
@@ -59,6 +72,7 @@ angular.module('crowdsource')
 
                 function registerChangeListener() {
                     slider.on('change.fndtn.slider', function () {
+                        console.log('got slider event');
                         if (throttleSliderChangeEventsTimer) {
                             clearTimeout(throttleSliderChangeEventsTimer);
                         }
@@ -73,9 +87,6 @@ angular.module('crowdsource')
                             throttleSliderChangeEventsTimer = undefined;
                         }, 10);
                     });
-                }
-                if (scope.sliderValue === 0) {
-                    registerChangeListener();
                 }
             }
         };

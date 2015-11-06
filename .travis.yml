@@ -16,8 +16,7 @@ env:
 install: true
 
 script:
-   - sudo chmod +x release-res/release.sh
-   - ./release-res/release.sh
+   - sh release-res/release.sh
 
 cache:
   directories:

@@ -4,6 +4,7 @@ import de.asideas.crowdsource.testsupport.selenium.ElementUtils;
 import de.asideas.crowdsource.testsupport.selenium.SeleniumWait;
 import de.asideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -62,12 +63,12 @@ public class ProjectPledgingForm {
     }
 
     public int getUserBudget() {
-        wait.until( d -> (updatedWebElement(d, SELECTOR_BUDGET).getText().length() != 0) );
+        makeSureDataLoaded();
         return ElementUtils.parseCurrency(updatedWebElement(webDriverProvider.provideDriver(), SELECTOR_BUDGET));
     }
 
     public int getPledgedAmount() {
-        wait.until( d -> (updatedWebElement(d, SELECTOR_PLEDGED_AMOUNT).getText().length() != 0) );
+        makeSureDataLoaded();
         return ElementUtils.parseCurrency(updatedWebElement(webDriverProvider.provideDriver(), SELECTOR_PLEDGED_AMOUNT));
     }
 
@@ -112,5 +113,20 @@ public class ProjectPledgingForm {
 
     private WebElement updatedWebElement(WebDriver d, String cssSelector) {
         return d.findElement(By.cssSelector(cssSelector));
+    }
+    private void makeSureDataLoaded(){
+        try{
+            wait.until( d -> {
+                try{
+                    ElementUtils.parseCurrency(updatedWebElement(webDriverProvider.provideDriver(), SELECTOR_BUDGET));
+                }catch (Exception e){
+                    return false;
+                }
+                return true;
+            } );
+        }catch (TimeoutException e){
+            // we catch it and hope that the element has been updated and initialized anyway.
+        }
+
     }
 }

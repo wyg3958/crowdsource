@@ -17,7 +17,7 @@ angular.module('crowdsource')
                 vm.initslider = false;
 
                 $scope.$watch(function() {
-                    return vm.project.pledgedAmountByRequestingUser;
+                    return vm.project.pledgedAmountByRequestingUser + vm.project._recentChange;
                 }, function() {
                     // lazy init slider after project data are available;
                     $timeout(function() {
@@ -164,6 +164,7 @@ angular.module('crowdsource')
                     // will be resolved when all calls are completed
                     promises.then(function (resolvedPromises) {
                         angular.copy(resolvedPromises.project, vm.project);
+                        vm.project._recentChange = new Date().getTime();
                         // the user and financing round are already copied over in their services
                     });
 

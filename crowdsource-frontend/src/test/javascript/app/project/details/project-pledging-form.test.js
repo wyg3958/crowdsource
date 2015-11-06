@@ -84,7 +84,7 @@ describe('project pledging form', function () {
 
         // prepare for backend calls
         $httpBackend.expectPOST('/project/123/pledges', {amount: 30}).respond(200);
-        $httpBackend.expectGET('/project/123').respond(200, {id: 123, pledgeGoal: 100, pledgedAmount: 90, status: 'PUBLISHED'});
+        $httpBackend.expectGET('/project/123').respond(200, {id: 123, pledgeGoal: 100, pledgedAmount: 90, pledgedAmountByRequestingUser: 30, status: 'PUBLISHED'});
         $httpBackend.expectGET('/user/current').respond(200, {budget: 170});
         $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
 
@@ -97,11 +97,11 @@ describe('project pledging form', function () {
         // expect form to be in pristine state and with new values
         expect(elements.notification).not.toHaveClass('ng-hide');
         expect(elements.notification).toHaveText('Deine Finanzierung war erfolgreich.');
-        expect(elements.pledgeAmount.getInputField()).toHaveValue("0");
+        expect(elements.pledgeAmount.getInputField()).toHaveValue("30");
         expect(elements.pledgedAmount).toHaveText('90');
         expect(elements.pledgeGoal).toHaveText('100');
         expect(elements.budget).toHaveText('170 €');
-        expect(elements.pledgableAmount).toHaveText('10 €');
+        expect(elements.pledgableAmount).toHaveText('40 €');
 
         expectNoValidationError(elements.pledgeAmount);
         expect(elements.pledgeButton).toBeDisabled();
@@ -126,18 +126,19 @@ describe('project pledging form', function () {
 
         // prepare for backend calls
         $httpBackend.expectPOST('/project/123/pledges', {amount: 40}).respond(200);
-        $httpBackend.expectGET('/project/123').respond(200, {id: 123, pledgeGoal: 100, pledgedAmount: 100, status: 'FULLY_PLEDGED'});
+        $httpBackend.expectGET('/project/123').respond(200, {id: 123, pledgeGoal: 100, pledgedAmount: 100, pledgedAmountByRequestingUser: 40, status: 'FULLY_PLEDGED'});
         $httpBackend.expectGET('/user/current').respond(200, {budget: 160});
         $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
 
         // submit form
         elements.pledgeButton.click();
         $httpBackend.flush();
+        $timeout.flush();
 
         // expect form to be in pristine state and with new values
         expect(elements.notification).not.toHaveClass('ng-hide');
         expect(elements.notification.text().trim()).toBe('Deine Finanzierung war erfolgreich. Das Projekt ist jetzt zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich.');
-        expect(elements.pledgeAmount.getInputField()).toHaveValue("0");
+        expect(elements.pledgeAmount.getInputField()).toHaveValue("40");
         expect(elements.pledgedAmount).toHaveText('100');
         expect(elements.pledgeGoal).toHaveText('100');
         expect(elements.budget).toHaveText('160 €');

@@ -17,7 +17,7 @@ angular.module('crowdsource')
                 vm.initslider = false;
 
                 $scope.$watch(function() {
-                    return vm.project.$resolved;
+                    return vm.project.pledgedAmountByRequestingUser;
                 }, function() {
                     // lazy init slider after project data are available;
                     $timeout(function() {
@@ -56,7 +56,6 @@ angular.module('crowdsource')
                             vm.success = true;
                         })
                         .finally(function () {
-                            vm.pledge.amount = vm.getPledgedAmountByCurrentUser();
                             vm.saving = false;
                             vm.form.$setPristine();
                         });

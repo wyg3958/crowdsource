@@ -107,7 +107,7 @@ public class ProjectPledgingSteps {
 
         budgetBeforeChange = pledgingForm.getUserBudget();
         pledgedAmountBeforeChange = pledgingForm.getPledgedAmount();
-        int amountBeforeChange = pledgingForm.getAmountFromInputField();
+        int amountBeforeChange = pledgingForm.getAmountFromInputField(); //Todo Tom: put lines into separate method?
 
         pledgingForm.moveSliderBy(-100); //pixels
 
@@ -125,8 +125,8 @@ public class ProjectPledgingSteps {
 
         budgetBeforeChange = pledgingForm.getUserBudget();
         pledgedAmountBeforeChange = pledgingForm.getPledgedAmount();
-
         pledgeAmount = pledgingForm.getPledgeGoalAmount() - pledgedAmountBeforeChange;
+
         if (pledgeAmount > budgetBeforeChange) {
             // if this happens, then the financing round was started with a too low budget
             throw new IllegalStateException("User budget (" + budgetBeforeChange + ") is too low to fully pledge the project");
@@ -137,8 +137,13 @@ public class ProjectPledgingSteps {
 
     @When("^the user enters (\\d+) as his desired pledge amount$")
     public void the_user_enters_as_his_desired_pledge_amount(int pledgeAmount) throws Throwable {
+        budgetBeforeChange = pledgingForm.getUserBudget();
+        pledgedAmountBeforeChange = pledgingForm.getPledgedAmount();
+
         PageFactory.initElements(webDriver, pledgingForm);
         pledgingForm.setAmountInputValue(pledgeAmount);
+
+        this.pledgeAmount = pledgingForm.getPledgedAmount() - pledgedAmountBeforeChange;
     }
 
     @Then("^the displayed budget and financing infos are updated$")
@@ -173,12 +178,12 @@ public class ProjectPledgingSteps {
 
     @And("^another user pledges the same project with (\\d+) in the meantime$")
     public void another_user_pledges_the_project_with_in_the_meantime(int pledgeAmount) throws Throwable {
-        pledgeProjectViaApi(pledgeAmount);
+        pledgeProjectViaApi(pledgeAmount, true);
     }
 
     @And("^the user already pledged an amount of (\\d+)$")
     public void the_user_already_pledged_an_amount (int amount) throws Throwable {
-        pledgeProjectViaApi(amount);
+        pledgeProjectViaApi(amount, false);
     }
 
     @And("^the project is pledged with and amount of (\\d+)$")
@@ -204,8 +209,11 @@ public class ProjectPledgingSteps {
         }
     }
 
-    private void pledgeProjectViaApi(int pledgeAmount) {
-        CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithDefaultUser();
+    private void pledgeProjectViaApi(int pledgeAmount, boolean asAdmin) {
+        CrowdSourceClient.AuthToken authToken =
+                asAdmin ?
+                crowdSourceClient.authorizeWithAdminUser() :
+                crowdSourceClient.authorizeWithDefaultUser();
 
         Pledge pledge = new Pledge(pledgeAmount);
         crowdSourceClient.pledgeProject(projectDetailSteps.getCreatedProject(), pledge, authToken);

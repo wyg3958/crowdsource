@@ -39,6 +39,19 @@ Feature: Pledge project
     Then the notification message "Budget erfolgreich aus dem Projekt abgezogen." is displayed on the project pledging form
     And the project pledging form is enabled
 
+  Scenario: A user reduces pledges she already made to zero for a project
+    Given a project with a pledge goal of 250 is published
+    And a user is logged in
+    And there is a financing round active
+    And the user already pledged an amount of 240
+    When the project detail page of this project is requested
+    Then there is no notification message
+    When the user enters 0 as his desired pledge amount
+    Then the displayed budget and financing infos are updated
+    And the user submits the pledging form
+    Then the notification message "Budget erfolgreich aus dem Projekt abgezogen." is displayed on the project pledging form
+    And the project pledging form is enabled
+
   Scenario: A user fully pledges a project
     Given a project is published
     And a user is logged in
@@ -48,6 +61,7 @@ Feature: Pledge project
     Then the displayed budget and financing infos are updated
     When the user submits the pledging form
     Then the notification message "Deine Finanzierung war erfolgreich. Das Projekt ist jetzt zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich." is displayed on the project pledging form
+    Then the displayed budget and financing infos are updated
     And the current page is reloaded
     Then the notification message "Das Projekt ist zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich." is displayed on the project pledging form
     When he clicks on the Logout button

@@ -3,6 +3,8 @@ package de.asideas.crowdsource.testsupport.pageobjects.project;
 import de.asideas.crowdsource.testsupport.selenium.ElementUtils;
 import de.asideas.crowdsource.testsupport.selenium.SeleniumWait;
 import de.asideas.crowdsource.testsupport.selenium.WebDriverProvider;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
@@ -11,6 +13,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ProjectPledgingForm {
+
+    private static final String SELECTOR_BUDGET = ".pledging-form .finance__section .budget";
+    private static final String SELECTOR_PLEDGED_AMOUNT = ".pledging-form .pledged-amount";
 
     @FindBy(css = ".pledging-form .notification")
     private WebElement notificationBox;
@@ -24,13 +29,13 @@ public class ProjectPledgingForm {
     @FindBy(css = ".pledging-form .range-slider-handle")
     private WebElement sliderHandle;
 
-    @FindBy(css = ".pledging-form .pledged-amount")
+    @FindBy(css = SELECTOR_PLEDGED_AMOUNT)
     private WebElement pledgedAmountLabel;
 
     @FindBy(css = ".pledging-form .pledge-goal")
     private WebElement pledgeGoalLabel;
 
-    @FindBy(css = ".pledging-form .finance__section .budget")
+    @FindBy(css = SELECTOR_BUDGET)
     private WebElement budgetLabel;
 
     @FindBy(css = ".pledging-form .finance__btn")
@@ -57,11 +62,13 @@ public class ProjectPledgingForm {
     }
 
     public int getUserBudget() {
-        return ElementUtils.parseCurrency(budgetLabel);
+        wait.until( d -> (updatedWebElement(d, SELECTOR_BUDGET).getText().length() != 0) );
+        return ElementUtils.parseCurrency(updatedWebElement(webDriverProvider.provideDriver(), SELECTOR_BUDGET));
     }
 
     public int getPledgedAmount() {
-        return ElementUtils.parseCurrency(pledgedAmountLabel);
+        wait.until( d -> (updatedWebElement(d, SELECTOR_PLEDGED_AMOUNT).getText().length() != 0) );
+        return ElementUtils.parseCurrency(updatedWebElement(webDriverProvider.provideDriver(), SELECTOR_PLEDGED_AMOUNT));
     }
 
     public int getPledgeGoalAmount() {
@@ -101,5 +108,9 @@ public class ProjectPledgingForm {
 
     public void waitUntilANotificationOrEerrorMessageIsDisplayed() {
         wait.until(driver -> getNotificationMessage().length() > 0 || getErrorMessage().length() > 0);
+    }
+
+    private WebElement updatedWebElement(WebDriver d, String cssSelector) {
+        return d.findElement(By.cssSelector(cssSelector));
     }
 }

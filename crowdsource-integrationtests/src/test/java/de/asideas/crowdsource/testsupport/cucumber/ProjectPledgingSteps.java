@@ -18,9 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.*;
 
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
 public class ProjectPledgingSteps {
@@ -107,10 +105,8 @@ public class ProjectPledgingSteps {
         keepAmountsBeforeChange();
         int amountBeforeChange = pledgingForm.getAmountFromInputField();
 
-        pledgingForm.moveSliderBy(-100); //pixels
+        pledgingForm.moveSliderBy(-10); //pixels
 
-        // Timing issue; After setting the slider it takes some millis until the input field is updated
-        wait.until(d -> ( pledgingForm.getAmountFromInputField() - amountBeforeChange ) <= 0);
         int amountFromInputField = pledgingForm.getAmountFromInputField();
         assertThat(amountBeforeChange, is(greaterThan(amountFromInputField)));
 
@@ -145,7 +141,6 @@ public class ProjectPledgingSteps {
     @Then("^the displayed budget and financing infos are updated$")
     public void the_displayed_budget_and_financing_infos_are_updated() throws Throwable {
         final int expectedUsrBudget = budgetBeforeChange - pledgeAmount;
-        wait.until(d -> ( pledgingForm.getUserBudget() == expectedUsrBudget) );
         assertThat(pledgingForm.getUserBudget(), is(expectedUsrBudget));
         assertThat(pledgingForm.getPledgedAmount(), is(pledgedAmountBeforeChange + pledgeAmount));
     }

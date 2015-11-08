@@ -1,5 +1,6 @@
 package de.asideas.crowdsource.testsupport.cucumber;
 
+import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
@@ -57,6 +58,10 @@ public class ProjectDetailSteps {
     @Before
     public void init() {
         webDriver = webDriverProvider.provideDriver();
+    }
+    @After
+    public void after(){
+        WebDriverProvider.closeWebDriver();
     }
 
     @Given("^a project is available$")
@@ -184,6 +189,17 @@ public class ProjectDetailSteps {
     @And("^the project detail page of this project is requested$")
     public void the_project_detail_page_of_this_project_is_requested() throws Throwable {
         projectDetailPage.open(createdProject.getId());
+    }
+    @And("^the project detail page of this project is requested again$")
+    public void the_project_detail_page_of_this_project_is_requested_again() throws Throwable {
+        webDriver.navigate().refresh();
+        projectDetailPage.open(createdProject.getId());
+    }
+
+    @Then("^the number of backers is displayed with a value of (.+)$")
+    public void the_number_of_backers_is_displayed_with_a_value_of(int value){
+        PageFactory.initElements(webDriver, projectDetailPage.getProjectStatusWidget());
+        assertThat(projectDetailPage.getProjectStatusWidget().getBackers(), is("" + value));
     }
 
     public Project getCreatedProject() {

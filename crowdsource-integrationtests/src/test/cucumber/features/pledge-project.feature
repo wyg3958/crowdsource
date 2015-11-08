@@ -30,27 +30,35 @@ Feature: Pledge project
     Given a project with a pledge goal of 250 is published
     And a user is logged in
     And there is a financing round active
-    And the user already pledged an amount of 240
-    When the project detail page of this project is requested
+    And the project detail page of this project is requested
+    And the user enters 240 as his desired pledge amount
+    And the user submits the pledging form
+    And the project detail page of this project is requested again
     Then there is no notification message
+    And the number of backers is displayed with a value of 1
     When the user reduces his desired pledge amount via the slider
     Then the displayed budget and financing infos are updated
     When the user submits the pledging form
     Then the notification message "Budget erfolgreich aus dem Projekt abgezogen." is displayed on the project pledging form
     And the project pledging form is enabled
+    And the number of backers is displayed with a value of 1
 
   Scenario: A user reduces pledges she already made to zero for a project
     Given a project with a pledge goal of 250 is published
     And a user is logged in
     And there is a financing round active
-    And the user already pledged an amount of 240
-    When the project detail page of this project is requested
+    And the project detail page of this project is requested
+    And the user enters 240 as his desired pledge amount
+    And the user submits the pledging form
+    And the project detail page of this project is requested again
     Then there is no notification message
+    And the number of backers is displayed with a value of 1
     When the user enters 0 as his desired pledge amount
     Then the displayed budget and financing infos are updated
     And the user submits the pledging form
     Then the notification message "Budget erfolgreich aus dem Projekt abgezogen." is displayed on the project pledging form
     And the project pledging form is enabled
+    And the number of backers is displayed with a value of 0
 
   Scenario: A user fully pledges a project
     Given a project is published
@@ -89,8 +97,10 @@ Feature: Pledge project
     And another user pledges the same project with 20 in the meantime
     When the user enters 10 as his desired pledge amount
     And the user submits the pledging form
+    Then the number of backers is displayed with a value of 1
     Then the error message "Das Projekt wurde mittlerweile von anderen Benutzern finanziert und deine Finanzierung hätte den Finanzierungsbedarf des Projekts überschritten. Die Projektdaten wurden soeben aktualisiert und wir bitten dich einen neuen Finanzierungsbetrag einzugeben." is displayed on the project pledging form
     And the project pledging form is enabled
     When the user enters 5 as his desired pledge amount
     And the user submits the pledging form
     Then the notification message "Deine Finanzierung war erfolgreich. Das Projekt ist jetzt zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich." is displayed on the project pledging form
+    Then the number of backers is displayed with a value of 2

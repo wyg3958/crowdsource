@@ -20,6 +20,7 @@ public class ProjectEntityTest {
     private ProjectEntity projectEntity;
     private UserEntity user1;
     private UserEntity user2;
+    private UserEntity user3;
 
     @Before
     public void setUp() {
@@ -35,6 +36,8 @@ public class ProjectEntityTest {
         user1.setBudget(100);
         user2 = new UserEntity("user2@xyz.com");
         user2.setId("test_id2");
+        user3 = new UserEntity("user3@xyz.com");
+        user3.setId("test_id3");
     }
 
     /**
@@ -74,6 +77,7 @@ public class ProjectEntityTest {
     public void pledgeGoalAchieved_ReturnsFalseIfNotFullyPledged() throws Exception {
         assertThat(projectEntity.pledgeGoalAchieved(), is(false));
     }
+
     @Test
     public void pledgeGoalAchieved_returnsTrueWhenFullyPledged() throws Exception {
         projectEntity.setStatus(ProjectStatus.FULLY_PLEDGED);
@@ -124,10 +128,17 @@ public class ProjectEntityTest {
         List<PledgeEntity> res = new ArrayList<>();
         res.add(new PledgeEntity(projectEntity, user1, new Pledge(10), activeFinancingRound));
         res.add(new PledgeEntity(projectEntity, user2, new Pledge(60), activeFinancingRound));
+        res.add(new PledgeEntity(projectEntity, user3, new Pledge(180), activeFinancingRound));
         res.add(new PledgeEntity(projectEntity, user1, new Pledge(20), activeFinancingRound));
         res.add(new PledgeEntity(projectEntity, user2, new Pledge(70), activeFinancingRound));
         res.add(new PledgeEntity(projectEntity, user1, new Pledge(10), activeFinancingRound));
         res.add(new PledgeEntity(projectEntity, user1, new Pledge(-10), activeFinancingRound));
+        res.add(new PledgeEntity(projectEntity, user3, new Pledge(-180), activeFinancingRound));
+
+        res.add(new PledgeEntity(projectEntity, user3, new Pledge(-10), activeFinancingRound));
+        res.add(new PledgeEntity(projectEntity, user3, new Pledge(110), activeFinancingRound));
+        res.add(new PledgeEntity(projectEntity, user3, new Pledge(+10), activeFinancingRound));
+        res.add(new PledgeEntity(projectEntity, user3, new Pledge(-110), activeFinancingRound));
         return res;
     }
 }

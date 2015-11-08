@@ -94,6 +94,7 @@ public class ProjectPledgingForm {
     }
 
     public int getAmountFromInputField() {
+        makeSureDataLoaded();
         return Integer.parseInt(amountInputField.getAttribute("value"));
     }
 

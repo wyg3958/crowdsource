@@ -17,13 +17,10 @@ public class PledgeEntity {
 
     @Id
     private String id;
-
     @DBRef
     private ProjectEntity project;
-
     @DBRef
     private UserEntity user;
-
     @DBRef
     private FinancingRoundEntity financingRound;
 
@@ -41,8 +38,42 @@ public class PledgeEntity {
         this.financingRound = financingRoundEntity;
         this.amount = pledge.getAmount();
     }
-
     public PledgeEntity() {
+    }
+
+    /**
+     * Adds the <code>other</code> pledge's amount to <code>this</code> returning a new object, leaving this as is.
+     * In case the <code>users</code> differ it will be set to <code>null</code>.
+     * The <code>id</code> will always be set to null.
+     * In case <code>financingRound</code>s differ, it will be set to <code>null</code>, set otherwise
+     * The <code>createdDate</code> and <code>lastModifiedDate</code> will be set to <code>null</code>
+     * The <code>project</code> will be <code>null</code> if different, set otherwise
+     * @param other the other to add
+     * @return the summed pledge; if <code>other</code> is <code>null</code> will return a copy of <code>this</code>
+     */
+    public PledgeEntity add(PledgeEntity other){
+        if(other == null) {
+            PledgeEntity res = new PledgeEntity();
+            res.setUser(user);
+            res.setProject(project);
+            res.setFinancingRound(financingRound);
+            res.setAmount(amount);
+            return res;
+        }
+
+        PledgeEntity res = new PledgeEntity();
+        res.setAmount(this.amount + other.amount);
+        if(this.user == null || this.user.equals(other.user)) {
+            res.user = other.user;
+        }
+
+        if(this.financingRound != null && this.financingRound.equals(other.financingRound)) {
+            res.financingRound = this.financingRound;
+        }
+        if(this.project != null && this.project.equals(other.project)) {
+            res.project = this.project;
+        }
+        return res;
     }
 
     public String getId() {

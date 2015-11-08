@@ -16,6 +16,10 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
+import java.util.Optional;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.reducing;
 
 // needed for serialization
 @Document(collection = "projects")
@@ -100,7 +104,12 @@ public class ProjectEntity {
     }
 
     public long countBackers(List<PledgeEntity> pledges) {
-        return pledges.stream().map(PledgeEntity::getUser).distinct().count();
+        Optional<Integer> backers = pledges.stream()
+                .collect(groupingBy(PledgeEntity::getUser, reducing(new PledgeEntity(), PledgeEntity::add)))
+                .entrySet().stream()
+                .map(pledgeSumByUser -> (pledgeSumByUser.getValue().getAmount() == 0 ? 0 : 1)).reduce((a, b) -> a + b);
+
+        return backers.orElse(0);
     }
 
     public int pledgedAmountOfUser(List<PledgeEntity> pledges, UserEntity requestingUser) {

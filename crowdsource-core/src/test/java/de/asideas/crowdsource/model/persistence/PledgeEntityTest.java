@@ -15,7 +15,7 @@ public class PledgeEntityTest {
         ProjectEntity project = new ProjectEntity();
 
         PledgeEntity p0 = pledgeEntity(7, "test_id0", project, user, financingRound);
-        PledgeEntity p1 = pledgeEntity(3, "test_id0", project, user, financingRound);
+        PledgeEntity p1 = pledgeEntity(3, "test_id1", project, user, financingRound);
 
         PledgeEntity res = p0.add(p1);
 
@@ -26,8 +26,8 @@ public class PledgeEntityTest {
         assertThat(res.getLastModifiedDate(), is(nullValue()));
         assertThat(res.getFinancingRound(), is(financingRound));
         assertThat(res.getProject(), is(project));
-
     }
+
     @Test
     public void add_bothHavingDifferentProjectFinancingRoundAndUser() throws Exception {
         UserEntity user = user("usr0@la.de");
@@ -54,8 +54,9 @@ public class PledgeEntityTest {
         assertThat(res.getProject(), is(nullValue()));
 
     }
+
     @Test
-    public void add_otherIsNullShouldReturnThis() throws Exception {
+    public void add_otherIsNullShouldReturnThisCopy() throws Exception {
         UserEntity user = user("usr0@la.de");
         FinancingRoundEntity financingRound0 = new FinancingRoundEntity();
         financingRound0.setId("test_id0");
@@ -70,7 +71,46 @@ public class PledgeEntityTest {
         assertThat(res.getLastModifiedDate(), is(nullValue()));
         assertThat(res.getFinancingRound(), is(financingRound0));
         assertThat(res.getProject(), is(project0));
+    }
 
+    @Test
+    public void add_thisMembersAreNullOthersNotResultShouldContainOthers() throws Exception {
+        UserEntity user = user("usr0@la.de");
+        FinancingRoundEntity financingRound = new FinancingRoundEntity();
+        ProjectEntity project = new ProjectEntity();
+
+        PledgeEntity p0 = pledgeEntity(7, "test_id0", null, null, null);
+        PledgeEntity p1 = pledgeEntity(3, "test_id1", project, user, financingRound);
+
+        PledgeEntity res = p0.add(p1);
+
+        assertThat(res.getAmount(), is(10));
+        assertThat(res.getUser(), is(user));
+        assertThat(res.getCreatedDate(), is(nullValue()));
+        assertThat(res.getId(), is(nullValue()));
+        assertThat(res.getLastModifiedDate(), is(nullValue()));
+        assertThat(res.getFinancingRound(), is(financingRound));
+        assertThat(res.getProject(), is(project));
+    }
+
+    @Test
+    public void add_thisMembersAreNotNullButOthersResultShouldContainNulls() throws Exception {
+        UserEntity user = user("usr0@la.de");
+        FinancingRoundEntity financingRound = new FinancingRoundEntity();
+        ProjectEntity project = new ProjectEntity();
+
+        PledgeEntity p0 = pledgeEntity(3, "test_id0", project, user, financingRound);
+        PledgeEntity p1 = pledgeEntity(7, "test_id1", null, null, null);
+
+        PledgeEntity res = p0.add(p1);
+
+        assertThat(res.getAmount(), is(10));
+        assertThat(res.getUser(), is(nullValue()));
+        assertThat(res.getCreatedDate(), is(nullValue()));
+        assertThat(res.getId(), is(nullValue()));
+        assertThat(res.getLastModifiedDate(), is(nullValue()));
+        assertThat(res.getFinancingRound(), is(nullValue()));
+        assertThat(res.getProject(), is(nullValue()));
     }
 
     private PledgeEntity pledgeEntity(int amount, String id, ProjectEntity project, UserEntity user, FinancingRoundEntity financingRound) {

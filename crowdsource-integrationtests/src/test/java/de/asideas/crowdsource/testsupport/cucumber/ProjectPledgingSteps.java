@@ -172,11 +172,6 @@ public class ProjectPledgingSteps {
         pledgeProjectViaApi(pledgeAmount, true);
     }
 
-    @And("^the user already pledged an amount of (\\d+)$")
-    public void the_user_already_pledged_an_amount (int amount) throws Throwable {
-        pledgeProjectViaApi(amount, false);
-    }
-
     @And("^the project is pledged with and amount of (\\d+)$")
     public void the_project_is_pledged_with_and_amount_of(int amount) throws Throwable {
         the_user_enters_as_his_desired_pledge_amount(amount);

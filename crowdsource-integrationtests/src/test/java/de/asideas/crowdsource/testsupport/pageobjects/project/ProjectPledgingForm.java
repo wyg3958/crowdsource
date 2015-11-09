@@ -102,6 +102,8 @@ public class ProjectPledgingForm {
         new Actions(webDriverProvider.provideDriver())
                 .dragAndDropBy(sliderHandle, value, 0)
                 .perform();
+        final long waitStart = System.currentTimeMillis();
+        wait.until(d-> System.currentTimeMillis() - waitStart > 1000L); // Wait for slider adjustment
     }
 
     public void submitForm() {

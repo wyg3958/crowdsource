@@ -44,7 +44,7 @@ Persistence
 CrowdSource uses MongoDB. You should provide the DB hosts comma-separated via property de.asideas.crowdsource.db.hosts.
 Eg java -jar ... -Dde.asideas.crowdsource.db.hosts=hosta,hostb,hostc
 For local development you can use the embed-mongo-maven-plugin that is used in the integrationstests as well.
-Simply run mvn com.github.joelittlejohn.embedmongo:embedmongo-maven-plugin:0.1.12:start -Dembedmongo.wait -Dmongodb.test.port=27017 in the crowdsource-integrationtests module.
+Simply run `mvn com.github.joelittlejohn.embedmongo:embedmongo-maven-plugin:0.1.12:start -Dembedmongo.wait -Dmongodb.test.port=27017` in the crowdsource-integrationtests module.
 
 For configuration your own application:
 - Create a appication.properties with following entries

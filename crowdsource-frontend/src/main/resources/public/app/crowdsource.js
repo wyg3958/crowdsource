@@ -20,9 +20,9 @@
     /**
      * global application configuration
      */
-    angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.angular-ellipsis', 'ngScrollTo'])
+    angular.module('crowdsource', ['ngRoute', 'angulartics', 'angulartics.piwik', 'ngResource', 'ngMessages', 'dibari.angular-ellipsis', 'ngScrollTo'])
 
-        .config(function ($routeProvider, $locationProvider, $httpProvider) {
+        .config(function ($routeProvider, $locationProvider, $httpProvider, $analyticsProvider) {
             $routeProvider
                 .when('/projects', {
                     templateUrl: 'app/project/list/project-list.html',
@@ -136,7 +136,6 @@
                 }
             });
         });
-
 
     if (isBrowserSupported()) {
         angular.element(document).ready(function () {

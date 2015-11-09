@@ -9,6 +9,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -118,6 +119,7 @@ public class ProjectPledgingForm {
         return d.findElement(By.cssSelector(cssSelector));
     }
     private void makeSureDataLoaded(){
+        PageFactory.initElements(webDriverProvider.provideDriver(), this);
         try{
             wait.until( d -> {
                 try{

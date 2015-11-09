@@ -45,10 +45,12 @@ module.exports = function (config) {
 
         frameworks: ['jasmine'],
 
-        browsers: ['PhantomJS'],
+        browsers: ['PhantomJS', 'Firefox', 'Chrome'],
 
         plugins: [
             'karma-phantomjs-launcher',
+            'karma-firefox-launcher',
+            'karma-chrome-launcher',
             'karma-ng-html2js-preprocessor',
             'karma-jasmine',
             'karma-jasmine-jquery',

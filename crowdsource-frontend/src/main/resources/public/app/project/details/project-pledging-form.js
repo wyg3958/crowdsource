@@ -8,8 +8,23 @@ angular.module('crowdsource')
             scope: {
                 project: '='
             },
-            controller: function (Project, Authentication, RemoteFormValidation, FinancingRound, $q) {
+            controller: function (Project, Authentication, RemoteFormValidation, FinancingRound, $q, $scope, $timeout) {
                 var vm = this;
+
+                vm.pledge = {
+                    amount: 0
+                };
+                vm.initslider = false;
+
+                $scope.$watch(function() {
+                    return vm.project.pledgedAmountByRequestingUser + vm.project._recentChange;
+                }, function() {
+                    // lazy init slider after project data are available;
+                    $timeout(function() {
+                        vm.pledge.amount = vm.project.pledgedAmountByRequestingUser;
+                        vm.initslider = true;
+                    }, 100);
+                });
 
                 FinancingRound.reloadCurrentRound();
 
@@ -19,9 +34,11 @@ angular.module('crowdsource')
                 vm.pledgeProject = function () {
                     vm.success = false;
                     vm.saving = true;
+                    vm.wasReversePledge = vm.isReversePledge();
+
                     RemoteFormValidation.clearRemoteErrors(vm);
 
-                    Project.pledge(vm.project.id, vm.pledge).$promise
+                    Project.pledge(vm.project.id, normalizePledge(vm.pledge)).$promise
                         .then(function () {
                             // load the project and user again to update the project details view to the new state
                             return reloadUserAndProject();
@@ -39,13 +56,15 @@ angular.module('crowdsource')
                             vm.success = true;
                         })
                         .finally(function () {
-                            vm.pledge.amount = 0;
                             vm.saving = false;
                             vm.form.$setPristine();
                         });
                 };
 
                 vm.getPledgableAmount = function () {
+                    var remainingProjectGoal,
+                        pledgedByCurrentUserSum = vm.getPledgedAmountByCurrentUser();
+
                     if (isLoading()) {
                         return 0;
                     }
@@ -54,8 +73,9 @@ angular.module('crowdsource')
                         return 0;
                     }
 
-                    var remainingProjectGoal = vm.project.pledgeGoal - vm.project.pledgedAmount;
-                    return Math.min(remainingProjectGoal, vm.user.budget);
+                    remainingProjectGoal = vm.project.pledgeGoal - vm.project.pledgedAmount;
+
+                    return pledgedByCurrentUserSum + Math.min(remainingProjectGoal, vm.user.budget);
                 };
 
                 vm.getNotification = function () {
@@ -70,7 +90,8 @@ angular.module('crowdsource')
                         };
                     }
                     if (vm.success) {
-                        return {type: 'success', message: 'Deine Finanzierung war erfolgreich.'};
+                        var msg = !vm.wasReversePledge ? 'Deine Finanzierung war erfolgreich.' : "Budget erfolgreich aus dem Projekt abgezogen.";
+                        return {type: 'success', message: msg};
                     }
                     if (vm.project.status == 'FULLY_PLEDGED') {
                         return {type: 'info', message: 'Das Projekt ist zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich.'};
@@ -94,6 +115,39 @@ angular.module('crowdsource')
                     return null;
                 };
 
+                vm.getPledgedAmountByCurrentUser = function () {
+                    return vm.project.pledgedAmountByRequestingUser || 0;
+                };
+
+                vm.getUserBudget = function () {
+                    return vm.user.budget - vm.pledge.amount + vm.getPledgedAmountByCurrentUser();
+                };
+
+                vm.getPledgedAmount = function () {
+                    return vm.project.pledgedAmount + vm.pledge.amount - vm.getPledgedAmountByCurrentUser();
+                };
+
+                vm.isReversePledge = function () {
+                    return normalizePledge(vm.pledge).amount < 0;
+                };
+
+                vm.isZeroPledge = function () {
+                    return normalizePledge(vm.pledge).amount == 0;
+                };
+
+                vm.financeButtonLabel = function () {
+                    if (vm.saving) return  'Bitte warten...';
+                    if (vm.isReversePledge()) {
+                        return 'Jetzt Budget abziehen'
+                    }
+                    return 'Jetzt finanzieren';
+                };
+
+                function normalizePledge(pledge) {
+                    return {
+                        amount : parseInt(pledge.amount) - vm.getPledgedAmountByCurrentUser()
+                    };
+                }
 
                 function isLoading() {
                     return !vm.project.$resolved || !vm.user.$resolved || !FinancingRound.current.$resolved;
@@ -110,6 +164,7 @@ angular.module('crowdsource')
                     // will be resolved when all calls are completed
                     promises.then(function (resolvedPromises) {
                         angular.copy(resolvedPromises.project, vm.project);
+                        vm.project._recentChange = new Date().getTime();
                         // the user and financing round are already copied over in their services
                     });
 

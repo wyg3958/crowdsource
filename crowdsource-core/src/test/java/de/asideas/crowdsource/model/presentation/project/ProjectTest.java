@@ -5,13 +5,16 @@ import de.asideas.crowdsource.model.persistence.PledgeEntity;
 import de.asideas.crowdsource.model.persistence.ProjectEntity;
 import de.asideas.crowdsource.model.persistence.UserEntity;
 import de.asideas.crowdsource.model.presentation.Pledge;
+import de.asideas.crowdsource.model.presentation.user.ProjectCreator;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 
 public class ProjectTest {
@@ -20,41 +23,50 @@ public class ProjectTest {
     private ProjectEntity projectEntity;
     private UserEntity user1;
     private UserEntity user2;
+    private FinancingRoundEntity activeFinancingRoundEntity;
 
     @Before
     public void setUp() {
         UserEntity creator = new UserEntity();
         creator.setId("id");
 
+        activeFinancingRoundEntity = new FinancingRoundEntity();
         Project project = new Project();
         projectEntity = new ProjectEntity(creator, project, new FinancingRoundEntity());
 
         user1 = new UserEntity("user1@xyz.com");
+        user1.setId("test_id1");
         user2 = new UserEntity("user2@xyz.com");
+        user2.setId("test_id2");
+
+        pledges = new ArrayList<>();
+        pledges.add(new PledgeEntity(projectEntity, user1, new Pledge(10), activeFinancingRoundEntity));
     }
 
     @Test
-    public void testGetPledgedAmount() throws Exception {
-        final FinancingRoundEntity activeFinancingRoundEntity = new FinancingRoundEntity();
-        pledges = Arrays.asList(
-                new PledgeEntity(projectEntity, user1, new Pledge(10), activeFinancingRoundEntity),
-                new PledgeEntity(projectEntity, user2, new Pledge(20), activeFinancingRoundEntity),
-                new PledgeEntity(projectEntity, user1, new Pledge(30), activeFinancingRoundEntity));
+    public void constructionWorks() throws Exception {
 
-        Project project = new Project(projectEntity, pledges);
+        projectEntity.setLastModifiedDate(new DateTime());
+        Project res = new Project(projectEntity, pledges, user2);
 
-        assertThat(project.getPledgedAmount(), is(60));
+        assertThat(res.getPledgedAmountByRequestingUser(), is(projectEntity.pledgedAmountOfUser(pledges, user2)));
+        assertThat(res.getPledgedAmount(), is(projectEntity.pledgedAmount(pledges)));
+        assertThat(res.getStatus(), is(projectEntity.getStatus()));
+        assertThat(res.getBackers(), is(projectEntity.countBackers(pledges)));
+        assertThat(res.getCreator(), is(new ProjectCreator(projectEntity.getCreator())));
+        assertThat(res.getDescription(), is(projectEntity.getDescription()));
+        assertThat(res.getId(), is(projectEntity.getId()));
+        assertThat(res.getLastModifiedDate().getTime(), is(projectEntity.getLastModifiedDate().toDate().getTime()));
+        assertThat(res.getPledgeGoal(), is(projectEntity.getPledgeGoal()));
+        assertThat(res.getShortDescription(), is(projectEntity.getDescription()));
+        assertThat(res.getTitle(), is(projectEntity.getTitle()));
     }
 
     @Test
-    public void testGetBackers() throws Exception {
-        pledges = Arrays.asList(
-                new PledgeEntity(projectEntity, user1, new Pledge(10), new FinancingRoundEntity()),
-                new PledgeEntity(projectEntity, user2, new Pledge(20), new FinancingRoundEntity()),
-                new PledgeEntity(projectEntity, user1, new Pledge(30), new FinancingRoundEntity()));
+    public void constructionWorks_NullSafe() throws Exception {
+        Project res = new Project(projectEntity, pledges, user2);
+        assertThat(res.getLastModifiedDate(), is(nullValue()));
 
-        Project project = new Project(projectEntity, pledges);
-
-        assertThat(project.getBackers(), is(2L));
     }
+
 }

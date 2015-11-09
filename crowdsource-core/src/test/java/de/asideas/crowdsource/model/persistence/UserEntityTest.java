@@ -1,7 +1,11 @@
 package de.asideas.crowdsource.model.persistence;
 
+import de.asideas.crowdsource.model.presentation.Pledge;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class UserEntityTest {
 
@@ -14,12 +18,21 @@ public class UserEntityTest {
     }
 
     @Test
-    public void testReduceBudget() throws Exception {
-        userEntity.reduceBudget(10);
+    public void accountPledge() throws Exception {
+        userEntity.accountPledge(new Pledge(10));
+        assertThat(userEntity.getBudget(), is(0));
+
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testReduceBudget_exceed() throws Exception {
-        userEntity.reduceBudget(11);
+    public void accountPledge_exceed() throws Exception {
+        userEntity.accountPledge(new Pledge(11));
+        assertThat(userEntity.getBudget(), is(10));
+    }
+
+    @Test
+    public void accountPledge_takeBack() throws Exception {
+        userEntity.accountPledge(new Pledge(-11));
+        assertThat(userEntity.getBudget(), is(21));
     }
 }

@@ -3,7 +3,6 @@ package de.asideas.crowdsource;
 import cucumber.api.CucumberOptions;
 import cucumber.api.junit.Cucumber;
 import de.asideas.crowdsource.testsupport.selenium.WebDriverProvider;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -23,6 +22,7 @@ public class CucumberAT {
     @BeforeClass
     public static void initApp() {
         EXAMPLE_APP = SpringApplication.run(CrowdSourceExample.class);
+        WebDriverProvider.setIsRecycled(true);
     }
 
     @AfterClass
@@ -30,10 +30,7 @@ public class CucumberAT {
         if (EXAMPLE_APP != null) {
             EXAMPLE_APP.stop();
         }
+        WebDriverProvider.closeRecycledWebDriver();
     }
 
-    @After
-    public static void tearDown() {
-        WebDriverProvider.closeWebDriver();
-    }
 }

@@ -22,6 +22,10 @@ public class InvalidRequestException extends RuntimeException {
         return new InvalidRequestException("user_budget_exceeded");
     }
 
+    public static InvalidRequestException reversePledgeExceeded() {
+        return new InvalidRequestException("reverse_pledge_exceeded");
+    }
+
     public static InvalidRequestException projectAlreadyFullyPledged() {
         return new InvalidRequestException("project_already_fully_pledged");
     }
@@ -38,4 +42,7 @@ public class InvalidRequestException extends RuntimeException {
         return new InvalidRequestException("project_not_published");
     }
 
+    public static InvalidRequestException zeroPledgeNotValid() {
+        return new InvalidRequestException("zero_pledge_not_valid");
+    }
 }

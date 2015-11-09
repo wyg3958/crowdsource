@@ -5,3 +5,4 @@ node_modules
 bower_components
 crowdsource-frontend/node
 secring.gpg
+npm-debug.log

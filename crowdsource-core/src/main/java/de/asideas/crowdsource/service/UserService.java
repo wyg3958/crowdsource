@@ -12,15 +12,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
-    public final static int ACTIVATION_TOKEN_LENGTH = 32;
-
     private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
+    public static final int ACTIVATION_TOKEN_LENGTH = 32;
 
-    @Autowired
     private UserRepository userRepository;
+    private UserNotificationService userNotificationService;
 
     @Autowired
-    private UserNotificationService userNotificationService;
+    public UserService(UserRepository userRepository, UserNotificationService userNotificationService) {
+        this.userRepository = userRepository;
+        this.userNotificationService = userNotificationService;
+    }
 
     public UserEntity getUserByEmail(String email) {
 

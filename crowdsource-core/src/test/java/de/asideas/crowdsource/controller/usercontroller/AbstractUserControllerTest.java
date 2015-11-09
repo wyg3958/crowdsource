@@ -116,8 +116,8 @@ public abstract class AbstractUserControllerTest {
         }
 
         @Bean
-        public UserService userService() {
-            return new UserService();
+        public UserService userService(UserRepository userRepository, UserNotificationService userNotificationService) {
+            return new UserService(userRepository, userNotificationService);
         }
 
         @Bean

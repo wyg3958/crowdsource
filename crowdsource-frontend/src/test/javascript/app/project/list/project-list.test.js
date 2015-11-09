@@ -34,10 +34,14 @@ describe('project list', function () {
 
     it('should display the projects that were retrieved from backend', function () {
 
-        $httpBackend.expectGET('/projects').respond(200, [
-            project('Title', 'Short Description', 100, 10, 1),
-            project('Title 2', 'Short Description 2', 100, 20, 2)
-        ]);
+        var date = new Date();
+
+        var projects = [
+            project('Title', 'Short Description', 100, 10, 1, 'PUBLISHED', date),
+            project('Title 2', 'Short Description 2', 100, 20, 2, 'PUBLISHED', date.setSeconds(date.getSeconds() + 5))
+        ];
+
+        $httpBackend.expectGET('/projects').respond(200, projects);
         $scope.$digest();
         $httpBackend.flush();
 

@@ -107,7 +107,7 @@ public class ProjectPledgingSteps {
         keepAmountsBeforeChange();
         int amountBeforeChange = pledgingForm.getAmountFromInputField();
 
-        pledgingForm.moveSliderBy(-80); //pixels
+        pledgingForm.moveSliderBy(-50); //pixels
 
         int amountFromInputField = pledgingForm.getAmountFromInputField();
         assertThat(amountBeforeChange, is(greaterThan(amountFromInputField)));

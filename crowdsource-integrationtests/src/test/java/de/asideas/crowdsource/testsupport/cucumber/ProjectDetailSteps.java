@@ -199,6 +199,7 @@ public class ProjectDetailSteps {
     @Then("^the number of backers is displayed with a value of (.+)$")
     public void the_number_of_backers_is_displayed_with_a_value_of(int value){
         PageFactory.initElements(webDriver, projectDetailPage.getProjectStatusWidget());
+        projectDetailPage.waitForDetailsToBeLoaded();
         assertThat(projectDetailPage.getProjectStatusWidget().getBackers(), is("" + value));
     }
 

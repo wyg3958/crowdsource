@@ -18,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
 
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
 public class ProjectPledgingSteps {
@@ -105,7 +107,7 @@ public class ProjectPledgingSteps {
         keepAmountsBeforeChange();
         int amountBeforeChange = pledgingForm.getAmountFromInputField();
 
-        pledgingForm.moveSliderBy(-10); //pixels
+        pledgingForm.moveSliderBy(-80); //pixels
 
         int amountFromInputField = pledgingForm.getAmountFromInputField();
         assertThat(amountBeforeChange, is(greaterThan(amountFromInputField)));

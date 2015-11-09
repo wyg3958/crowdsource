@@ -114,7 +114,7 @@ Maven
     <dependency>
         <groupId>de.asideas.crowdsource</groupId>
         <artifactId>crowdsource-core</artifactId>
-        <version>1.1-SNAPSHOT</version>
+        <version>1.1</version>
     </dependency>
 </dependencies>
 

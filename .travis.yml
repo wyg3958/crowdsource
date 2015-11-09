@@ -25,3 +25,7 @@ notificactions:
   hipchat:
     rooms:
       secure: qL/Bnawkpkpa3j1f61JLcDDyjL4LHJQUv4eNkVNC7pHRy0HC1hX3F621icXYwEBjBhXAbKs2pCDJf8HJULLKKBeg5UiOO3Qp3oRmQnBJxnmy/ax/a/+sgLFLIoYw4P4diMluVtxGWsJTI79EA0T6xhv2BtTnMOoUjFSPo+Q8TjhAGr2JNEARC8ZKPkJ7+pVXCcQG+Ol0iUtOTrWChmloML5CUmgLDdiT8r2O0L2rpIv8BfwaCe+wRgr8J0I29S+WVzIBdGoc5MhALanvhcUF8Fth8KgBhk8cqPIiuvE6CONNYPVAu0kukeXvR5UxHSIA8uWRQUOr734Zfga2eVmZfxpCnlS55NSTyxoZ91mkPa8jm2h7m0xi23TtzvP7xbX+VlYg9LiBF42omZQsT1wnCdUp3iZoUtrUbLnjCcTT1YJDp5Jfy1NfWKOnes2c4zPH5hD6gRuTxbzOjSjYXmPhAHPfq9n5A9DXmZxyj59VFiR2Gp8HHcGoEh/AR6uaMUJwvvij9gKrW4puAy3NevddJcxZKnj/zMyNsFLWh06lNbVHPg2D534Zb/rIY+lp+SKFfmFjWMjpEeD7EQLsbXmaWPkddd2p5ATw2YtdW2MKCGjTJRWup0bUhG0bA9qrSaocqL+RptQjb0jmeO6SlkzD0hNcxJgBzCbn+qKA8d5NNws=
+    on_success: always
+    on_failure: always
+    template:
+      - '%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}'

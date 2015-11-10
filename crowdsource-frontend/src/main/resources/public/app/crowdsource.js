@@ -20,8 +20,7 @@
     /**
      * global application configuration
      */
-    angular.module('crowdsource', ['ngRoute', 'angulartics', 'angulartics.piwik', 'ngResource', 'ngMessages', 'dibari.angular-ellipsis', 'ngScrollTo'])
-
+    angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.angular-ellipsis', 'ngScrollTo', 'angulartics', 'angulartics.piwik'])
         .config(function ($routeProvider, $locationProvider, $httpProvider, $analyticsProvider) {
             $routeProvider
                 .when('/projects', {
@@ -121,6 +120,8 @@
 
             $httpProvider.interceptors.push('UnauthorizedInterceptor');
             $httpProvider.interceptors.push('LoggingInterceptor');
+
+            $analyticsProvider.firstPageview(false);
         })
 
         .run(function (Authentication, Route) {

@@ -198,9 +198,13 @@ public class ProjectDetailSteps {
 
     @Then("^the number of backers is displayed with a value of (.+)$")
     public void the_number_of_backers_is_displayed_with_a_value_of(int value){
-        PageFactory.initElements(webDriver, projectDetailPage.getProjectStatusWidget());
+        String expValue = "" + value;
+        seleniumWait.until(d -> {
+            PageFactory.initElements(d, projectDetailPage.getProjectStatusWidget());
+            return projectDetailPage.getProjectStatusWidget().getBackers().equals(expValue);
+        });
         projectDetailPage.waitForDetailsToBeLoaded();
-        assertThat(projectDetailPage.getProjectStatusWidget().getBackers(), is("" + value));
+        assertThat(projectDetailPage.getProjectStatusWidget().getBackers(), is(expValue));
     }
 
     public Project getCreatedProject() {

@@ -111,6 +111,7 @@ public class RegistrationSteps {
     @Then("^a registration success message is shown that includes the user's email$")
     public void a_registration_success_message_is_shown_that_includes_the_user_s_email() throws Throwable {
         PageFactory.initElements(webDriver, confirmationView);
+        confirmationView.waitForPageLoad();
         assertThat(confirmationView.getHeadline(), is("Registrierung erfolgreich"));
         assertThat(confirmationView.getConfirmedEmailAddress(), is(equalToIgnoringCase(activationSteps.getGeneratedEmail())));
     }
@@ -128,4 +129,5 @@ public class RegistrationSteps {
         loginForm.waitForPageLoad();
         loginForm.login(activationSteps.getGeneratedEmailName(), "xxx");
     }
+
 }

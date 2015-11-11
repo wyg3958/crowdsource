@@ -68,6 +68,9 @@ describe('project details', function () {
         expect(projectDetails.find('.project-description').text()).toBe('Looong description');
         expect(projectDetails.find('.to-pledging-form-button').text()).not.toBeDisabled();
         expect(projectDetails.find('.to-pledging-form-button').text().trim()).toBe('Zur Finanzierung');
+        expect(projectDetails.find('.to-pledging-form-button')).toHaveAttr('analytics-on');
+        expect(projectDetails.find('.to-pledging-form-button')).toHaveAttr('analytics-category', 'Projects');
+        expect(projectDetails.find('.to-pledging-form-button')).toHaveAttr('analytics-event', 'GoToFinancing');
 
         expect(projectDetails.find('project-comments')).not.toExist();
     });
@@ -86,6 +89,11 @@ describe('project details', function () {
         expect(projectDetails.find('.pd-creator strong').text()).toBe('Foo Bar');
         expect(projectDetails.find('.pd-creator a')).toExist();
         expect(projectDetails.find('.pd-creator a').attr('href')).toBe('mailto:foo.bar@axel.de');
+        expect(projectDetails.find('.pd-creator a').attr('href')).toBe('mailto:foo.bar@axel.de');
+
+        expect(projectDetails.find('.pd-creator a')).toHaveAttr('analytics-on');
+        expect(projectDetails.find('.pd-creator a')).toHaveAttr('analytics-category', 'Projects');
+        expect(projectDetails.find('.pd-creator a')).toHaveAttr('analytics-event', 'MailToPublisherIconClicked');
     });
 
     it("should show a not found page if no project was found", function () {
@@ -153,6 +161,9 @@ describe('project details', function () {
         $httpBackend.flush();
 
         expect(projectDetails.find('.publish-button')).toExist();
+        expect(projectDetails.find('.publish-button')).toHaveAttr('analytics-category', 'Projects');
+        expect(projectDetails.find('.publish-button')).toHaveAttr('analytics-on');
+        expect(projectDetails.find('.publish-button')).toHaveAttr('analytics-event', 'Published');
     });
 
     it("should not display the publish-button when a project is not published and the user is not admin", function () {
@@ -209,6 +220,9 @@ describe('project details', function () {
         $httpBackend.flush();
 
         expect(projectDetails.find('.reject-button')).toExist();
+        expect(projectDetails.find('.reject-button')).toHaveAttr('analytics-on');
+        expect(projectDetails.find('.reject-button')).toHaveAttr('analytics-category', 'Projects');
+        expect(projectDetails.find('.reject-button')).toHaveAttr('analytics-event', 'Rejected');
     });
 
     it("should not display the reject-button when a project is not published and the user is not admin", function () {

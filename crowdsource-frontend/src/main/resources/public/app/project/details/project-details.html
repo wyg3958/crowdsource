@@ -3,8 +3,11 @@
 
     <p class="pd-creator">
         von <strong class="text--strong">{{ projectDetails.project.creator.name }}</strong>
-        <a href="mailto:{{ projectDetails.project.creator.email }}" ng-if="projectDetails.auth.currentUser.hasRole('ADMIN')"><span class="pd-icon-mail"
-            analytics-on analytics-category="Projects" analytics-event="MailToPublisherIconClicked"></span></a>
+        <a href="mailto:{{ projectDetails.project.creator.email }}"
+                ng-if="projectDetails.auth.currentUser.hasRole('ADMIN')"
+                analytics-on analytics-category="Projects" analytics-event="MailToPublisherIconClicked" >
+            <span class="pd-icon-mail"></span>
+        </a>
     </p>
 
     <div class="project-metrics  l-table">

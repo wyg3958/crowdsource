@@ -7,7 +7,7 @@
 
     <title>CrowdSource</title>
 
-    <link rel="stylesheet" href="css/crowdsource.css" />
+    <link rel="stylesheet" href="css/crowdsource.css" th:href="@{${@environment.getProperty('de.asideas.crowdsource.frontend.css.base.url')}}" />
 
     <script src="app/libs.min.js"></script>
     <script src="app/crowdsource.min.js"></script>

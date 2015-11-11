@@ -42,7 +42,7 @@ public class IndexIT {
 
     @Test
     public void testIndexPage() {
-        webDriver.get(urlProvider.applicationUrl() + "/index.html");
+        webDriver.get(urlProvider.applicationUrl() + "/");
         wait.until(driver -> "CrowdSource - Projekte".equals(driver.getTitle()));
     }
 }

@@ -119,10 +119,10 @@ public class ProjectPledgingForm {
         return d.findElement(By.cssSelector(cssSelector));
     }
     private void makeSureDataLoaded(){
-        PageFactory.initElements(webDriverProvider.provideDriver(), this);
         try{
             wait.until( d -> {
                 try{
+                    PageFactory.initElements(webDriverProvider.provideDriver(), this);
                     ElementUtils.parseCurrency(updatedWebElement(webDriverProvider.provideDriver(), SELECTOR_BUDGET));
                 }catch (Exception e){
                     return false;
@@ -132,6 +132,9 @@ public class ProjectPledgingForm {
         }catch (TimeoutException e){
             // we catch it and hope that the element has been updated and initialized anyway.
         }
-
+        // Just to be really sure, as build server fails but locally it works
+        final long wStart = System.currentTimeMillis();
+        wait.until(d-> System.currentTimeMillis() - wStart > 1000L);
+        PageFactory.initElements(webDriverProvider.provideDriver(), this);
     }
 }

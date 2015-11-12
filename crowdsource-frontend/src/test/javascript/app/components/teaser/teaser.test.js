@@ -48,7 +48,8 @@ describe('teaser metrics service', function () {
             container: root.find('> div'),
             remainingBudget: root.find('.test-remaining-budget'),
             remainingTime: root.find('.test-remaining-time'),
-            userCount: root.find('.test-user-count')
+            userCount: root.find('.test-user-count'),
+            submitButton: root.find('.teaser__btn')
         }
     }
 
@@ -56,6 +57,10 @@ describe('teaser metrics service', function () {
         currentRouteWantsTeaser(false);
 
         var teaser = renderDirective();
+        expect(teaser.submitButton).toHaveAttr('analytics-on');
+        expect(teaser.submitButton).toHaveAttr('analytics-category', 'Projects');
+        expect(teaser.submitButton).toHaveAttr('analytics-event', 'GoToStartNewProjectFromTeaser');
+
         expect(teaser.container).toHaveClass('teaser--slim');
     });
 

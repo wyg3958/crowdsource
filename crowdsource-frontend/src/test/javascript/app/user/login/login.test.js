@@ -75,6 +75,10 @@ describe('user login view', function () {
         expectBackendCallAndRespond(200);
         spyOn(Authentication, 'reloadUser');
 
+        expect(loginForm.getSubmitButton()).toHaveAttr('analytics-on');
+        expect(loginForm.getSubmitButton()).toHaveAttr('analytics-category', 'UserActions');
+        expect(loginForm.getSubmitButton()).toHaveAttr('analytics-event', 'SignIn');
+
         fillAndSubmitForm();
 
         $httpBackend.flush();

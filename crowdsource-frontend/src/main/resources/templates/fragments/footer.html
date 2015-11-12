@@ -3,7 +3,7 @@
 <body>
     <div th:fragment="footer_scripts" th:remove="tag">
         <!-- Jira Issue Collector -->
-        <script id="jiraissuecollector"
+        <script id="jiraIssueCollector"
                 type="text/javascript"
                 th:if="${@environment.getProperty('de.asideas.crowdsource.jira.issuecollector.url') != null}"
                 src="#" th:src="${@environment.getProperty('de.asideas.crowdsource.jira.issuecollector.url')}">
@@ -19,7 +19,7 @@
         */-->
         <div th:with="trackurl=${@environment.getProperty('de.asideas.crowdsource.tracking.piwik.trackurl')},trackSiteId=${@environment.getProperty('de.asideas.crowdsource.tracking.piwik.siteid')}"
             th:remove="tag">
-            <script id="piwiktracking"
+            <script id="piwikTracking"
                     type="text/javascript"
                     th:inline="javascript"
                     th:if="${trackurl != null and trackSiteId != null}">

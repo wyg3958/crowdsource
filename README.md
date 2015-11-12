@@ -107,7 +107,7 @@ In order to activate tracking set the following properties in your `application.
  
  * `de.asideas.crowdsource.tracking.piwik.trackurl=//your-piwik.domain`
  * `de.asideas.crowdsource.tracking.piwik.siteid=1`
- 
+
 This will cause the tracking snippet to be rendered in the index.html.
 Tracking includes virtual page views (all the angular anchor links) and the following actions with their respective category:
 
@@ -127,7 +127,17 @@ Tracking includes virtual page views (all the angular anchor links) and the foll
  * | AccountActivated   | UserActions     
  * | FaqEntryOpened | UserActions | Label - faq_entry | Value - faq title     
    
-   
+
+Issue Tracking / Feedback Form
+-------------------------
+
+The Crowdsource application supports tracking, utilizing the [JIRA issue collector](https://confluence.atlassian.com/jira/using-the-issue-collector-288657654.html).
+In order to activate tracking set the following properties in your `application.properties`:
+
+ * `de.asideas.crowdsource.jira.issuecollector.url=//your-jic.url`
+
+See link above for details on how to get your issue collector setup properly.
+
 AT-Browsers: PHANTOMJS/CHROME/FIREFOX
 -------------------------------------
 

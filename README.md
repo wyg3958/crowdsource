@@ -44,7 +44,7 @@ Persistence
 CrowdSource uses MongoDB. You should provide the DB hosts comma-separated via property de.asideas.crowdsource.db.hosts.
 Eg java -jar ... -Dde.asideas.crowdsource.db.hosts=hosta,hostb,hostc
 For local development you can use the embed-mongo-maven-plugin that is used in the integrationstests as well.
-Simply run mvn com.github.joelittlejohn.embedmongo:embedmongo-maven-plugin:0.1.12:start -Dembedmongo.wait -Dmongodb.test.port=27017 in the crowdsource-integrationtests module.
+Simply run `mvn com.github.joelittlejohn.embedmongo:embedmongo-maven-plugin:0.1.12:start -Dembedmongo.wait -Dmongodb.test.port=27017` in the crowdsource-integrationtests module.
 
 For configuration your own application:
 - Create a appication.properties with following entries
@@ -99,6 +99,44 @@ npm run watch
 npm run test-watch
 ```
 
+Tracking
+--------
+
+The Crowdsource application supports tracking, utilizing [PIWIK](http://http://piwik.org/) over [Angulartics](https://luisfarzati.github.io/angulartics/).
+In order to activate tracking set the following properties in your `application.properties`:
+ 
+ * `de.asideas.crowdsource.tracking.piwik.trackurl=//your-piwik.domain`
+ * `de.asideas.crowdsource.tracking.piwik.siteid=1`
+
+This will cause the tracking snippet to be rendered in the index.html.
+Tracking includes virtual page views (all the angular anchor links) and the following actions with their respective category:
+
+ * | Rejected   | Projects        
+ * | Comment    | Projects        
+ * | ProjectIdeaSubmitted   | Projects        
+ * | ProjectPledged | Projects        
+ * | MailToPublisherIconClicked | Projects        
+ * | GoToStartNewProjectFromNavbar  | Projects        
+ * | GoToStartNewProjectFromTeaser  | Projects        
+ * | GoToFinancing  | Projects        
+ * | NewFinancingRoundStarted   | FinancingRound 
+ * | FinancingRoundAborted  | FinancingRound  
+ * | SignIn | UserActions     
+ * | SignUp | UserActions     
+ * | Logout | UserActions      
+ * | AccountActivated   | UserActions     
+ * | FaqEntryOpened | UserActions | Label - faq_entry | Value - faq title     
+   
+
+Issue Tracking / Feedback Form
+-------------------------
+
+The Crowdsource application supports tracking, utilizing the [JIRA issue collector](https://confluence.atlassian.com/jira/using-the-issue-collector-288657654.html).
+In order to activate tracking set the following properties in your `application.properties`:
+
+ * `de.asideas.crowdsource.jira.issuecollector.url=//your-jic.url`
+
+See link above for details on how to get your issue collector setup properly.
 
 AT-Browsers: PHANTOMJS/CHROME/FIREFOX
 -------------------------------------

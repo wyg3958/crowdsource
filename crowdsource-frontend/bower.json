@@ -15,6 +15,7 @@
     "foundation-datepicker": "najlepsiwebdesigner/foundation-datepicker#db75f5bfc107ec05a88c13c5150be149480adc12",
     "moment": "2.10.3",
     "moment-timezone": "~0.3.0",
+    "angulartics": "0.20.1",
     "bowser": "~0.7.2"
   }
 }

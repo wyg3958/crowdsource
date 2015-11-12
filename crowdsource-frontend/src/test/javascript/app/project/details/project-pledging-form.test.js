@@ -5,6 +5,11 @@ describe('project pledging form', function () {
     beforeEach(function () {
         module('crowdsource');
         module('crowdsource.templates');
+        module(function(_$analyticsProvider_) {
+            _$analyticsProvider_.virtualPageviews(false);
+            _$analyticsProvider_.firstPageview(false);
+            _$analyticsProvider_.developerMode(true);
+        });
 
         localStorage.clear(); // reset
 
@@ -148,6 +153,9 @@ describe('project pledging form', function () {
         expectNoValidationError(elements.pledgeAmount);
         expect(elements.pledgeButton).toBeDisabled();
         expect(elements.pledgeButton).toHaveText('Jetzt finanzieren');
+        expect(elements.pledgeButton).toHaveAttr('analytics-on');
+        expect(elements.pledgeButton).toHaveAttr('analytics-category', 'Projects');
+        expect(elements.pledgeButton).toHaveAttr('analytics-event', 'ProjectPledged');
         expect(elements.root.find('.general-error')).not.toExist();
     });
 

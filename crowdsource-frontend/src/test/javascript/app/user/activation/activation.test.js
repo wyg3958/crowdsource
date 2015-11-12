@@ -5,6 +5,11 @@ describe('user activation view', function () {
     beforeEach(function () {
         module('crowdsource');
         module('crowdsource.templates');
+        module(function(_$analyticsProvider_) {
+            _$analyticsProvider_.virtualPageviews(false);
+            _$analyticsProvider_.firstPageview(false);
+            _$analyticsProvider_.developerMode(true);
+        });
 
         localStorage.clear(); // reset
 
@@ -102,6 +107,9 @@ describe('user activation view', function () {
         expectBackendLoginCallAndRespond(200);
         $httpBackend.expectGET('/user/current').respond(200, {});
 
+        expect(activationForm.getSubmitButton()).toHaveAttr('analytics-on');
+        expect(activationForm.getSubmitButton()).toHaveAttr('analytics-category', 'UserActions');
+        expect(activationForm.getSubmitButton()).toHaveAttr('analytics-event', 'AccountActivated');
         fillAndSubmitForm();
         $httpBackend.flush();
 

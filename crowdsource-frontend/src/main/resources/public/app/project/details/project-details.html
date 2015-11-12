@@ -3,7 +3,11 @@
 
     <p class="pd-creator">
         von <strong class="text--strong">{{ projectDetails.project.creator.name }}</strong>
-        <a href="mailto:{{ projectDetails.project.creator.email }}" ng-if="projectDetails.auth.currentUser.hasRole('ADMIN')"><span class="pd-icon-mail"></span></a>
+        <a href="mailto:{{ projectDetails.project.creator.email }}"
+                ng-if="projectDetails.auth.currentUser.hasRole('ADMIN')"
+                analytics-on analytics-category="Projects" analytics-event="MailToPublisherIconClicked" >
+            <span class="pd-icon-mail"></span>
+        </a>
     </p>
 
     <div class="project-metrics  l-table">
@@ -29,7 +33,8 @@
                 <div class="pm-l-cell--2nd">
                     <button class="pm-btn-simple  to-pledging-form-button"
                             scroll-to="project-pledging-form"
-                            ng-disabled="projectDetails.project.status == 'FULLY_PLEDGED'">
+                            ng-disabled="projectDetails.project.status == 'FULLY_PLEDGED'"
+                            analytics-on="click" analytics-category="Projects" analytics-event="GoToFinancing">
                         <span ng-if="projectDetails.project.status == 'FULLY_PLEDGED'">Zu 100% finanziert!</span>
                         <span ng-if="projectDetails.project.status != 'FULLY_PLEDGED'">Zur Finanzierung</span>
                     </button>
@@ -42,12 +47,15 @@
             <p class="pm-divider">Admin</p>
 
             <div ng-if="projectDetails.isRejectable() && projectDetails.auth.currentUser.hasRole('ADMIN')">
-                <button class="pm-btn--alert  reject-button" ng-click="projectDetails.reject()" ng-disabled="projectDetails.rejecting">
+                <button class="pm-btn--alert  reject-button" ng-click="projectDetails.reject()" ng-disabled="projectDetails.rejecting"
+                        analytics-on="click" analytics-category="Projects" analytics-event="Rejected">
                     {{ projectDetails.rejecting ? 'Ablehnen...' : 'Ablehnen'}}
                 </button>
             </div>
             <div ng-if="projectDetails.isPublishable() && projectDetails.auth.currentUser.hasRole('ADMIN')">
-                <button class="pm-btn--success  publish-button" ng-click="projectDetails.publish()" ng-disabled="projectDetails.publishing">
+                <button class="pm-btn--success  publish-button"
+                        ng-click="projectDetails.publish()" ng-disabled="projectDetails.publishing"
+                        analytics-on="click" analytics-category="Projects" analytics-event="Published">
                     {{ projectDetails.publishing ? 'Veröffentlichen...' : 'Veröffentlichen' }}
                 </button>
             </div>

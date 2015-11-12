@@ -9,6 +9,11 @@ describe('user signup view', function () {
             $provide.value('emailDomain', '@crowd.source.de');
             $provide.value('emailBlacklistPatterns', ["_extern"])
         });
+        module(function(_$analyticsProvider_) {
+            _$analyticsProvider_.virtualPageviews(false);
+            _$analyticsProvider_.firstPageview(false);
+            _$analyticsProvider_.developerMode(true);
+        });
 
         localStorage.clear(); // reset
 
@@ -68,6 +73,9 @@ describe('user signup view', function () {
 
         // expect a valid call and return "created"
         expectBackendCallAndRespond(201);
+        expect(signupForm.getSubmitButton()).toHaveAttr('analytics-on');
+        expect(signupForm.getSubmitButton()).toHaveAttr('analytics-category', 'UserActions');
+        expect(signupForm.getSubmitButton()).toHaveAttr('analytics-event', 'SignUp');
 
         fillAndSubmitForm();
 

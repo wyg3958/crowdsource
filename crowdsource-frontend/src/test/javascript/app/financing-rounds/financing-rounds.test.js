@@ -5,6 +5,11 @@ describe('financing rounds', function () {
     beforeEach(function () {
         module('crowdsource');
         module('crowdsource.templates');
+        module(function(_$analyticsProvider_) {
+            _$analyticsProvider_.virtualPageviews(false);
+            _$analyticsProvider_.firstPageview(false);
+            _$analyticsProvider_.developerMode(true);
+        });
 
         localStorage.clear(); // reset
 
@@ -43,6 +48,9 @@ describe('financing rounds', function () {
         expect(financingRounds.getEndDate().getInputField()).toHaveProp('placeholder', 'Bitte klicken...');
         expect(financingRounds.getBudget().getInputField()).toHaveProp('placeholder', '0');
         expect(financingRounds.getTableText()).toContainText('Es wurde noch keine Finanzierungsrunde gestartet');
+        expect(financingRounds.getStartRoundButton()).toHaveAttr('analytics-on', 'click');
+        expect(financingRounds.getStartRoundButton()).toHaveAttr('analytics-category', 'FinancingRound');
+        expect(financingRounds.getStartRoundButton()).toHaveAttr('analytics-event', 'NewFinancingRoundStarted');
     });
 
 
@@ -63,6 +71,10 @@ describe('financing rounds', function () {
         expect(financingRounds.getTableEndRoundButton()).not.toBeDisabled();
         expect(financingRounds.getStartRoundButton()).not.toExist();
         expect(financingRounds.getNotification()).toContainText('Es läuft bereits eine Finanzierungsrunde. Daher kann keine neue Runde gestartet werden.');
+        expect(financingRounds.getTableEndRoundButton(0)).toHaveAttr('analytics-on', 'click');
+        expect(financingRounds.getTableEndRoundButton(0)).toHaveAttr('analytics-category', 'FinancingRound');
+        expect(financingRounds.getTableEndRoundButton(0)).toHaveAttr('analytics-event', 'FinancingRoundAborted');
+
     });
 
 

@@ -11,11 +11,13 @@ angular.module('crowdsource')
             controllerAs: 'accordion',
             bindToController: true,
             template: '<li class="accordion-navigation" ng-class="{ \'accordion-active\': accordion.showContent }">' +
-            '<a ng-click="accordion.showContent = !accordion.showContent">{{ accordion.title }}</a>' +
+            '<a ng-click="accordion.showContent = !accordion.showContent" analytics-on analytics-category="{{accordion.trackingcategory}}" analytics-event="{{accordion.trackingevent}}" analytics-label="faq_entry" analytics-value="{{ accordion.title }}">{{ accordion.title }}</a>' +
             '<div class="content" ng-transclude ng-if="accordion.showContent"></div>' +
             '</li>',
             scope: {
-                title: '@'
+                title: '@',
+                trackingcategory: '@',
+                trackingevent: '@'
             },
             controller: function () {
                 // no-op, do not remove!

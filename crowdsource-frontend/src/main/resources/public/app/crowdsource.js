@@ -20,9 +20,8 @@
     /**
      * global application configuration
      */
-    angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.angular-ellipsis', 'ngScrollTo'])
-
-        .config(function ($routeProvider, $locationProvider, $httpProvider) {
+    angular.module('crowdsource', ['ngRoute', 'ngResource', 'ngMessages', 'dibari.angular-ellipsis', 'ngScrollTo', 'angulartics', 'angulartics.piwik'])
+        .config(function ($routeProvider, $locationProvider, $httpProvider, $analyticsProvider) {
             $routeProvider
                 .when('/projects', {
                     templateUrl: 'app/project/list/project-list.html',
@@ -121,6 +120,8 @@
 
             $httpProvider.interceptors.push('UnauthorizedInterceptor');
             $httpProvider.interceptors.push('LoggingInterceptor');
+
+            $analyticsProvider.firstPageview(false);
         })
 
         .run(function (Authentication, Route) {
@@ -136,7 +137,6 @@
                 }
             });
         });
-
 
     if (isBrowserSupported()) {
         angular.element(document).ready(function () {

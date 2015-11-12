@@ -1,6 +1,7 @@
 package de.asideas.crowdsource;
 
 import de.asideas.crowdsource.testsupport.CrowdSourceTestConfig;
+import de.asideas.crowdsource.testsupport.selenium.ElementUtils;
 import de.asideas.crowdsource.testsupport.selenium.SeleniumWait;
 import de.asideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.asideas.crowdsource.testsupport.util.UrlProvider;
@@ -12,30 +13,20 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.EnvironmentTestUtils;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.Environment;
-import org.springframework.core.env.MutablePropertySources;
 import org.springframework.mock.env.MockPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.Arrays;
-import java.util.List;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNot.not;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebIntegrationTest
 @SpringApplicationConfiguration(classes = {CrowdSourceExample.class, CrowdSourceTestConfig.class})
-public class IndexIT {
+public class TrackingIT {
 
     public static final String DEFAULT_TEST_PROPERTY_SOURCE = "testPropsSource";
 
@@ -74,9 +65,32 @@ public class IndexIT {
     }
 
     @Test
-    public void testIndexPage() {
+    public void trackingJsIsOmittedFromRenderingIfNoPropertiesProvided() {
+        loadIndexPage();
+
+        ElementUtils.expectAndGetFirst(webDriver, false, By.id("piwikTracking"));
+    }
+
+    @Test
+    public void trackingJsIsRenderedIfPropertiesProvided() {
+        String expectedTrackingUrl = "http://trackingrulz.crowdsource.de";
+        String expectedSiteId = "1234567890987654321";
+        testPropertySource.withProperty("de.asideas.crowdsource.tracking.piwik.trackurl", expectedTrackingUrl)
+                .withProperty("de.asideas.crowdsource.tracking.piwik.siteid", expectedSiteId);
+
+        loadIndexPage();
+
+        WebElement trackingJsElement = ElementUtils.expectAndGetFirst(webDriver, true, By.id("piwikTracking"));
+
+        assertThat(trackingJsElement.getTagName(), is("script"));
+        String trackingJs = trackingJsElement.getAttribute("innerHTML");
+
+        assertThat(trackingJs, containsString(expectedTrackingUrl));
+        assertThat(trackingJs, containsString(expectedSiteId));
+    }
+
+    private void loadIndexPage() {
         webDriver.get(urlProvider.applicationUrl() + "/");
         wait.until(driver -> "CrowdSource - Projekte".equals(driver.getTitle()));
     }
-
 }

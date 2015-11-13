@@ -1,8 +1,8 @@
 package de.asideas.crowdsource.repository;
 
-import de.asideas.crowdsource.model.persistence.FinancingRoundEntity;
-import de.asideas.crowdsource.model.persistence.PledgeEntity;
-import de.asideas.crowdsource.model.persistence.ProjectEntity;
+import de.asideas.crowdsource.domain.model.FinancingRoundEntity;
+import de.asideas.crowdsource.domain.model.PledgeEntity;
+import de.asideas.crowdsource.domain.model.ProjectEntity;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

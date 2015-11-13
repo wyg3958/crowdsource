@@ -1,15 +1,15 @@
 package de.asideas.crowdsource.controller;
 
-import de.asideas.crowdsource.security.Roles;
-import de.asideas.crowdsource.exceptions.InvalidRequestException;
-import de.asideas.crowdsource.exceptions.ResourceNotFoundException;
-import de.asideas.crowdsource.model.persistence.FinancingRoundEntity;
-import de.asideas.crowdsource.model.persistence.UserEntity;
-import de.asideas.crowdsource.model.presentation.user.User;
-import de.asideas.crowdsource.model.presentation.user.UserActivation;
-import de.asideas.crowdsource.model.presentation.user.UserRegistration;
+import de.asideas.crowdsource.domain.exception.InvalidRequestException;
+import de.asideas.crowdsource.domain.exception.ResourceNotFoundException;
+import de.asideas.crowdsource.domain.model.FinancingRoundEntity;
+import de.asideas.crowdsource.domain.model.UserEntity;
+import de.asideas.crowdsource.domain.presentation.user.User;
+import de.asideas.crowdsource.domain.presentation.user.UserActivation;
+import de.asideas.crowdsource.domain.presentation.user.UserRegistration;
 import de.asideas.crowdsource.repository.FinancingRoundRepository;
 import de.asideas.crowdsource.repository.UserRepository;
+import de.asideas.crowdsource.security.Roles;
 import de.asideas.crowdsource.service.UserService;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;

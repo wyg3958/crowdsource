@@ -1,6 +1,6 @@
 package de.asideas.crowdsource.testsupport.pageobjects.project;
 
-import de.asideas.crowdsource.model.presentation.Comment;
+import de.asideas.crowdsource.domain.presentation.Comment;
 import de.asideas.crowdsource.testsupport.selenium.SeleniumWait;
 import de.asideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.asideas.crowdsource.testsupport.util.UrlProvider;
@@ -63,10 +63,10 @@ public class ProjectDetailPage {
     }
 
     public void waitForDetailsToBeLoaded() {
-        wait.until(interpolationCompletedOfElementLocated(By.cssSelector(".project-details h1")));
         RemoteWebDriver webDriver = webDriverProvider.provideDriver();
+        wait.until(interpolationCompletedOfElementLocated(By.cssSelector(".project-details h1")));
         PageFactory.initElements(webDriver, this);
-        PageFactory.initElements(webDriver, projectStatusWidget);
+        projectStatusWidget.waitForDetailsToBeLoaded();
     }
 
     public String getTitle() {

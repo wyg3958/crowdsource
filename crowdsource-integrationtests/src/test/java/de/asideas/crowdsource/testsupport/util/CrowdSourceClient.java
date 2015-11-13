@@ -2,13 +2,14 @@ package de.asideas.crowdsource.testsupport.util;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import de.asideas.crowdsource.enums.ProjectStatus;
-import de.asideas.crowdsource.model.presentation.Comment;
-import de.asideas.crowdsource.model.presentation.FinancingRound;
-import de.asideas.crowdsource.model.presentation.Pledge;
-import de.asideas.crowdsource.model.presentation.project.Project;
-import de.asideas.crowdsource.model.presentation.user.UserActivation;
-import de.asideas.crowdsource.model.presentation.user.UserRegistration;
+import de.asideas.crowdsource.domain.presentation.Comment;
+import de.asideas.crowdsource.domain.presentation.FinancingRound;
+import de.asideas.crowdsource.domain.presentation.Pledge;
+import de.asideas.crowdsource.domain.presentation.project.Project;
+import de.asideas.crowdsource.domain.presentation.project.ProjectStatusUpdate;
+import de.asideas.crowdsource.domain.presentation.user.UserActivation;
+import de.asideas.crowdsource.domain.presentation.user.UserRegistration;
+import de.asideas.crowdsource.domain.shared.ProjectStatus;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -133,26 +134,35 @@ public class CrowdSourceClient {
     }
 
     public void publish(Project project, AuthToken token) {
-
+        modifyProjectStatus(project.getId(), ProjectStatus.PUBLISHED, token);
         project.setStatus(ProjectStatus.PUBLISHED);
-        update(project, token);
     }
 
     public void reject(Project project, AuthToken token) {
-
+        modifyProjectStatus(project.getId(), ProjectStatus.REJECTED, token);
         project.setStatus(ProjectStatus.REJECTED);
-        update(project, token);
     }
 
-    private void update(Project project, AuthToken token) {
+    public void defer(Project project, AuthToken token) {
+        modifyProjectStatus(project.getId(), ProjectStatus.DEFERRED, token);
+        project.setStatus(ProjectStatus.DEFERRED);
+    }
 
-        final ResponseEntity<Project> exchange = restTemplate.exchange(urlProvider.applicationUrl() + "/project/" + project.getId(), HttpMethod.PATCH, createRequestEntity(project, token), Project.class);
+    private void modifyProjectStatus(String projectId, ProjectStatus status, AuthToken token) {
+        final ResponseEntity<Project> exchange = restTemplate.exchange(
+                urlProvider.applicationUrl() + "/project/" + projectId + "/status",
+                HttpMethod.PATCH,
+                createRequestEntity(new ProjectStatusUpdate(status), token),
+                Project.class);
         assertEquals(HttpStatus.OK, exchange.getStatusCode());
     }
 
     public List<Project> listProjects(AuthToken authToken) {
-
-        ResponseEntity<Project[]> responseEntity = restTemplate.exchange(urlProvider.applicationUrl() + "/projects", HttpMethod.GET, createRequestEntity(authToken), Project[].class);
+        ResponseEntity<Project[]> responseEntity = restTemplate.exchange(
+                urlProvider.applicationUrl() + "/projects",
+                HttpMethod.GET,
+                createRequestEntity(authToken),
+                Project[].class);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         return Arrays.asList(responseEntity.getBody());
     }

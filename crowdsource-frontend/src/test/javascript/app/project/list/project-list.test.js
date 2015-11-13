@@ -77,13 +77,14 @@ describe('project list', function () {
             project('Title 2', 'Short Description 2', 100, 10, 1, 'PUBLISHED', moment(now).subtract(4, 'days')),
             project('Title 3', 'Short Description 3', 100, 20, 2, 'FULLY_PLEDGED', moment(now).subtract(1, 'days')),
             project('Title 4', 'Short Description 4', 100, 20, 2, 'REJECTED', moment(now).subtract(1, 'days')),
-            project('Title 5', 'Short Description 5', 100, 20, 2, 'PROPOSED', moment(now).subtract(1, 'days'))
+            project('Title 5', 'Short Description 5', 100, 20, 2, 'PROPOSED', moment(now).subtract(1, 'days')),
+            project('Title 6', 'Short Description 6', 100, 20, 2, 'DEFERRED', moment(now).subtract(1, 'days'))
         ]);
         $scope.$digest();
         $httpBackend.flush();
 
         var listItems = projectList.find('.project__tile');
-        expect(listItems).toHaveLength(6);
+        expect(listItems).toHaveLength(7);
 
         expect($(listItems[0]).find('.tile__heading').text()).toBe('Title 5');
         expect($(listItems[0]).hasClass("project-proposed")).toBeTruthy();
@@ -100,8 +101,12 @@ describe('project list', function () {
         expect($(listItems[4]).find('.tile__heading').text()).toBe('Title 3');
         expect($(listItems[4]).hasClass("project-fully_pledged")).toBeTruthy();
 
-        expect($(listItems[5]).find('.tile__heading').text()).toBe('Title 4');
-        expect($(listItems[5]).hasClass("project-rejected")).toBeTruthy();
+        expect($(listItems[5]).find('.tile__heading').text()).toBe('Title 6');
+        expect($(listItems[5]).hasClass("project-deferred")).toBeTruthy();
+
+        expect($(listItems[6]).find('.tile__heading').text()).toBe('Title 4');
+        expect($(listItems[6]).hasClass("project-rejected")).toBeTruthy();
+
     });
 
     it("should redirect to the project's details page when the project tile is clicked", function () {

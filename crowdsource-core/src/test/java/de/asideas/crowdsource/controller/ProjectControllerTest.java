@@ -2,16 +2,17 @@ package de.asideas.crowdsource.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
-import de.asideas.crowdsource.security.Roles;
-import de.asideas.crowdsource.enums.ProjectStatus;
-import de.asideas.crowdsource.exceptions.InvalidRequestException;
-import de.asideas.crowdsource.exceptions.ResourceNotFoundException;
-import de.asideas.crowdsource.model.persistence.UserEntity;
-import de.asideas.crowdsource.model.presentation.ErrorResponse;
-import de.asideas.crowdsource.model.presentation.Pledge;
-import de.asideas.crowdsource.model.presentation.project.Project;
-import de.asideas.crowdsource.model.presentation.user.ProjectCreator;
+import de.asideas.crowdsource.domain.exception.InvalidRequestException;
+import de.asideas.crowdsource.domain.exception.ResourceNotFoundException;
+import de.asideas.crowdsource.domain.model.UserEntity;
+import de.asideas.crowdsource.domain.presentation.ErrorResponse;
+import de.asideas.crowdsource.domain.presentation.Pledge;
+import de.asideas.crowdsource.domain.presentation.project.Project;
+import de.asideas.crowdsource.domain.presentation.project.ProjectStatusUpdate;
+import de.asideas.crowdsource.domain.presentation.user.ProjectCreator;
+import de.asideas.crowdsource.domain.shared.ProjectStatus;
 import de.asideas.crowdsource.repository.UserRepository;
+import de.asideas.crowdsource.security.Roles;
 import de.asideas.crowdsource.service.ProjectService;
 import de.asideas.crowdsource.service.UserService;
 import org.junit.Before;
@@ -362,16 +363,48 @@ public class ProjectControllerTest {
         final UserEntity user = userEntity(email, Roles.ROLE_USER, Roles.ROLE_ADMIN);
         final Project expProject = toCreatedProject(project("title2", "descr2", "shortDescr2", 45, ProjectStatus.PROPOSED), user);
 
-        when(projectService.modifyProjectStatus(anyString(), eq(expProject), eq(user))).thenReturn(expProject);
+        when(projectService.modifyProjectStatus(anyString(), eq(expProject.getStatus()), eq(user))).thenReturn(expProject);
 
-        MvcResult mvcResult = mockMvc.perform(patch("/project/{projectId}", "some_id")
+        MvcResult mvcResult = mockMvc.perform(patch("/project/{projectId}/status", "some_id")
                 .principal(authentication(user))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(expProject)))
+                .content(mapper.writeValueAsString(new ProjectStatusUpdate(expProject.getStatus()))))
                 .andExpect(status().isOk())
                 .andReturn();
 
         assertThat(mapper.readValue(mvcResult.getResponse().getContentAsString(), Project.class), is(expProject));
+    }
+
+    @Test
+    public void modifyProjectStatus_emptyUpdateObjectThrowsBadRequest() throws Exception {
+        final String email = "some@mail.com";
+        final UserEntity user = userEntity(email, Roles.ROLE_USER, Roles.ROLE_ADMIN);
+        final Project expProject = toCreatedProject(project("title2", "descr2", "shortDescr2", 45, ProjectStatus.PROPOSED), user);
+
+        when(projectService.modifyProjectStatus(anyString(), eq(expProject.getStatus()), eq(user))).thenReturn(expProject);
+
+        mockMvc.perform(patch("/project/{projectId}/status", "some_id")
+                .principal(authentication(user))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(new ProjectStatusUpdate(null))))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
+
+    @Test
+    public void modifyProjectStatus_unknownStatusThrowsBadRequest() throws Exception {
+        final String email = "some@mail.com";
+        final UserEntity user = userEntity(email, Roles.ROLE_USER, Roles.ROLE_ADMIN);
+        final Project expProject = toCreatedProject(project("title2", "descr2", "shortDescr2", 45, ProjectStatus.PROPOSED), user);
+
+        when(projectService.modifyProjectStatus(anyString(), eq(expProject.getStatus()), eq(user))).thenReturn(expProject);
+
+        mockMvc.perform(patch("/project/{projectId}/status", "some_id")
+                .principal(authentication(user))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"status\": \"UNKNOWN_STATUS\"}") )
+                .andExpect(status().isBadRequest())
+                .andReturn();
     }
 
     private Principal authentication(UserEntity userEntity) {

@@ -1,20 +1,24 @@
 package de.asideas.crowdsource.service;
 
-import de.asideas.crowdsource.security.Roles;
-import de.asideas.crowdsource.enums.ProjectStatus;
-import de.asideas.crowdsource.exceptions.InvalidRequestException;
-import de.asideas.crowdsource.exceptions.ResourceNotFoundException;
-import de.asideas.crowdsource.model.persistence.FinancingRoundEntity;
-import de.asideas.crowdsource.model.persistence.PledgeEntity;
-import de.asideas.crowdsource.model.persistence.ProjectEntity;
-import de.asideas.crowdsource.model.persistence.UserEntity;
-import de.asideas.crowdsource.model.presentation.Pledge;
-import de.asideas.crowdsource.model.presentation.project.Project;
+import de.asideas.crowdsource.domain.exception.InvalidRequestException;
+import de.asideas.crowdsource.domain.exception.ResourceNotFoundException;
+import de.asideas.crowdsource.domain.model.FinancingRoundEntity;
+import de.asideas.crowdsource.domain.model.PledgeEntity;
+import de.asideas.crowdsource.domain.model.ProjectEntity;
+import de.asideas.crowdsource.domain.model.UserEntity;
+import de.asideas.crowdsource.domain.presentation.FinancingRound;
+import de.asideas.crowdsource.domain.presentation.Pledge;
+import de.asideas.crowdsource.domain.presentation.project.Project;
+import de.asideas.crowdsource.domain.service.user.UserNotificationService;
+import de.asideas.crowdsource.domain.shared.ProjectStatus;
 import de.asideas.crowdsource.repository.FinancingRoundRepository;
 import de.asideas.crowdsource.repository.PledgeRepository;
 import de.asideas.crowdsource.repository.ProjectRepository;
 import de.asideas.crowdsource.repository.UserRepository;
+import de.asideas.crowdsource.security.Roles;
+import org.hamcrest.core.Is;
 import org.joda.time.DateTime;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -83,7 +87,7 @@ public class ProjectServiceTest {
         final ArgumentCaptor<ProjectEntity> projectEntity = ArgumentCaptor.forClass(ProjectEntity.class);
 
         when(projectRepository.save(projectEntity.capture())).thenAnswer(a -> a.getArgumentAt(0, ProjectEntity.class));
-        prepareActiveFinanzingRound();
+        prepareActiveFinanzingRound(null);
 
         Project res = projectService.addProject(project, user(USER_EMAIL));
         assertThat(res, is(new Project(projectEntity.getValue(), new ArrayList<>(), null)));
@@ -123,7 +127,7 @@ public class ProjectServiceTest {
         final int budgetBeforePledge = user.getBudget();
         final Pledge pledge = new Pledge(project.getPledgeGoal() - 4);
 
-        FinancingRoundEntity financingRound = prepareActiveFinanzingRound();
+        FinancingRoundEntity financingRound = prepareActiveFinanzingRound(project);
 
         projectService.pledge(projectId, user, pledge);
 
@@ -144,12 +148,12 @@ public class ProjectServiceTest {
         final Pledge pledge = new Pledge(-4);
 
         pledgedAssertionProject(project, user, 4);
-        FinancingRoundEntity financingRound = prepareActiveFinanzingRound();
+        FinancingRoundEntity financingRound = prepareActiveFinanzingRound(project);
 
         projectService.pledge(projectId, user, pledge);
 
         PledgeEntity pledgeEntity = new PledgeEntity(project, user, pledge, financingRound);
-        assertThat(user.getBudget(), is(budgetBeforePledge + 4 ));
+        assertThat(user.getBudget(), is(budgetBeforePledge + 4));
         assertThat(project.getStatus(), is(not(ProjectStatus.FULLY_PLEDGED)));
         verify(pledgeRepository).save(pledgeEntity);
         verify(userRepository).save(user);
@@ -165,7 +169,7 @@ public class ProjectServiceTest {
         final int budgetBeforePledge = user.getBudget();
 
         pledgedAssertionProject(project, user, project.getPledgeGoal() - 4);
-        FinancingRoundEntity finanzingRound = prepareActiveFinanzingRound();
+        FinancingRoundEntity finanzingRound = prepareActiveFinanzingRound(project);
 
         projectService.pledge(projectId, user, pledge);
 
@@ -185,7 +189,7 @@ public class ProjectServiceTest {
         final int budgetBeforePledge = user.getBudget();
         final Pledge pledge = new Pledge(-5);
 
-        prepareActiveFinanzingRound();
+        prepareActiveFinanzingRound(project);
         pledgedAssertionProject(project, user, 4);
 
         InvalidRequestException res = null;
@@ -198,6 +202,7 @@ public class ProjectServiceTest {
 
         assertPledgeNotExecuted(res, InvalidRequestException.reversePledgeExceeded(), project, user, budgetBeforePledge);
     }
+
     @Test
     public void pledge_reversePledgeThrowsInvalidRequestExWhenAlreadyFullyPledged() throws Exception {
         final UserEntity user = user(USER_EMAIL);
@@ -207,7 +212,7 @@ public class ProjectServiceTest {
         final Pledge pledge = new Pledge(-5);
 
         project.setStatus(ProjectStatus.FULLY_PLEDGED);
-        prepareActiveFinanzingRound();
+        prepareActiveFinanzingRound(project);
         pledgedAssertionProject(project, user, 4);
 
         InvalidRequestException res = null;
@@ -230,7 +235,7 @@ public class ProjectServiceTest {
         final int budgetBeforePledge = user.getBudget();
         pledgedAssertionProject(project, user, project.getPledgeGoal() - 4);
 
-        prepareActiveFinanzingRound();
+        prepareActiveFinanzingRound(project);
 
         InvalidRequestException res = null;
         try {
@@ -251,7 +256,7 @@ public class ProjectServiceTest {
         final int budgetBeforePledge = user.getBudget();
         pledgedAssertionProject(project, user, project.getPledgeGoal() - 4);
 
-        prepareActiveFinanzingRound();
+        prepareActiveFinanzingRound(project);
 
         InvalidRequestException res = null;
         try {
@@ -273,7 +278,7 @@ public class ProjectServiceTest {
         final int budgetBeforePledge = user.getBudget();
 
         pledgedAssertionProject(project, user, project.getPledgeGoal());
-        prepareActiveFinanzingRound();
+        prepareActiveFinanzingRound(project);
 
         InvalidRequestException res = null;
         try {
@@ -285,6 +290,27 @@ public class ProjectServiceTest {
 
         assertPledgeNotExecuted(res, InvalidRequestException.projectAlreadyFullyPledged(), project, user, budgetBeforePledge, ProjectStatus.FULLY_PLEDGED);
     }
+    @Test
+    public void pledge_throwsInvalidRequestExOnProjectIsDeferred() {
+        final UserEntity user = user(USER_EMAIL);
+        final String projectId = "some_id";
+        final ProjectEntity project = projectEntity(user, projectId, "title", 44, "short description", "description", ProjectStatus.DEFERRED, null);
+        final Pledge pledge = new Pledge(5);
+        final int budgetBeforePledge = user.getBudget();
+
+        pledgedAssertionProject(project, user, 0);
+        prepareActiveFinanzingRound(project);
+
+        InvalidRequestException res = null;
+        try {
+            projectService.pledge(projectId, user, pledge);
+            fail("InvalidRequestException expected!");
+        } catch (InvalidRequestException e) {
+            res = e;
+        }
+
+        assertPledgeNotExecuted(res, InvalidRequestException.projectNotPublished(), project, user, budgetBeforePledge, ProjectStatus.DEFERRED);
+    }
 
     @Test
     public void pledge_throwsInvalidRequestExOnProjectIsNotPublished() {
@@ -295,7 +321,7 @@ public class ProjectServiceTest {
         final int budgetBeforePledge = user.getBudget();
 
         pledgedAssertionProject(project, user, project.getPledgeGoal() - 4);
-        prepareActiveFinanzingRound();
+        prepareActiveFinanzingRound(project);
 
         InvalidRequestException res = null;
         try {
@@ -317,7 +343,7 @@ public class ProjectServiceTest {
         final int budgetBeforePledge = user.getBudget();
 
         pledgedAssertionProject(project, user, project.getPledgeGoal() - 4);
-        prepareActiveFinanzingRound();
+        prepareActiveFinanzingRound(project);
 
         InvalidRequestException res = null;
         try {
@@ -331,7 +357,7 @@ public class ProjectServiceTest {
     }
 
     @Test
-    public void pledge_throwsInvalidRequestExOnNoActiveFinancingRound() {
+    public void pledge_throwsInvalidRequestExOnNoFinancingRound() {
         final UserEntity user = user(USER_EMAIL);
         final String projectId = "some_id";
         final ProjectEntity project = projectEntity(user, projectId, "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
@@ -353,6 +379,28 @@ public class ProjectServiceTest {
     }
 
     @Test
+    public void pledge_throwsInvalidRequestExOnInactiveFinancingRound() {
+        final UserEntity user = user(USER_EMAIL);
+        final String projectId = "some_id";
+        final ProjectEntity project = projectEntity(user, projectId, "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
+        final Pledge pledge = new Pledge(4);
+        final int budgetBeforePledge = user.getBudget();
+
+        pledgedAssertionProject(project, user, project.getPledgeGoal() - 4);
+        when(financingRoundRepository.findActive(any(DateTime.class))).thenReturn(null);
+        prepareInactiveFinancingRound(project);
+        InvalidRequestException res = null;
+        try {
+            projectService.pledge(projectId, user, pledge);
+            fail("InvalidRequestException expected!");
+        } catch (InvalidRequestException e) {
+            res = e;
+        }
+
+        assertPledgeNotExecuted(res, InvalidRequestException.noFinancingRoundCurrentlyActive(), project, user, budgetBeforePledge, ProjectStatus.PUBLISHED);
+    }
+
+    @Test
     public void pledge_throwsResourceNotFoundExOnNotExistingProject() {
         final UserEntity user = user(USER_EMAIL);
         final String projectId = "some_id";
@@ -361,7 +409,6 @@ public class ProjectServiceTest {
         final int budgetBeforePledge = user.getBudget();
 
         pledgedAssertionProject(project, user, project.getPledgeGoal() - 4);
-        prepareActiveFinanzingRound();
         when(projectRepository.findOne(anyString())).thenReturn(null);
 
         ResourceNotFoundException res = null;
@@ -376,64 +423,25 @@ public class ProjectServiceTest {
     }
 
     @Test
-    public void modifyProjectStatus() throws Exception{
-        final UserEntity user = user(USER_EMAIL);
-        final String projectId = "some_id";
-        final ProjectEntity projectEntity = projectEntity(user, projectId, "title", 44, "short description", "description", ProjectStatus.PROPOSED, null);
-        final Project updatedProject = project(projectEntity, user);
-        final ArgumentCaptor<ProjectEntity> captProjectEntity = ArgumentCaptor.forClass(ProjectEntity.class);
-
-        updatedProject.setStatus(ProjectStatus.PUBLISHED);
-        when(projectRepository.save(captProjectEntity.capture())).thenAnswer(a -> a.getArgumentAt(0, ProjectEntity.class));
-
-        Project resProject = projectService.modifyProjectStatus("some_id", updatedProject, user);
-
-        assertThat(resProject, is(updatedProject));
-        assertThat(captProjectEntity.getValue().getStatus(), is(updatedProject.getStatus()));
-    }
-
-    @Test
-    public void modifyProjectStatus_updatedStateTriggersUserNotification() throws Exception {
+    public void modifyProjectStatus_updatedStateTriggersUserNotificationAndPeristence() throws Exception {
         final UserEntity user = user(USER_EMAIL);
         final ProjectEntity projectEntity = project("some_id", ProjectStatus.PROPOSED, user);
-        final Project updatedProject = project(projectEntity, user);
-        updatedProject.setStatus(ProjectStatus.PUBLISHED);
 
-        projectService.modifyProjectStatus("some_id", updatedProject, user);
+        projectService.modifyProjectStatus("some_id", ProjectStatus.PUBLISHED, user);
 
         verify(projectRepository).save(projectEntity);
         verify(userNotificationService).notifyCreatorOnProjectUpdate(any(ProjectEntity.class));
     }
 
     @Test
-    public void modifyProjectStatus_nonUpdatedStateDoesNotTriggerUserNotification() throws Exception {
+    public void modifyProjectStatus_nonUpdatedStateDoesNotTriggerUserNotificationAndNoPersistence() throws Exception {
         UserEntity user = user(USER_EMAIL);
-        final ProjectEntity projectEntity = project("some_id", ProjectStatus.PROPOSED, user);
-        final Project updateObject = project(projectEntity, user);
-        updateObject.setStatus(ProjectStatus.PROPOSED);
+        project("some_id", ProjectStatus.PROPOSED, user);
 
-        projectService.modifyProjectStatus("some_id", updateObject, user);
+        projectService.modifyProjectStatus("some_id", ProjectStatus.PROPOSED, user);
 
         verify(projectRepository, never()).save(any(ProjectEntity.class));
         verify(userNotificationService, never()).notifyCreatorOnProjectUpdate(any(ProjectEntity.class));
-    }
-
-    @Test
-    public void modifyProjectStatus_settingToPublishedAlthoughFullyPledgedThrowsIvalidRequestEx() throws Exception {
-        final UserEntity user = user(USER_EMAIL);
-        final String projectId = "some_id";
-        final ProjectEntity projectEntity = projectEntity(user, projectId, "title", 44, "short description", "description", ProjectStatus.FULLY_PLEDGED, null);
-        final Project updatedProject = project(projectEntity, user);
-
-        updatedProject.setStatus(ProjectStatus.PUBLISHED);
-
-        try {
-            projectService.modifyProjectStatus("some_id", updatedProject, user);
-            fail("Expected InvalidRequestException was not thrown");
-        } catch (InvalidRequestException e) {
-            assertThat(e.getMessage(), is(InvalidRequestException.projectAlreadyFullyPledged().getMessage()));
-            verify(projectRepository, never()).save(any(ProjectEntity.class));
-        }
     }
 
     private void assertPledgeNotExecuted(RuntimeException actualEx, RuntimeException expEx, ProjectEntity project, UserEntity user, int userBudgetBeforePledge) {
@@ -493,10 +501,6 @@ public class ProjectServiceTest {
         return project;
     }
 
-    private Project project(ProjectEntity projectEntity, UserEntity requestingUser) {
-        return new Project(projectEntity, new ArrayList<>(), requestingUser);
-    }
-
     private UserEntity user(String email) {
         UserEntity userEntity = new UserEntity(email);
         userEntity.setId("id_" + email);
@@ -510,10 +514,35 @@ public class ProjectServiceTest {
         return userEntity;
     }
 
-    private FinancingRoundEntity prepareActiveFinanzingRound() {
-        FinancingRoundEntity financingRound = new FinancingRoundEntity();
-        financingRound.setId(UUID.randomUUID().toString());
-        when(financingRoundRepository.findActive(any())).thenReturn(financingRound);
-        return financingRound;
+    private FinancingRoundEntity prepareActiveFinanzingRound(ProjectEntity project) {
+        FinancingRoundEntity res = aFinancingRound(new DateTime().plusDays(1));
+        res.setId(UUID.randomUUID().toString());
+        if(project != null ){
+            project.setFinancingRound(res);
+        }
+
+        when(financingRoundRepository.findActive(any())).thenReturn(res);
+        Assert.assertThat(res.active(), Is.is(true));
+        return res;
+    }
+
+    private FinancingRoundEntity prepareInactiveFinancingRound(ProjectEntity project) {
+        FinancingRoundEntity res = aFinancingRound(new DateTime().minusDays(1));
+        if(project != null) {
+            project.setFinancingRound(res);
+        }
+
+        when(financingRoundRepository.findActive(any())).thenReturn(res);
+        Assert.assertThat(res.active(), Is.is(false));
+        return res;
+    }
+
+    private FinancingRoundEntity aFinancingRound(DateTime endDate) {
+        FinancingRound creationCmd = new FinancingRound();
+        creationCmd.setEndDate(endDate);
+        creationCmd.setBudget(100);
+        FinancingRoundEntity res = FinancingRoundEntity.newFinancingRound(creationCmd, 7);
+        res.setStartDate(new DateTime().minusDays(2));
+        return res;
     }
 }

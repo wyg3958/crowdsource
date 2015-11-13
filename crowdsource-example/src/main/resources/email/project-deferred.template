@@ -1,0 +1,11 @@
+Hallo #{#userName},
+
+Dein Projekt wurde leider zurückgestellt und nimmt daher nicht an der nächsten Finanzierungsrunde teil.
+Das Projekt wird jedoch für die darauf folgende Finanzierungsrunde automatisch freigegeben.
+
+Zu Deinem Projekt:
+
+#{#link}
+
+Mit freundlichen Grüßen
+Dein CrowdSource Team

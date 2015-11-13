@@ -4,13 +4,14 @@ angular.module('crowdsource')
 
         var service = {};
 
-        var projectResource = $resource('/project/:id', {}, {
+        var projectResource = $resource('/project/:id');
+        var projectsResource = $resource('/projects');
+        var projectPledgeResource = $resource('/project/:id/pledges');
+        var projectStatusResource = $resource('/project/:id/status', {}, {
             patch: {
                 method: 'PATCH'
             }
         });
-        var projectsResource = $resource('/projects');
-        var projectPledgeResource = $resource('/project/:id/pledges');
 
         service.add = function (project) {
             return projectResource.save(project).$promise;
@@ -29,11 +30,15 @@ angular.module('crowdsource')
         };
 
         service.publish = function (projectId) {
-            return projectResource.patch({id: projectId}, {status: 'PUBLISHED'});
+            return projectStatusResource.patch({id: projectId}, {status: 'PUBLISHED'});
         };
 
         service.reject = function (projectId) {
-            return projectResource.patch({id: projectId}, {status: 'REJECTED'});
+            return projectStatusResource.patch({id: projectId}, {status: 'REJECTED'});
+        };
+
+        service.defer = function (projectId) {
+            return projectStatusResource.patch({id: projectId}, {status: 'DEFERRED'} );
         };
 
         return service;

@@ -1,17 +1,13 @@
 package de.asideas.crowdsource.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import de.asideas.crowdsource.security.Roles;
-import de.asideas.crowdsource.enums.ProjectStatus;
-import de.asideas.crowdsource.exceptions.InvalidRequestException;
-import de.asideas.crowdsource.exceptions.ResourceNotFoundException;
-import de.asideas.crowdsource.model.persistence.FinancingRoundEntity;
-import de.asideas.crowdsource.model.persistence.UserEntity;
-import de.asideas.crowdsource.model.presentation.FinancingRound;
-import de.asideas.crowdsource.model.presentation.project.PublicFinancingRoundInformationView;
+import de.asideas.crowdsource.domain.exception.ResourceNotFoundException;
+import de.asideas.crowdsource.domain.model.FinancingRoundEntity;
+import de.asideas.crowdsource.domain.presentation.FinancingRound;
+import de.asideas.crowdsource.domain.presentation.project.PublicFinancingRoundInformationView;
 import de.asideas.crowdsource.repository.FinancingRoundRepository;
-import de.asideas.crowdsource.repository.ProjectRepository;
-import de.asideas.crowdsource.repository.UserRepository;
+import de.asideas.crowdsource.security.Roles;
+import de.asideas.crowdsource.service.FinancingRoundService;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,15 +31,11 @@ public class FinancingRoundController {
     private FinancingRoundRepository financingRoundRepository;
 
     @Autowired
-    private ProjectRepository projectRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+    private FinancingRoundService financingRoundService;
 
     @Secured(Roles.ROLE_ADMIN)
     @RequestMapping(value = "/financingrounds", method = RequestMethod.GET)
-    public List<FinancingRound> financingRounds() {
-
+    public List<FinancingRound> allFinancingRounds() {
         return financingRoundRepository
                 .findAll()
                 .stream()
@@ -55,7 +47,6 @@ public class FinancingRoundController {
     @RequestMapping(value = "/financinground/active", method = RequestMethod.GET)
     @Secured({Roles.ROLE_TRUSTED_ANONYMOUS, Roles.ROLE_USER, Roles.ROLE_ADMIN})
     public FinancingRound getActive() {
-
         final FinancingRoundEntity financingRoundEntity = financingRoundRepository.findActive(DateTime.now());
         if (financingRoundEntity == null) {
             throw new ResourceNotFoundException();
@@ -65,61 +56,17 @@ public class FinancingRoundController {
     }
 
     @Secured(Roles.ROLE_ADMIN)
-    @RequestMapping(value = "financinground", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "financinground", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public FinancingRound startFinancingRound(@Valid @RequestBody FinancingRound financingRound) {
-
-        // flush user budget and set new budget
-        final List<UserEntity> userEntities = userRepository.findAll();
-        final int budgetPerUser = budgetPerUser(financingRound.getBudget(), userEntities.size());
-        userEntities.forEach(userEntity -> {
-            userEntity.setBudget(budgetPerUser);
-            userRepository.save(userEntity);
-        });
-
-        // create round
-        final FinancingRoundEntity financingRoundEntity = new FinancingRoundEntity();
-        financingRoundEntity.setStartDate(new DateTime());
-        financingRoundEntity.setEndDate(financingRound.getEndDate());
-        financingRoundEntity.setBudget(financingRound.getBudget());
-        financingRoundEntity.setBudgetPerUser(budgetPerUser);
-        financingRoundEntity.setUserCount(userEntities.size());
-
-        final FinancingRoundEntity savedFinancingRoundEntity = financingRoundRepository.save(financingRoundEntity);
-
-        projectRepository.findAll().stream()
-                .filter(p -> p.getStatus() != ProjectStatus.FULLY_PLEDGED)
-                .forEach(project -> {
-                    project.setFinancingRound(savedFinancingRoundEntity);
-                    projectRepository.save(project);
-                });
-
-        return new FinancingRound(savedFinancingRoundEntity);
+        return financingRoundService.startNewFinancingRound(financingRound);
     }
 
     @Secured(Roles.ROLE_ADMIN)
     @RequestMapping(value = "financinground/{id}/cancel", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
     public FinancingRound stopFinancingRound(@PathVariable String id) {
-
-        // find entity
-        final FinancingRoundEntity financingRoundEntity = financingRoundRepository.findOne(id);
-
-        if (financingRoundEntity == null) {
-            throw new ResourceNotFoundException();
-        }
-        if (financingRoundEntity.getEndDate().isBeforeNow()) {
-            throw InvalidRequestException.financingRoundAlreadyStopped();
-        }
-
-        financingRoundEntity.setEndDate(new DateTime());
-        financingRoundRepository.save(financingRoundEntity);
-        return new FinancingRound(financingRoundEntity);
+        return financingRoundService.stopFinancingRound(id);
     }
 
-
-    int budgetPerUser(int financingRoundBudget, int userCount) {
-
-        return userCount < 1 ? 0 : Math.floorDiv(financingRoundBudget, userCount);
-    }
 }

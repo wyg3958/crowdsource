@@ -13,11 +13,14 @@ import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+
 @Component
 public class ProjectPledgingForm {
 
     private static final String SELECTOR_BUDGET = ".pledging-form .finance__section .budget";
     private static final String SELECTOR_PLEDGED_AMOUNT = ".pledging-form .pledged-amount";
+    private static final String AMOUNT_INPUT_FIELD = ".pledging-form .finance__input";
 
     @FindBy(css = ".pledging-form .notification")
     private WebElement notificationBox;
@@ -43,7 +46,7 @@ public class ProjectPledgingForm {
     @FindBy(css = ".pledging-form .finance__btn")
     private WebElement pledgingButton;
 
-    @FindBy(css = ".pledging-form .finance__input")
+    @FindBy(css = AMOUNT_INPUT_FIELD)
     private WebElement amountInputField;
 
     @FindBy(css = ".pledging-form .finance__btn")
@@ -95,7 +98,7 @@ public class ProjectPledgingForm {
     }
 
     public int getAmountFromInputField() {
-        makeSureDataLoaded();
+        wait.until(d -> Integer.valueOf(updatedWebElement(d, AMOUNT_INPUT_FIELD).getAttribute("value")), 5, 200, Collections.singletonList(NumberFormatException.class));
         return Integer.parseInt(amountInputField.getAttribute("value"));
     }
 
@@ -119,10 +122,10 @@ public class ProjectPledgingForm {
         return d.findElement(By.cssSelector(cssSelector));
     }
     private void makeSureDataLoaded(){
+        PageFactory.initElements(webDriverProvider.provideDriver(), this);
         try{
             wait.until( d -> {
                 try{
-                    PageFactory.initElements(webDriverProvider.provideDriver(), this);
                     ElementUtils.parseCurrency(updatedWebElement(webDriverProvider.provideDriver(), SELECTOR_BUDGET));
                 }catch (Exception e){
                     return false;

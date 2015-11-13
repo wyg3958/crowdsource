@@ -14,16 +14,22 @@
             <span ng-message="remote_project_already_fully_pledged">
                 Das Projekt wurde mittlerweile von anderen Benutzern vollständig finanziert. Ein Finanzieren ist leider nicht mehr möglich.
             </span>
+            <span ng-message="remote_project_already_in_financing_round">
+                Das Projekt befindet sich bereits in einer Finanzierungsrunde.
+            </span>
             <span ng-message="remote_user_budget_exceeded">Dein Budget reicht nicht aus. Bitte versuche es erneut</span>
-            <span ng-message="reverse_pledge_exceeded">Du kannst nicht mehr Budget aus dem Projekt abziehen, als Du ursprünglich zugewiesen hast. Versuche es mit einem anderen Betrag.</span>
+            <span ng-message="remote_reverse_pledge_exceeded">Du kannst nicht mehr Budget aus dem Projekt abziehen, als Du ursprünglich zugewiesen hast. Versuche es mit einem anderen Betrag.</span>
             <span ng-message="remote_no_financing_round_currently_active">
                 Die Finanzierungsrunde ist mittlerweile leider beendet.
                 Das Finanzieren ist erst wieder möglich, wenn die nächste Runde gestartet wurde.
             </span>
             <span ng-message="remote_project_not_published">
-                Das Projekt ist nicht mehr veröffentlicht. Nur veröffentliche Projekte können finanziert werden.
+                Das Projekt ist nicht mehr veröffentlicht. Nur veröffentlichte Projekte können finanziert werden.
             </span>
-            <span ng-message="zero_pledge_not_valid">
+            <span ng-message="remote_set_to_deferred_not_possible_on_rejected">
+                Ein abgelehntes Projekt kann nicht zurückgestellt werden. Bringe es zunächst in den Status 'veröffentlicht' oder 'vorgeschlagen'.
+            </span>
+            <span ng-message="remote_zero_pledge_not_valid">
                 Ein Investment mit dem Wert 0 ist leider nicht zulässig.
             </span>
             <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuche es erneut.</span>

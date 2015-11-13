@@ -25,7 +25,20 @@ Feature: Add project
     Then the project overview page shows the new project
     And the project is marked "published"
 
-  Scenario: A user view the new project page and gets a tooltip for currency conversion
+  Scenario: A user adds a new project and it is deferred by an admin
+    Given a user is logged in
+    When he clicks on the New Project link in the navigation bar
+    Then he is redirected to the project creation page
+    When he submits the form with valid project data
+    Then the project creation success page is shown
+    When an admin defers the project
+    When he clicks the project details link
+    Then the project details page shows the new project
+    When the CROWD link is clicked
+    Then the project overview page shows the new project
+    And the project is marked "deferred"
+
+  Scenario: A user views the new project page and gets a tooltip for currency conversion
     Given a user is logged in
     When he clicks on the New Project link in the navigation bar
     Then he is redirected to the project creation page

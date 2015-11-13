@@ -1,7 +1,8 @@
 package de.asideas.crowdsource.service;
 
-import de.asideas.crowdsource.exceptions.NotAuthorizedException;
-import de.asideas.crowdsource.model.persistence.UserEntity;
+import de.asideas.crowdsource.domain.exception.NotAuthorizedException;
+import de.asideas.crowdsource.domain.model.UserEntity;
+import de.asideas.crowdsource.domain.service.user.UserNotificationService;
 import de.asideas.crowdsource.repository.UserRepository;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;

@@ -10,7 +10,7 @@ An admin:  cs_admin@crowd.source.de:einAdminGehtZumBaecker!
 
 Please feel free to mess around with this installation :)
 
-documentation
+Documentation
 =============
 
 Modules
@@ -127,6 +127,10 @@ Tracking includes virtual page views (all the angular anchor links) and the foll
  * | AccountActivated   | UserActions     
  * | FaqEntryOpened | UserActions | Label - faq_entry | Value - faq title     
    
+In order to decorate HTML elements, like buttons or links with tracking actions just add the following properties to the respective tag:
+ * `analytics-on="click"`
+ * `analytics-category="<yourCategory>" `
+ * `analytics-event="yourEvent"`
 
 Issue Tracking / Feedback Form
 -------------------------

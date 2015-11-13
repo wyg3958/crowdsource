@@ -1,6 +1,6 @@
 package de.asideas.crowdsource.repository;
 
-import de.asideas.crowdsource.model.persistence.FinancingRoundEntity;
+import de.asideas.crowdsource.domain.model.FinancingRoundEntity;
 import org.joda.time.DateTime;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;

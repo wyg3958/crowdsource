@@ -53,4 +53,10 @@ public class MailTemplateConfigTest {
         Expression expression = mailTemplateConfig.projectRejectedEmailTemplate();
         assertThat(expression, is(not(nullValue())));
     }
+
+    @Test
+    public void projectDeferredEmailTemplate() {
+        Expression expression = mailTemplateConfig.projectDeferredEmailTemplate();
+        assertThat(expression, is(not(nullValue())));
+    }
 }

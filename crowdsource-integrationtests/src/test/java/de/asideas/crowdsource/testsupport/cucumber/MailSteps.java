@@ -3,11 +3,11 @@ package de.asideas.crowdsource.testsupport.cucumber;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import de.asideas.crowdsource.enums.ProjectStatus;
-import de.asideas.crowdsource.model.persistence.UserEntity;
-import de.asideas.crowdsource.model.presentation.project.Project;
-import de.asideas.crowdsource.model.presentation.user.ProjectCreator;
-import de.asideas.crowdsource.service.UserNotificationService;
+import de.asideas.crowdsource.domain.model.UserEntity;
+import de.asideas.crowdsource.domain.presentation.project.Project;
+import de.asideas.crowdsource.domain.presentation.user.ProjectCreator;
+import de.asideas.crowdsource.domain.service.user.UserNotificationService;
+import de.asideas.crowdsource.domain.shared.ProjectStatus;
 import de.asideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.asideas.crowdsource.testsupport.util.CrowdSourceClient;
 import de.asideas.crowdsource.testsupport.util.MailServerClient;
@@ -111,9 +111,14 @@ public class MailSteps {
 
     @And("^an administrator publishes the project$")
     public void an_administrator_publishes_the_project() throws Throwable {
-
-        createdProject.setStatus(ProjectStatus.PUBLISHED);
         crowdSourceClient.publish(createdProject, crowdSourceClient.authorizeWithAdminUser());
+        createdProject.setStatus(ProjectStatus.PUBLISHED);
+    }
+
+    @And("^an administrator defers the project$")
+    public void an_administrator_defers_the_project() throws Throwable {
+        createdProject.setStatus(ProjectStatus.DEFERRED);
+        crowdSourceClient.defer(createdProject, crowdSourceClient.authorizeWithAdminUser());
     }
 
     @Then("^an email notification about the rejected project is sent to the user$")
@@ -134,6 +139,16 @@ public class MailSteps {
         assertEquals(DEFAULT_USER_EMAIL, receivedMessage.to);
         assertEquals(UserNotificationService.PROJECT_PUBLISHED_SUBJECT, receivedMessage.subject);
         assertThat(receivedMessage.message, containsString("Dein Projekt wurde erfolgreich freigegeben!"));
+    }
+
+    @Then("^an email notification about the deferred project is sent to the user$")
+    public void an_email_notification_about_the_deferred_project_is_sent_to_the_user() throws Throwable {
+
+        final MailServerClient.Message receivedMessage = grabMessage();
+        assertEquals(UserNotificationService.FROM_ADDRESS, receivedMessage.from);
+        assertEquals(DEFAULT_USER_EMAIL, receivedMessage.to);
+        assertEquals(UserNotificationService.PROJECT_DEFERRED_SUBJECT, receivedMessage.subject);
+        assertThat(receivedMessage.message, containsString("Dein Projekt wurde leider zurückgestellt"));
     }
 
     @And("^the sent mail is cleared$")

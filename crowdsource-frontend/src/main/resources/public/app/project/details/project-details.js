@@ -1,6 +1,6 @@
 angular.module('crowdsource')
 
-    .controller('ProjectDetailsController', function ($window, $routeParams, $location, Project, Authentication) {
+    .controller('ProjectDetailsController', function ($window, $routeParams, $location, Project, FinancingRound, Authentication) {
 
         var vm = this;
 
@@ -59,11 +59,28 @@ angular.module('crowdsource')
                 });
         };
 
+        vm.defer = function () {
+            if (!$window.confirm('Willst Du das Projekt wirklich aus der nächsten Finanzierungsrunde ausschließen?')) {
+                return;
+            }
+
+            vm.deferring = true;
+            Project.defer(vm.project.id).$promise
+                .then(function (project) {
+                    vm.project = project;
+                })
+                .catch(function () {
+                    $location.path('/error/unknown');
+                }).finally(function () {
+                    vm.deferring = false;
+                });
+        };
+
         vm.isPublishable = function () {
             if (!vm.project.$resolved) {
                 return false;
             }
-            return vm.project.status == 'PROPOSED' || vm.project.status == 'REJECTED';
+            return vm.project.status == 'PROPOSED' || vm.project.status == 'REJECTED' || vm.project.status =='DEFERRED';
         };
 
         vm.isRejectable = function () {
@@ -72,4 +89,18 @@ angular.module('crowdsource')
             }
             return vm.project.status == 'PROPOSED' || vm.project.status == 'PUBLISHED';
         };
+
+        vm.isDeferrable = function() {
+            if (!vm.project.$resolved) {
+                return false;
+            }
+            return (vm.project.status == 'PROPOSED' || vm.project.status == 'PUBLISHED' )
+                && !FinancingRound.currentFinancingRound().active;
+        };
+
+        vm.toPledgingFormButtonDisabled = function (){
+            return vm.project.status == 'FULLY_PLEDGED' || vm.project.status == 'REJECTED'
+                    || vm.project.status == 'DEFERRED'|| vm.project.status == 'PROPOSED';
+        }
+
     });

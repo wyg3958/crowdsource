@@ -1,16 +1,25 @@
 package de.asideas.crowdsource.testsupport.pageobjects.project;
 
 import de.asideas.crowdsource.testsupport.selenium.SeleniumWait;
+import de.asideas.crowdsource.testsupport.selenium.WebDriverProvider;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static de.asideas.crowdsource.testsupport.selenium.AngularJsUtils.interpolationCompletedOfElementLocated;
 
 @Component
 public class ProjectStatusWidget {
 
     @Autowired
     private SeleniumWait wait;
+
+    @Autowired
+    private WebDriverProvider webDriverProvider;
 
     @FindBy(css = ".project-details progress-bar .cs-progress__meter")
     private WebElement progressBar;
@@ -53,5 +62,12 @@ public class ProjectStatusWidget {
 
     public void clickFundingButton() {
         scrollToPledgingFormButton.click();
+    }
+
+    public void waitForDetailsToBeLoaded() {
+        RemoteWebDriver webDriver = webDriverProvider.provideDriver();
+        wait.until(interpolationCompletedOfElementLocated(By.cssSelector(".project-status__backers")));
+        PageFactory.initElements(webDriver, this);
+
     }
 }

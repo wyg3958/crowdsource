@@ -76,5 +76,9 @@ angular.module('crowdsource')
 
         service.current = {$resolved: false};
 
+        service.currentFinancingRound = function(){
+            return service.current;
+        };
+
         return service;
     });

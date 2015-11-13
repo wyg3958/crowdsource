@@ -1,9 +1,10 @@
 package de.asideas.crowdsource.service;
 
 import de.asideas.crowdsource.config.mail.MailTemplateConfig;
-import de.asideas.crowdsource.enums.ProjectStatus;
-import de.asideas.crowdsource.model.persistence.ProjectEntity;
-import de.asideas.crowdsource.model.persistence.UserEntity;
+import de.asideas.crowdsource.domain.model.ProjectEntity;
+import de.asideas.crowdsource.domain.model.UserEntity;
+import de.asideas.crowdsource.domain.service.user.UserNotificationService;
+import de.asideas.crowdsource.domain.shared.ProjectStatus;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

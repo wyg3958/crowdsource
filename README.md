@@ -112,6 +112,7 @@ This will cause the tracking snippet to be rendered in the index.html.
 Tracking includes virtual page views (all the angular anchor links) and the following actions with their respective category:
 
  * | Rejected   | Projects        
+ * | Deferred   | Projects        
  * | Comment    | Projects        
  * | ProjectIdeaSubmitted   | Projects        
  * | ProjectPledged | Projects        

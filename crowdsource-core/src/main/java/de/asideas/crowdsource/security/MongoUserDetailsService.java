@@ -1,6 +1,6 @@
 package de.asideas.crowdsource.security;
 
-import de.asideas.crowdsource.model.persistence.UserEntity;
+import de.asideas.crowdsource.domain.model.UserEntity;
 import de.asideas.crowdsource.repository.UserRepository;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +9,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;

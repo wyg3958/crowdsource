@@ -88,7 +88,7 @@ describe('financing rounds', function () {
 
         prepareBackendGetFinancingRoundsMock([
             {"budget": "1111", "startDate": startDate1.toISOString(), "endDate": endDate1.toISOString(), "active": false},
-            {"budget": "2222", "startDate": startDate2.toISOString(), "endDate": endDate2.toISOString(), "active": false}
+            {"budget": "2222", "postRoundBudget": 1001, "startDate": startDate2.toISOString(), "endDate": endDate2.toISOString(), "active": false}
         ]);
         $httpBackend.flush();
         $scope.$digest();
@@ -102,6 +102,7 @@ describe('financing rounds', function () {
         expect(financingRounds.getTableStartDate(row).text()).toBe(startDate2.format('DD.MM.YY HH:mm'));
         expect(financingRounds.getTableEndDate(row)).toHaveText(endDate2.format('DD.MM.YY HH:mm'));
         expect(financingRounds.getTableBudget(row)).toHaveText('2.222');
+        expect(financingRounds.getTablePostRoundBudget(row)).toHaveText('1.001');
 
         expect(financingRounds.getTableEndRoundButton()).not.toExist();
         expect(financingRounds.getTableEndRoundButton(row)).not.toExist();
@@ -167,14 +168,14 @@ describe('financing rounds', function () {
         expect(financingRounds.getStartRoundButton()).not.toBeDisabled();
         expect(financingRounds.getStartRoundButton()).toHaveText('Starten!');
 
-        $httpBackend.expectPOST('/financinground', {"budget": budget, "endDate": endDate.toISOString()}).respond(200,
+        $httpBackend.expectPOST('/financingrounds', {"budget": budget, "endDate": endDate.toISOString()}).respond(200,
             {"id": "4711", "startDate": startDate.toISOString(), "endDate": modifiedEndDate.toISOString(), "budget": budget, "active": true});
 
         $httpBackend.expectGET('/financingrounds').respond(200, [
             {"budget": "5555", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "active": true}
         ]);
 
-        $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
+        $httpBackend.expectGET('/financingrounds/mostRecent').respond(200, {active: true});
 
         financingRounds.getStartRoundButton().click();
         expect(financingRounds.getStartRoundButton()).toHaveText('Starten...');
@@ -196,14 +197,14 @@ describe('financing rounds', function () {
 
         expect(financingRounds.getTableEndRoundButton()).toHaveText('Beenden');
 
-        $httpBackend.expectPUT('/financinground/4711/cancel', {})
+        $httpBackend.expectPUT('/financingrounds/4711/cancel', {})
             .respond(200, {"id": "4711", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "budget": 4444, "active": false});
 
         prepareBackendGetFinancingRoundsMock([
             {"id": "4711", "budget": "5555", "startDate": startDate.toISOString(), "endDate": endDate.toISOString(), "active": false}
         ]);
 
-        $httpBackend.expectGET('/financinground/active').respond(404);
+        $httpBackend.expectGET('/financingrounds/mostRecent').respond(200, {active: false});
 
         spyOn($window, 'confirm').and.returnValue(true);
         financingRounds.getTableEndRoundButton().click();
@@ -242,7 +243,7 @@ describe('financing rounds', function () {
 
         prepareViewWithNoRunningRound();
 
-        $httpBackend.expectPOST('/financinground', {"budget": budget, "endDate": modifiedEndDate.toISOString()}).respond(500);
+        $httpBackend.expectPOST('/financingrounds', {"budget": budget, "endDate": modifiedEndDate.toISOString()}).respond(500);
         expect(financingRounds.getStartRoundButton()).toBeDisabled();
 
         financingRounds.getEndDate().getInputField().val(endDate.format('DD.MM.YYYY')).trigger('input');
@@ -265,7 +266,7 @@ describe('financing rounds', function () {
         $httpBackend.flush();
         $scope.$digest();
 
-        $httpBackend.expectPUT('/financinground/4711/cancel', {}).respond(500);
+        $httpBackend.expectPUT('/financingrounds/4711/cancel', {}).respond(500);
 
         spyOn($window, 'confirm').and.returnValue(true);
         financingRounds.getTableEndRoundButton().click();

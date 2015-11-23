@@ -31,8 +31,9 @@ public class ProjectTest {
         creator.setId("id");
 
         activeFinancingRoundEntity = new FinancingRoundEntity();
+        activeFinancingRoundEntity.setEndDate(DateTime.now().plusDays(1));
         Project project = new Project();
-        projectEntity = new ProjectEntity(creator, project, new FinancingRoundEntity());
+        projectEntity = new ProjectEntity(creator, project, activeFinancingRoundEntity);
 
         user1 = new UserEntity("user1@xyz.com");
         user1.setId("test_id1");

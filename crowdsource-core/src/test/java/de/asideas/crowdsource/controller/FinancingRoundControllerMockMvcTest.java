@@ -29,14 +29,21 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -48,26 +55,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class FinancingRoundControllerMockMvcTest {
 
     @Autowired
-    private FinancingRoundRepository financingRoundRepository;
-
-    @Autowired
     private FinancingRoundService financingRoundService;
 
-    private ObjectMapper mapper = new ObjectMapper();
+    @Autowired
+    private FinancingRoundRepository financingRoundRepository;
 
     @Resource
     private WebApplicationContext webApplicationContext;
 
     private MockMvc mockMvc;
+    private ObjectMapper mapper = new ObjectMapper();
+
     private DateTime fixedDate;
+    private List<FinancingRoundEntity> financingRoundEntities;
 
     @Before
     public void init() {
 
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         reset(financingRoundRepository, financingRoundService);
+        financingRoundEntities = new ArrayList<>();
 
-        List<FinancingRoundEntity> financingRoundEntities = new ArrayList<>();
 
         fixedDate = DateTime.parse("2015-01-10T10:10:10Z");
         financingRoundEntities.add(financingRoundEntity(fixedDate.minusDays(100), fixedDate.minusDays(50)));
@@ -79,51 +87,58 @@ public class FinancingRoundControllerMockMvcTest {
         userEntities.add(new UserEntity("test2@mail.com"));
 
         mapper.registerModule(new JodaModule());
-
-        when(financingRoundRepository.save(any(FinancingRoundEntity.class))).thenAnswer(invocationOnMock -> invocationOnMock.getArguments()[0]);
     }
 
     @Test
     public void allFinancingRounds() throws Exception {
 
-        when(financingRoundRepository.findActive(any()))
-                .thenReturn(financingRoundEntity(fixedDate.minusDays(100), fixedDate.minusDays(50)));
+        when(financingRoundService.allFinancingRounds()).thenReturn(Arrays.asList(
+                new FinancingRound(financingRoundEntities.get(0), null),
+                new FinancingRound(financingRoundEntities.get(1), null)
+        ));
 
         final MvcResult mvcResult = mockMvc
                 .perform(get("/financingrounds"))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        assertThat(mvcResult.getResponse().getContentAsString(), is("[" +
-                "{\"id\":null,\"startDate\":1412244610000,\"endDate\":1416564610000,\"budget\":null,\"active\":false}," +
-                "{\"id\":null,\"startDate\":1417428610000,\"endDate\":1418292610000,\"budget\":null,\"active\":false}]"));
-        verify(financingRoundRepository, times(1)).findAll();
+        final FinancingRound[] res = mapper.readValue(mvcResult.getResponse().getContentAsString(), FinancingRound[].class);
+        for (int i = 0; i < res.length; i++) {
+            assertFinancingRoundsEqual(res[i], new FinancingRound(financingRoundEntities.get(i), null));
+        }
     }
 
     @Test
-    public void testGetActiveFinancingRound() throws Exception {
-
-        when(financingRoundRepository.findActive(any()))
-                .thenReturn(financingRoundEntity(fixedDate.minusDays(100), fixedDate.minusDays(50)));
+    public void getActive() throws Exception {
+        final FinancingRound expRound = anExpectedFinancingRound();
+        when(financingRoundService.currentlyActiveRound()).thenReturn(expRound);
 
         final MvcResult mvcResult = mockMvc
-                .perform(get("/financinground/active"))
+                .perform(get("/financingrounds/active"))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        assertThat(mvcResult.getResponse().getContentAsString(), is("{\"id\":null,\"startDate\":1412244610000,\"endDate\":1416564610000,\"active\":false}"));
-        verify(financingRoundRepository, times(1)).findActive(any());
+        assertFinancingRoundsEqual(mapper.readValue(mvcResult.getResponse().getContentAsString(), FinancingRound.class), expRound, true);
     }
 
     @Test
-    public void testGetActiveFinancingRoundShouldReturn404IfNoneIsActive() throws Exception {
-
-        when(financingRoundRepository.findActive(any())).thenReturn(null);
-
-        mockMvc.perform(get("/financinground/active"))
+    public void getActive_ShouldReturn404IfNoneIsActive() throws Exception {
+        when(financingRoundService.currentlyActiveRound()).thenThrow(new ResourceNotFoundException());
+        mockMvc.perform(get("/financingrounds/active"))
                 .andExpect(status().isNotFound());
+    }
 
-        verify(financingRoundRepository, times(1)).findActive(any());
+    @Test
+    public void getMostRecent() throws Exception {
+        final FinancingRound expRound = anExpectedFinancingRound();
+        when(financingRoundService.mostRecentRound()).thenReturn(expRound);
+
+        final MvcResult mvcResult = mockMvc
+                .perform(get("/financingrounds/mostRecent"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        assertFinancingRoundsEqual(mapper.readValue(mvcResult.getResponse().getContentAsString(), FinancingRound.class), expRound, true);
     }
 
     @Test
@@ -138,22 +153,22 @@ public class FinancingRoundControllerMockMvcTest {
         when(financingRoundService.startNewFinancingRound(
                 cmdCaptor.capture())).thenReturn(expectedFinancingRound);
 
-        final MvcResult mvcResult = mockMvc.perform(post("/financinground")
+        final MvcResult mvcResult = mockMvc.perform(post("/financingrounds")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(financingRoundCreationCmd)))
                 .andExpect(status().isCreated())
                 .andReturn();
 
-        assertFinancingRoundsEqual(cmdCaptor.getValue(), financingRoundCreationCmd);
+        assertFinancingRoundsEqual(financingRoundCreationCmd, cmdCaptor.getValue() );
 
         final FinancingRound actRes = mapper.readValue(mvcResult.getResponse().getContentAsString(), FinancingRound.class);
-        assertFinancingRoundsEqual(expectedFinancingRound, actRes);
+        assertFinancingRoundsEqual(actRes, expectedFinancingRound);
     }
 
     @Test
     public void startFinancingRoundEndDateNotInFuture() throws Exception {
         // attempt to start a round that ends in the past
-        final MvcResult mvcResult = mockMvc.perform(post("/financinground")
+        final MvcResult mvcResult = mockMvc.perform(post("/financingrounds")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(financingRound(new DateTime(), 99))))
                 .andExpect(status().isBadRequest())
@@ -169,7 +184,7 @@ public class FinancingRoundControllerMockMvcTest {
     public void startFinancingRoundBudgetTooLow() throws Exception {
 
         // attempt to create round with 0-budget
-        final MvcResult mvcResult = mockMvc.perform(post("/financinground")
+        final MvcResult mvcResult = mockMvc.perform(post("/financingrounds")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(financingRound(new DateTime().plusDays(1), 0))))
                 .andExpect(status().isBadRequest())
@@ -187,7 +202,7 @@ public class FinancingRoundControllerMockMvcTest {
         when(financingRoundRepository.findAll()).thenReturn(Collections.singletonList(financingRoundEntity(new DateTime().minusDays(5), new DateTime().plusDays(1))));
 
         // attempt to create a new (otherwise valid) one
-        final MvcResult mvcResult = mockMvc.perform(post("/financinground")
+        final MvcResult mvcResult = mockMvc.perform(post("/financingrounds")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(financingRound(new DateTime().plusDays(1), 99))))
                 .andExpect(status().isBadRequest())
@@ -207,12 +222,12 @@ public class FinancingRoundControllerMockMvcTest {
         when(financingRoundService.stopFinancingRound(roundId)).thenReturn(expectedFinancingRound);
 
         // stop round
-        final MvcResult mvcResult = mockMvc.perform(put("/financinground/4711/cancel"))
+        final MvcResult mvcResult = mockMvc.perform(put("/financingrounds/4711/cancel"))
                 .andExpect(status().isOk())
                 .andReturn();
 
         final FinancingRound actRes = mapper.readValue(mvcResult.getResponse().getContentAsString(), FinancingRound.class);
-        assertFinancingRoundsEqual(expectedFinancingRound, actRes);
+        assertFinancingRoundsEqual(actRes, expectedFinancingRound);
     }
 
     @Test
@@ -220,10 +235,9 @@ public class FinancingRoundControllerMockMvcTest {
         doThrow(ResourceNotFoundException.class).when(financingRoundService).stopFinancingRound("4711");
 
         // stop round
-        mockMvc.perform(put("/financinground/4711/cancel"))
+        mockMvc.perform(put("/financingrounds/4711/cancel"))
                 .andExpect(status().isNotFound());
 
-        verify(financingRoundRepository, times(0)).save(any(FinancingRoundEntity.class));
     }
 
     @Test
@@ -233,7 +247,7 @@ public class FinancingRoundControllerMockMvcTest {
         });
 
         // stop round
-        final MvcResult mvcResult = mockMvc.perform(put("/financinground/4711/cancel"))
+        final MvcResult mvcResult = mockMvc.perform(put("/financingrounds/4711/cancel"))
                 .andExpect(status().isBadRequest())
                 .andReturn();
 
@@ -248,9 +262,12 @@ public class FinancingRoundControllerMockMvcTest {
     }
 
     private FinancingRound anExpectedFinancingRound() {
+        return anExpectedFinancingRound("test_id");
+    }
+    private FinancingRound anExpectedFinancingRound(String id) {
         final FinancingRound res = financingRound(new DateTime().plusDays(1), 99);
         res.setActive(true);
-        res.setId("test_Id");
+        res.setId(id);
         res.setStartDate(new DateTime());
         return res;
     }
@@ -262,12 +279,22 @@ public class FinancingRoundControllerMockMvcTest {
         return reference;
     }
 
-    private void assertFinancingRoundsEqual(FinancingRound expectedFinancingRound, FinancingRound actRes) {
-        assertThat(actRes.getStartDate().getMillis(), is(expectedFinancingRound.getStartDate().getMillis()));
+    private void assertFinancingRoundsEqual(FinancingRound actRes, FinancingRound expectedFinancingRound ) {
+        assertFinancingRoundsEqual(expectedFinancingRound, actRes, false);
+    }
+
+    private void assertFinancingRoundsEqual(FinancingRound actRes, FinancingRound expectedFinancingRound, boolean isPublicJsonView) {
         assertThat(actRes.getId(), is(expectedFinancingRound.getId()));
+        assertThat(actRes.getStartDate().getMillis(), is(expectedFinancingRound.getStartDate().getMillis()));
         assertThat(actRes.getEndDate().getMillis(), is(expectedFinancingRound.getEndDate().getMillis()));
-        assertThat(actRes.getBudget(), is(expectedFinancingRound.getBudget()));
         assertThat(actRes.isActive(), is(expectedFinancingRound.isActive()));
+        assertThat(actRes.getPostRoundBudget(), is(expectedFinancingRound.getPostRoundBudget()));
+        assertThat(actRes.isPostRoundBudgetDistributable(), is(expectedFinancingRound.isPostRoundBudgetDistributable()));
+        if(isPublicJsonView){
+            assertThat(actRes.getBudget(), is(nullValue()));
+        }else{
+            assertThat(actRes.getBudget(), is(expectedFinancingRound.getBudget()));
+        }
     }
 
     @Configuration

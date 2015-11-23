@@ -21,7 +21,7 @@ angular.module('crowdsource')
                 }, function() {
                     // lazy init slider after project data are available;
                     $timeout(function() {
-                        vm.pledge.amount = vm.project.pledgedAmountByRequestingUser;
+                        vm.pledge.amount = vm.currentlyPledgedAmountByUser();
                         vm.initslider = true;
                     }, 100);
                 });
@@ -30,6 +30,13 @@ angular.module('crowdsource')
 
                 // to get the current user's budget
                 vm.user = Authentication.reloadUser();
+
+                vm.authorizedForPostRoundPledges = function () {
+                    var currentFinancingRound = FinancingRound.currentFinancingRound();
+                    return currentFinancingRound.postRoundBudgetDistributable &&
+                        vm.user.hasRole('ADMIN') &&
+                        vm.project.status == 'PUBLISHED';
+                };
 
                 vm.pledgeProject = function () {
                     vm.success = false;
@@ -63,19 +70,67 @@ angular.module('crowdsource')
 
                 vm.getPledgableAmount = function () {
                     var remainingProjectGoal,
-                        pledgedByCurrentUserSum = vm.getPledgedAmountByCurrentUser();
+                        financingRound = FinancingRound.currentFinancingRound();
 
-                    if (isLoading()) {
-                        return 0;
-                    }
-
-                    if (!FinancingRound.current.active || vm.project.status != 'PUBLISHED') {
+                    if (isLoading() || vm.project.status != 'PUBLISHED') {
                         return 0;
                     }
 
                     remainingProjectGoal = vm.project.pledgeGoal - vm.project.pledgedAmount;
 
-                    return pledgedByCurrentUserSum + Math.min(remainingProjectGoal, vm.user.budget);
+                    if (vm.authorizedForPostRoundPledges()) {
+                        return vm.getPledgedAmountByPostRoundBudget() + Math.min(remainingProjectGoal, financingRound.postRoundBudgetRemaining);
+                    } else if(financingRound.active) {
+                        return vm.getPledgedAmountByCurrentUser() + Math.min(remainingProjectGoal, vm.user.budget);
+                    }else {
+                        return 0;
+                    }
+
+                };
+
+                vm.currentlyPledgedAmountByUser = function () {
+                    if (vm.authorizedForPostRoundPledges()){
+                        return vm.getPledgedAmountByPostRoundBudget();
+                    }else {
+                        return vm.getPledgedAmountByCurrentUser();
+                    }
+                };
+
+                vm.getPledgedAmountByCurrentUser = function () {
+                    return vm.project.pledgedAmountByRequestingUser || 0;
+                };
+                vm.getPledgedAmountByPostRoundBudget = function () {
+                    return vm.project.pledgedAmountByPostRoundBudget || 0;
+                };
+
+                vm.getUserBudget = function () {
+                    var budgetAvailableForUser;
+                    if ( vm.authorizedForPostRoundPledges()){
+                        budgetAvailableForUser = FinancingRound.currentFinancingRound().postRoundBudgetRemaining;
+                    }else {
+                        budgetAvailableForUser = vm.user.budget;
+                    }
+                    return budgetAvailableForUser - vm.pledge.amount + vm.currentlyPledgedAmountByUser();
+                };
+
+                vm.getPledgedAmount = function () {
+                    return vm.project.pledgedAmount + vm.pledge.amount - vm.currentlyPledgedAmountByUser();
+                };
+
+                vm.isReversePledge = function () {
+                    return normalizePledge(vm.pledge).amount < 0;
+                };
+
+                vm.isZeroPledge = function () {
+                    return normalizePledge(vm.pledge).amount == 0;
+                };
+
+                vm.financeButtonLabel = function () {
+                    if (vm.saving) return  'Bitte warten...';
+                    if (vm.isReversePledge()) {
+                        return 'Jetzt Budget abziehen'
+                    }
+                    return 'Jetzt finanzieren';
                 };
 
                 vm.getNotification = function () {
@@ -99,8 +154,11 @@ angular.module('crowdsource')
                     if (vm.project.status != 'PUBLISHED') {
                         return {type: 'info', message: 'Eine Finanzierung ist erst möglich, wenn das Projekt von einem Administrator veröffentlicht wurde.'};
                     }
-                    if (!FinancingRound.current.active) {
+                    if (!FinancingRound.currentFinancingRound().active && !vm.authorizedForPostRoundPledges()) {
                         return {type: 'info', message: 'Momentan läuft keine Finanzierungsrunde. Bitte versuche es nochmal, wenn die Finanzierungsrunde gestartet worden ist.'};
+                    }
+                    if (vm.authorizedForPostRoundPledges()) {
+                        return {type: 'info', message: 'Momentan läuft keine Finanzierungsrunde. Du bist als Admin jedoch berechtigt aus dem restlichen Budget der Finanzierungsrunde weitere Investments zu tätigen.'};
                     }
                     if (!vm.user.loggedIn) {
                         return {type: 'info', message: 'Bitte logge dich ein, um Projekte finanziell zu unterstützen.'};
@@ -115,37 +173,9 @@ angular.module('crowdsource')
                     return null;
                 };
 
-                vm.getPledgedAmountByCurrentUser = function () {
-                    return vm.project.pledgedAmountByRequestingUser || 0;
-                };
-
-                vm.getUserBudget = function () {
-                    return vm.user.budget - vm.pledge.amount + vm.getPledgedAmountByCurrentUser();
-                };
-
-                vm.getPledgedAmount = function () {
-                    return vm.project.pledgedAmount + vm.pledge.amount - vm.getPledgedAmountByCurrentUser();
-                };
-
-                vm.isReversePledge = function () {
-                    return normalizePledge(vm.pledge).amount < 0;
-                };
-
-                vm.isZeroPledge = function () {
-                    return normalizePledge(vm.pledge).amount == 0;
-                };
-
-                vm.financeButtonLabel = function () {
-                    if (vm.saving) return  'Bitte warten...';
-                    if (vm.isReversePledge()) {
-                        return 'Jetzt Budget abziehen'
-                    }
-                    return 'Jetzt finanzieren';
-                };
-
                 function normalizePledge(pledge) {
                     return {
-                        amount : parseInt(pledge.amount) - vm.getPledgedAmountByCurrentUser()
+                        amount : parseInt(pledge.amount) - vm.currentlyPledgedAmountByUser()
                     };
                 }
 

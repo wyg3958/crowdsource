@@ -1,5 +1,6 @@
 package de.asideas.crowdsource.service;
 
+import de.asideas.crowdsource.domain.exception.InvalidRequestException;
 import de.asideas.crowdsource.domain.exception.ResourceNotFoundException;
 import de.asideas.crowdsource.domain.model.FinancingRoundEntity;
 import de.asideas.crowdsource.domain.model.PledgeEntity;
@@ -35,16 +36,22 @@ public class ProjectService {
     private UserRepository userRepository;
     private FinancingRoundRepository financingRoundRepository;
     private UserNotificationService userNotificationService;
+    private FinancingRoundService financingRoundService;
+
+    private ProjectService thisInstance;
 
     @Autowired
     public ProjectService(ProjectRepository projectRepository, PledgeRepository pledgeRepository,
                           UserRepository userRepository, FinancingRoundRepository financingRoundRepository,
-                          UserNotificationService userNotificationService) {
+                          UserNotificationService userNotificationService,
+                          FinancingRoundService financingRoundService) {
         this.projectRepository = projectRepository;
         this.pledgeRepository = pledgeRepository;
         this.userRepository = userRepository;
         this.financingRoundRepository = financingRoundRepository;
         this.userNotificationService = userNotificationService;
+        this.financingRoundService = financingRoundService;
+        this.thisInstance = this;
     }
 
     public Project getProject(String projectId, UserEntity requestingUser) {
@@ -99,6 +106,22 @@ public class ProjectService {
             throw new ResourceNotFoundException();
         }
 
+        FinancingRoundEntity financingRound = financingRoundService.mostRecentRoundEntity();
+        if (financingRound != null &&
+                financingRound.terminated() &&
+                financingRound.getTerminationPostProcessingDone() &&
+                userEntity.getRoles().contains(Roles.ROLE_ADMIN)) {
+
+            if (!financingRound.idenitityEquals(projectEntity.getFinancingRound()) ) {
+                throw InvalidRequestException.projectTookNotPartInLastFinancingRond();
+            }
+            thisInstance.pledgeProjectUsingPostRoundBudget(projectEntity, userEntity, pledge);
+        } else {
+            thisInstance.pledgeProjectInFinancingRound(projectEntity, userEntity, pledge);
+        }
+    }
+
+    void pledgeProjectInFinancingRound(ProjectEntity projectEntity, UserEntity userEntity, Pledge pledge) {
         List<PledgeEntity> pledgesSoFar = pledgeRepository.findByProjectAndFinancingRound(
                 projectEntity, projectEntity.getFinancingRound());
 
@@ -107,13 +130,36 @@ public class ProjectService {
                 pledge, userEntity, pledgesSoFar);
 
         // potential problem: no transaction -> no rollback -- Possible Solution -> sort of mini event sourcing?
-        if(projectEntity.pledgeGoalAchieved()){
+        if (projectEntity.pledgeGoalAchieved()) {
             projectRepository.save(projectEntity);
         }
         userRepository.save(userEntity);
         pledgeRepository.save(pledgeEntity);
 
         LOG.debug("Project pledged: {}", pledgeEntity);
+    }
+
+    void pledgeProjectUsingPostRoundBudget(ProjectEntity projectEntity, UserEntity userEntity, Pledge pledge) {
+        FinancingRoundEntity financingRound = projectEntity.getFinancingRound();
+
+        List<PledgeEntity> postRoundPledges = pledgeRepository.findByFinancingRoundAndCreatedDateGreaterThan(
+                financingRound, financingRound.getEndDate());
+
+        int postRoundPledgableBudget = financingRound.postRoundPledgableBudgetRemaining(postRoundPledges);
+
+        List<PledgeEntity> pledgesSoFar = pledgeRepository.findByProjectAndFinancingRound(
+                projectEntity, projectEntity.getFinancingRound());
+
+        PledgeEntity pledgeResult = projectEntity.pledgeUsingPostRoundBudget(
+                pledge, userEntity, pledgesSoFar, postRoundPledgableBudget);
+
+        if (projectEntity.pledgeGoalAchieved()) {
+            projectRepository.save(projectEntity);
+        }
+        userRepository.save(userEntity);
+        pledgeRepository.save(pledgeResult);
+
+        LOG.debug("Project pledged using post round budget: {}", pledgeResult);
     }
 
     private Project project(ProjectEntity projectEntity, UserEntity requestingUser) {

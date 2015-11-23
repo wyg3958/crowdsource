@@ -132,7 +132,7 @@ describe('teaser metrics service', function () {
     it("should show a different information if no financing round is currently active", function () {
         expectMetricsBECall().respond(200, {remainingBudget: 54321, count: 33});
         expectServerTimeBECall().respond(200, {dateTime: '2015-01-21T15:01:23.003Z'});
-        expectFinancingRoundBECall().respond(404);
+        expectFinancingRoundBECall().respond(200, {active: false});
 
         currentRouteWantsTeaser(true);
         var teaser = renderDirective();
@@ -221,7 +221,7 @@ describe('teaser metrics service', function () {
 
         expectMetricsBECall().respond(200, {remainingBudget: 54321, count: 33});
         expectServerTimeBECall().respond(200, {dateTime: '2015-01-21T15:04:23.003Z'});
-        expectFinancingRoundBECall().respond(404);
+        expectFinancingRoundBECall().respond(200, {active: false});
         $timeout.flush(500);
         $httpBackend.flush();
     });
@@ -240,7 +240,7 @@ describe('teaser metrics service', function () {
     }
 
     function expectFinancingRoundBECall() {
-        return $httpBackend.expectGET('/financinground/active');
+        return $httpBackend.expectGET('/financingrounds/mostRecent');
     }
 
     function expectServerTimeBECall() {

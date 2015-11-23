@@ -1,9 +1,10 @@
 package de.asideas.crowdsource.domain.service.financinground;
 
 import de.asideas.crowdsource.domain.model.FinancingRoundEntity;
+import de.asideas.crowdsource.domain.model.PledgeEntity;
 import de.asideas.crowdsource.repository.FinancingRoundRepository;
+import de.asideas.crowdsource.repository.PledgeRepository;
 import de.asideas.crowdsource.repository.ProjectRepository;
-import de.asideas.crowdsource.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,21 +25,21 @@ public class FinancingRoundPostProcessor {
 
     private static final Logger log = LoggerFactory.getLogger(FinancingRoundPostProcessor.class);
     private FinancingRoundRepository financingRoundRepository;
-    private UserRepository userRepository;
     private ProjectRepository projectRepository;
+    private PledgeRepository pledgeRepository;
 
     @Autowired
     public FinancingRoundPostProcessor(
             FinancingRoundRepository financingRoundRepository,
             ProjectRepository projectRepository,
-            UserRepository userRepository) {
+            PledgeRepository pledgeRepository) {
 
         this.financingRoundRepository = financingRoundRepository;
         this.projectRepository = projectRepository;
-        this.userRepository = userRepository;
+        this.pledgeRepository = pledgeRepository;
     }
 
-    public FinancingRoundEntity postProcess(final FinancingRoundEntity financingRound) {
+    public FinancingRoundEntity postProcess(FinancingRoundEntity financingRound) {
         Assert.notNull(financingRound);
 
         if (!financingRound.terminationPostProcessingRequiredNow()) {
@@ -47,17 +48,37 @@ public class FinancingRoundPostProcessor {
         }
         log.info("Starting post processing of FinancingRound {}", financingRound);
 
-        projectRepository.findByFinancingRound(financingRound).stream()
-                .forEach(project -> {
-                    if (project.onFinancingRoundTerminated(financingRound)) {
-                        projectRepository.save(project);
-                    }
-                });
+        assignUnpledgedBudgetToFinancingRound(financingRound);
+        notifyProjectsOfTerminatedFinancingRound(financingRound);
 
         financingRound.setTerminationPostProcessingDone(true);
         FinancingRoundEntity res = financingRoundRepository.save(financingRound);
         log.info("Finished post processing of FinancingRound {}", res);
         return res;
     }
+
+    void notifyProjectsOfTerminatedFinancingRound(final FinancingRoundEntity financingRound) {
+        projectRepository.findByFinancingRound(financingRound).stream()
+                .forEach(project -> {
+                    if (project.onFinancingRoundTerminated(financingRound)) {
+                        projectRepository.save(project);
+                    }
+                });
+    }
+
+    /**
+     * Determines the amount of money that was not pledged by any user to any project during the <code>financingRound</code> given and
+     * assigns it to that round.
+     *
+     * @param financingRound
+     * @return the <code>financingRound</code> provided
+     */
+    void assignUnpledgedBudgetToFinancingRound(final FinancingRoundEntity financingRound) {
+        final int pledgedTotalOfRound = pledgeRepository.findByFinancingRound(financingRound).stream()
+                .mapToInt(PledgeEntity::getAmount)
+                .sum();
+        financingRound.initPostRoundBudget(pledgedTotalOfRound);
+    }
+
 
 }

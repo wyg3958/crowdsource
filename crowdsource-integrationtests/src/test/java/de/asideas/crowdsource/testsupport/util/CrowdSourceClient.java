@@ -89,12 +89,12 @@ public class CrowdSourceClient {
 
     public ResponseEntity<FinancingRound> startFinancingRound(FinancingRound financingRound, AuthToken authToken) {
         HttpEntity<FinancingRound> requestEntity = createRequestEntity(financingRound, authToken);
-        return restTemplate.exchange(urlProvider.applicationUrl() + "/financinground", HttpMethod.POST, requestEntity, FinancingRound.class);
+        return restTemplate.exchange(urlProvider.applicationUrl() + "/financingrounds", HttpMethod.POST, requestEntity, FinancingRound.class);
     }
 
     public FinancingRound getActiveFinanceRound() {
         try {
-            return restTemplate.getForObject(urlProvider.applicationUrl() + "/financinground/active", FinancingRound.class);
+            return restTemplate.getForObject(urlProvider.applicationUrl() + "/financingrounds/active", FinancingRound.class);
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 return null;
@@ -105,7 +105,7 @@ public class CrowdSourceClient {
 
     public ResponseEntity<FinancingRound> stopFinancingRound(String id, AuthToken authToken) {
         HttpEntity requestEntity = createRequestEntity(authToken);
-        return restTemplate.exchange(urlProvider.applicationUrl() + "/financinground/{id}/cancel", HttpMethod.PUT, requestEntity, FinancingRound.class, id);
+        return restTemplate.exchange(urlProvider.applicationUrl() + "/financingrounds/{id}/cancel", HttpMethod.PUT, requestEntity, FinancingRound.class, id);
     }
 
     public ResponseEntity<Void> pledgeProject(Project project, Pledge pledge, AuthToken authToken) {

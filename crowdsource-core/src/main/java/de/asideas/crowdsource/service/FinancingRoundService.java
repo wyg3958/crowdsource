@@ -23,34 +23,32 @@ import java.util.List;
 @Service
 public class FinancingRoundService implements ApplicationListener<ContextRefreshedEvent>{
 
-
     private static final Logger log = LoggerFactory.getLogger(FinancingRoundService.class);
 
     private UserRepository userRepository;
-    private UserService userService;
     private FinancingRoundRepository financingRoundRepository;
     private ProjectRepository projectRepository;
     private FinancingRoundPostProcessor financingRoundPostProcessor;
     private TaskScheduler crowdScheduler;
 
-    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent ) {
-        this.reschedulePostProcessingOfFinancingRounds();
-    }
 
     @Autowired
     public FinancingRoundService(UserRepository userRepository,
-                                 UserService userService,
                                  FinancingRoundRepository financingRoundRepository,
                                  ProjectRepository projectRepository,
                                  FinancingRoundPostProcessor financingRoundPostProcessor,
                                  TaskScheduler crowdScheduler) {
 
         this.userRepository = userRepository;
-        this.userService = userService;
         this.financingRoundRepository = financingRoundRepository;
         this.projectRepository = projectRepository;
         this.financingRoundPostProcessor = financingRoundPostProcessor;
         this.crowdScheduler = crowdScheduler;
+    }
+
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent ) {
+        this.reschedulePostProcessingOfFinancingRounds();
     }
 
     public FinancingRound startNewFinancingRound(FinancingRound creationCommand) {

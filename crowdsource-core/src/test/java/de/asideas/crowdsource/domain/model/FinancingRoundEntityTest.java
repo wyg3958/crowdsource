@@ -28,7 +28,6 @@ public class FinancingRoundEntityTest {
         final int countUsers = 10;
         final FinancingRound creationCmd = new FinancingRound();
         creationCmd.setBudget(1000);
-        creationCmd.setActive(false);
         creationCmd.setEndDate(new DateTime(0L));
         creationCmd.setId("test_id");
 
@@ -44,25 +43,23 @@ public class FinancingRoundEntityTest {
 
     @Test
     public void active_shouldReturnTrueWhenEndDateInFuture() throws Exception {
-        final FinancingRound creationCmd = new FinancingRound();
-        creationCmd.setBudget(1000);
-        creationCmd.setActive(false);
-        creationCmd.setEndDate(new DateTime().plusDays(1));
-
-        FinancingRoundEntity round = FinancingRoundEntity.newFinancingRound(creationCmd, 7);
+        FinancingRoundEntity round = newFinancingRound(100, 10, new DateTime().plusDays(1));
         round.setStartDate(new DateTime().minusDays(1));
 
         assertThat(round.active(), is(true));
     }
 
     @Test
-    public void active_shouldReturnFalseWhenEndDateInPast() throws Exception {
-        final FinancingRound creationCmd = new FinancingRound();
-        creationCmd.setBudget(1000);
-        creationCmd.setActive(false);
-        creationCmd.setEndDate(new DateTime().minusDays(1));
+    public void active_shouldReturnFalseWhenStartDateAndEndDateInFuture() throws Exception {
+        FinancingRoundEntity round = newFinancingRound(100, 10, new DateTime().plusDays(2));
+        round.setStartDate(new DateTime().plusDays(1));
 
-        FinancingRoundEntity round = FinancingRoundEntity.newFinancingRound(creationCmd, 7);
+        assertThat(round.active(), is(false));
+    }
+
+    @Test
+    public void active_shouldReturnFalseWhenEndDateInPast() throws Exception {
+        FinancingRoundEntity round = newFinancingRound(100, 10, new DateTime().minusDays(1));
         round.setStartDate(new DateTime().minusDays(2));
 
         assertThat(round.active(), is(false));
@@ -70,15 +67,34 @@ public class FinancingRoundEntityTest {
 
     @Test
     public void active_shouldReturnFalseWhenStartDateInFuture() throws Exception {
-        final FinancingRound creationCmd = new FinancingRound();
-        creationCmd.setBudget(1000);
-        creationCmd.setActive(false);
-        creationCmd.setEndDate(new DateTime().plusDays(2));
-
-        FinancingRoundEntity round = FinancingRoundEntity.newFinancingRound(creationCmd, 7);
+        FinancingRoundEntity round = newFinancingRound(100, 10, new DateTime().plusDays(2));
         round.setStartDate(new DateTime().plusDays(1));
 
         assertThat(round.active(), is(false));
+    }
+
+    @Test
+    public void terminated_shouldReturnTrueWhenEndDateInPast(){
+        FinancingRoundEntity round = newFinancingRound(100, 10, new DateTime().minusDays(1));
+        round.setStartDate(new DateTime().minusDays(2));
+
+        assertThat(round.terminated(), is(true));
+    }
+
+    @Test
+    public void terminated_shouldReturnFalseWhenStillActive(){
+        FinancingRoundEntity round = newFinancingRound(100, 10, new DateTime().plusDays(1));
+        round.setStartDate(new DateTime().minusDays(1));
+
+        assertThat(round.terminated(), is(false));
+    }
+
+    @Test
+    public void terminated_shouldReturnFalseWhenNotYetStarted(){
+        FinancingRoundEntity round = newFinancingRound(100, 10, new DateTime().plusDays(2));
+        round.setStartDate(new DateTime().plusDays(1));
+
+        assertThat(round.terminated(), is(false));
     }
 
     @Test
@@ -102,6 +118,22 @@ public class FinancingRoundEntityTest {
         financingRound.setTerminationPostProcessingDone(true);
 
         assertThat(financingRound.terminationPostProcessingRequiredNow(), is(false));
+    }
+
+    @Test
+    public void initBudgetRemainingAfterRound() throws Exception{
+        final FinancingRoundEntity financingRound = newFinancingRound(1000, 10, new DateTime().minusHours(1));
+
+        financingRound.initBudgetRemainingAfterRound(17);
+        assertThat(financingRound.getBudgetRemainingAfterRound(), is(983));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void initBudgetRemainingAfterRound_shouldThrowExceptionOnNotTerminatedRound() throws Exception{
+        final FinancingRoundEntity financingRound = newFinancingRound(1000, 10, new DateTime().plusDays(2));
+        financingRound.setStartDate(new DateTime().plusDays(1));
+
+        financingRound.initBudgetRemainingAfterRound(17);
     }
 
 

@@ -1,9 +1,9 @@
 package de.asideas.crowdsource.controller;
 
-import de.asideas.crowdsource.security.Roles;
-import de.asideas.crowdsource.model.persistence.UserEntity;
-import de.asideas.crowdsource.model.presentation.user.UserMetrics;
+import de.asideas.crowdsource.domain.model.UserEntity;
+import de.asideas.crowdsource.domain.presentation.user.UserMetrics;
 import de.asideas.crowdsource.repository.UserRepository;
+import de.asideas.crowdsource.security.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RequestMapping;

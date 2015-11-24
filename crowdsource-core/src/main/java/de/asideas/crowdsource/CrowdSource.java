@@ -1,6 +1,7 @@
 package de.asideas.crowdsource;
 
 import de.asideas.crowdsource.config.MongoDBConfig;
+import de.asideas.crowdsource.config.SchedulerConfig;
 import de.asideas.crowdsource.config.SecurityConfig;
 import de.asideas.crowdsource.config.mail.MailSenderConfig;
 import de.asideas.crowdsource.config.mail.MailTemplateConfig;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
-@Import({ThymeleafAutoConfiguration.class, MongoDBConfig.class, SecurityConfig.class, MailSenderConfig.class, MailTemplateConfig.class})
+@Import({ThymeleafAutoConfiguration.class, MongoDBConfig.class, SecurityConfig.class, MailSenderConfig.class, MailTemplateConfig.class, SchedulerConfig.class})
 @ComponentScan(basePackages = "de.asideas.crowdsource", excludeFilters = @ComponentScan.Filter(Configuration.class))
 public class CrowdSource extends WebMvcConfigurerAdapter {
 

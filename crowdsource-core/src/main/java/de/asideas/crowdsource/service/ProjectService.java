@@ -1,19 +1,19 @@
 package de.asideas.crowdsource.service;
 
-import de.asideas.crowdsource.security.Roles;
-import de.asideas.crowdsource.enums.ProjectStatus;
-import de.asideas.crowdsource.exceptions.InvalidRequestException;
-import de.asideas.crowdsource.exceptions.ResourceNotFoundException;
-import de.asideas.crowdsource.model.persistence.FinancingRoundEntity;
-import de.asideas.crowdsource.model.persistence.PledgeEntity;
-import de.asideas.crowdsource.model.persistence.ProjectEntity;
-import de.asideas.crowdsource.model.persistence.UserEntity;
-import de.asideas.crowdsource.model.presentation.Pledge;
-import de.asideas.crowdsource.model.presentation.project.Project;
+import de.asideas.crowdsource.domain.exception.ResourceNotFoundException;
+import de.asideas.crowdsource.domain.model.FinancingRoundEntity;
+import de.asideas.crowdsource.domain.model.PledgeEntity;
+import de.asideas.crowdsource.domain.model.ProjectEntity;
+import de.asideas.crowdsource.domain.model.UserEntity;
+import de.asideas.crowdsource.domain.presentation.Pledge;
+import de.asideas.crowdsource.domain.presentation.project.Project;
+import de.asideas.crowdsource.domain.service.user.UserNotificationService;
+import de.asideas.crowdsource.domain.shared.ProjectStatus;
 import de.asideas.crowdsource.repository.FinancingRoundRepository;
 import de.asideas.crowdsource.repository.PledgeRepository;
 import de.asideas.crowdsource.repository.ProjectRepository;
 import de.asideas.crowdsource.repository.UserRepository;
+import de.asideas.crowdsource.security.Roles;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,45 +76,27 @@ public class ProjectService {
         return project(projectEntity, creator);
     }
 
-    private void notifyAdminsOnNewProject(final ProjectEntity projectEntity) {
-        userRepository.findAll().stream()
-                .filter(user -> user.getRoles().contains(Roles.ROLE_ADMIN))
-                .map(UserEntity::getEmail)
-                .forEach(emailAddress -> userNotificationService.notifyAdminOnProjectCreation(projectEntity, emailAddress));
-    }
-
-    public Project modifyProjectStatus(String projectId, Project project, UserEntity requestingUser) {
-
+    public Project modifyProjectStatus(String projectId, ProjectStatus newStatusToApply, UserEntity requestingUser) {
         ProjectEntity projectEntity = projectRepository.findOne(projectId);
+
         if (projectEntity == null) {
             throw new ResourceNotFoundException();
         }
 
-        if (projectEntity.getStatus() != project.getStatus()) {
-
-            if (projectEntity.getStatus() == ProjectStatus.FULLY_PLEDGED) {
-                throw InvalidRequestException.projectAlreadyFullyPledged();
-            }
-
-            projectEntity.setStatus(project.getStatus());
+        if (projectEntity.modifyStatus(newStatusToApply)) {
             projectEntity = projectRepository.save(projectEntity);
             userNotificationService.notifyCreatorOnProjectUpdate(projectEntity);
         }
 
-        LOG.debug("Project updated: {}", projectEntity);
         return project(projectEntity, requestingUser);
     }
 
     public void pledge(String projectId, UserEntity userEntity, Pledge pledge) {
 
         ProjectEntity projectEntity = projectRepository.findOne(projectId);
-        FinancingRoundEntity activeFinancingRoundEntity = currentFinancingRound();
 
         if (projectEntity == null) {
             throw new ResourceNotFoundException();
-        }
-        if (activeFinancingRoundEntity == null) {
-            throw InvalidRequestException.noFinancingRoundCurrentlyActive();
         }
 
         List<PledgeEntity> pledgesSoFar = pledgeRepository.findByProjectAndFinancingRound(
@@ -122,12 +104,12 @@ public class ProjectService {
 
         // potential problem: race condition. Two simultaneous requests could lead to "over-pledging"
         PledgeEntity pledgeEntity = projectEntity.pledge(
-                pledge, activeFinancingRoundEntity, userEntity, pledgesSoFar);
+                pledge, userEntity, pledgesSoFar);
 
+        // potential problem: no transaction -> no rollback -- Possible Solution -> sort of mini event sourcing?
         if(projectEntity.pledgeGoalAchieved()){
             projectRepository.save(projectEntity);
         }
-        // potential problem: no transaction -> no rollback -- Possible Solution -> sort of mini event sourcing?
         userRepository.save(userEntity);
         pledgeRepository.save(pledgeEntity);
 
@@ -141,6 +123,13 @@ public class ProjectService {
 
     private FinancingRoundEntity currentFinancingRound() {
         return financingRoundRepository.findActive(DateTime.now());
+    }
+
+    private void notifyAdminsOnNewProject(final ProjectEntity projectEntity) {
+        userRepository.findAll().stream()
+                .filter(user -> user.getRoles().contains(Roles.ROLE_ADMIN))
+                .map(UserEntity::getEmail)
+                .forEach(emailAddress -> userNotificationService.notifyAdminOnProjectCreation(projectEntity, emailAddress));
     }
 
 }

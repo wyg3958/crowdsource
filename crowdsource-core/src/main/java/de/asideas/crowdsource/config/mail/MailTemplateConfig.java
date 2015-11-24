@@ -1,6 +1,6 @@
 package de.asideas.crowdsource.config.mail;
 
-import de.asideas.crowdsource.exceptions.ResourceNotFoundException;
+import de.asideas.crowdsource.domain.exception.ResourceNotFoundException;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +43,11 @@ public class MailTemplateConfig {
     @Bean
     public Expression projectRejectedEmailTemplate() {
         return createExpressionFromFile("/email/project-rejected.template");
+    }
+
+    @Bean
+    public Expression projectDeferredEmailTemplate() {
+        return createExpressionFromFile("/email/project-deferred.template");
     }
 
     private Expression createExpressionFromFile(final String templatePath) {

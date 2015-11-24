@@ -4,8 +4,8 @@ import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import de.asideas.crowdsource.model.presentation.FinancingRound;
-import de.asideas.crowdsource.model.presentation.Pledge;
+import de.asideas.crowdsource.domain.presentation.FinancingRound;
+import de.asideas.crowdsource.domain.presentation.Pledge;
 import de.asideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.asideas.crowdsource.testsupport.pageobjects.project.ProjectPledgingForm;
 import de.asideas.crowdsource.testsupport.selenium.SeleniumWait;
@@ -105,13 +105,17 @@ public class ProjectPledgingSteps {
         PageFactory.initElements(webDriver, pledgingForm);
 
         keepAmountsBeforeChange();
-        int amountBeforeChange = pledgingForm.getAmountFromInputField();
+        final int amountBeforeChange = pledgingForm.getAmountFromInputField();
 
         pledgingForm.moveSliderBy(-50); //pixels
+        pledgingForm.moveSliderBy(-40); //pixels
 
-        int amountFromInputField = pledgingForm.getAmountFromInputField();
-        assertThat(amountBeforeChange, is(greaterThan(amountFromInputField)));
+        wait.until(d -> {
+            PageFactory.initElements(webDriver, pledgingForm);
+            return amountBeforeChange > pledgingForm.getAmountFromInputField();
+        }, 10, 800);
 
+        assertThat(amountBeforeChange, is(greaterThan(pledgingForm.getAmountFromInputField())));
         pledgeAmount = pledgingForm.getAmountFromInputField() - amountBeforeChange;
     }
 
@@ -159,6 +163,17 @@ public class ProjectPledgingSteps {
         prepareFinancingRound(requireActiveFinancingRound);
     }
 
+    @And("^there is (a|no) financing round active for (\\d+) seconds$")
+    public void there_is_a_financing_round_active_for_x_seconds(String active, int seconds) throws Throwable {
+        boolean requireActiveFinancingRound = "a".equals(active);
+        prepareFinancingRound(requireActiveFinancingRound, seconds);
+    }
+
+    @And("^the user waits for the end of the financing round$")
+    public void the_user_waits_for_the_end_of_the_financing_round() throws Throwable {
+        wait.until(d -> crowdSourceClient.getActiveFinanceRound() == null, 15, 1000);
+    }
+
     @When("^a financing round is being activated in the meantime$")
     public void a_financing_round_is_being_activated_in_the_meantime() throws Throwable {
         prepareFinancingRound(true);
@@ -182,6 +197,10 @@ public class ProjectPledgingSteps {
     }
 
     private void prepareFinancingRound(boolean requireActiveFinancingRound) {
+        prepareFinancingRound(requireActiveFinancingRound, 5 * 60 * 60 * 24);
+    }
+
+    private void prepareFinancingRound(boolean requireActiveFinancingRound, int activeForSeconds) {
         CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithAdminUser();
 
         FinancingRound activeFinanceRound = crowdSourceClient.getActiveFinanceRound();
@@ -191,7 +210,7 @@ public class ProjectPledgingSteps {
 
         if (requireActiveFinancingRound) {
             FinancingRound financingRound = new FinancingRound();
-            financingRound.setEndDate(DateTime.now().plusDays(5));
+            financingRound.setEndDate(DateTime.now().plusSeconds(activeForSeconds));
             financingRound.setBudget(100000);
             crowdSourceClient.startFinancingRound(financingRound, authToken);
         }
@@ -200,8 +219,8 @@ public class ProjectPledgingSteps {
     private void pledgeProjectViaApi(int pledgeAmount, boolean asAdmin) {
         CrowdSourceClient.AuthToken authToken =
                 asAdmin ?
-                crowdSourceClient.authorizeWithAdminUser() :
-                crowdSourceClient.authorizeWithDefaultUser();
+                        crowdSourceClient.authorizeWithAdminUser() :
+                        crowdSourceClient.authorizeWithDefaultUser();
 
         Pledge pledge = new Pledge(pledgeAmount);
         crowdSourceClient.pledgeProject(projectDetailSteps.getCreatedProject(), pledge, authToken);

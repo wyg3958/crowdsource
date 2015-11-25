@@ -5,6 +5,7 @@ import de.asideas.crowdsource.domain.model.FinancingRoundEntity;
 import de.asideas.crowdsource.domain.presentation.FinancingRound;
 import de.asideas.crowdsource.domain.service.financinground.FinancingRoundPostProcessor;
 import de.asideas.crowdsource.repository.FinancingRoundRepository;
+import de.asideas.crowdsource.repository.PledgeRepository;
 import de.asideas.crowdsource.repository.ProjectRepository;
 import de.asideas.crowdsource.repository.UserRepository;
 import org.joda.time.DateTime;
@@ -121,6 +122,11 @@ public class FinancingRoundServiceSchedulingIT {
         }
 
         @Bean
+        public PledgeRepository opledgeRepository() {
+            return mock(PledgeRepository.class);
+        }
+
+        @Bean
         public FinancingRoundPostProcessor financingRoundPostProcessor() {
             return mock(FinancingRoundPostProcessor.class);
         }
@@ -128,7 +134,7 @@ public class FinancingRoundServiceSchedulingIT {
         @Bean
         public FinancingRoundService financingRoundService(TaskScheduler crowdScheduler) {
             return new FinancingRoundService(userRepository(), financingRoundRepository(),
-                    projectRepository(), financingRoundPostProcessor(), crowdScheduler);
+                    projectRepository(), financingRoundPostProcessor(), crowdScheduler, opledgeRepository());
         }
 
         @Bean

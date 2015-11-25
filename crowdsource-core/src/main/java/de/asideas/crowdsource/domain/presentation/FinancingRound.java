@@ -2,6 +2,7 @@ package de.asideas.crowdsource.domain.presentation;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import de.asideas.crowdsource.domain.model.FinancingRoundEntity;
+import de.asideas.crowdsource.domain.model.PledgeEntity;
 import de.asideas.crowdsource.domain.presentation.project.PublicFinancingRoundInformationView;
 import de.asideas.crowdsource.util.validation.financinground.FinancingRoundNotColliding;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -12,6 +13,7 @@ import org.joda.time.DateTime;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @FinancingRoundNotColliding
 public class FinancingRound {
@@ -32,14 +34,27 @@ public class FinancingRound {
     private Integer budget;
 
     @JsonView(PublicFinancingRoundInformationView.class)
+    private Integer postRoundBudget;
+
+    @JsonView(PublicFinancingRoundInformationView.class)
+    private Integer postRoundBudgetRemaining;
+
+    @JsonView(PublicFinancingRoundInformationView.class)
     private boolean active;
 
+
+    @Deprecated
     public FinancingRound(FinancingRoundEntity financingRoundEntity) {
-        startDate = financingRoundEntity.getStartDate();
-        endDate = financingRoundEntity.getEndDate();
-        budget = financingRoundEntity.getBudget();
-        id = financingRoundEntity.getId();
-        active = financingRoundEntity.active();
+
+    }
+    public FinancingRound(FinancingRoundEntity financingRoundEntity, List<PledgeEntity> postRoundPledges) {
+        this.id = financingRoundEntity.getId();
+        this.startDate = financingRoundEntity.getStartDate();
+        this.endDate = financingRoundEntity.getEndDate();
+        this.budget = financingRoundEntity.getBudget();
+        this.postRoundBudget = financingRoundEntity.getPostRoundBudget();
+        this.active = financingRoundEntity.active();
+        this.postRoundBudgetRemaining = financingRoundEntity.postRoundPledgableBudgetRemaining(postRoundPledges);
     }
 
     public FinancingRound() {
@@ -65,6 +80,14 @@ public class FinancingRound {
         return this.active;
     }
 
+    public Integer getPostRoundBudget() {
+        return postRoundBudget;
+    }
+
+    public Integer getPostRoundBudgetRemaining() {
+        return postRoundBudgetRemaining;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -83,6 +106,14 @@ public class FinancingRound {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public void setPostRoundBudget(Integer postRoundBudget) {
+        this.postRoundBudget = postRoundBudget;
+    }
+
+    public void setPostRoundBudgetRemaining(Integer postRoundBudgetRemaining) {
+        this.postRoundBudgetRemaining = postRoundBudgetRemaining;
     }
 
     @Override

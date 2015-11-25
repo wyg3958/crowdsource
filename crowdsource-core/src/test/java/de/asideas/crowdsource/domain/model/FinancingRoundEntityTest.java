@@ -14,7 +14,6 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.fail;
 
 public class FinancingRoundEntityTest {
 
@@ -158,11 +157,11 @@ public class FinancingRoundEntityTest {
         assertThat(round.postRoundPledgableBudgetRemaining(preparePostRoundPledges(round)), is(400 - (1 + 2 + 3 + 4 + 5)));
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void postRoundPledgableBudgetRemaining_shouldThrowExOnNonTerminatedRound() throws Exception {
+    @Test
+    public void postRoundPledgableBudgetRemaining_returnsZeroOnNonTerminatedRound() throws Exception {
         FinancingRoundEntity round = newFinancingRound(1000, 12, new DateTime().minusDays(2));
         round.setTerminationPostProcessingDone(false);
-        round.postRoundPledgableBudgetRemaining(preparePostRoundPledges(round));
+        assertThat(round.postRoundPledgableBudgetRemaining(preparePostRoundPledges(round)), is(0));
     }
     @Test
     public void postRoundPledgableBudgetRemaining_shouldReturnPostRoundBudgetOnNullOrEmptyPledges() throws Exception {

@@ -104,21 +104,22 @@ public class FinancingRoundEntity {
     }
 
     /**
-     * @param allProjectPledgesAfterTermination all pledges that have been made to projects assigned to <code>this</code>
+     * @param postRoundPledges all pledges that have been made to projects assigned to <code>this</code>
+     *                                          after the round finished
      * @return how much money is left to be invested using money from this round based on <code>postRoundBudget</code>
      */
-    public int postRoundPledgableBudgetRemaining(List<PledgeEntity> allProjectPledgesAfterTermination) {
+    public int postRoundPledgableBudgetRemaining(List<PledgeEntity> postRoundPledges) {
         if(!terminationPostProcessingDone) {
-            throw new IllegalStateException("postRoundPledgableBudgetRemaining cannot be determined on a financingRound that has not been terminated or post processed.");
+            return 0;
         }
-        if (allProjectPledgesAfterTermination == null || allProjectPledgesAfterTermination.isEmpty()) {
+        if (postRoundPledges == null || postRoundPledges.isEmpty()) {
             return this.postRoundBudget;
         }
-        Collections.sort(allProjectPledgesAfterTermination, (p1, p2) -> (p1.getCreatedDate().getMillis() - p2.getCreatedDate().getMillis()) > 0 ? 1 : -1);
-        Assert.isTrue(allProjectPledgesAfterTermination.get(0).getCreatedDate().getMillis() > this.endDate.getMillis(),
-                "Method must not be called with pledgeEntities from active financing round! One entry was: " + allProjectPledgesAfterTermination.get(0));
+        Collections.sort(postRoundPledges, (p1, p2) -> (p1.getCreatedDate().getMillis() - p2.getCreatedDate().getMillis()) > 0 ? 1 : -1);
+        Assert.isTrue(postRoundPledges.get(0).getCreatedDate().getMillis() > this.endDate.getMillis(),
+                "Method must not be called with pledgeEntities from active financing round! One entry was: " + postRoundPledges.get(0));
 
-        int postRoundPledgeAmount = allProjectPledgesAfterTermination.stream().mapToInt(PledgeEntity::getAmount).sum();
+        int postRoundPledgeAmount = postRoundPledges.stream().mapToInt(PledgeEntity::getAmount).sum();
         return this.postRoundBudget - postRoundPledgeAmount;
     }
 

@@ -22,7 +22,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -77,16 +76,14 @@ public class FinancingRoundPostProcessorTest {
 
         when(financingRoundRepository.save(any(FinancingRoundEntity.class))).then(i -> i.getArguments()[0]);
         when(projectRepository.findByFinancingRound(any(FinancingRoundEntity.class))).thenReturn(mockedProjects);
-        when(pledgeRepository.findByProjectAndFinancingRound(any(ProjectEntity.class), any(FinancingRoundEntity.class)))
+        when(pledgeRepository.findByFinancingRound(any(FinancingRoundEntity.class)))
                 .thenAnswer(inv -> {
-                    final ProjectEntity project = inv.getArgumentAt(0, ProjectEntity.class);
-                    final FinancingRoundEntity financingRound = inv.getArgumentAt(1, FinancingRoundEntity.class);
-                    if (project.getStatus() != ProjectStatus.PUBLISHED) {
-                        return new LinkedList<PledgeEntity>();
-                    }
+                    final FinancingRoundEntity financingRound = inv.getArgumentAt(0, FinancingRoundEntity.class);
                     return Arrays.asList(
-                            aPledgeEntity(project, financingRound, project.getPledgeGoal() / 2),
-                            aPledgeEntity(project, financingRound, -project.getPledgeGoal() / 4)
+                            aPledgeEntity(project_3, financingRound, project_3.getPledgeGoal() / 2),
+                            aPledgeEntity(project_3, financingRound, -project_3.getPledgeGoal() / 4),
+                            aPledgeEntity(project_4, financingRound, project_4.getPledgeGoal() / 2),
+                            aPledgeEntity(project_4, financingRound, -project_4.getPledgeGoal() / 4)
                     );
                 });
     }

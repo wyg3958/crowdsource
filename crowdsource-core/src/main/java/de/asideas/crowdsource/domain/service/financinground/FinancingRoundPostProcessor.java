@@ -1,6 +1,7 @@
 package de.asideas.crowdsource.domain.service.financinground;
 
 import de.asideas.crowdsource.domain.model.FinancingRoundEntity;
+import de.asideas.crowdsource.domain.model.PledgeEntity;
 import de.asideas.crowdsource.repository.FinancingRoundRepository;
 import de.asideas.crowdsource.repository.PledgeRepository;
 import de.asideas.crowdsource.repository.ProjectRepository;
@@ -73,8 +74,8 @@ public class FinancingRoundPostProcessor {
      * @return the <code>financingRound</code> provided
      */
     void assignUnpledgedBudgetToFinancingRound(final FinancingRoundEntity financingRound) {
-        final int pledgedTotalOfRound = projectRepository.findByFinancingRound(financingRound).stream()
-                .mapToInt(project -> project.pledgedAmount(pledgeRepository.findByProjectAndFinancingRound(project, financingRound)))
+        final int pledgedTotalOfRound = pledgeRepository.findByFinancingRound(financingRound).stream()
+                .mapToInt(PledgeEntity::getAmount)
                 .sum();
         financingRound.initPostRoundBudget(pledgedTotalOfRound);
     }

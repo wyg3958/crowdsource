@@ -161,7 +161,7 @@ public class ProjectServiceTest {
     }
 
     @Test
-    public void pledge_shouldSetTheProjectStatusToFullyPledged() throws Exception {
+    public void pledge_settingStatusToFullyPledgedShouldPersistProjectToo() throws Exception {
         final UserEntity user = user(USER_EMAIL);
         final String projectId = "some_id";
         final ProjectEntity project = projectEntity(user, projectId, "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
@@ -182,12 +182,12 @@ public class ProjectServiceTest {
     }
 
     @Test
-    public void pledge_reversePledgeThrowsInvalidRequestExWhenExceedingPledgeAmountAlreadyMade() throws Exception {
+    public void pledge_errorOnPledgingShouldNotCauseAnyPersistenceActions() throws Exception {
         final UserEntity user = user(USER_EMAIL);
         final String projectId = "some_id";
         final ProjectEntity project = projectEntity(user, projectId, "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
         final int budgetBeforePledge = user.getBudget();
-        final Pledge pledge = new Pledge(-5);
+        final Pledge pledge = new Pledge(45);
 
         prepareActiveFinanzingRound(project);
         pledgedAssertionProject(project, user, 4);
@@ -200,204 +200,7 @@ public class ProjectServiceTest {
             res = e;
         }
 
-        assertPledgeNotExecuted(res, InvalidRequestException.reversePledgeExceeded(), project, user, budgetBeforePledge);
-    }
-
-    @Test
-    public void pledge_reversePledgeThrowsInvalidRequestExWhenAlreadyFullyPledged() throws Exception {
-        final UserEntity user = user(USER_EMAIL);
-        final String projectId = "some_id";
-        final ProjectEntity project = projectEntity(user, projectId, "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
-        final int budgetBeforePledge = user.getBudget();
-        final Pledge pledge = new Pledge(-5);
-
-        project.setStatus(ProjectStatus.FULLY_PLEDGED);
-        prepareActiveFinanzingRound(project);
-        pledgedAssertionProject(project, user, 4);
-
-        InvalidRequestException res = null;
-        try {
-            projectService.pledge(projectId, user, pledge);
-            fail("InvalidRequestException expected!");
-        } catch (InvalidRequestException e) {
-            res = e;
-        }
-
-        assertPledgeNotExecuted(res, InvalidRequestException.projectAlreadyFullyPledged(), project, user, budgetBeforePledge, ProjectStatus.FULLY_PLEDGED);
-    }
-
-    @Test
-    public void pledge_throwsInvalidRequestExOnPledgeGoalIsExceeded() {
-        final UserEntity user = user(USER_EMAIL);
-        final String projectId = "some_id";
-        final ProjectEntity project = projectEntity(user, projectId, "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
-        final Pledge pledge = new Pledge(5);
-        final int budgetBeforePledge = user.getBudget();
-        pledgedAssertionProject(project, user, project.getPledgeGoal() - 4);
-
-        prepareActiveFinanzingRound(project);
-
-        InvalidRequestException res = null;
-        try {
-            projectService.pledge(projectId, user, pledge);
-            fail("InvalidRequestException expected!");
-        } catch (InvalidRequestException e) {
-            res = e;
-        }
-
-        assertPledgeNotExecuted(res, InvalidRequestException.pledgeGoalExceeded(), project, user, budgetBeforePledge);
-    }
-    @Test
-    public void pledge_throwsInvalidRequestExOnPZeroPledge() {
-        final UserEntity user = user(USER_EMAIL);
-        final String projectId = "some_id";
-        final ProjectEntity project = projectEntity(user, projectId, "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
-        final Pledge pledge = new Pledge(0);
-        final int budgetBeforePledge = user.getBudget();
-        pledgedAssertionProject(project, user, project.getPledgeGoal() - 4);
-
-        prepareActiveFinanzingRound(project);
-
-        InvalidRequestException res = null;
-        try {
-            projectService.pledge(projectId, user, pledge);
-            fail("InvalidRequestException expected!");
-        } catch (InvalidRequestException e) {
-            res = e;
-        }
-
-        assertPledgeNotExecuted(res, InvalidRequestException.zeroPledgeNotValid(), project, user, budgetBeforePledge);
-    }
-
-    @Test
-    public void pledge_throwsInvalidRequestExOnProjectIsAlreadyFullyPledged() {
-        final UserEntity user = user(USER_EMAIL);
-        final String projectId = "some_id";
-        final ProjectEntity project = projectEntity(user, projectId, "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
-        final Pledge pledge = new Pledge(5);
-        final int budgetBeforePledge = user.getBudget();
-
-        pledgedAssertionProject(project, user, project.getPledgeGoal());
-        prepareActiveFinanzingRound(project);
-
-        InvalidRequestException res = null;
-        try {
-            projectService.pledge(projectId, user, pledge);
-            fail("InvalidRequestException expected!");
-        } catch (InvalidRequestException e) {
-            res = e;
-        }
-
-        assertPledgeNotExecuted(res, InvalidRequestException.projectAlreadyFullyPledged(), project, user, budgetBeforePledge, ProjectStatus.FULLY_PLEDGED);
-    }
-    @Test
-    public void pledge_throwsInvalidRequestExOnProjectIsDeferred() {
-        final UserEntity user = user(USER_EMAIL);
-        final String projectId = "some_id";
-        final ProjectEntity project = projectEntity(user, projectId, "title", 44, "short description", "description", ProjectStatus.DEFERRED, null);
-        final Pledge pledge = new Pledge(5);
-        final int budgetBeforePledge = user.getBudget();
-
-        pledgedAssertionProject(project, user, 0);
-        prepareActiveFinanzingRound(project);
-
-        InvalidRequestException res = null;
-        try {
-            projectService.pledge(projectId, user, pledge);
-            fail("InvalidRequestException expected!");
-        } catch (InvalidRequestException e) {
-            res = e;
-        }
-
-        assertPledgeNotExecuted(res, InvalidRequestException.projectNotPublished(), project, user, budgetBeforePledge, ProjectStatus.DEFERRED);
-    }
-
-    @Test
-    public void pledge_throwsInvalidRequestExOnProjectIsNotPublished() {
-        final UserEntity user = user(USER_EMAIL);
-        final String projectId = "some_id";
-        final ProjectEntity project = projectEntity(user, projectId, "title", 44, "short description", "description", ProjectStatus.PROPOSED, null);
-        final Pledge pledge = new Pledge(5);
-        final int budgetBeforePledge = user.getBudget();
-
-        pledgedAssertionProject(project, user, project.getPledgeGoal() - 4);
-        prepareActiveFinanzingRound(project);
-
-        InvalidRequestException res = null;
-        try {
-            projectService.pledge(projectId, user, pledge);
-            fail("InvalidRequestException expected!");
-        } catch (InvalidRequestException e) {
-            res = e;
-        }
-
-        assertPledgeNotExecuted(res, InvalidRequestException.projectNotPublished(), project, user, budgetBeforePledge, ProjectStatus.PROPOSED);
-    }
-
-    @Test
-    public void pledge_throwsInvalidRequestExOnUserBudgetIsExceeded() {
-        final UserEntity user = user(USER_EMAIL);
-        final String projectId = "some_id";
-        final ProjectEntity project = projectEntity(user, projectId, "title", USER_BUDGED + 20, "short description", "description", ProjectStatus.PUBLISHED, null);
-        final Pledge pledge = new Pledge(USER_BUDGED + 10);
-        final int budgetBeforePledge = user.getBudget();
-
-        pledgedAssertionProject(project, user, project.getPledgeGoal() - 4);
-        prepareActiveFinanzingRound(project);
-
-        InvalidRequestException res = null;
-        try {
-            projectService.pledge(projectId, user, pledge);
-            fail("InvalidRequestException expected!");
-        } catch (InvalidRequestException e) {
-            res = e;
-        }
-
-        assertPledgeNotExecuted(res, InvalidRequestException.userBudgetExceeded(), project, user, budgetBeforePledge, ProjectStatus.PUBLISHED);
-    }
-
-    @Test
-    public void pledge_throwsInvalidRequestExOnNoFinancingRound() {
-        final UserEntity user = user(USER_EMAIL);
-        final String projectId = "some_id";
-        final ProjectEntity project = projectEntity(user, projectId, "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
-        final Pledge pledge = new Pledge(4);
-        final int budgetBeforePledge = user.getBudget();
-
-        pledgedAssertionProject(project, user, project.getPledgeGoal() - 4);
-        when(financingRoundRepository.findActive(any(DateTime.class))).thenReturn(null);
-
-        InvalidRequestException res = null;
-        try {
-            projectService.pledge(projectId, user, pledge);
-            fail("InvalidRequestException expected!");
-        } catch (InvalidRequestException e) {
-            res = e;
-        }
-
-        assertPledgeNotExecuted(res, InvalidRequestException.noFinancingRoundCurrentlyActive(), project, user, budgetBeforePledge, ProjectStatus.PUBLISHED);
-    }
-
-    @Test
-    public void pledge_throwsInvalidRequestExOnInactiveFinancingRound() {
-        final UserEntity user = user(USER_EMAIL);
-        final String projectId = "some_id";
-        final ProjectEntity project = projectEntity(user, projectId, "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
-        final Pledge pledge = new Pledge(4);
-        final int budgetBeforePledge = user.getBudget();
-
-        pledgedAssertionProject(project, user, project.getPledgeGoal() - 4);
-        when(financingRoundRepository.findActive(any(DateTime.class))).thenReturn(null);
-        prepareInactiveFinancingRound(project);
-        InvalidRequestException res = null;
-        try {
-            projectService.pledge(projectId, user, pledge);
-            fail("InvalidRequestException expected!");
-        } catch (InvalidRequestException e) {
-            res = e;
-        }
-
-        assertPledgeNotExecuted(res, InvalidRequestException.noFinancingRoundCurrentlyActive(), project, user, budgetBeforePledge, ProjectStatus.PUBLISHED);
+        assertPledgeNotExecuted(res, InvalidRequestException.pledgeGoalExceeded(), project, user, budgetBeforePledge, ProjectStatus.PUBLISHED);
     }
 
     @Test
@@ -442,10 +245,6 @@ public class ProjectServiceTest {
 
         verify(projectRepository, never()).save(any(ProjectEntity.class));
         verify(userNotificationService, never()).notifyCreatorOnProjectUpdate(any(ProjectEntity.class));
-    }
-
-    private void assertPledgeNotExecuted(RuntimeException actualEx, RuntimeException expEx, ProjectEntity project, UserEntity user, int userBudgetBeforePledge) {
-        assertPledgeNotExecuted(actualEx, expEx, project, user, userBudgetBeforePledge, ProjectStatus.PUBLISHED);
     }
 
     private void assertPledgeNotExecuted(RuntimeException actualEx, RuntimeException expEx, ProjectEntity project, UserEntity user, int userBudgetBeforePledge, ProjectStatus expStatus) {

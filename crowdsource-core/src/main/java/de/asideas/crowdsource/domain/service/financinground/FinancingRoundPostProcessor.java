@@ -76,7 +76,7 @@ public class FinancingRoundPostProcessor {
         final int pledgedTotalOfRound = projectRepository.findByFinancingRound(financingRound).stream()
                 .mapToInt(project -> project.pledgedAmount(pledgeRepository.findByProjectAndFinancingRound(project, financingRound)))
                 .sum();
-        financingRound.initBudgetRemainingAfterRound(pledgedTotalOfRound);
+        financingRound.initPostRoundBudget(pledgedTotalOfRound);
     }
 
 

@@ -14,6 +14,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.util.Assert;
 
+import java.util.Collections;
+import java.util.List;
+
 // for serialization
 @Document(collection = "financerounds")
 public class FinancingRoundEntity {
@@ -33,11 +36,12 @@ public class FinancingRoundEntity {
     private Integer budget;
 
     /**
-     * The amount of money left after round has been terminated; thus the amount of money users did not spend on pledging projects during
-     * official lifetime of that round. It is set during post processing of financing rounds and eventually can be used for pledging projects
-     * by admins. When admin users pledge after termination of the round the pledging amounts are subtracted from this member.
+     * The amount of money left after round has been terminated; thus it is the amount of money users did not spend on
+     * pledging projects during official activity of that round. It is set during post processing of financing rounds
+     * and is intended to be eventually used for pledging projects by admins. When admin users pledge after termination
+     * of the round the pledging amounts are not subtracted from this member.
      */
-    private Integer budgetRemainingAfterRound = 0;
+    private Integer postRoundBudget = null;
 
     private Integer budgetPerUser;
 
@@ -100,12 +104,34 @@ public class FinancingRoundEntity {
     }
 
     /**
-     * Calculates and initializes the remaining budget that was not pledget by users during <code>this</code> active round
+     * @param allProjectPledgesAfterTermination all pledges that have been made to projects assigned to <code>this</code>
+     * @return how much money is left to be invested using money from this round based on <code>postRoundBudget</code>
+     */
+    public int postRoundPledgableBudgetRemaining(List<PledgeEntity> allProjectPledgesAfterTermination) {
+        if(!terminationPostProcessingDone) {
+            throw new IllegalStateException("postRoundPledgableBudgetRemaining cannot be determined on a financingRound that has not been terminated or post processed.");
+        }
+        if (allProjectPledgesAfterTermination == null || allProjectPledgesAfterTermination.isEmpty()) {
+            return this.postRoundBudget;
+        }
+        Collections.sort(allProjectPledgesAfterTermination, (p1, p2) -> (p1.getCreatedDate().getMillis() - p2.getCreatedDate().getMillis()) > 0 ? 1 : -1);
+        Assert.isTrue(allProjectPledgesAfterTermination.get(0).getCreatedDate().getMillis() > this.endDate.getMillis(),
+                "Method must not be called with pledgeEntities from active financing round! One entry was: " + allProjectPledgesAfterTermination.get(0));
+
+        int postRoundPledgeAmount = allProjectPledgesAfterTermination.stream().mapToInt(PledgeEntity::getAmount).sum();
+        return this.postRoundBudget - postRoundPledgeAmount;
+    }
+
+    /**
+     * Calculates and initializes the remaining budget that was not pledged by users during <code>this</code> active round
      * @param pledgeAmountByUsers the total amount pledged by users during active financing round
      */
-    public void initBudgetRemainingAfterRound(int pledgeAmountByUsers){
+    public void initPostRoundBudget(int pledgeAmountByUsers){
         if(!this.terminated()) {
             throw new IllegalStateException("Cannot initialize remaining budget on not yet terminated financing round: " + this);
+        }
+        if(this.postRoundBudget != null){
+            throw new IllegalStateException("PostRoundBudget must not be initialized more than once!");
         }
         int budgetRemainingAfterRound = getBudget() - pledgeAmountByUsers;
         if(budgetRemainingAfterRound < 0){
@@ -113,7 +139,7 @@ public class FinancingRoundEntity {
                     "The pledge amount above budget is: {}; FinancingRound was: {}", budgetRemainingAfterRound, this);
             budgetRemainingAfterRound = 0;
         }
-        setBudgetRemainingAfterRound(budgetRemainingAfterRound);
+        setPostRoundBudget(budgetRemainingAfterRound);
     }
 
     Integer calculateBudgetPerUser() {
@@ -159,8 +185,8 @@ public class FinancingRoundEntity {
         return terminationPostProcessingDone;
     }
 
-    public Integer getBudgetRemainingAfterRound() {
-        return budgetRemainingAfterRound;
+    public Integer getPostRoundBudget() {
+        return postRoundBudget;
     }
 
     public void setId(String id) {
@@ -199,8 +225,8 @@ public class FinancingRoundEntity {
         this.terminationPostProcessingDone = terminationPostProcessingDone;
     }
 
-    public void setBudgetRemainingAfterRound(Integer budgetRemainingAfterRound) {
-        this.budgetRemainingAfterRound = budgetRemainingAfterRound;
+    public void setPostRoundBudget(Integer postRoundBudget) {
+        this.postRoundBudget = postRoundBudget;
     }
 
     @Override

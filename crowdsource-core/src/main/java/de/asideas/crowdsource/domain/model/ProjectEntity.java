@@ -4,6 +4,7 @@ import de.asideas.crowdsource.domain.exception.InvalidRequestException;
 import de.asideas.crowdsource.domain.presentation.Pledge;
 import de.asideas.crowdsource.domain.presentation.project.Project;
 import de.asideas.crowdsource.domain.shared.ProjectStatus;
+import de.asideas.crowdsource.security.Roles;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -62,6 +63,16 @@ public class ProjectEntity {
     public ProjectEntity() {
     }
 
+    /**
+     * Allows pledging <code>this</code> project, using budget from the <code>pledgingUser</code> given.
+     * Moreover negative pledges are supported by reducing investment for the project in which case the amount
+     * is credited the <code>pledginUser</code>'s budget (only as much posssible as originally pledged by her).
+     *
+     * @param pledge             The amount to (positively or negatively) pledge <code>this</code>
+     * @param pledgingUser       the user that wants to invest and whose balance is affected
+     * @param pledgesAlreadyDone all investements that have been done so far for <code>this</code>
+     * @return the value describing the [reduced] investment done
+     */
     public PledgeEntity pledge(Pledge pledge, UserEntity pledgingUser, List<PledgeEntity> pledgesAlreadyDone) {
 
         if (this.financingRound == null || !this.financingRound.active()) {
@@ -98,6 +109,59 @@ public class ProjectEntity {
     }
 
     /**
+     * Allows admin users to pledge <code>this</code> project after the last financing round using its remaining budget.
+     * Thus, the user's budget is not debited or credited rather than <code>this</code>' financingRound's remaining budget.
+     * Negative pledges are supported as well but only as much as was pledged by admin users on the terminated financing round.
+     *
+     * @param pledge                            the amount to [negatively] pledge
+     * @param pledgingUser                      the admin user executing the pledge.
+     * @param pledgesAlreadyDone                all investements that have been done so far for <code>this</code>
+     * @param postRoundPledgableBudgetAvailable how much budget is available from financing round to be used for investments
+     * @return the value describing the [reduced] investment done using budget from <code>this</code>' financing round
+     */
+    public PledgeEntity pledgeUsingPostRoundBudget(Pledge pledge, UserEntity pledgingUser, List<PledgeEntity> pledgesAlreadyDone, int postRoundPledgableBudgetAvailable) {
+        Assert.isTrue(pledgingUser.getRoles().contains(Roles.ROLE_ADMIN), "pledgeUsingPostRoundBudget(..) called with non admin user: " + pledgingUser);
+
+        if (this.financingRound == null) {
+            throw InvalidRequestException.projectTookNotPartInLastFinancingRond();
+        }
+
+        Assert.isTrue(this.financingRound.terminated(), "pledgeUsingPostRoundBudget(..) requires its financingRound to be terminated");
+
+        if (!this.financingRound.getTerminationPostProcessingDone()) {
+            throw InvalidRequestException.financingRoundNotPostProcessedYet();
+        }
+
+        if (this.status == ProjectStatus.FULLY_PLEDGED) {
+            throw InvalidRequestException.projectAlreadyFullyPledged();
+        }
+        if (this.status != ProjectStatus.PUBLISHED) {
+            throw InvalidRequestException.projectNotPublished();
+        }
+        if (pledge.getAmount() == 0) {
+            throw InvalidRequestException.zeroPledgeNotValid();
+        }
+        if (pledge.getAmount() > postRoundPledgableBudgetAvailable) {
+            throw InvalidRequestException.postRoundBudgetExceeded();
+        }
+
+        if (pledgedAmountPostRound(pledgesAlreadyDone) + pledge.getAmount() < 0) {
+            throw InvalidRequestException.reversePledgeExceeded();
+        }
+
+        int newPledgedAmount = pledgedAmount(pledgesAlreadyDone) + pledge.getAmount();
+        if (newPledgedAmount > this.pledgeGoal) {
+            throw InvalidRequestException.pledgeGoalExceeded();
+        }
+
+        if (newPledgedAmount == this.pledgeGoal) {
+            setStatus(ProjectStatus.FULLY_PLEDGED);
+        }
+
+        return new PledgeEntity(this, pledgingUser, pledge, financingRound);
+    }
+
+    /**
      * Modifies status of <code>this</code>.
      *
      * @param newStatus
@@ -128,12 +192,13 @@ public class ProjectEntity {
 
     /**
      * Upon termination of its financing round the status is adapted accordingly as well as allocation of financing round.
+     *
      * @param financingRound
      * @return whether something actually changed.
      */
     public boolean onFinancingRoundTerminated(FinancingRoundEntity financingRound) {
         Assert.notNull(financingRound);
-        if (this.financingRound == null || !this.financingRound.getId().equals(financingRound.getId()) ) {
+        if (this.financingRound == null || !this.financingRound.getId().equals(financingRound.getId())) {
             return false;
         }
 
@@ -168,6 +233,16 @@ public class ProjectEntity {
         }
         return pledges.stream().filter(p -> requestingUser.getId().equals(p.getUser().getId()))
                 .mapToInt(PledgeEntity::getAmount).sum();
+    }
+
+    public int pledgedAmountPostRound(List<PledgeEntity> pledges) {
+        if (pledges == null || pledges.isEmpty() || this.financingRound == null || !this.financingRound.terminated()) {
+            return 0;
+        }
+        return pledges.stream()
+                .filter(p -> p.getCreatedDate() != null && p.getCreatedDate().isAfter(financingRound.getEndDate()))
+                .mapToInt(PledgeEntity::getAmount)
+                .sum();
     }
 
     public String getId() {

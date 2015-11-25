@@ -107,7 +107,7 @@ public class FinancingRoundPostProcessorTest {
         assertThat(project_1.getStatus(), is(ProjectStatus.FULLY_PLEDGED));
         assertThat(project_2.getStatus(), is(ProjectStatus.DEFERRED));
         assertThat(project_3.getStatus(), is(ProjectStatus.PUBLISHED));
-        assertThat(res.getBudgetRemainingAfterRound(), is(EXPECTED_REMAINING_BUDGET_AFTER_ROUND));
+        assertThat(res.getPostRoundBudget(), is(EXPECTED_REMAINING_BUDGET_AFTER_ROUND));
         assertThat(terminatedRound.getTerminationPostProcessingDone(), is(true));
     }
 
@@ -153,7 +153,7 @@ public class FinancingRoundPostProcessorTest {
 
         financingRoundPostProcessor.assignUnpledgedBudgetToFinancingRound(financingRound);
 
-        assertThat(financingRound.getBudgetRemainingAfterRound(), is(EXPECTED_REMAINING_BUDGET_AFTER_ROUND));
+        assertThat(financingRound.getPostRoundBudget(), is(EXPECTED_REMAINING_BUDGET_AFTER_ROUND));
     }
 
     @Test
@@ -163,7 +163,7 @@ public class FinancingRoundPostProcessorTest {
 
         financingRoundPostProcessor.assignUnpledgedBudgetToFinancingRound(financingRound);
 
-        assertThat(financingRound.getBudgetRemainingAfterRound(), is(0));
+        assertThat(financingRound.getPostRoundBudget(), is(0));
     }
 
     private ProjectEntity projectEntity(UserEntity userEntity, String id, String title, int pledgeGoal, String shortDescription, String description, ProjectStatus status, DateTime lastModifiedDate) {

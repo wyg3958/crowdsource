@@ -295,7 +295,7 @@ public class ProjectServiceTest {
         FinancingRoundEntity finanzingRound = prepareInactiveFinancingRound(project);
         finanzingRound.initPostRoundBudget(6000);
         finanzingRound.setTerminationPostProcessingDone(true);
-        when(pledgeRepository.findByFinancingRoundWhereCreatedDateGreaterThan(finanzingRound, finanzingRound.getEndDate())).thenReturn(Collections.emptyList());
+        when(pledgeRepository.findByFinancingRoundAndCreatedDateGreaterThan(finanzingRound, finanzingRound.getEndDate())).thenReturn(Collections.emptyList());
 
         projectService.pledgeProjectUsingPostRoundBudget(project, user, pledge);
 
@@ -319,7 +319,7 @@ public class ProjectServiceTest {
         FinancingRoundEntity finanzingRound = prepareInactiveFinancingRound(project);
         finanzingRound.initPostRoundBudget(6000);
         finanzingRound.setTerminationPostProcessingDone(true);
-        when(pledgeRepository.findByFinancingRoundWhereCreatedDateGreaterThan(finanzingRound, finanzingRound.getEndDate())).thenReturn(Collections.emptyList());
+        when(pledgeRepository.findByFinancingRoundAndCreatedDateGreaterThan(finanzingRound, finanzingRound.getEndDate())).thenReturn(Collections.emptyList());
 
         projectService.pledgeProjectUsingPostRoundBudget(project, user, pledge);
 
@@ -343,7 +343,7 @@ public class ProjectServiceTest {
         FinancingRoundEntity finanzingRound = prepareInactiveFinancingRound(project);
         finanzingRound.initPostRoundBudget(6000);
         finanzingRound.setTerminationPostProcessingDone(true);
-        when(pledgeRepository.findByFinancingRoundWhereCreatedDateGreaterThan(finanzingRound, finanzingRound.getEndDate())).thenReturn(Collections.emptyList());
+        when(pledgeRepository.findByFinancingRoundAndCreatedDateGreaterThan(finanzingRound, finanzingRound.getEndDate())).thenReturn(Collections.emptyList());
 
 
         InvalidRequestException res = null;

@@ -1,6 +1,5 @@
 package de.asideas.crowdsource.service;
 
-import de.asideas.crowdsource.domain.exception.InvalidRequestException;
 import de.asideas.crowdsource.domain.exception.ResourceNotFoundException;
 import de.asideas.crowdsource.domain.model.FinancingRoundEntity;
 import de.asideas.crowdsource.domain.model.PledgeEntity;
@@ -135,7 +134,7 @@ public class ProjectService {
     void pledgeProjectUsingPostRoundBudget(ProjectEntity projectEntity, UserEntity userEntity, Pledge pledge) {
         FinancingRoundEntity financingRound = projectEntity.getFinancingRound();
 
-        List<PledgeEntity> postRoundPledges = pledgeRepository.findByFinancingRoundWhereCreatedDateGreaterThan(
+        List<PledgeEntity> postRoundPledges = pledgeRepository.findByFinancingRoundAndCreatedDateGreaterThan(
                 financingRound, financingRound.getEndDate());
 
         int postRoundPledgableBudget = financingRound.postRoundPledgableBudgetRemaining(postRoundPledges);

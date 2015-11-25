@@ -11,5 +11,5 @@ import java.util.List;
 public interface PledgeRepository extends MongoRepository<PledgeEntity, String> {
     List<PledgeEntity> findByProjectAndFinancingRound(ProjectEntity projectEntity, FinancingRoundEntity financingRoundEntity);
     List<PledgeEntity> findByFinancingRound(FinancingRoundEntity financingRoundEntity);
-    List<PledgeEntity> findByFinancingRoundWhereCreatedDateGreaterThan(FinancingRoundEntity financingRoundEntity, DateTime createdDate);
+    List<PledgeEntity> findByFinancingRoundAndCreatedDateGreaterThan(FinancingRoundEntity financingRoundEntity, DateTime createdDate);
 }

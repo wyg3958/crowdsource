@@ -110,13 +110,13 @@ public class FinancingRoundServiceTest {
         final int pledgedAmountAfterTermination = 10;
         financingRoundEntities.get(0).setTerminationPostProcessingDone(true);
         financingRoundEntities.get(1).setTerminationPostProcessingDone(true);
-        when(pledgeRepository.findByFinancingRoundWhereCreatedDateGreaterThan(financingRoundEntities.get(1), financingRoundEntities.get(1).getEndDate()))
+        when(pledgeRepository.findByFinancingRoundAndCreatedDateGreaterThan(financingRoundEntities.get(1), financingRoundEntities.get(1).getEndDate()))
                 .thenReturn(Collections.singletonList(aPledgeEntity(financingRoundEntities.get(1), pledgedAmountAfterTermination)));
 
         final List<FinancingRound> res = financingRoundService.allFinancingRounds();
 
         verify(financingRoundRepository, times(1)).findAll();
-        verify(pledgeRepository, times(2)).findByFinancingRoundWhereCreatedDateGreaterThan(any(FinancingRoundEntity.class), any(DateTime.class));
+        verify(pledgeRepository, times(2)).findByFinancingRoundAndCreatedDateGreaterThan(any(FinancingRoundEntity.class), any(DateTime.class));
 
         assertFinancingRoundDto(financingRoundEntities.get(0), res.get(0), POST_ROUND_BUDGET);
         assertFinancingRoundDto(financingRoundEntities.get(1), res.get(1), POST_ROUND_BUDGET - pledgedAmountAfterTermination);
@@ -264,7 +264,7 @@ public class FinancingRoundServiceTest {
         final FinancingRoundEntity financingRoundEntity = financingRoundEntity("test_roundId", DateTime.now().minusDays(3), DateTime.now().minusDays(2));
         financingRoundEntity.setTerminationPostProcessingDone(true);
 
-        when(pledgeRepository.findByFinancingRoundWhereCreatedDateGreaterThan(any(FinancingRoundEntity.class), any(DateTime.class)))
+        when(pledgeRepository.findByFinancingRoundAndCreatedDateGreaterThan(any(FinancingRoundEntity.class), any(DateTime.class)))
                 .thenReturn(Collections.singletonList(aPledgeEntity(financingRoundEntity, 100)));
 
 
@@ -279,7 +279,7 @@ public class FinancingRoundServiceTest {
 
         assertFinancingRoundDto(financingRoundEntity, res, 0);
 
-        verify(pledgeRepository, never()).findByFinancingRoundWhereCreatedDateGreaterThan(any(FinancingRoundEntity.class), any(DateTime.class));
+        verify(pledgeRepository, never()).findByFinancingRoundAndCreatedDateGreaterThan(any(FinancingRoundEntity.class), any(DateTime.class));
     }
 
     private void assertFinancingRoundDto(FinancingRoundEntity financingRoundEntity, FinancingRound res, Integer expPostRoundBudgetRemaining) {

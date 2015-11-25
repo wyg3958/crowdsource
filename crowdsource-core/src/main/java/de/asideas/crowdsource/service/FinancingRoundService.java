@@ -162,7 +162,7 @@ public class FinancingRoundService implements ApplicationListener<ContextRefresh
     FinancingRound financingRound(FinancingRoundEntity financingRoundEntity) {
         List<PledgeEntity> postRoundPledges = null;
         if (financingRoundEntity.getTerminationPostProcessingDone()) {
-            postRoundPledges = pledgeRepository.findByFinancingRoundWhereCreatedDateGreaterThan(financingRoundEntity, financingRoundEntity.getEndDate());
+            postRoundPledges = pledgeRepository.findByFinancingRoundAndCreatedDateGreaterThan(financingRoundEntity, financingRoundEntity.getEndDate());
         }
         return new FinancingRound(financingRoundEntity, postRoundPledges);
     }

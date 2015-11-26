@@ -88,7 +88,7 @@ describe('financing rounds', function () {
 
         prepareBackendGetFinancingRoundsMock([
             {"budget": "1111", "startDate": startDate1.toISOString(), "endDate": endDate1.toISOString(), "active": false},
-            {"budget": "2222", "startDate": startDate2.toISOString(), "endDate": endDate2.toISOString(), "active": false}
+            {"budget": "2222", "postRoundBudget": 1001, "startDate": startDate2.toISOString(), "endDate": endDate2.toISOString(), "active": false}
         ]);
         $httpBackend.flush();
         $scope.$digest();
@@ -102,6 +102,7 @@ describe('financing rounds', function () {
         expect(financingRounds.getTableStartDate(row).text()).toBe(startDate2.format('DD.MM.YY HH:mm'));
         expect(financingRounds.getTableEndDate(row)).toHaveText(endDate2.format('DD.MM.YY HH:mm'));
         expect(financingRounds.getTableBudget(row)).toHaveText('2.222');
+        expect(financingRounds.getTablePostRoundBudget(row)).toHaveText('1.001');
 
         expect(financingRounds.getTableEndRoundButton()).not.toExist();
         expect(financingRounds.getTableEndRoundButton(row)).not.toExist();

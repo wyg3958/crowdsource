@@ -289,6 +289,7 @@ public class FinancingRoundControllerMockMvcTest {
         assertThat(actRes.getEndDate().getMillis(), is(expectedFinancingRound.getEndDate().getMillis()));
         assertThat(actRes.isActive(), is(expectedFinancingRound.isActive()));
         assertThat(actRes.getPostRoundBudget(), is(expectedFinancingRound.getPostRoundBudget()));
+        assertThat(actRes.isPostRoundBudgetDistributable(), is(expectedFinancingRound.isPostRoundBudgetDistributable()));
         if(isPublicJsonView){
             assertThat(actRes.getBudget(), is(nullValue()));
         }else{

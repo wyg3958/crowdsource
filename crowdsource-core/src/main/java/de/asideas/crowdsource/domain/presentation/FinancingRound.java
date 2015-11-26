@@ -42,11 +42,10 @@ public class FinancingRound {
     @JsonView(PublicFinancingRoundInformationView.class)
     private boolean active;
 
+    @JsonView(PublicFinancingRoundInformationView.class)
+    private boolean postRoundBudgetDistributable;
 
-    @Deprecated
-    public FinancingRound(FinancingRoundEntity financingRoundEntity) {
 
-    }
     public FinancingRound(FinancingRoundEntity financingRoundEntity, List<PledgeEntity> postRoundPledges) {
         this.id = financingRoundEntity.getId();
         this.startDate = financingRoundEntity.getStartDate();
@@ -55,6 +54,7 @@ public class FinancingRound {
         this.postRoundBudget = financingRoundEntity.getPostRoundBudget();
         this.active = financingRoundEntity.active();
         this.postRoundBudgetRemaining = financingRoundEntity.postRoundPledgableBudgetRemaining(postRoundPledges);
+        this.postRoundBudgetDistributable = financingRoundEntity.terminated() && financingRoundEntity.getTerminationPostProcessingDone();
     }
 
     public FinancingRound() {
@@ -88,6 +88,10 @@ public class FinancingRound {
         return postRoundBudgetRemaining;
     }
 
+    public boolean isPostRoundBudgetDistributable() {
+        return postRoundBudgetDistributable;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -114,6 +118,10 @@ public class FinancingRound {
 
     public void setPostRoundBudgetRemaining(Integer postRoundBudgetRemaining) {
         this.postRoundBudgetRemaining = postRoundBudgetRemaining;
+    }
+
+    public void setPostRoundBudgetDistributable(boolean postRoundBudgetDistributable) {
+        this.postRoundBudgetDistributable = postRoundBudgetDistributable;
     }
 
     @Override

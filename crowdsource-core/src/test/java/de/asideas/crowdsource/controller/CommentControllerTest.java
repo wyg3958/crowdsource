@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.expression.Expression;
 import org.springframework.http.MediaType;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -240,6 +241,11 @@ public class CommentControllerTest {
         @Bean
         public Expression projectDeferredEmailTemplate() {
             return mock(Expression.class);
+        }
+
+        @Bean
+        public AsyncTaskExecutor taskExecutorSmtp() {
+            return mock(AsyncTaskExecutor.class);
         }
     }
 }

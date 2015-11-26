@@ -32,21 +32,28 @@ public class FinancingRoundController {
     }
 
     @JsonView(PublicFinancingRoundInformationView.class)
-    @RequestMapping(value = "/financinground/active", method = RequestMethod.GET)
+    @RequestMapping(value = "/financingrounds/active", method = RequestMethod.GET)
     @Secured({Roles.ROLE_TRUSTED_ANONYMOUS, Roles.ROLE_USER, Roles.ROLE_ADMIN})
     public FinancingRound getActive() {
         return financingRoundService.currentlyActiveRound();
     }
 
+    @JsonView(PublicFinancingRoundInformationView.class)
+    @RequestMapping(value = "/financingrounds/mostRecent", method = RequestMethod.GET)
+    @Secured({Roles.ROLE_TRUSTED_ANONYMOUS, Roles.ROLE_USER, Roles.ROLE_ADMIN})
+    public FinancingRound getMostRecent() {
+        return financingRoundService.mostRecentRound();
+    }
+
     @Secured(Roles.ROLE_ADMIN)
-    @RequestMapping(value = "financinground", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "financingrounds", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public FinancingRound startFinancingRound(@Valid @RequestBody FinancingRound financingRound) {
         return financingRoundService.startNewFinancingRound(financingRound);
     }
 
     @Secured(Roles.ROLE_ADMIN)
-    @RequestMapping(value = "financinground/{id}/cancel", method = RequestMethod.PUT)
+    @RequestMapping(value = "financingrounds/{id}/cancel", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
     public FinancingRound stopFinancingRound(@PathVariable String id) {
         return financingRoundService.stopFinancingRound(id);

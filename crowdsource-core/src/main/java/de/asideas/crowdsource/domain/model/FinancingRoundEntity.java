@@ -108,7 +108,7 @@ public class FinancingRoundEntity {
      *                                          after the round finished
      * @return how much money is left to be invested using money from this round based on <code>postRoundBudget</code>
      */
-    public int postRoundPledgableBudgetRemaining(List<PledgeEntity> postRoundPledges) {
+    public Integer postRoundPledgableBudgetRemaining(List<PledgeEntity> postRoundPledges) {
         if(!terminationPostProcessingDone) {
             return 0;
         }

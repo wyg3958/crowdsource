@@ -54,7 +54,7 @@ describe('project pledging form', function () {
     function prepareMocks(data) {
         $scope.project = data.project;
         spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(data.isLoggedIn);
-        $httpBackend.expectGET('/financinground/active').respond(data.financingRoundResponse.statusCode, data.financingRoundResponse.body);
+        $httpBackend.expectGET('/financingrounds/mostRecent').respond(data.financingRoundResponse.statusCode, data.financingRoundResponse.body);
         $httpBackend.expectGET('/user/current').respond(data.userResponse.statusCode, data.userResponse.body);
     }
 
@@ -91,7 +91,7 @@ describe('project pledging form', function () {
         $httpBackend.expectPOST('/project/123/pledges', {amount: 30}).respond(200);
         $httpBackend.expectGET('/project/123').respond(200, {id: 123, pledgeGoal: 100, pledgedAmount: 90, pledgedAmountByRequestingUser: 30, status: 'PUBLISHED'});
         $httpBackend.expectGET('/user/current').respond(200, {budget: 170});
-        $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
+        $httpBackend.expectGET('/financingrounds/mostRecent').respond(200, {active: true});
 
         // submit form
         elements.pledgeButton.click();
@@ -133,7 +133,7 @@ describe('project pledging form', function () {
         $httpBackend.expectPOST('/project/123/pledges', {amount: 40}).respond(200);
         $httpBackend.expectGET('/project/123').respond(200, {id: 123, pledgeGoal: 100, pledgedAmount: 100, pledgedAmountByRequestingUser: 40, status: 'FULLY_PLEDGED'});
         $httpBackend.expectGET('/user/current').respond(200, {budget: 160});
-        $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
+        $httpBackend.expectGET('/financingrounds/mostRecent').respond(200, {active: true});
 
         // submit form
         elements.pledgeButton.click();
@@ -231,7 +231,7 @@ describe('project pledging form', function () {
 
         $scope.project = {$resolved: true, pledgeGoal: 100, pledgedAmount: 50, status: 'PUBLISHED'};
         spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(false);
-        $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
+        $httpBackend.expectGET('/financingrounds/mostRecent').respond(200, {active: true});
 
         var elements = compileDirective();
 
@@ -348,7 +348,7 @@ describe('project pledging form', function () {
         $httpBackend.expectPOST('/project/123/pledges', {amount: 30}).respond(400, {errorCode: 'pledge_goal_exceeded'});
         $httpBackend.expectGET('/project/123').respond(200, {id: 123, pledgeGoal: 500, pledgedAmount: 480, pledgedAmountByRequestingUser: 0, status: 'PUBLISHED'}); // the pledged amount is 480 now!
         $httpBackend.expectGET('/user/current').respond(200, {budget: 200});
-        $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
+        $httpBackend.expectGET('/financingrounds/mostRecent').respond(200, {active: true});
 
         // submit form
         elements.pledgeButton.click();
@@ -380,7 +380,7 @@ describe('project pledging form', function () {
         $httpBackend.expectPOST('/project/123/pledges', {amount: 20}).respond(200);
         $httpBackend.expectGET('/project/123').respond(200, {id: 123, pledgeGoal: 500, pledgedAmount: 500, pledgedAmountByRequestingUser: 20, status: 'FULLY_PLEDGED'});
         $httpBackend.expectGET('/user/current').respond(200, {budget: 180});
-        $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
+        $httpBackend.expectGET('/financingrounds/mostRecent').respond(200, {active: true});
 
         // submit form
         expect(elements.pledgeButton).not.toBeDisabled();
@@ -420,7 +420,7 @@ describe('project pledging form', function () {
         $httpBackend.expectPOST('/project/123/pledges', {amount: 30}).respond(400, {errorCode: 'no_financing_round_currently_active'});
         $httpBackend.expectGET('/project/123').respond(200, {id: 123, pledgeGoal: 500, pledgedAmount: 50});
         $httpBackend.expectGET('/user/current').respond(200, {budget: 190});
-        $httpBackend.expectGET('/financinground/active').respond(404);
+        $httpBackend.expectGET('/financingrounds/mostRecent').respond(200, {active: false});
 
         elements.pledgeAmount.getInputField().val('30').trigger('input');
         elements.pledgeButton.click();
@@ -454,7 +454,7 @@ describe('project pledging form', function () {
 
         $scope.project = {$resolved: true, pledgeGoal: 100, pledgedAmount: 50, status: 'PUBLISHED'};
         spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(false);
-        $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
+        $httpBackend.expectGET('/financingrounds/mostRecent').respond(200, {active: true});
 
         var elements = compileDirective();
         $httpBackend.flush();
@@ -468,7 +468,7 @@ describe('project pledging form', function () {
 
         $scope.project = {$resolved: true, pledgeGoal: 100, pledgedAmount: 50, status: 'FULLY_PLEDGED'};
         spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(false);
-        $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
+        $httpBackend.expectGET('/financingrounds/mostRecent').respond(200, {active: true});
 
         var elements = compileDirective();
         $httpBackend.flush();
@@ -482,7 +482,7 @@ describe('project pledging form', function () {
 
         $scope.project = {$resolved: true, pledgeGoal: 100, pledgedAmount: 50, status: 'PROPOSED'};
         spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(false);
-        $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
+        $httpBackend.expectGET('/financingrounds/mostRecent').respond(200, {active: true});
 
         var elements = compileDirective();
         $httpBackend.flush();
@@ -570,7 +570,7 @@ describe('project pledging form', function () {
         $httpBackend.expectPOST('/project/123/pledges', {amount: -40}).respond(200);
         $httpBackend.expectGET('/project/123').respond(200, {$resolved: false, id: 123, pledgeGoal: 100, pledgedAmount: 40, pledgedAmountByRequestingUser: 10, status: 'PUBLISHED'});
         $httpBackend.expectGET('/user/current').respond(200, {budget: 240});
-        $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
+        $httpBackend.expectGET('/financingrounds/mostRecent').respond(200, {active: true});
 
         // submit form
         elements.pledgeButton.click();

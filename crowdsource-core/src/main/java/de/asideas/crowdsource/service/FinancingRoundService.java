@@ -17,6 +17,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -78,6 +81,18 @@ public class FinancingRoundService implements ApplicationListener<ContextRefresh
         }
 
         return financingRound(financingRoundEntity);
+    }
+
+    /**
+     * @return The financing round that is currently active or has been active most recently.
+     */
+    public FinancingRound mostRecentRound() {
+        final Page<FinancingRoundEntity> pageMostRecent = financingRoundRepository.financingRounds(new PageRequest(0, 1, Sort.Direction.DESC, "createdDate"));
+        if (pageMostRecent.getSize() < 1) {
+            throw new ResourceNotFoundException();
+        }
+
+        return financingRound(pageMostRecent.getContent().get(0));
     }
 
     public FinancingRound startNewFinancingRound(FinancingRound creationCommand) {
@@ -166,4 +181,5 @@ public class FinancingRoundService implements ApplicationListener<ContextRefresh
         }
         return new FinancingRound(financingRoundEntity, postRoundPledges);
     }
+
 }

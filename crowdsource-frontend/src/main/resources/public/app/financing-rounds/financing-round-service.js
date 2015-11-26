@@ -4,9 +4,9 @@ angular.module('crowdsource')
 
         var service = {};
 
-        var financingRoundResource = $resource('/financinground/:id');
+        var financingRoundResource = $resource('/financingrounds/:id');
 
-        var stopFinancingRoundRessource = $resource('/financinground/:id/cancel', {}, {
+        var stopFinancingRoundRessource = $resource('/financingrounds/:id/cancel', {}, {
             'update': {
                 method: 'PUT'
             }
@@ -53,7 +53,7 @@ angular.module('crowdsource')
         function getCurrent() {
             var deferred = $q.defer();
 
-            var currentRound = financingRoundResource.get({id: 'active'});
+            var currentRound = financingRoundResource.get({id: 'mostRecent'});
             currentRound.$promise
                 .then(function () {
                     deferred.resolve(currentRound);

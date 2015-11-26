@@ -24,6 +24,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.TaskScheduler;
 
 import java.util.ArrayList;
@@ -43,6 +46,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
@@ -141,6 +145,36 @@ public class FinancingRoundServiceTest {
         when(financingRoundRepository.findActive(any(DateTime.class))).thenReturn(null);
 
         financingRoundService.currentlyActiveRound();
+    }
+
+    @Test
+    public void mostRecentRound() throws Exception {
+        final FinancingRoundEntity expFinancingRound = financingRoundEntity("test_roundId", DateTime.now().minusDays(2), DateTime.now().minusDays(1));
+
+        ArgumentCaptor<PageRequest> pageRequestCaptor = ArgumentCaptor.forClass(PageRequest.class);
+        Page mockedPageAnswer = mock(Page.class);
+        when(financingRoundRepository.financingRounds(pageRequestCaptor.capture())).thenReturn(mockedPageAnswer);
+        when(mockedPageAnswer.getSize()).thenReturn(1);
+        when(mockedPageAnswer.getContent()).thenReturn(Collections.singletonList(expFinancingRound));
+
+        final FinancingRound res = financingRoundService.mostRecentRound();
+
+
+        assertThat(res, is(new FinancingRound(expFinancingRound, null)));
+        assertThat(pageRequestCaptor.getValue().getSort().getOrderFor("createdDate"), is(new Sort.Order(Sort.Direction.DESC, "createdDate")));
+        assertThat(pageRequestCaptor.getValue().getPageSize(), is(1));
+        assertThat(pageRequestCaptor.getValue().getPageNumber(), is(0));
+    }
+
+    @Test(expected = ResourceNotFoundException.class)
+    public void mostRecentRound_throwsExceptionIfNoFinancingRoundsExist() throws Exception {
+        ArgumentCaptor<PageRequest> pageRequestCaptor = ArgumentCaptor.forClass(PageRequest.class);
+        Page mockedPageAnswer = mock(Page.class);
+
+        when(financingRoundRepository.financingRounds(pageRequestCaptor.capture())).thenReturn(mockedPageAnswer);
+        when(mockedPageAnswer.getSize()).thenReturn(0);
+
+        financingRoundService.mostRecentRound();
     }
 
     @Test

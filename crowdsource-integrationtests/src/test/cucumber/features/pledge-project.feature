@@ -34,7 +34,7 @@ Feature: Pledge project
     And the user enters 240 as his desired pledge amount
     And the user submits the pledging form
     And the number of backers is displayed with a value of 1
-    When the user reduces his desired pledge amount via the slider
+    When the user enters 200 as his desired pledge amount
     Then the displayed budget and financing infos are updated
     When the user submits the pledging form
     Then the notification message "Budget erfolgreich aus dem Projekt abgezogen." is displayed on the project pledging form

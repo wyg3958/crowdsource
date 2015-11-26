@@ -6,8 +6,8 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import de.asideas.crowdsource.model.presentation.Pledge;
-import de.asideas.crowdsource.model.presentation.project.Project;
+import de.asideas.crowdsource.domain.presentation.Pledge;
+import de.asideas.crowdsource.domain.presentation.project.Project;
 import de.asideas.crowdsource.testsupport.CrowdSourceTestConfig;
 import de.asideas.crowdsource.testsupport.pageobjects.project.ProjectDetailPage;
 import de.asideas.crowdsource.testsupport.pageobjects.project.ProjectStatusWidget;
@@ -20,6 +20,7 @@ import de.asideas.crowdsource.testsupport.util.UrlProvider;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -59,8 +60,9 @@ public class ProjectDetailSteps {
     public void init() {
         webDriver = webDriverProvider.provideDriver();
     }
+
     @After
-    public void after(){
+    public void after() {
         WebDriverProvider.closeWebDriver();
     }
 
@@ -190,6 +192,7 @@ public class ProjectDetailSteps {
     public void the_project_detail_page_of_this_project_is_requested() throws Throwable {
         projectDetailPage.open(createdProject.getId());
     }
+
     @And("^the project detail page of this project is requested again$")
     public void the_project_detail_page_of_this_project_is_requested_again() throws Throwable {
         webDriver.navigate().refresh();
@@ -197,13 +200,14 @@ public class ProjectDetailSteps {
     }
 
     @Then("^the number of backers is displayed with a value of (.+)$")
-    public void the_number_of_backers_is_displayed_with_a_value_of(int value){
+    public void the_number_of_backers_is_displayed_with_a_value_of(int value) {
         String expValue = "" + value;
-        seleniumWait.until(d -> {
-            PageFactory.initElements(d, projectDetailPage.getProjectStatusWidget());
-            return projectDetailPage.getProjectStatusWidget().getBackers().equals(expValue);
-        });
         projectDetailPage.waitForDetailsToBeLoaded();
+        seleniumWait.until( d -> {
+            projectDetailPage.getProjectStatusWidget().waitForDetailsToBeLoaded();
+            return projectDetailPage.getProjectStatusWidget().getBackers().equals(expValue);
+        }, 15, 800);
+
         assertThat(projectDetailPage.getProjectStatusWidget().getBackers(), is(expValue));
     }
 
@@ -216,9 +220,15 @@ public class ProjectDetailSteps {
         assertTrue(webDriver.findElements(By.className(buttonName + "-button")).size() == 0);
     }
 
-    @And("^the \"([^\"]*)\"-button is visible$")
+    @And("^the \"([^\"]*)\"-button is visible.*$")
     public void the_button_is_visible(String buttonName) throws Throwable {
         assertTrue(webDriver.findElements(By.className(buttonName + "-button")).size() == 1);
+    }
+
+    @And("^the \"([^\"]*)\"-button displays the text \"([^\"]*)\"$")
+    public void the_button_contains_text(String buttonName, String displayText) throws Throwable {
+        final WebElement btn = webDriver.findElement(By.className(buttonName + "-button"));
+        assertThat(btn.getText(), is(displayText));
     }
 
     @When("^the \"([^\"]*)\"-button is clicked$")

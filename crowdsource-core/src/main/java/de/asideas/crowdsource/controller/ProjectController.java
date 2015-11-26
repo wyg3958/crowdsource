@@ -1,13 +1,13 @@
 package de.asideas.crowdsource.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import de.asideas.crowdsource.domain.exception.ForbiddenException;
+import de.asideas.crowdsource.domain.model.UserEntity;
+import de.asideas.crowdsource.domain.presentation.Pledge;
+import de.asideas.crowdsource.domain.presentation.project.Project;
+import de.asideas.crowdsource.domain.presentation.project.ProjectStatusUpdate;
+import de.asideas.crowdsource.domain.shared.ProjectStatus;
 import de.asideas.crowdsource.security.Roles;
-import de.asideas.crowdsource.enums.ProjectStatus;
-import de.asideas.crowdsource.exceptions.ForbiddenException;
-import de.asideas.crowdsource.model.persistence.UserEntity;
-import de.asideas.crowdsource.model.presentation.Pledge;
-import de.asideas.crowdsource.model.presentation.project.Project;
-import de.asideas.crowdsource.model.presentation.project.ProjectSummaryView;
 import de.asideas.crowdsource.service.ProjectService;
 import de.asideas.crowdsource.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,6 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,12 +25,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.asideas.crowdsource.enums.ProjectStatus.FULLY_PLEDGED;
-import static de.asideas.crowdsource.enums.ProjectStatus.PUBLISHED;
+import static de.asideas.crowdsource.domain.shared.ProjectStatus.FULLY_PLEDGED;
+import static de.asideas.crowdsource.domain.shared.ProjectStatus.PUBLISHED;
 
 @RestController
 public class ProjectController {
@@ -44,7 +44,7 @@ public class ProjectController {
 
     @Secured({Roles.ROLE_TRUSTED_ANONYMOUS, Roles.ROLE_USER})
     @RequestMapping(value = "/projects", method = RequestMethod.GET)
-    @JsonView(ProjectSummaryView.class)
+    @JsonView(Project.ProjectSummaryView.class)
     public List<Project> getProjects(Authentication auth) {
         UserEntity userEntity = userFromAuthentication(auth);
 
@@ -80,12 +80,11 @@ public class ProjectController {
         projectService.pledge(projectId, userByPrincipal(principal), pledge);
     }
 
-    //TODO Tom: Adapt request mapping to actual project status
     @Secured(Roles.ROLE_ADMIN)
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/project/{projectId}", method = RequestMethod.PATCH)
-    public Project modifyProjectStatus(@PathVariable("projectId") String projectId, @RequestBody @Validated(Project.UpdateProject.class) Project projectWithUpdateData, Principal principal) {
-        return projectService.modifyProjectStatus(projectId, projectWithUpdateData, userByPrincipal(principal));
+    @RequestMapping(value = "/project/{projectId}/status", method = RequestMethod.PATCH)
+    public Project modifyProjectStatus(@PathVariable("projectId") String projectId, @RequestBody @Valid @NotNull ProjectStatusUpdate newStatus, Principal principal) {
+        return projectService.modifyProjectStatus(projectId, newStatus.status, userByPrincipal(principal));
     }
 
     private boolean mayViewProjectFilter(Project project, Authentication auth) {

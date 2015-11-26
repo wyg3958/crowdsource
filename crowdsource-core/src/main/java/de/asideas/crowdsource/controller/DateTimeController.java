@@ -1,7 +1,7 @@
 package de.asideas.crowdsource.controller;
 
+import de.asideas.crowdsource.domain.presentation.DateTimeWrapper;
 import de.asideas.crowdsource.security.Roles;
-import de.asideas.crowdsource.model.presentation.DateTimeWrapper;
 import org.joda.time.DateTime;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RequestMapping;

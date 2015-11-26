@@ -23,6 +23,14 @@ Feature: Mail-Notifications
     Then an email notification about the rejected project is sent to the user
 
   @ClearMailServer
+  Scenario: A notification on deferred projects is sent to the project creator
+    When a new project is submitted via the HTTP-Endpoint
+    And the sent mail is cleared
+    And there is no financing round active
+    And an administrator defers the project
+    Then an email notification about the deferred project is sent to the user
+
+  @ClearMailServer
   Scenario: A notification on published projects is sent to the project creator
     When a new project is submitted via the HTTP-Endpoint
     And the sent mail is cleared

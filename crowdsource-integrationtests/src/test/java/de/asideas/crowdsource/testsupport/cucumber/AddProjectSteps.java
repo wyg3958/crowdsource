@@ -155,6 +155,17 @@ public class AddProjectSteps {
         });
     }
 
+    @When("^an admin defers the project$")
+    public void an_admin_defers_the_project() throws Throwable {
+
+        final CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithAdminUser();
+        crowdSourceClient.listProjects(authToken).forEach(project -> {
+            if (project.getTitle().startsWith(randomProjectTitlePrefix)) {
+                crowdSourceClient.defer(project, authToken);
+            }
+        });
+    }
+
     @And("^the project is marked \"([^\"]*)\"$")
     public void the_project_is_marked(String state) throws Throwable {
         final WebElement projectElement = projectsPage.findProject(randomProjectTitlePrefix, randomProjectShortDescriptionPrefix);

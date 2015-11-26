@@ -1,6 +1,6 @@
 describe('project details', function () {
 
-    var $scope, $httpBackend, $window, $location, AuthenticationToken, projectDetails;
+    var $scope, $httpBackend, $window, $location, AuthenticationToken, FinancingRound, projectDetails;
 
     beforeEach(function () {
         module('crowdsource');
@@ -13,12 +13,13 @@ describe('project details', function () {
 
         localStorage.clear(); // reset, makes the user not logged in
 
-        inject(function ($compile, $rootScope, $templateCache, _$window_, $controller, _$location_, _$httpBackend_, Project, _AuthenticationToken_) {
+        inject(function ($compile, $rootScope, $templateCache, _$window_, $controller, _$location_, _$httpBackend_, Project, _AuthenticationToken_, _FinancingRound_) {
             $scope = $rootScope.$new();
             $httpBackend = _$httpBackend_;
             $window = _$window_;
             $location = _$location_;
             AuthenticationToken = _AuthenticationToken_;
+            FinancingRound = _FinancingRound_;
 
             $controller('ProjectDetailsController as projectDetails', {
                 $scope: $scope,
@@ -126,7 +127,47 @@ describe('project details', function () {
         expect($location.path()).toBe('/error/unknown');
     });
 
-    it("should show a different text on the to-pledging-form-button when the project is fully pledged", function () {
+    it("should show text 'Vorgeschlagen' on the to-pledging-form-button when the project is in status 'PROPOSED'", function () {
+        prepareBackendMock('PROPOSED');
+
+        $scope.$digest();
+        $httpBackend.flush();
+
+        expect(projectDetails.find('.to-pledging-form-button')).toBeDisabled();
+        expect(projectDetails.find('.to-pledging-form-button')).toHaveText('Vorgeschlagen');
+    });
+
+    it("should show text 'Zur Finanzierung' on the to-pledging-form-button when the project is in status 'PUBLISHED'", function () {
+        prepareBackendMock('PUBLISHED');
+
+        $scope.$digest();
+        $httpBackend.flush();
+
+        expect(projectDetails.find('.to-pledging-form-button')).not.toBeDisabled();
+        expect(projectDetails.find('.to-pledging-form-button')).toHaveText('Zur Finanzierung');
+    });
+
+    it("should show text 'Abgelehnt' on the to-pledging-form-button when the project is in status 'REJECTED'", function () {
+        prepareBackendMock('REJECTED');
+
+        $scope.$digest();
+        $httpBackend.flush();
+
+        expect(projectDetails.find('.to-pledging-form-button')).toBeDisabled();
+        expect(projectDetails.find('.to-pledging-form-button')).toHaveText('Abgelehnt');
+    });
+
+    it("should show text 'Zurückgestellt' on the to-pledging-form-button when the project is in status 'DEFERRED'", function () {
+        prepareBackendMock('DEFERRED');
+
+        $scope.$digest();
+        $httpBackend.flush();
+
+        expect(projectDetails.find('.to-pledging-form-button')).toBeDisabled();
+        expect(projectDetails.find('.to-pledging-form-button')).toHaveText('Zurückgestellt');
+    });
+
+    it("should show text 'Zu 100% finanziert' on the to-pledging-form-button when the project is in status 'FULLY_PLEDGED'", function () {
         prepareBackendMock('FULLY_PLEDGED');
 
         $scope.$digest();
@@ -152,6 +193,23 @@ describe('project details', function () {
     it("should display the publish-button when a project is not published and the user is admin", function () {
 
         prepareBackendMock('PROPOSED');
+        $httpBackend.expectGET('/user/current').respond(200, {budget: 55, roles: ['ROLE_USER', 'ROLE_ADMIN']});
+        $httpBackend.expectGET('/project/xyz/comments').respond(200, []);
+
+        spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(true);
+
+        $scope.$digest();
+        $httpBackend.flush();
+
+        expect(projectDetails.find('.publish-button')).toExist();
+        expect(projectDetails.find('.publish-button')).toHaveAttr('analytics-category', 'Projects');
+        expect(projectDetails.find('.publish-button')).toHaveAttr('analytics-on');
+        expect(projectDetails.find('.publish-button')).toHaveAttr('analytics-event', 'Published');
+    });
+
+    it("should display the publish-button when a project is deferred and the user is admin", function () {
+
+        prepareBackendMock('DEFERRED');
         $httpBackend.expectGET('/user/current').respond(200, {budget: 55, roles: ['ROLE_USER', 'ROLE_ADMIN']});
         $httpBackend.expectGET('/project/xyz/comments').respond(200, []);
 
@@ -207,6 +265,7 @@ describe('project details', function () {
 
         expect(projectDetails.find('.publish-button')).not.toExist();
     });
+
 
     it("should display the reject-button when a project is not reject and the user is admin", function () {
 
@@ -267,6 +326,69 @@ describe('project details', function () {
         expect(projectDetails.find('.reject-button')).not.toExist();
     });
 
+    it("should display the defer-button when a project is not rejected and the user is admin and no financing round is active", function () {
+
+        prepareBackendMock('PROPOSED');
+        $httpBackend.expectGET('/user/current').respond(200, {budget: 55, roles: ['ROLE_USER', 'ROLE_ADMIN']});
+        $httpBackend.expectGET('/project/xyz/comments').respond(200, []);
+
+        spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(true);
+        spyOn(FinancingRound, 'currentFinancingRound').and.returnValue({ active : false});
+
+        $scope.$digest();
+        $httpBackend.flush();
+
+        expect(projectDetails.find('.defer-button')).toExist();
+        expect(projectDetails.find('.defer-button')).toHaveAttr('analytics-on');
+        expect(projectDetails.find('.defer-button')).toHaveAttr('analytics-category', 'Projects');
+        expect(projectDetails.find('.defer-button')).toHaveAttr('analytics-event', 'Deferred');
+    });
+
+    it("should not display the defer-button when there is an active financing round and the user is admin", function () {
+
+        prepareBackendMock('PROPOSED');
+        $httpBackend.expectGET('/user/current').respond(200, {budget: 55, roles: ['ROLE_USER', 'ROLE_ADMIN']});
+        $httpBackend.expectGET('/project/xyz/comments').respond(200, []);
+
+        spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(true);
+        spyOn(FinancingRound, 'currentFinancingRound').and.returnValue({ active : true});
+
+        $scope.$digest();
+        $httpBackend.flush();
+
+        expect(projectDetails.find('.defer-button')).not.toExist();
+    });
+
+    it("should not display the defer-button when a project is deferred", function () {
+
+        prepareBackendMock('DEFERRED');
+        $httpBackend.expectGET('/user/current').respond(200, {budget: 55, roles: ['ROLE_USER', 'ROLE_ADMIN']});
+        $httpBackend.expectGET('/project/xyz/comments').respond(200, []);
+
+        spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(true);
+        spyOn(FinancingRound, 'currentFinancingRound').and.returnValue({ active : false});
+
+        $scope.$digest();
+        $httpBackend.flush();
+
+        expect(projectDetails.find('.defer-button')).not.toExist();
+    });
+
+    it("should not display the defer-button when a project is fully pledged", function () {
+
+        prepareBackendMock('FULLY_PLEDGED');
+        $httpBackend.expectGET('/user/current').respond(200, {budget: 55, roles: ['ROLE_USER', 'ROLE_ADMIN']});
+        $httpBackend.expectGET('/project/xyz/comments').respond(200, []);
+
+        spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(true);
+        spyOn(FinancingRound, 'currentFinancingRound').and.returnValue({ active : false});
+
+        $scope.$digest();
+        $httpBackend.flush();
+
+        expect(projectDetails.find('.defer-button')).not.toExist();
+    });
+
     it("should send the patch-request to the backend when the publish-button is clicked and confirmed", function () {
 
         prepareBackendMock('PROPOSED');
@@ -278,7 +400,7 @@ describe('project details', function () {
         $scope.$digest();
         $httpBackend.flush();
 
-        $httpBackend.expectPATCH('/project/xyz', {status: 'PUBLISHED'}).respond(200, {status: 'PUBLISHED'});
+        $httpBackend.expectPATCH('/project/xyz/status', { status: 'PUBLISHED'}).respond(200, {status: 'PUBLISHED'});
 
         spyOn($window, 'confirm').and.returnValue(true);
         projectDetails.find('.publish-button').click();
@@ -315,7 +437,7 @@ describe('project details', function () {
         $scope.$digest();
         $httpBackend.flush();
 
-        $httpBackend.expectPATCH('/project/xyz', {status: 'REJECTED'}).respond(200, {status: 'REJECTED'});
+        $httpBackend.expectPATCH('/project/xyz/status', {status: 'REJECTED'}).respond(200, {status: 'REJECTED'});
         spyOn($window, 'confirm').and.returnValue(true);
         projectDetails.find('.reject-button').click();
         $httpBackend.flush();
@@ -338,6 +460,44 @@ describe('project details', function () {
         projectDetails.find('.reject-button').click();
     });
 
+    it("should send the patch-request to the backend when the defer-button is clicked and confirmed", function () {
+
+        prepareBackendMock('PROPOSED');
+        $httpBackend.expectGET('/user/current').respond(200, {budget: 55, roles: ['ROLE_USER', 'ROLE_ADMIN']});
+        $httpBackend.expectGET('/project/xyz/comments').respond(200, []);
+
+        spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(true);
+        spyOn(FinancingRound, 'currentFinancingRound').and.returnValue({ active : false});
+
+        $scope.$digest();
+        $httpBackend.flush();
+
+        $httpBackend.expectPATCH('/project/xyz/status', {status: 'DEFERRED'}).respond(200, {status: 'DEFERRED'});
+
+        spyOn($window, 'confirm').and.returnValue(true);
+        projectDetails.find('.defer-button').click();
+        $httpBackend.flush();
+
+        expect(projectDetails.find('.defer-button')).not.toExist();
+    });
+
+    it("should not send the patch-request to the backend when the defer confirmation is canceled", function () {
+
+        prepareBackendMock('PROPOSED');
+        $httpBackend.expectGET('/user/current').respond(200, {budget: 55, roles: ['ROLE_USER', 'ROLE_ADMIN']});
+        $httpBackend.expectGET('/project/xyz/comments').respond(200, []);
+
+        spyOn(FinancingRound, 'currentFinancingRound').and.returnValue({ active : false});
+        spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(true);
+
+        $scope.$digest();
+        $httpBackend.flush();
+
+        spyOn($window, 'confirm').and.returnValue(false);
+        projectDetails.find('.defer-button').click();
+    });
+
+
     it("should redirect to unknown-error page when the reject-request fails", function () {
 
         prepareBackendMock('PROPOSED');
@@ -349,7 +509,7 @@ describe('project details', function () {
         $scope.$digest();
         $httpBackend.flush();
 
-        $httpBackend.expectPATCH('/project/xyz', {status: 'REJECTED'}).respond(400);
+        $httpBackend.expectPATCH('/project/xyz/status', {status: 'REJECTED'}).respond(400);
         spyOn($window, 'confirm').and.returnValue(true);
         projectDetails.find('.reject-button').click();
         $httpBackend.flush();
@@ -368,9 +528,29 @@ describe('project details', function () {
         $scope.$digest();
         $httpBackend.flush();
 
-        $httpBackend.expectPATCH('/project/xyz', {status: 'PUBLISHED'}).respond(400);
+        $httpBackend.expectPATCH('/project/xyz/status', {status: 'PUBLISHED'}).respond(400);
         spyOn($window, 'confirm').and.returnValue(true);
         projectDetails.find('.publish-button').click();
+        $httpBackend.flush();
+
+        expect($location.path()).toBe('/error/unknown');
+    });
+
+    it("should redirect to unknown-error page when the defer-request fails", function () {
+
+        prepareBackendMock('PROPOSED');
+        $httpBackend.expectGET('/user/current').respond(200, {budget: 55, roles: ['ROLE_USER', 'ROLE_ADMIN']});
+        $httpBackend.expectGET('/project/xyz/comments').respond(200, []);
+
+        spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(true);
+        spyOn(FinancingRound, 'currentFinancingRound').and.returnValue({ active : false});
+
+        $scope.$digest();
+        $httpBackend.flush();
+
+        $httpBackend.expectPATCH('/project/xyz/status', {status: 'DEFERRED'}).respond(400);
+        spyOn($window, 'confirm').and.returnValue(true);
+        projectDetails.find('.defer-button').click();
         $httpBackend.flush();
 
         expect($location.path()).toBe('/error/unknown');

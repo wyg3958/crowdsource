@@ -159,7 +159,6 @@ describe('project pledging form', function () {
         expect(elements.root.find('.general-error')).not.toExist();
     });
 
-
     it("should disable the form until the user budget is loaded", function () {
 
         prepareMocks({
@@ -260,7 +259,6 @@ describe('project pledging form', function () {
         expect(elements.pledgeButton).toBeDisabled();
     });
 
-
     it("should show no validation error message and enable button if zero pledge is is entered and user has pledged before", function () {
 
         prepareMocks({
@@ -279,7 +277,6 @@ describe('project pledging form', function () {
 
         expect(elements.pledgeButton).not.toBeDisabled();
     });
-
 
     it("should show a validation error message if the entered pledge amount exceeds the pledge goal", function () {
 
@@ -559,6 +556,10 @@ describe('project pledging form', function () {
         expectNoValidationError(elements.pledgeAmount);
         expect(elements.pledgeButton).not.toBeDisabled();
         expect(elements.pledgeButton).toHaveText('Jetzt Budget abziehen');
+        expect(elements.pledgeButton).toHaveAttr('analytics-on');
+        expect(elements.pledgeButton).toHaveAttr('analytics-category', 'Projects');
+        expect(elements.pledgeButton).toHaveAttr('analytics-event', 'ProjectUnPledged');
+
         expect(elements.notification).toHaveClass('ng-hide');
         expect(elements.pledgedAmount).toHaveText('40');
         expect(elements.pledgeGoal).toHaveText('100');

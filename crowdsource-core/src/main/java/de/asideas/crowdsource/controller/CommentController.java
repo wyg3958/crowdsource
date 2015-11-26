@@ -1,13 +1,13 @@
 package de.asideas.crowdsource.controller;
 
-import de.asideas.crowdsource.security.Roles;
-import de.asideas.crowdsource.exceptions.ResourceNotFoundException;
-import de.asideas.crowdsource.model.persistence.CommentEntity;
-import de.asideas.crowdsource.model.persistence.ProjectEntity;
-import de.asideas.crowdsource.model.persistence.UserEntity;
-import de.asideas.crowdsource.model.presentation.Comment;
+import de.asideas.crowdsource.domain.exception.ResourceNotFoundException;
+import de.asideas.crowdsource.domain.model.CommentEntity;
+import de.asideas.crowdsource.domain.model.ProjectEntity;
+import de.asideas.crowdsource.domain.model.UserEntity;
+import de.asideas.crowdsource.domain.presentation.Comment;
 import de.asideas.crowdsource.repository.CommentRepository;
 import de.asideas.crowdsource.repository.ProjectRepository;
+import de.asideas.crowdsource.security.Roles;
 import de.asideas.crowdsource.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

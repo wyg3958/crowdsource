@@ -3,10 +3,10 @@ package de.asideas.crowdsource.controller.usercontroller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.asideas.crowdsource.controller.ControllerExceptionAdvice;
 import de.asideas.crowdsource.controller.UserController;
-import de.asideas.crowdsource.model.persistence.UserEntity;
+import de.asideas.crowdsource.domain.model.UserEntity;
+import de.asideas.crowdsource.domain.service.user.UserNotificationService;
 import de.asideas.crowdsource.repository.FinancingRoundRepository;
 import de.asideas.crowdsource.repository.UserRepository;
-import de.asideas.crowdsource.service.UserNotificationService;
 import de.asideas.crowdsource.service.UserService;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.expression.Expression;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -167,6 +168,16 @@ public abstract class AbstractUserControllerTest {
         @Bean
         public Expression projectRejectedEmailTemplate() {
             return mock(Expression.class);
+        }
+
+        @Bean
+        public Expression projectDeferredEmailTemplate() {
+            return mock(Expression.class);
+        }
+
+        @Bean
+        public AsyncTaskExecutor taskExecutorSmtp() {
+            return mock(AsyncTaskExecutor.class);
         }
     }
 }

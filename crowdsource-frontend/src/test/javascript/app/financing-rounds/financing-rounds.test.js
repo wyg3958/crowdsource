@@ -77,7 +77,6 @@ describe('financing rounds', function () {
 
     });
 
-
     it("should display two finished rounds", function () {
         var now = moment();
         var startDate1 = now.subtract(10, 'days');
@@ -111,7 +110,6 @@ describe('financing rounds', function () {
         expect(financingRounds.getNotification()).not.toContainText('Es läuft bereits eine Finanzierungsrunde. Daher kann keine neue Runde gestartet werden.');
     });
 
-
     it("should display two rounds where one of them is active", function () {
         var now = moment();
         var startDate1 = now.subtract(10, 'days');
@@ -137,7 +135,6 @@ describe('financing rounds', function () {
         expect(financingRounds.getNotification()).toContainText('Es läuft bereits eine Finanzierungsrunde. Daher kann keine neue Runde gestartet werden.');
     });
 
-
     it("should display budget input field error messages when wrong data is given", function () {
         prepareViewWithNoRunningRound();
 
@@ -150,7 +147,6 @@ describe('financing rounds', function () {
         financingRounds.getBudget().getInputField().val('').trigger('input');
         expectBudgetValidationError('required');
     });
-
 
     it("should send round data to backend and display it when valid data is submitted", function () {
         var startDate = moment().tz('Europe/Berlin');
@@ -187,7 +183,6 @@ describe('financing rounds', function () {
         expect(financingRounds.getStartRoundButton()).not.toExist();
     });
 
-
     it("should stop running round when stop is confirmed", function () {
         var startDate = moment().tz('Europe/Berlin');
         var endDate = startDate.add(5, 'days');
@@ -220,7 +215,6 @@ describe('financing rounds', function () {
         expect(financingRounds.getTableEndRoundButton()).not.toExist();
     });
 
-
     it("should not stop running round when stop is canceled", function () {
         var startDate = moment().tz('Europe/Berlin');
         var endDate = startDate.add(5, 'days');
@@ -235,7 +229,6 @@ describe('financing rounds', function () {
         spyOn($window, 'confirm').and.returnValue(false);
         financingRounds.getTableEndRoundButton().click();
     });
-
 
     it("should display alert message when backend not responding on round start", function () {
         var startDate = moment().tz('Europe/Berlin');

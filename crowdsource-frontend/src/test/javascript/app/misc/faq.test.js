@@ -22,21 +22,13 @@ describe('faq', function () {
     });
 
     it("should contain accordion item containing tracking attributes", function () {
-        expect(view.find("accordion-item")).toHaveAttr("trackingcategory", "UserActions");
-        expect(view.find("accordion-item")).toHaveAttr("trackingevent", "FaqEntryOpened");
+        expect(view.find("accordion-item")).toHaveAttr("trackingcat", "UserActions");
+        expect(view.find("accordion-item")).toHaveAttr("trackingevt", "FaqEntryOpened");
 
-        expect(view.find("accordion-item .accordion-navigation a")).toHaveAttr("analytics-on");
-        expect(view.find("accordion-item .accordion-navigation a")).toHaveAttr("analytics-category", "UserActions");
-        expect(view.find("accordion-item .accordion-navigation a")).toHaveAttr("analytics-event", "FaqEntryOpened");
-        expect(view.find("accordion-item .accordion-navigation a")).toHaveAttr("analytics-label", "faq_entry");
-
-        var faqItemParents = view.find("accordion-item");
-        var faqItemLinks = view.find("accordion-item .accordion-navigation a");
-        for(var idx = 0; idx < faqItemParents.length; idx ++){
-            var expVal = faqItemParents[idx].getAttribute("title");
-            expect(faqItemLinks[idx]).toHaveAttr("analytics-value", expVal);
-        }
-
+        expect(view.find("accordion-item .accordion-navigation")).toHaveAttr("analytics-on", "click");
+        expect(view.find("accordion-item .accordion-navigation")).toHaveAttr("analytics-category", "UserActions");
+        expect(view.find("accordion-item .accordion-navigation")).toHaveAttr("analytics-event", "FaqEntryOpened");
+        expect(view.find("accordion-item .accordion-navigation")).toHaveAttr("analytics-label");
     });
 
 });

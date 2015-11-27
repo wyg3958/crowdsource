@@ -32,7 +32,8 @@ angular.module('crowdsource')
                 vm.user = Authentication.reloadUser();
 
                 vm.authorizedForPostRoundPledges = function () {
-                    return FinancingRound.current.postRoundBudgetDistributable &&
+                    var currentFinancingRound = FinancingRound.currentFinancingRound();
+                    return currentFinancingRound.postRoundBudgetDistributable &&
                         vm.user.hasRole('ADMIN') &&
                         vm.project.status == 'PUBLISHED';
                 };
@@ -69,7 +70,7 @@ angular.module('crowdsource')
 
                 vm.getPledgableAmount = function () {
                     var remainingProjectGoal,
-                        financingRound = FinancingRound.current;
+                        financingRound = FinancingRound.currentFinancingRound();
 
                     if (isLoading() || vm.project.status != 'PUBLISHED') {
                         return 0;
@@ -105,7 +106,7 @@ angular.module('crowdsource')
                 vm.getUserBudget = function () {
                     var budgetAvailableForUser;
                     if ( vm.authorizedForPostRoundPledges()){
-                        budgetAvailableForUser = FinancingRound.current.postRoundBudgetRemaining;
+                        budgetAvailableForUser = FinancingRound.currentFinancingRound().postRoundBudgetRemaining;
                     }else {
                         budgetAvailableForUser = vm.user.budget;
                     }
@@ -153,7 +154,7 @@ angular.module('crowdsource')
                     if (vm.project.status != 'PUBLISHED') {
                         return {type: 'info', message: 'Eine Finanzierung ist erst möglich, wenn das Projekt von einem Administrator veröffentlicht wurde.'};
                     }
-                    if (!FinancingRound.current.active && !vm.authorizedForPostRoundPledges()) {
+                    if (!FinancingRound.currentFinancingRound().active && !vm.authorizedForPostRoundPledges()) {
                         return {type: 'info', message: 'Momentan läuft keine Finanzierungsrunde. Bitte versuche es nochmal, wenn die Finanzierungsrunde gestartet worden ist.'};
                     }
                     if (vm.authorizedForPostRoundPledges()) {

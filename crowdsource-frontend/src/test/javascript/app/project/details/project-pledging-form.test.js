@@ -1,6 +1,6 @@
 describe('project pledging form', function () {
 
-    var $scope, $compile, $httpBackend, AuthenticationToken, $timeout;
+    var $scope, $compile, $httpBackend, AuthenticationToken, FinancingRound, $timeout;
 
     beforeEach(function () {
         module('crowdsource');
@@ -13,11 +13,12 @@ describe('project pledging form', function () {
 
         localStorage.clear(); // reset
 
-        inject(function ($rootScope, _$compile_, _$httpBackend_, _AuthenticationToken_, _$timeout_) {
+        inject(function ($rootScope, _$compile_, _$httpBackend_, _AuthenticationToken_, _FinancingRound_, _$timeout_) {
             $scope = $rootScope.$new();
             $compile = _$compile_;
             $httpBackend = _$httpBackend_;
             AuthenticationToken = _AuthenticationToken_;
+            FinancingRound = _FinancingRound_;
             $timeout = _$timeout_;
         });
     });
@@ -54,7 +55,11 @@ describe('project pledging form', function () {
     function prepareMocks(data) {
         $scope.project = data.project;
         spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(data.isLoggedIn);
-        $httpBackend.expectGET('/financingrounds/mostRecent').respond(data.financingRoundResponse.statusCode, data.financingRoundResponse.body);
+        if(!data.financingRoundResponse.body){
+            $httpBackend.expectGET('/financingrounds/mostRecent').respond(data.financingRoundResponse.statusCode);
+        }else{
+            $httpBackend.expectGET('/financingrounds/mostRecent').respond(data.financingRoundResponse.body);
+        }
         $httpBackend.expectGET('/user/current').respond(data.userResponse.statusCode, data.userResponse.body);
     }
 
@@ -112,6 +117,36 @@ describe('project pledging form', function () {
         expect(elements.pledgeButton).toBeDisabled();
         expect(elements.pledgeButton).toHaveText('Jetzt finanzieren');
         expect(elements.root.find('.general-error')).not.toExist();
+    });
+
+    it("should allow pledging for admin user when financing round is finished but post round pledging possible", function () {
+        prepareMocks({
+            project: {$resolved: true, id: 123, pledgeGoal: 500, pledgedAmount: 50, status: 'PUBLISHED'},
+            isLoggedIn: true,
+            userResponse: {statusCode: 200, body: {budget: 0, roles: ['ROLE_USER', 'ROLE_ADMIN']} },
+            financingRoundResponse: {statusCode: 200, body: {
+                $resolved : true,
+                active: false,
+                postRoundBudgetDistributable: true,
+                postRoundBudget: 1000,
+                postRoundBudgetRemaining: 800
+            }}
+        });
+
+        var elements = compileDirective();
+        $httpBackend.flush();
+
+        elements.pledgeAmount.getInputField().val('30').trigger('input');
+
+        expectNoValidationError(elements.pledgeAmount);
+        expect(elements.pledgeButton).not.toBeDisabled();
+        expect(elements.pledgeButton).toHaveText('Jetzt finanzieren');
+
+        expect(elements.notification.text().trim()).toBe('Momentan läuft keine Finanzierungsrunde. Du bist als Admin jedoch berechtigt aus dem restlichen Budget der Finanzierungsrunde weitere Investments zu tätigen.');
+        expect(elements.pledgedAmount).toHaveText('80');
+        expect(elements.pledgeGoal).toHaveText('500');
+        expect(elements.budget).toHaveText('770 €');
+        expect(elements.pledgableAmount).toHaveText('450 €');
     });
 
     it("should show a different text when the project was fully pledged", function () {
@@ -237,6 +272,37 @@ describe('project pledging form', function () {
 
         expect(elements.slider).toHaveClass('disabled');
         expect(elements.pledgeAmount.getInputField()).toBeDisabled();
+        expectNoValidationError(elements.pledgeAmount);
+    });
+
+    it("should disable form for post round pledging until financing round is loaded", function () {
+
+        prepareMocks({
+            project: {$resolved: true, id: 123, pledgeGoal: 500, pledgedAmount: 50, status: 'PUBLISHED'},
+            isLoggedIn: true,
+            userResponse: {statusCode: 200, body: {budget: 0, roles: ['ROLE_USER', 'ROLE_ADMIN']} },
+            financingRoundResponse: { $resolved: false}
+        });
+
+        var elements = compileDirective();
+        $httpBackend.flush();
+
+        expect(elements.slider).toHaveClass('disabled');
+        expect(elements.pledgeAmount.getInputField()).toBeDisabled();
+        expectNoValidationError(elements.pledgeAmount);
+
+        angular.copy({
+            $resolved : true,
+            active: false,
+            postRoundBudgetDistributable: true,
+            postRoundBudget: 1000,
+            postRoundBudgetRemaining: 800
+        }, FinancingRound.current);
+
+        $scope.$digest();
+
+        expect(elements.slider).not.toHaveClass('disabled');
+        expect(elements.pledgeAmount.getInputField()).not.toBeDisabled();
         expectNoValidationError(elements.pledgeAmount);
     });
 

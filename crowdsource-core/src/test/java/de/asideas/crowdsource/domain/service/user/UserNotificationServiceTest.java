@@ -11,6 +11,7 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.context.ContextConfiguration;
@@ -20,6 +21,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
@@ -35,11 +38,21 @@ public class UserNotificationServiceTest {
     @Autowired
     private JavaMailSender javaMailSender;
 
+    @Autowired
+    private AsyncTaskExecutor taskExecutorSmtp;
+
     @Before
     public void setUp() {
         ReflectionTestUtils.setField(userNotificationService, "applicationUrl", "https://crowd.asideas.de");
+        reset(javaMailSender, taskExecutorSmtp);
 
-        reset(javaMailSender);
+        // Emulate async execution synchronously to immedately be able to verify invocations of javaMailSender
+        doAnswer(invocation -> {
+            final Runnable runnable = (Runnable) invocation.getArguments()[0];
+            runnable.run();
+            return null;
+        }).when(taskExecutorSmtp).submit(isA(Runnable.class));
+
     }
 
     @Test
@@ -207,6 +220,11 @@ public class UserNotificationServiceTest {
         @Bean
         public JavaMailSender javaMailSender() {
             return mock(JavaMailSender.class);
+        }
+
+        @Bean
+        public AsyncTaskExecutor taskExecutorSmtp() {
+            return mock(AsyncTaskExecutor.class);
         }
 
     }

@@ -306,6 +306,29 @@ describe('project pledging form', function () {
         expectNoValidationError(elements.pledgeAmount);
     });
 
+    it("should disable pledging form when post round pledging possible but user is not admin", function () {
+        prepareMocks({
+            project: {$resolved: true, id: 123, pledgeGoal: 500, pledgedAmount: 50, status: 'PUBLISHED'},
+            isLoggedIn: true,
+            userResponse: {statusCode: 200, body: {budget: 0, roles: ['ROLE_USER']} },
+            financingRoundResponse: {statusCode: 200, body: {
+                $resolved : true,
+                active: false,
+                postRoundBudgetDistributable: true,
+                postRoundBudget: 1000,
+                postRoundBudgetRemaining: 800
+            }}
+        });
+
+        var elements = compileDirective();
+        $httpBackend.flush();
+
+        expectNoValidationError(elements.pledgeAmount);
+        expect(elements.pledgeButton).toBeDisabled();
+        expect(elements.notification).not.toHaveClass('ng-hide');
+        expect(elements.notification).toHaveText('Momentan läuft keine Finanzierungsrunde. Bitte versuche es nochmal, wenn die Finanzierungsrunde gestartet worden ist.');
+    });
+
     it("should show no validation error message and disable button if zero pledge is is entered and user has NOT pledged before", function () {
 
         prepareMocks({

@@ -121,12 +121,8 @@ public class ProjectEntity {
      */
     public PledgeEntity pledgeUsingPostRoundBudget(Pledge pledge, UserEntity pledgingUser, List<PledgeEntity> pledgesAlreadyDone, int postRoundPledgableBudgetAvailable) {
         Assert.isTrue(pledgingUser.getRoles().contains(Roles.ROLE_ADMIN), "pledgeUsingPostRoundBudget(..) called with non admin user: " + pledgingUser);
-
-        if (this.financingRound == null) {
-            throw InvalidRequestException.projectTookNotPartInLastFinancingRond();
-        }
-
-        Assert.isTrue(this.financingRound.terminated(), "pledgeUsingPostRoundBudget(..) requires its financingRound to be terminated");
+        Assert.notNull(this.financingRound, "FinancingRound must not be null; Project was: " + this);
+        Assert.isTrue(this.financingRound.terminated(), "pledgeUsingPostRoundBudget(..) requires its financingRound to be terminated; Project was: " + this);
 
         if (!this.financingRound.getTerminationPostProcessingDone()) {
             throw InvalidRequestException.financingRoundNotPostProcessedYet();

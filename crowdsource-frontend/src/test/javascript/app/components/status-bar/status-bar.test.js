@@ -22,7 +22,7 @@ describe('status bar', function () {
 
             scope['status'] = {};
             currentUser = {
-                loggedIn: true,
+                loggedIn: false,
                 budget : 17,
                 hasRole : function(roleReq){
                     return false;
@@ -36,8 +36,16 @@ describe('status bar', function () {
         });
     });
 
-    it("should show users budget on active financing round", function () {
+    it("should show no budget when user not logged in", function () {
+        expect(statusBar.userBudget()).not.toBeVisible();
+        expect(statusBar.postRoundBudgetRemaining()).not.toBeVisible();
+    });
+
+    it("should show users budget on active financing round when logged in", function () {
+        currentUser.loggedIn = true;
+
         spyOnCurrentUserAndFinancingRound();
+
         expect(statusBar.userBudget()).toContainText('17 €');
         expect(statusBar.postRoundBudgetRemaining()).not.toBeVisible();
     });
@@ -46,8 +54,10 @@ describe('status bar', function () {
         currentRound.active = false;
         currentRound.postRoundBudgetDistributable = true;
         currentRound.postRoundBudgetRemaining = 1337;
+        currentUser.loggedIn = true;
+        var captureRequestedRole = undefined;
         currentUser.hasRole = function (reqRole)  {
-            console.log("ROLE REQUESTED: " + reqRole);
+            captureRequestedRole = reqRole;
             return true;
         };
 
@@ -55,13 +65,13 @@ describe('status bar', function () {
 
         expect(statusBar.userBudget()).toContainText('17 €');
         expect(statusBar.postRoundBudgetRemaining()).toContainText('1.337 €');
+        expect(captureRequestedRole).toBe("ADMIN");
     });
 
     function spyOnCurrentUserAndFinancingRound() {
         spyOn(FinancingRound, 'currentFinancingRound').and.returnValue(currentRound);
         Authentication.currentUser = currentUser;
         scope.$digest();
-
     }
 
 });

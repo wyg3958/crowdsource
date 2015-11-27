@@ -1,5 +1,6 @@
 package de.asideas.crowdsource.service;
 
+import de.asideas.crowdsource.domain.exception.InvalidRequestException;
 import de.asideas.crowdsource.domain.exception.ResourceNotFoundException;
 import de.asideas.crowdsource.domain.model.FinancingRoundEntity;
 import de.asideas.crowdsource.domain.model.PledgeEntity;
@@ -35,18 +36,21 @@ public class ProjectService {
     private UserRepository userRepository;
     private FinancingRoundRepository financingRoundRepository;
     private UserNotificationService userNotificationService;
+    private FinancingRoundService financingRoundService;
 
     private ProjectService thisInstance;
 
     @Autowired
     public ProjectService(ProjectRepository projectRepository, PledgeRepository pledgeRepository,
                           UserRepository userRepository, FinancingRoundRepository financingRoundRepository,
-                          UserNotificationService userNotificationService) {
+                          UserNotificationService userNotificationService,
+                          FinancingRoundService financingRoundService) {
         this.projectRepository = projectRepository;
         this.pledgeRepository = pledgeRepository;
         this.userRepository = userRepository;
         this.financingRoundRepository = financingRoundRepository;
         this.userNotificationService = userNotificationService;
+        this.financingRoundService = financingRoundService;
         this.thisInstance = this;
     }
 
@@ -102,11 +106,15 @@ public class ProjectService {
             throw new ResourceNotFoundException();
         }
 
-        FinancingRoundEntity financingRound = projectEntity.getFinancingRound();
+        FinancingRoundEntity financingRound = financingRoundService.mostRecentRoundEntity();
         if (financingRound != null &&
                 financingRound.terminated() &&
                 financingRound.getTerminationPostProcessingDone() &&
                 userEntity.getRoles().contains(Roles.ROLE_ADMIN)) {
+
+            if (!financingRound.idenitityEquals(projectEntity.getFinancingRound()) ) {
+                throw InvalidRequestException.projectTookNotPartInLastFinancingRond();
+            }
             thisInstance.pledgeProjectUsingPostRoundBudget(projectEntity, userEntity, pledge);
         } else {
             thisInstance.pledgeProjectInFinancingRound(projectEntity, userEntity, pledge);

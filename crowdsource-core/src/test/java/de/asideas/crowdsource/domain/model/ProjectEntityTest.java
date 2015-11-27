@@ -437,23 +437,35 @@ public class ProjectEntityTest {
         assertPledgeNotExecuted(res, InvalidRequestException.projectNotPublished(), user2, budgetBeforePledge, ProjectStatus.PROPOSED);
     }
 
-    @Test
-    public void pledgeUsingPostroundBudget_throwsInvalidRequestExOnNoFinancingRound() {
+    @Test(expected = IllegalArgumentException.class)
+    public void pledgeUsingPostroundBudget_throwsIllegalArgumentExOnNoFinancingRound() {
         projectEntity.setFinancingRound(null);
         projectEntity.setStatus(ProjectStatus.PUBLISHED);
-        final int budgetBeforePledge = user2.getBudget();
         final Pledge pledge = new Pledge(4);
 
-        InvalidRequestException res = null;
-        try {
-            projectEntity.pledgeUsingPostRoundBudget(pledge, user2, pledgesAlreadyDone(projectEntity.getPledgeGoal() - 4), Integer.MAX_VALUE);
-            fail("InvalidRequestException expected!");
-        } catch (InvalidRequestException e) {
-            res = e;
-        }
-
-        assertPledgeNotExecuted(res, InvalidRequestException.projectTookNotPartInLastFinancingRond(), user2, budgetBeforePledge, ProjectStatus.PUBLISHED);
+        projectEntity.pledgeUsingPostRoundBudget(pledge, user2, pledgesAlreadyDone(projectEntity.getPledgeGoal() - 4), Integer.MAX_VALUE);
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void pledgeUsingPostroundBudget_throwsIllegalArgumentExceptionIfCalledByNonAdminUser() {
+        final FinancingRoundEntity round = aTerminatedFinancingRound();
+        projectEntity.setFinancingRound(round);
+        projectEntity.setStatus(ProjectStatus.PUBLISHED);
+        final Pledge pledge = new Pledge(4);
+
+        projectEntity.pledgeUsingPostRoundBudget(pledge, user1, pledgesAlreadyDone(projectEntity.getPledgeGoal() - 4), Integer.MAX_VALUE);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void pledgeUsingPostroundBudget_throwsIllegalArgumentExceptionOnNotTerminatedRound() {
+        final FinancingRoundEntity round = anActiveFinancingRound();
+        projectEntity.setFinancingRound(round);
+        projectEntity.setStatus(ProjectStatus.PUBLISHED);
+        final Pledge pledge = new Pledge(4);
+
+        projectEntity.pledgeUsingPostRoundBudget(pledge, user2, pledgesAlreadyDone(projectEntity.getPledgeGoal() - 4), Integer.MAX_VALUE);
+    }
+
 
     @Test
     public void pledgeUsingPostroundBudget_throwsInvalidRequestExOnUserBudgetIsExceeded() {
@@ -492,16 +504,6 @@ public class ProjectEntityTest {
         }
 
         assertPledgeNotExecuted(res, InvalidRequestException.financingRoundNotPostProcessedYet(), user2, budgetBeforePledge, ProjectStatus.PUBLISHED);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void pledgeUsingPostroundBudget_throwsIllegalArgumentExceptionIfCalledByNonAdminUserd() {
-        final FinancingRoundEntity round = anActiveFinancingRound();
-        projectEntity.setFinancingRound(round);
-        projectEntity.setStatus(ProjectStatus.PUBLISHED);
-        final Pledge pledge = new Pledge(4);
-
-        projectEntity.pledgeUsingPostRoundBudget(pledge, user1, pledgesAlreadyDone(projectEntity.getPledgeGoal() - 4), Integer.MAX_VALUE);
     }
 
 

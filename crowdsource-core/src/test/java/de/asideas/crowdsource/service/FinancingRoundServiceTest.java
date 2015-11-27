@@ -115,7 +115,7 @@ public class FinancingRoundServiceTest {
         financingRoundEntities.get(0).setTerminationPostProcessingDone(true);
         financingRoundEntities.get(1).setTerminationPostProcessingDone(true);
         when(pledgeRepository.findByFinancingRoundAndCreatedDateGreaterThan(financingRoundEntities.get(1), financingRoundEntities.get(1).getEndDate()))
-                .thenReturn(Collections.singletonList(aPledgeEntity(financingRoundEntities.get(1), pledgedAmountAfterTermination)));
+                .thenReturn(Collections.singletonList( aPledgeEntity(financingRoundEntities.get(1), pledgedAmountAfterTermination)));
 
         final List<FinancingRound> res = financingRoundService.allFinancingRounds();
 
@@ -154,7 +154,7 @@ public class FinancingRoundServiceTest {
         ArgumentCaptor<PageRequest> pageRequestCaptor = ArgumentCaptor.forClass(PageRequest.class);
         Page mockedPageAnswer = mock(Page.class);
         when(financingRoundRepository.financingRounds(pageRequestCaptor.capture())).thenReturn(mockedPageAnswer);
-        when(mockedPageAnswer.getSize()).thenReturn(1);
+        when(mockedPageAnswer.getNumberOfElements()).thenReturn(1);
         when(mockedPageAnswer.getContent()).thenReturn(Collections.singletonList(expFinancingRound));
 
         final FinancingRound res = financingRoundService.mostRecentRound();
@@ -172,7 +172,7 @@ public class FinancingRoundServiceTest {
         Page mockedPageAnswer = mock(Page.class);
 
         when(financingRoundRepository.financingRounds(pageRequestCaptor.capture())).thenReturn(mockedPageAnswer);
-        when(mockedPageAnswer.getSize()).thenReturn(0);
+        when(mockedPageAnswer.getNumberOfElements()).thenReturn(0);
 
         financingRoundService.mostRecentRound();
     }

@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.internal.exceptions.ExceptionIncludingMockitoWarnings;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -75,6 +76,9 @@ public class ProjectServiceTest {
     private FinancingRoundRepository financingRoundRepository;
 
     @Mock
+    private FinancingRoundService financingRoundService;
+
+    @Mock
     private ProjectService thisInstance;
 
 
@@ -85,6 +89,7 @@ public class ProjectServiceTest {
         when(pledgeRepository.findByProjectAndFinancingRound(any(ProjectEntity.class), any(FinancingRoundEntity.class))).thenReturn(new ArrayList<>());
         when(userRepository.findAll()).thenReturn(Arrays.asList(admin(ADMIN1_EMAIL), admin(ADMIN2_EMAIL), user(USER_EMAIL)));
         when(projectRepository.save(any(ProjectEntity.class))).thenAnswer(invocation -> invocation.getArguments()[0]);
+
     }
 
 
@@ -126,8 +131,39 @@ public class ProjectServiceTest {
         verify(userNotificationService, times(2)).notifyAdminOnProjectCreation(any(ProjectEntity.class), anyString());
     }
 
+//    public void pledgeUsingPostroundBudget_throwsIllegalArgumentExOnNoFinancingRound() {
+//        projectEntity.setFinancingRound(null);
+//        projectEntity.setStatus(ProjectStatus.PUBLISHED);
+//        final int budgetBeforePledge = user2.getBudget();
+//        final Pledge pledge = new Pledge(4);
+//
+//        InvalidRequestException res = null;
+//        try {
+//            projectEntity.pledgeUsingPostRoundBudget(pledge, user2, pledgesAlreadyDone(projectEntity.getPledgeGoal() - 4), Integer.MAX_VALUE);
+//            fail("InvalidRequestException expected!");
+//        } catch (InvalidRequestException e) {
+//            res = e;
+//        }
+//
+//        assertPledgeNotExecuted(res, InvalidRequestException.projectTookNotPartInLastFinancingRond(), user2, budgetBeforePledge, ProjectStatus.PUBLISHED);
+//    }
     @Test
-    public void pledge_shouldDispatchToPledgeProjectInRoundIfRoundIsNullOrNotTerminatedOrNotPostProcessed() throws Exception {
+    public void pledge_shouldThrowIllegalArgumentExceptionWhenCurrentRoundAllowsPostPledgesButDoesntEqualsProjectsRound() throws Exception {
+        final UserEntity user = admin(USER_EMAIL);
+        final String projectId = "some_id";
+        final ProjectEntity project = projectEntity(user, projectId, "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
+        final Pledge pledge = new Pledge(4);
+        FinancingRoundEntity mostRecentRound = prepareInactiveFinancingRound(project);
+        when(financingRoundService.mostRecentRoundEntity()).thenReturn(mostRecentRound);
+        project.getFinancingRound().setTerminationPostProcessingDone(true);
+
+        projectService.pledge(projectId, user, pledge);
+
+        verify(thisInstance).pledgeProjectUsingPostRoundBudget(eq(project), eq(user), eq(pledge));
+    }
+
+    @Test
+    public void pledge_shouldDispatchToPledgeProjectInRoundIfMostRecentRoundIsNullOrNotTerminatedOrNotPostProcessed() throws Exception {
         final UserEntity user = user(USER_EMAIL);
         final String projectId = "some_id";
         final ProjectEntity project = projectEntity(user, projectId, "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
@@ -169,11 +205,19 @@ public class ProjectServiceTest {
         final ProjectEntity project = projectEntity(user, projectId, "title", 44, "short description", "description", ProjectStatus.PUBLISHED, null);
         final Pledge pledge = new Pledge(4);
         prepareInactiveFinancingRound(project);
+        FinancingRoundEntity mostRecentRound = prepareInactiveFinancingRound(null);
+        mostRecentRound.setTerminationPostProcessingDone(true);
+        mostRecentRound.setId("test_roundId_another");
+
+        when(financingRoundService.mostRecentRoundEntity()).thenReturn(mostRecentRound);
         project.getFinancingRound().setTerminationPostProcessingDone(true);
 
-        projectService.pledge(projectId, user, pledge);
-
-        verify(thisInstance).pledgeProjectUsingPostRoundBudget(eq(project), eq(user), eq(pledge));
+        try {
+            projectService.pledge(projectId, user, pledge);
+            fail("Exception expected to be thrown");
+        } catch (InvalidRequestException e) {
+            assertThat(e.getMessage(), is(InvalidRequestException.projectTookNotPartInLastFinancingRond().getMessage()));
+        }
     }
 
     @Test
@@ -459,6 +503,7 @@ public class ProjectServiceTest {
 
     private FinancingRoundEntity prepareInactiveFinancingRound(ProjectEntity project) {
         FinancingRoundEntity res = aFinancingRound(new DateTime().minusDays(1));
+        res.setId("test_roundId");
         if(project != null) {
             project.setFinancingRound(res);
         }

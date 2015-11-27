@@ -61,6 +61,7 @@ public class FinancingRoundEntity {
 
     /**
      * Factory for a new financing round that immediately will be in active state
+     *
      * @param creationCmd
      * @return
      */
@@ -86,7 +87,7 @@ public class FinancingRoundEntity {
     /**
      * @return Whether <code>this</code> is currently active
      */
-    public boolean active(){
+    public boolean active() {
         long now = DateTime.now().getMillis();
         return startDate.getMillis() < now && endDate.getMillis() > now;
     }
@@ -94,22 +95,22 @@ public class FinancingRoundEntity {
     /**
      * @return whether <code>this</code> is terminated.
      */
-    public boolean terminated(){
+    public boolean terminated() {
         long now = DateTime.now().getMillis();
         return endDate.getMillis() <= now;
     }
 
-    public boolean terminationPostProcessingRequiredNow(){
-         return terminated() && !this.terminationPostProcessingDone;
+    public boolean terminationPostProcessingRequiredNow() {
+        return terminated() && !this.terminationPostProcessingDone;
     }
 
     /**
      * @param postRoundPledges all pledges that have been made to projects assigned to <code>this</code>
-     *                                          after the round finished
+     *                         after the round finished
      * @return how much money is left to be invested using money from this round based on <code>postRoundBudget</code>
      */
     public Integer postRoundPledgableBudgetRemaining(List<PledgeEntity> postRoundPledges) {
-        if(!terminationPostProcessingDone) {
+        if (!terminationPostProcessingDone) {
             return 0;
         }
         if (postRoundPledges == null || postRoundPledges.isEmpty()) {
@@ -125,17 +126,18 @@ public class FinancingRoundEntity {
 
     /**
      * Calculates and initializes the remaining budget that was not pledged by users during <code>this</code> active round
+     *
      * @param pledgeAmountByUsers the total amount pledged by users during active financing round
      */
-    public void initPostRoundBudget(int pledgeAmountByUsers){
-        if(!this.terminated()) {
+    public void initPostRoundBudget(int pledgeAmountByUsers) {
+        if (!this.terminated()) {
             throw new IllegalStateException("Cannot initialize remaining budget on not yet terminated financing round: " + this);
         }
-        if(this.postRoundBudget != null){
+        if (this.postRoundBudget != null) {
             throw new IllegalStateException("PostRoundBudget must not be initialized more than once!");
         }
         int budgetRemainingAfterRound = getBudget() - pledgeAmountByUsers;
-        if(budgetRemainingAfterRound < 0){
+        if (budgetRemainingAfterRound < 0) {
             log.warn("It seems, within this financing round there were more pledges done than budget available; Setting remaining budget to 0; " +
                     "The pledge amount above budget is: {}; FinancingRound was: {}", budgetRemainingAfterRound, this);
             budgetRemainingAfterRound = 0;
@@ -233,6 +235,13 @@ public class FinancingRoundEntity {
     @Override
     public boolean equals(Object o) {
         return EqualsBuilder.reflectionEquals(this, o);
+    }
+
+    public boolean idenitityEquals(FinancingRoundEntity other) {
+        if (other == null) {
+            return false;
+        }
+        return this.getId().equals(other.getId());
     }
 
     @Override

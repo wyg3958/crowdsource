@@ -87,12 +87,14 @@ public class FinancingRoundService implements ApplicationListener<ContextRefresh
      * @return The financing round that is currently active or has been active most recently.
      */
     public FinancingRound mostRecentRound() {
+        return financingRound(mostRecentRoundEntity());
+    }
+    public FinancingRoundEntity mostRecentRoundEntity(){
         final Page<FinancingRoundEntity> pageMostRecent = financingRoundRepository.financingRounds(new PageRequest(0, 1, Sort.Direction.DESC, "createdDate"));
-        if (pageMostRecent.getSize() < 1) {
+        if (pageMostRecent.getNumberOfElements() < 1) {
             throw new ResourceNotFoundException();
         }
-
-        return financingRound(pageMostRecent.getContent().get(0));
+        return pageMostRecent.getContent().get(0);
     }
 
     public FinancingRound startNewFinancingRound(FinancingRound creationCommand) {

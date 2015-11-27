@@ -11,7 +11,7 @@
                     <span class="sbar__icon--box">Post-Runden-Budget &nbsp;</span>
                     <span class="sbar__pill">{{ status.financingRound.currentFinancingRound().postRoundBudgetRemaining | number }} &euro;</span>
                 </li>
-                <li class="budget user-budget">
+                <li class="budget user-budget" ng-if="status.auth.currentUser.loggedIn">
                     <span class="sbar__icon--box">Dein Budget &nbsp;</span>
                     <span class="sbar__pill">{{ status.auth.currentUser.budget | number }} &euro;</span>
                 </li>

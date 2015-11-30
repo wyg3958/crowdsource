@@ -41,7 +41,7 @@ public class FinancingRoundEntity {
      * and is intended to be eventually used for pledging projects by admins. When admin users pledge after termination
      * of the round the pledging amounts are not subtracted from this member.
      */
-    private Integer postRoundBudget = null;
+    private Integer postRoundBudget;
 
     private Integer budgetPerUser;
 
@@ -116,7 +116,7 @@ public class FinancingRoundEntity {
         if (postRoundPledges == null || postRoundPledges.isEmpty()) {
             return this.postRoundBudget;
         }
-        Collections.sort(postRoundPledges, (p1, p2) -> (p1.getCreatedDate().getMillis() - p2.getCreatedDate().getMillis()) > 0 ? 1 : -1);
+        Collections.sort(postRoundPledges, new PledgeEntity.CreationTimeComparator() );
         Assert.isTrue(postRoundPledges.get(0).getCreatedDate().getMillis() > this.endDate.getMillis(),
                 "Method must not be called with pledgeEntities from active financing round! One entry was: " + postRoundPledges.get(0));
 

@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.expression.Expression;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -172,6 +173,11 @@ public abstract class AbstractUserControllerTest {
         @Bean
         public Expression projectDeferredEmailTemplate() {
             return mock(Expression.class);
+        }
+
+        @Bean
+        public AsyncTaskExecutor taskExecutorSmtp() {
+            return mock(AsyncTaskExecutor.class);
         }
     }
 }

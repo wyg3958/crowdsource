@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.mail.SimpleMailMessage;
@@ -56,6 +57,9 @@ public class UserNotificationService {
 
     @Autowired
     private JavaMailSender mailSender;
+
+    @Autowired
+    private AsyncTaskExecutor taskExecutorSmtp;
 
     public void sendActivationMail(UserEntity user) {
 
@@ -144,13 +148,21 @@ public class UserNotificationService {
 
     private void sendMail(String email, String subject, String messageText) {
 
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        final SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(email);
         mailMessage.setFrom(FROM_ADDRESS);
         mailMessage.setSubject(subject);
         mailMessage.setText(messageText);
 
-        mailSender.send(mailMessage);
+
+        taskExecutorSmtp.submit(() -> {
+            try {
+                LOG.info("Sending mail with subject: " + mailMessage.getSubject() );
+                mailSender.send(mailMessage);
+            } catch (Exception e) {
+                LOG.error("Error on E-Mail Send. Message was: " + mailMessage, e);
+            }
+        });
     }
 
 }

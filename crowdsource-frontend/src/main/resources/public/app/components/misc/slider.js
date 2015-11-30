@@ -77,8 +77,10 @@ angular.module('crowdsource')
 
                             var realValue = RangeSliderService.calcRealValue(parseInt(sliderValue), parseInt(scope.start), parseInt(scope.end));
 
-                            //scope.model = realValue;
-                            ngModel.$setViewValue(realValue);
+                            // We don't want the slider to mess up our model when it is supposed to do nothing
+                            if(!scope.disabled){
+                                ngModel.$setViewValue(realValue);
+                            }
 
                             throttleSliderChangeEventsTimer = undefined;
                         }, 10);

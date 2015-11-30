@@ -89,6 +89,7 @@ public class FinancingRoundService implements ApplicationListener<ContextRefresh
     public FinancingRound mostRecentRound() {
         return financingRound(mostRecentRoundEntity());
     }
+
     public FinancingRoundEntity mostRecentRoundEntity(){
         final Page<FinancingRoundEntity> pageMostRecent = financingRoundRepository.financingRounds(new PageRequest(0, 1, Sort.Direction.DESC, "createdDate"));
         if (pageMostRecent.getNumberOfElements() < 1) {

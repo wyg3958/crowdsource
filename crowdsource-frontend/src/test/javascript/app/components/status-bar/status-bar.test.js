@@ -11,7 +11,7 @@ describe('status bar', function () {
             _$analyticsProvider_.developerMode(true);
         });
 
-        inject(function (_$compile_, _$rootScope_, _FinancingRound_, _Authentication_, $templateCache, $controller) {
+        inject(function (_$compile_, _$rootScope_, _FinancingRound_, _Authentication_) {
             $rootScope = _$rootScope_;
             scope = $rootScope.$new();
             $compile = _$compile_;

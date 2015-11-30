@@ -30,12 +30,24 @@ public class InvalidRequestException extends RuntimeException {
         return new InvalidRequestException("project_already_fully_pledged");
     }
 
+    public static InvalidRequestException financingRoundNotPostProcessedYet() {
+        return new InvalidRequestException("financinground_not_postprocessed");
+    }
+
+    public static InvalidRequestException projectTookNotPartInLastFinancingRond() {
+        return new InvalidRequestException("project_not_in_last_financinground");
+    }
+
     public static InvalidRequestException noFinancingRoundCurrentlyActive() {
         return new InvalidRequestException("no_financing_round_currently_active");
     }
 
     public static InvalidRequestException financingRoundAlreadyStopped() {
         return new InvalidRequestException("financing_round_already_stopped");
+    }
+
+    public static InvalidRequestException postRoundBudgetExceeded() {
+        return new InvalidRequestException("financing_round_budget_exceeded");
     }
 
     public static InvalidRequestException projectNotPublished() {

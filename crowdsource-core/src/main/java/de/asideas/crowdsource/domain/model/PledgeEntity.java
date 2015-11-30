@@ -11,6 +11,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Comparator;
+
 // needed for serialization
 @Document(collection = "pledges")
 public class PledgeEntity {
@@ -154,5 +156,22 @@ public class PledgeEntity {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
+    }
+
+    public static class CreationTimeComparator implements Comparator<PledgeEntity> {
+
+        @Override
+        public int compare(PledgeEntity o1, PledgeEntity o2) {
+            if( o1 == o2) {
+               return 0;
+            }
+            if(o1 == null) {
+                return -1;
+            }
+            if (o2 == null) {
+                return 1;
+            }
+            return o1.getCreatedDate().compareTo(o2.getCreatedDate());
+        }
     }
 }

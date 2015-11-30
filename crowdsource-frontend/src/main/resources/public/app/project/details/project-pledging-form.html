@@ -2,11 +2,13 @@
 
     <div class="finance">
 
-        <div class="alert-box notification push" ng-class="pledgingForm.getNotification().type" ng-show="!pledgingForm.generalErrors && pledgingForm.getNotification() != null">
+        <div class="alert-box notification push" ng-class="pledgingForm.getNotification().type"
+             ng-show="!pledgingForm.generalErrors && pledgingForm.getNotification() != null">
             {{ pledgingForm.getNotification().message }}
         </div>
 
-        <div class="general-error alert-box alert push" ng-messages="pledgingForm.generalErrors" ng-if="pledgingForm.generalErrors">
+        <div class="general-error alert-box alert push" ng-messages="pledgingForm.generalErrors"
+             ng-if="pledgingForm.generalErrors">
             <span ng-message="remote_pledge_goal_exceeded">
                 Das Projekt wurde mittlerweile von anderen Benutzern finanziert und deine Finanzierung hätte den Finanzierungsbedarf des Projekts überschritten.
                 Die Projektdaten wurden soeben aktualisiert und wir bitten dich einen neuen Finanzierungsbetrag einzugeben.
@@ -19,10 +21,6 @@
             </span>
             <span ng-message="remote_user_budget_exceeded">Dein Budget reicht nicht aus. Bitte versuche es erneut</span>
             <span ng-message="remote_reverse_pledge_exceeded">Du kannst nicht mehr Budget aus dem Projekt abziehen, als Du ursprünglich zugewiesen hast. Versuche es mit einem anderen Betrag.</span>
-            <span ng-message="remote_no_financing_round_currently_active">
-                Die Finanzierungsrunde ist mittlerweile leider beendet.
-                Das Finanzieren ist erst wieder möglich, wenn die nächste Runde gestartet wurde.
-            </span>
             <span ng-message="remote_project_not_published">
                 Das Projekt ist nicht mehr veröffentlicht. Nur veröffentlichte Projekte können finanziert werden.
             </span>
@@ -32,22 +30,40 @@
             <span ng-message="remote_zero_pledge_not_valid">
                 Ein Investment mit dem Wert 0 ist leider nicht zulässig.
             </span>
+            <span ng-message="remote_no_financing_round_currently_active">
+                Die Finanzierungsrunde ist mittlerweile leider beendet.
+                Das Finanzieren ist erst wieder möglich, wenn die nächste Runde gestartet wurde.
+            </span>
+            <span ng-message="remote_financinground_not_postprocessed">
+                Die Finanzierungsrunde ist noch nicht bereit, um nachträgliche Investments aus überschüssigen Budgets anzunehmen.
+                Versuche es in einigen Sekunden noch einmal.
+            </span>
+            <span ng-message="remote_project_not_in_last_financinground">
+                Das Projekt nahm nicht an der letzten Finanzierungsrunde teil und kann daher nicht nachfinanziert werden.
+            </span>
+            <span ng-message="remote_financing_round_budget_exceeded">
+                Das Rest-Budget der Finanzierungsrunde reicht nicht aus.
+            </span>
+
             <span ng-message="remote_unknown">Es ist ein Fehler aufgetreten. Bitte versuche es erneut.</span>
         </div>
 
         <div class="finance__section">
-            <range-slider ng-model="pledgingForm.pledge.amount" start="0" reduced="{{ pledgingForm.isReversePledge() }}" end="{{ pledgingForm.getPledgableAmount() }}"
-                          disabled="pledgingForm.getPledgableAmount() == 0" init-slider="{{ pledgingForm.initslider }}"></range-slider>
+            <range-slider ng-model="pledgingForm.pledge.amount" start="0" reduced="{{ pledgingForm.isReversePledge() }}"
+                          end="{{ pledgingForm.getPledgableAmount() }}"
+                          disabled="pledgingForm.getPledgableAmount() == 0"
+                          init-slider="{{ pledgingForm.initslider }}"></range-slider>
 
             <ul class="finance__ul">
                 <li class="finance__li-important form-controls-amount">
                     <label form-group="amount">
                         <input class="finance__input" type="number" name="amount" ng-model="pledgingForm.pledge.amount"
                                ng-disabled="pledgingForm.getPledgableAmount() == 0"
-                               required  ng-max="pledgingForm.getPledgableAmount()" ng-pattern="/^[0-9]+$/">
+                               required ng-max="pledgingForm.getPledgableAmount()" ng-pattern="/^[0-9]+$/">
 
                         <span class="finance__subtitle" form-label-valid="amount">Dein Investment</span>
-                        <span class="finance__subtitle" form-label-invalid="amount" ng-messages="pledgingForm.form.amount.$error">
+                        <span class="finance__subtitle" form-label-invalid="amount"
+                              ng-messages="pledgingForm.form.amount.$error">
                             <span ng-message="required">Bitte gib deinen gewünschten Finanzierungsbetrag ein</span>
                             <span ng-message="min">Der Finanzierungsbetrag muss größer 0 sein</span>
                             <span ng-message="max">Dein Finanzierungsbetrag ist zu hoch</span>
@@ -76,7 +92,8 @@
                     <button class="finance__btn crwd-success radius shadow"
                             ng-click="pledgingForm.pledgeProject()"
                             ng-disabled="pledgingForm.form.$invalid || pledgingForm.saving || pledgingForm.isZeroPledge() "
-                            analytics-on="click" analytics-category="Projects" analytics-event="{{ pledgingForm.isReversePledge() ? 'ProjectUnPledged' : 'ProjectPledged' }}">
+                            analytics-on="click" analytics-category="Projects"
+                            analytics-event="{{ pledgingForm.isReversePledge() ? 'ProjectUnPledged' : 'ProjectPledged' }}">
                         {{ pledgingForm.financeButtonLabel() }}
                     </button>
                 </li>

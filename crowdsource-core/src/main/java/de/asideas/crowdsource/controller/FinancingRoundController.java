@@ -1,14 +1,10 @@
 package de.asideas.crowdsource.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import de.asideas.crowdsource.domain.exception.ResourceNotFoundException;
-import de.asideas.crowdsource.domain.model.FinancingRoundEntity;
 import de.asideas.crowdsource.domain.presentation.FinancingRound;
 import de.asideas.crowdsource.domain.presentation.project.PublicFinancingRoundInformationView;
-import de.asideas.crowdsource.repository.FinancingRoundRepository;
 import de.asideas.crowdsource.security.Roles;
 import de.asideas.crowdsource.service.FinancingRoundService;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,13 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 public class FinancingRoundController {
-
-    @Autowired
-    private FinancingRoundRepository financingRoundRepository;
 
     @Autowired
     private FinancingRoundService financingRoundService;
@@ -36,34 +28,32 @@ public class FinancingRoundController {
     @Secured(Roles.ROLE_ADMIN)
     @RequestMapping(value = "/financingrounds", method = RequestMethod.GET)
     public List<FinancingRound> allFinancingRounds() {
-        return financingRoundRepository
-                .findAll()
-                .stream()
-                .map(FinancingRound::new)
-                .collect(Collectors.toList());
+        return financingRoundService.allFinancingRounds();
     }
 
     @JsonView(PublicFinancingRoundInformationView.class)
-    @RequestMapping(value = "/financinground/active", method = RequestMethod.GET)
+    @RequestMapping(value = "/financingrounds/active", method = RequestMethod.GET)
     @Secured({Roles.ROLE_TRUSTED_ANONYMOUS, Roles.ROLE_USER, Roles.ROLE_ADMIN})
     public FinancingRound getActive() {
-        final FinancingRoundEntity financingRoundEntity = financingRoundRepository.findActive(DateTime.now());
-        if (financingRoundEntity == null) {
-            throw new ResourceNotFoundException();
-        }
+        return financingRoundService.currentlyActiveRound();
+    }
 
-        return new FinancingRound(financingRoundEntity);
+    @JsonView(PublicFinancingRoundInformationView.class)
+    @RequestMapping(value = "/financingrounds/mostRecent", method = RequestMethod.GET)
+    @Secured({Roles.ROLE_TRUSTED_ANONYMOUS, Roles.ROLE_USER, Roles.ROLE_ADMIN})
+    public FinancingRound getMostRecent() {
+        return financingRoundService.mostRecentRound();
     }
 
     @Secured(Roles.ROLE_ADMIN)
-    @RequestMapping(value = "financinground", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "financingrounds", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public FinancingRound startFinancingRound(@Valid @RequestBody FinancingRound financingRound) {
         return financingRoundService.startNewFinancingRound(financingRound);
     }
 
     @Secured(Roles.ROLE_ADMIN)
-    @RequestMapping(value = "financinground/{id}/cancel", method = RequestMethod.PUT)
+    @RequestMapping(value = "financingrounds/{id}/cancel", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
     public FinancingRound stopFinancingRound(@PathVariable String id) {
         return financingRoundService.stopFinancingRound(id);

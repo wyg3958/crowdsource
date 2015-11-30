@@ -37,6 +37,11 @@ function FinancingRounds(element) {
         return element.find(row + ' .budget');
     };
 
+    this.getTablePostRoundBudget = function (row) {
+        row = row || defaultRow;
+        return element.find(row + ' .budget-post-round');
+    };
+
     this.getTableEndRoundButton = function (row) {
         row = row || defaultRow;
         return element.find(row + ' .stop-button');

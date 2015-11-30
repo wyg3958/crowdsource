@@ -71,6 +71,7 @@
             <th class="startdate">Startdatum</th>
             <th class="enddate">Enddatum</th>
             <th class="budget">Budget</th>
+            <th class="budget-post-round">Budget nach Abschluss</th>
             <th class="action">Aktion</th>
         </tr>
         </thead>
@@ -80,6 +81,7 @@
             <td class="startdate">{{ fr.startDate | date: 'short' }}</td>
             <td class="enddate">{{ fr.endDate | date: 'short'}}</td>
             <td class="budget">{{ fr.budget | number }}</td>
+            <td class="budget-post-round">{{ fr.postRoundBudget | number }}</td>
             <td class="action">
                 <div ng-if="fr.active">
                     <button class="stop-button radius shadow alert flush--bottom"

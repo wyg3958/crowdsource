@@ -1,5 +1,7 @@
 package de.asideas.crowdsource.domain.model;
 
+import de.asideas.crowdsource.domain.presentation.Pledge;
+import org.joda.time.DateTime;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -111,6 +113,53 @@ public class PledgeEntityTest {
         assertThat(res.getLastModifiedDate(), is(nullValue()));
         assertThat(res.getFinancingRound(), is(nullValue()));
         assertThat(res.getProject(), is(nullValue()));
+    }
+
+    @Test
+    public void creationTimeComparator_bothNullShouldReturnZero() throws Exception {
+        assertThat(new PledgeEntity.CreationTimeComparator().compare(
+                null,
+                null),
+                is(0));
+    }
+
+    @Test
+    public void creationTimeComparator_O1NullShouldBeSmallerThanO2() throws Exception {
+        assertThat(new PledgeEntity.CreationTimeComparator().compare(
+                null,
+                pledgeEntityFromCreationDate(DateTime.now())),
+                is(-1));
+    }
+
+    @Test
+    public void creationTimeComparator_O2NullShouldBeGreaterThanO1() throws Exception {
+        assertThat(new PledgeEntity.CreationTimeComparator().compare(
+                pledgeEntityFromCreationDate(DateTime.now()),
+                null),
+                is(1));
+    }
+
+    @Test
+    public void creationTimeComparator_O1GreaterThanO2ShouldReturnMinusOne() throws Exception {
+        assertThat(new PledgeEntity.CreationTimeComparator().compare(
+                pledgeEntityFromCreationDate(DateTime.now()),
+                pledgeEntityFromCreationDate(DateTime.now().plusDays(1) )) ,
+                is(-1));
+    }
+
+    @Test
+    public void creationTimeComparator_O2GreaterThanO1ShouldReturnOne() throws Exception {
+        assertThat(new PledgeEntity.CreationTimeComparator().compare(
+                pledgeEntityFromCreationDate(DateTime.now().plusDays(1) ),
+                pledgeEntityFromCreationDate(DateTime.now()) ) ,
+                is(1));
+    }
+
+
+    private PledgeEntity pledgeEntityFromCreationDate(DateTime creationDate){
+        PledgeEntity res = new PledgeEntity(null, null, new Pledge(17), null);
+        res.setCreatedDate(creationDate);
+        return res;
     }
 
     private PledgeEntity pledgeEntity(int amount, String id, ProjectEntity project, UserEntity user, FinancingRoundEntity financingRound) {

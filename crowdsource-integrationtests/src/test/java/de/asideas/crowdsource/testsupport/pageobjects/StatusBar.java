@@ -14,14 +14,24 @@ public class StatusBar {
     @Autowired
     private WebDriverProvider webDriverProvider;
 
-    @FindBy(css = "status-bar .budget .sbar__pill")
-    private WebElement budgetLabel;
+    @FindBy(css = "status-bar .user-budget .sbar__pill")
+    private WebElement budgetLabelUser;
 
-    public boolean isBudgetDisplayed() {
-        return webDriverProvider.provideDriver().findElements(By.cssSelector("status-bar .budget")).size() == 1;
+    @FindBy(css = "status-bar .postroundbudget-remaining .sbar__pill")
+    private WebElement budgetLabelPostRound;
+
+    public boolean isUserBudgetDisplayed() {
+        return webDriverProvider.provideDriver().findElements(By.cssSelector("status-bar .user-budget")).size() == 1;
+    }
+    public boolean isPostRoundBudgetDisplayed() {
+        return webDriverProvider.provideDriver().findElements(By.cssSelector("status-bar .postroundbudget-remaining")).size() == 1;
     }
 
-    public int getBudget() {
-        return ElementUtils.parseCurrency(budgetLabel);
+    public int getUserBudget() {
+        return ElementUtils.parseCurrency(budgetLabelUser);
+    }
+
+    public int getPostRoundBudget() {
+        return ElementUtils.parseCurrency(budgetLabelPostRound);
     }
 }

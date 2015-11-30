@@ -12,18 +12,26 @@ angular.module('crowdsource')
 
                 vm.financingRound = FinancingRound;
 
+                vm.postRoundBudgetDistributable = function (){
+                    var mostRecentRound = vm.financingRound.currentFinancingRound();
+                    return mostRecentRound.postRoundBudgetDistributable &&
+                        vm.auth.currentUser.hasRole('ADMIN');
+                };
+
                 Route.onRouteChangeSuccessAndInit(function (event, current) {
                     updateView(current);
                 });
 
                 function updateView(currentRoute) {
                     var title = "CrowdSource";
-                    if (currentRoute.title) {
+                    if (typeof(currentRoute) !== 'undefined' &&  currentRoute.title) {
                         title += " - " + currentRoute.title;
+                        vm.breadcrump = currentRoute.title;
+                    } else {
+                        vm.breadcrump = "";
                     }
 
                     $window.document.title = title;
-                    vm.breadcrump = currentRoute.title;
                 }
             }
         };

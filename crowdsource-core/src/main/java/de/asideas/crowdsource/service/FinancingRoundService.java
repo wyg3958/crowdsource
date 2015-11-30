@@ -3,54 +3,99 @@ package de.asideas.crowdsource.service;
 import de.asideas.crowdsource.domain.exception.InvalidRequestException;
 import de.asideas.crowdsource.domain.exception.ResourceNotFoundException;
 import de.asideas.crowdsource.domain.model.FinancingRoundEntity;
+import de.asideas.crowdsource.domain.model.PledgeEntity;
 import de.asideas.crowdsource.domain.model.UserEntity;
 import de.asideas.crowdsource.domain.presentation.FinancingRound;
 import de.asideas.crowdsource.domain.service.financinground.FinancingRoundPostProcessor;
 import de.asideas.crowdsource.repository.FinancingRoundRepository;
+import de.asideas.crowdsource.repository.PledgeRepository;
 import de.asideas.crowdsource.repository.ProjectRepository;
 import de.asideas.crowdsource.repository.UserRepository;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FinancingRoundService implements ApplicationListener<ContextRefreshedEvent>{
 
-
     private static final Logger log = LoggerFactory.getLogger(FinancingRoundService.class);
 
     private UserRepository userRepository;
-    private UserService userService;
     private FinancingRoundRepository financingRoundRepository;
     private ProjectRepository projectRepository;
     private FinancingRoundPostProcessor financingRoundPostProcessor;
     private TaskScheduler crowdScheduler;
+    private PledgeRepository pledgeRepository;
 
-    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent ) {
-        this.reschedulePostProcessingOfFinancingRounds();
-    }
 
     @Autowired
     public FinancingRoundService(UserRepository userRepository,
-                                 UserService userService,
                                  FinancingRoundRepository financingRoundRepository,
                                  ProjectRepository projectRepository,
                                  FinancingRoundPostProcessor financingRoundPostProcessor,
-                                 TaskScheduler crowdScheduler) {
+                                 TaskScheduler crowdScheduler,
+                                 PledgeRepository pledgeRepository) {
 
         this.userRepository = userRepository;
-        this.userService = userService;
         this.financingRoundRepository = financingRoundRepository;
         this.projectRepository = projectRepository;
         this.financingRoundPostProcessor = financingRoundPostProcessor;
         this.crowdScheduler = crowdScheduler;
+        this.pledgeRepository = pledgeRepository;
+    }
+
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent ) {
+        this.reschedulePostProcessingOfFinancingRounds();
+    }
+
+    public List<FinancingRound> allFinancingRounds(){
+        final List<FinancingRoundEntity> all = financingRoundRepository.findAll();
+
+        if(all.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return all.stream()
+                .map(this::financingRound)
+                .collect(Collectors.toList());
+    }
+
+    public FinancingRound currentlyActiveRound(){
+        final FinancingRoundEntity financingRoundEntity = financingRoundRepository.findActive(DateTime.now());
+        if (financingRoundEntity == null) {
+            throw new ResourceNotFoundException();
+        }
+
+        return financingRound(financingRoundEntity);
+    }
+
+    /**
+     * @return The financing round that is currently active or has been active most recently.
+     */
+    public FinancingRound mostRecentRound() {
+        return financingRound(mostRecentRoundEntity());
+    }
+
+    public FinancingRoundEntity mostRecentRoundEntity(){
+        final Page<FinancingRoundEntity> pageMostRecent = financingRoundRepository.financingRounds(new PageRequest(0, 1, Sort.Direction.DESC, "createdDate"));
+        if (pageMostRecent.getNumberOfElements() < 1) {
+            throw new ResourceNotFoundException();
+        }
+        return pageMostRecent.getContent().get(0);
     }
 
     public FinancingRound startNewFinancingRound(FinancingRound creationCommand) {
@@ -79,7 +124,7 @@ public class FinancingRoundService implements ApplicationListener<ContextRefresh
 
         schedulePostProcessing(res);
 
-        return new FinancingRound(res);
+        return financingRound(res);
     }
 
     public FinancingRound stopFinancingRound(String financingRoundId) throws ResourceNotFoundException, InvalidRequestException{
@@ -97,7 +142,7 @@ public class FinancingRoundService implements ApplicationListener<ContextRefresh
 
         financingRoundEntity = financingRoundPostProcessor.postProcess(financingRoundEntity);
 
-        return new FinancingRound(financingRoundEntity);
+        return financingRound(financingRoundEntity);
     }
 
     /**
@@ -131,4 +176,13 @@ public class FinancingRoundService implements ApplicationListener<ContextRefresh
                 .filter(fr -> !fr.getTerminationPostProcessingDone() )
                 .forEach(this::schedulePostProcessing);
     }
+
+    FinancingRound financingRound(FinancingRoundEntity financingRoundEntity) {
+        List<PledgeEntity> postRoundPledges = null;
+        if (financingRoundEntity.getTerminationPostProcessingDone()) {
+            postRoundPledges = pledgeRepository.findByFinancingRoundAndCreatedDateGreaterThan(financingRoundEntity, financingRoundEntity.getEndDate());
+        }
+        return new FinancingRound(financingRoundEntity, postRoundPledges);
+    }
+
 }

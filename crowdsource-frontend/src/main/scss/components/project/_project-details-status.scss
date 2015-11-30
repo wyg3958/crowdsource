@@ -108,7 +108,7 @@
     }
 }
 
-.project-details-proposed {
+.project-details--proposed {
     .to-pledging-form-button {
         background-color: rgba($clr-green-shade-2, 1);
         color: #FFFFFF;
@@ -119,11 +119,11 @@
     }
 }
 
-%project-details-published {
+%project-details--published {
     // Nothing here at the moment
 }
 
-.project-details-fully_pledged {
+.project-details--fully_pledged {
     .to-pledging-form-button {
         background-color: #39C277;
         color: #FFFFFF;
@@ -134,7 +134,7 @@
     }
 }
 
-.project-details-rejected {
+.project-details--rejected {
     .to-pledging-form-button {
         background-color: rgba(255,60,60,0.95);
         color: #FFFFFF;
@@ -146,7 +146,7 @@
 
 }
 
-.project-details-deferred {
+.project-details--deferred {
     .to-pledging-form-button {
         color: #FFFFFF;
         background-color: #8ED61E;

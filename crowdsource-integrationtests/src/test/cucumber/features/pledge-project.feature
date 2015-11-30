@@ -104,3 +104,40 @@ Feature: Pledge project
     And the user submits the pledging form
     Then the notification message "Deine Finanzierung war erfolgreich. Das Projekt ist jetzt zu 100% finanziert. Eine weitere Finanzierung ist nicht mehr möglich." is displayed on the project pledging form
     Then the number of backers is displayed with a value of 2
+
+  Scenario: An admin pledges a project from post round budget after the last round terminated
+    Given a project with a pledge goal of 200 is published
+    And there is a financing round active with a budget of 10000
+    And a user is logged in
+    And the project detail page of this project is requested
+    And the user enters 58 as his desired pledge amount
+    And the user submits the pledging form
+    And the project detail page of this project is requested again
+    And he clicks on the Logout button
+    When an admin is logged in
+    And there is no financing round active
+    And we wait a second for the round to be post processed
+    And the project detail page of this project is requested again
+    Then the project pledging form is enabled
+    And the notification message "Momentan läuft keine Finanzierungsrunde. Du bist als Admin jedoch berechtigt aus dem restlichen Budget der Finanzierungsrunde weitere Investments zu tätigen." is displayed on the project pledging form
+    And the displayed user budget is 0
+    And the displayed post round budget is 9942
+    When the user enters 42 as his desired pledge amount
+    And the user submits the pledging form
+    Then the displayed user budget is 0
+    And the displayed post round budget is 9900
+
+   Scenario: An admin cannot post round pledge a project that has been published after the last round terminated
+     Given there is a financing round active with a budget of 10000
+     And there is no financing round active
+     And a project with a pledge goal of 200 is published
+     When an admin is logged in
+     And the project detail page of this project is requested
+     And the user enters 58 as his desired pledge amount
+     And the user submits the pledging form
+     Then the error message "Das Projekt nahm nicht an der letzten Finanzierungsrunde teil und kann daher nicht nachfinanziert werden." is displayed on the project pledging form
+     When he clicks on the Logout button
+     And a user is logged in
+     And the project detail page of this project is requested again
+     Then the project pledging form is disabled
+

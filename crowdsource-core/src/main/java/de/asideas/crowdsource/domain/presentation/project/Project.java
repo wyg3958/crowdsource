@@ -61,6 +61,9 @@ public class Project {
     @JsonView(ProjectSummaryView.class)
     private int pledgedAmountByRequestingUser;
 
+    @JsonView(ProjectSummaryView.class)
+    private int pledgedAmountByPostRoundBudget;
+
     public Project(ProjectEntity projectEntity, List<PledgeEntity> pledges, UserEntity requestingUser) {
         this.id = projectEntity.getId();
         this.status = projectEntity.getStatus();
@@ -73,6 +76,7 @@ public class Project {
         this.pledgedAmount = projectEntity.pledgedAmount(pledges);
         this.backers = projectEntity.countBackers(pledges);
         this.pledgedAmountByRequestingUser = projectEntity.pledgedAmountOfUser(pledges, requestingUser);
+        this.pledgedAmountByPostRoundBudget = projectEntity.pledgedAmountPostRound(pledges);
 
         this.creator = new ProjectCreator(projectEntity.getCreator());
     }
@@ -120,6 +124,14 @@ public class Project {
         return this.lastModifiedDate;
     }
 
+    public int getPledgedAmountByRequestingUser() {
+        return pledgedAmountByRequestingUser;
+    }
+
+    public int getPledgedAmountByPostRoundBudget() {
+        return pledgedAmountByPostRoundBudget;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -160,12 +172,12 @@ public class Project {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public int getPledgedAmountByRequestingUser() {
-        return pledgedAmountByRequestingUser;
-    }
-
     public void setPledgedAmountByRequestingUser(int pledgedAmountByRequestingUser) {
         this.pledgedAmountByRequestingUser = pledgedAmountByRequestingUser;
+    }
+
+    public void setPledgedAmountByPostRoundBudget(int pledgedAmountByPostRoundBudget) {
+        this.pledgedAmountByPostRoundBudget = pledgedAmountByPostRoundBudget;
     }
 
     @Override

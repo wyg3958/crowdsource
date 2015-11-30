@@ -1,6 +1,6 @@
 describe('project pledging form', function () {
 
-    var $scope, $compile, $httpBackend, AuthenticationToken, $timeout;
+    var $scope, $compile, $httpBackend, AuthenticationToken, FinancingRound, $timeout;
 
     beforeEach(function () {
         module('crowdsource');
@@ -13,11 +13,12 @@ describe('project pledging form', function () {
 
         localStorage.clear(); // reset
 
-        inject(function ($rootScope, _$compile_, _$httpBackend_, _AuthenticationToken_, _$timeout_) {
+        inject(function ($rootScope, _$compile_, _$httpBackend_, _AuthenticationToken_, _FinancingRound_, _$timeout_) {
             $scope = $rootScope.$new();
             $compile = _$compile_;
             $httpBackend = _$httpBackend_;
             AuthenticationToken = _AuthenticationToken_;
+            FinancingRound = _FinancingRound_;
             $timeout = _$timeout_;
         });
     });
@@ -54,7 +55,11 @@ describe('project pledging form', function () {
     function prepareMocks(data) {
         $scope.project = data.project;
         spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(data.isLoggedIn);
-        $httpBackend.expectGET('/financinground/active').respond(data.financingRoundResponse.statusCode, data.financingRoundResponse.body);
+        if(!data.financingRoundResponse.body){
+            $httpBackend.expectGET('/financingrounds/mostRecent').respond(data.financingRoundResponse.statusCode);
+        }else{
+            $httpBackend.expectGET('/financingrounds/mostRecent').respond(data.financingRoundResponse.body);
+        }
         $httpBackend.expectGET('/user/current').respond(data.userResponse.statusCode, data.userResponse.body);
     }
 
@@ -91,7 +96,7 @@ describe('project pledging form', function () {
         $httpBackend.expectPOST('/project/123/pledges', {amount: 30}).respond(200);
         $httpBackend.expectGET('/project/123').respond(200, {id: 123, pledgeGoal: 100, pledgedAmount: 90, pledgedAmountByRequestingUser: 30, status: 'PUBLISHED'});
         $httpBackend.expectGET('/user/current').respond(200, {budget: 170});
-        $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
+        $httpBackend.expectGET('/financingrounds/mostRecent').respond(200, {active: true});
 
         // submit form
         elements.pledgeButton.click();
@@ -114,6 +119,36 @@ describe('project pledging form', function () {
         expect(elements.root.find('.general-error')).not.toExist();
     });
 
+    it("should allow pledging for admin user when financing round is finished but post round pledging possible", function () {
+        prepareMocks({
+            project: {$resolved: true, id: 123, pledgeGoal: 500, pledgedAmount: 50, status: 'PUBLISHED'},
+            isLoggedIn: true,
+            userResponse: {statusCode: 200, body: {budget: 0, roles: ['ROLE_USER', 'ROLE_ADMIN']} },
+            financingRoundResponse: {statusCode: 200, body: {
+                $resolved : true,
+                active: false,
+                postRoundBudgetDistributable: true,
+                postRoundBudget: 1000,
+                postRoundBudgetRemaining: 800
+            }}
+        });
+
+        var elements = compileDirective();
+        $httpBackend.flush();
+
+        elements.pledgeAmount.getInputField().val('30').trigger('input');
+
+        expectNoValidationError(elements.pledgeAmount);
+        expect(elements.pledgeButton).not.toBeDisabled();
+        expect(elements.pledgeButton).toHaveText('Jetzt finanzieren');
+
+        expect(elements.notification.text().trim()).toBe('Momentan läuft keine Finanzierungsrunde. Du bist als Admin jedoch berechtigt aus dem restlichen Budget der Finanzierungsrunde weitere Investments zu tätigen.');
+        expect(elements.pledgedAmount).toHaveText('80');
+        expect(elements.pledgeGoal).toHaveText('500');
+        expect(elements.budget).toHaveText('770 €');
+        expect(elements.pledgableAmount).toHaveText('450 €');
+    });
+
     it("should show a different text when the project was fully pledged", function () {
 
         prepareMocks({
@@ -133,7 +168,7 @@ describe('project pledging form', function () {
         $httpBackend.expectPOST('/project/123/pledges', {amount: 40}).respond(200);
         $httpBackend.expectGET('/project/123').respond(200, {id: 123, pledgeGoal: 100, pledgedAmount: 100, pledgedAmountByRequestingUser: 40, status: 'FULLY_PLEDGED'});
         $httpBackend.expectGET('/user/current').respond(200, {budget: 160});
-        $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
+        $httpBackend.expectGET('/financingrounds/mostRecent').respond(200, {active: true});
 
         // submit form
         elements.pledgeButton.click();
@@ -231,13 +266,67 @@ describe('project pledging form', function () {
 
         $scope.project = {$resolved: true, pledgeGoal: 100, pledgedAmount: 50, status: 'PUBLISHED'};
         spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(false);
-        $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
+        $httpBackend.expectGET('/financingrounds/mostRecent').respond(200, {active: true});
 
         var elements = compileDirective();
 
         expect(elements.slider).toHaveClass('disabled');
         expect(elements.pledgeAmount.getInputField()).toBeDisabled();
         expectNoValidationError(elements.pledgeAmount);
+    });
+
+    it("should disable form for post round pledging until financing round is loaded", function () {
+
+        prepareMocks({
+            project: {$resolved: true, id: 123, pledgeGoal: 500, pledgedAmount: 50, status: 'PUBLISHED'},
+            isLoggedIn: true,
+            userResponse: {statusCode: 200, body: {budget: 0, roles: ['ROLE_USER', 'ROLE_ADMIN']} },
+            financingRoundResponse: { $resolved: false}
+        });
+
+        var elements = compileDirective();
+        $httpBackend.flush();
+
+        expect(elements.slider).toHaveClass('disabled');
+        expect(elements.pledgeAmount.getInputField()).toBeDisabled();
+        expectNoValidationError(elements.pledgeAmount);
+
+        angular.copy({
+            $resolved : true,
+            active: false,
+            postRoundBudgetDistributable: true,
+            postRoundBudget: 1000,
+            postRoundBudgetRemaining: 800
+        }, FinancingRound.current);
+
+        $scope.$digest();
+
+        expect(elements.slider).not.toHaveClass('disabled');
+        expect(elements.pledgeAmount.getInputField()).not.toBeDisabled();
+        expectNoValidationError(elements.pledgeAmount);
+    });
+
+    it("should disable pledging form when post round pledging possible but user is not admin", function () {
+        prepareMocks({
+            project: {$resolved: true, id: 123, pledgeGoal: 500, pledgedAmount: 50, status: 'PUBLISHED'},
+            isLoggedIn: true,
+            userResponse: {statusCode: 200, body: {budget: 0, roles: ['ROLE_USER']} },
+            financingRoundResponse: {statusCode: 200, body: {
+                $resolved : true,
+                active: false,
+                postRoundBudgetDistributable: true,
+                postRoundBudget: 1000,
+                postRoundBudgetRemaining: 800
+            }}
+        });
+
+        var elements = compileDirective();
+        $httpBackend.flush();
+
+        expectNoValidationError(elements.pledgeAmount);
+        expect(elements.pledgeButton).toBeDisabled();
+        expect(elements.notification).not.toHaveClass('ng-hide');
+        expect(elements.notification).toHaveText('Momentan läuft keine Finanzierungsrunde. Bitte versuche es nochmal, wenn die Finanzierungsrunde gestartet worden ist.');
     });
 
     it("should show no validation error message and disable button if zero pledge is is entered and user has NOT pledged before", function () {
@@ -348,7 +437,7 @@ describe('project pledging form', function () {
         $httpBackend.expectPOST('/project/123/pledges', {amount: 30}).respond(400, {errorCode: 'pledge_goal_exceeded'});
         $httpBackend.expectGET('/project/123').respond(200, {id: 123, pledgeGoal: 500, pledgedAmount: 480, pledgedAmountByRequestingUser: 0, status: 'PUBLISHED'}); // the pledged amount is 480 now!
         $httpBackend.expectGET('/user/current').respond(200, {budget: 200});
-        $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
+        $httpBackend.expectGET('/financingrounds/mostRecent').respond(200, {active: true});
 
         // submit form
         elements.pledgeButton.click();
@@ -380,7 +469,7 @@ describe('project pledging form', function () {
         $httpBackend.expectPOST('/project/123/pledges', {amount: 20}).respond(200);
         $httpBackend.expectGET('/project/123').respond(200, {id: 123, pledgeGoal: 500, pledgedAmount: 500, pledgedAmountByRequestingUser: 20, status: 'FULLY_PLEDGED'});
         $httpBackend.expectGET('/user/current').respond(200, {budget: 180});
-        $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
+        $httpBackend.expectGET('/financingrounds/mostRecent').respond(200, {active: true});
 
         // submit form
         expect(elements.pledgeButton).not.toBeDisabled();
@@ -420,7 +509,7 @@ describe('project pledging form', function () {
         $httpBackend.expectPOST('/project/123/pledges', {amount: 30}).respond(400, {errorCode: 'no_financing_round_currently_active'});
         $httpBackend.expectGET('/project/123').respond(200, {id: 123, pledgeGoal: 500, pledgedAmount: 50});
         $httpBackend.expectGET('/user/current').respond(200, {budget: 190});
-        $httpBackend.expectGET('/financinground/active').respond(404);
+        $httpBackend.expectGET('/financingrounds/mostRecent').respond(200, {active: false});
 
         elements.pledgeAmount.getInputField().val('30').trigger('input');
         elements.pledgeButton.click();
@@ -454,7 +543,7 @@ describe('project pledging form', function () {
 
         $scope.project = {$resolved: true, pledgeGoal: 100, pledgedAmount: 50, status: 'PUBLISHED'};
         spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(false);
-        $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
+        $httpBackend.expectGET('/financingrounds/mostRecent').respond(200, {active: true});
 
         var elements = compileDirective();
         $httpBackend.flush();
@@ -468,7 +557,7 @@ describe('project pledging form', function () {
 
         $scope.project = {$resolved: true, pledgeGoal: 100, pledgedAmount: 50, status: 'FULLY_PLEDGED'};
         spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(false);
-        $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
+        $httpBackend.expectGET('/financingrounds/mostRecent').respond(200, {active: true});
 
         var elements = compileDirective();
         $httpBackend.flush();
@@ -482,7 +571,7 @@ describe('project pledging form', function () {
 
         $scope.project = {$resolved: true, pledgeGoal: 100, pledgedAmount: 50, status: 'PROPOSED'};
         spyOn(AuthenticationToken, 'hasTokenSet').and.returnValue(false);
-        $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
+        $httpBackend.expectGET('/financingrounds/mostRecent').respond(200, {active: true});
 
         var elements = compileDirective();
         $httpBackend.flush();
@@ -570,7 +659,7 @@ describe('project pledging form', function () {
         $httpBackend.expectPOST('/project/123/pledges', {amount: -40}).respond(200);
         $httpBackend.expectGET('/project/123').respond(200, {$resolved: false, id: 123, pledgeGoal: 100, pledgedAmount: 40, pledgedAmountByRequestingUser: 10, status: 'PUBLISHED'});
         $httpBackend.expectGET('/user/current').respond(200, {budget: 240});
-        $httpBackend.expectGET('/financinground/active').respond(200, {active: true});
+        $httpBackend.expectGET('/financingrounds/mostRecent').respond(200, {active: true});
 
         // submit form
         elements.pledgeButton.click();

@@ -20,17 +20,33 @@ public class StatusBarSteps {
     @Autowired
     private WebDriverProvider webDriverProvider;
 
-    @And("^the budget in the status bar is (displayed|hidden)$")
-    public void the_budget_in_the_status_bar_is_displayed(String displayed) throws Throwable {
+    @And("^the user budget in the status bar is (displayed|hidden)$")
+    public void the_user_budget_in_the_status_bar_is_displayed(String displayed) throws Throwable {
         boolean expectedBudgetVisibility = "displayed".equals(displayed);
 
         PageFactory.initElements(webDriverProvider.provideDriver(), statusBar);
-        assertThat(statusBar.isBudgetDisplayed(), is(expectedBudgetVisibility));
+        assertThat(statusBar.isUserBudgetDisplayed(), is(expectedBudgetVisibility));
     }
 
-    @And("^the displayed budget is (\\d+)$")
-    public void the_displayed_budget_is(int expectedBudget) throws Throwable {
+    @And("^the post round budget in the status bar is (displayed|hidden)$")
+    public void the_post_ronud_budget_in_the_status_bar_is_displayed(String displayed) throws Throwable {
+        boolean expectedBudgetVisibility = "displayed".equals(displayed);
+
         PageFactory.initElements(webDriverProvider.provideDriver(), statusBar);
-        assertThat(statusBar.getBudget(), is(expectedBudget));
+        assertThat(statusBar.isPostRoundBudgetDisplayed(), is(expectedBudgetVisibility));
     }
+
+    @And("^the displayed user budget is (\\d+)$")
+    public void the_displayed_user_budget_is(int expectedBudget) throws Throwable {
+        PageFactory.initElements(webDriverProvider.provideDriver(), statusBar);
+        assertThat(statusBar.getUserBudget(), is(expectedBudget));
+    }
+
+    @And("^the displayed post round budget is (\\d+)$")
+    public void the_displayed_post_round_budget_is(int expectedBudget) throws Throwable {
+        PageFactory.initElements(webDriverProvider.provideDriver(), statusBar);
+        assertThat(statusBar.getPostRoundBudget(), is(expectedBudget));
+    }
+
+
 }

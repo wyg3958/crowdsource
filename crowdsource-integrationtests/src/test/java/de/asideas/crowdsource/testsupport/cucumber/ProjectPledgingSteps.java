@@ -12,6 +12,7 @@ import de.asideas.crowdsource.testsupport.selenium.SeleniumWait;
 import de.asideas.crowdsource.testsupport.selenium.WebDriverProvider;
 import de.asideas.crowdsource.testsupport.util.CrowdSourceClient;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,8 @@ import static org.hamcrest.Matchers.lessThan;
 
 @ContextConfiguration(classes = CrowdSourceTestConfig.class)
 public class ProjectPledgingSteps {
+
+    public static final int ROUND_BUDGET = 100000;
 
     @Autowired
     private WebDriverProvider webDriverProvider;
@@ -163,6 +166,19 @@ public class ProjectPledgingSteps {
         prepareFinancingRound(requireActiveFinancingRound);
     }
 
+
+    @And("^we wait a second for the round to be post processed$")
+    public void we_wait_a_second_for_the_round_to_be_post_processed(){
+        long start = System.currentTimeMillis();
+        wait.until(d -> System.currentTimeMillis() - start >= 2000);
+    }
+
+    @And("^there is (a|no) financing round active with a budget of (\\d+)$")
+    public void there_is_a_financing_round_active(String active, int budget) throws Throwable {
+        boolean requireActiveFinancingRound = "a".equals(active);
+        prepareFinancingRound(requireActiveFinancingRound, Duration.standardHours(2).toStandardSeconds().getSeconds(), budget);
+    }
+
     @And("^there is (a|no) financing round active for (\\d+) seconds$")
     public void there_is_a_financing_round_active_for_x_seconds(String active, int seconds) throws Throwable {
         boolean requireActiveFinancingRound = "a".equals(active);
@@ -201,6 +217,10 @@ public class ProjectPledgingSteps {
     }
 
     private void prepareFinancingRound(boolean requireActiveFinancingRound, int activeForSeconds) {
+        prepareFinancingRound(requireActiveFinancingRound, activeForSeconds, ROUND_BUDGET);
+    }
+
+    private void prepareFinancingRound(boolean requireActiveFinancingRound, int activeForSeconds, int budget) {
         CrowdSourceClient.AuthToken authToken = crowdSourceClient.authorizeWithAdminUser();
 
         FinancingRound activeFinanceRound = crowdSourceClient.getActiveFinanceRound();
@@ -211,7 +231,7 @@ public class ProjectPledgingSteps {
         if (requireActiveFinancingRound) {
             FinancingRound financingRound = new FinancingRound();
             financingRound.setEndDate(DateTime.now().plusSeconds(activeForSeconds));
-            financingRound.setBudget(100000);
+            financingRound.setBudget(budget);
             crowdSourceClient.startFinancingRound(financingRound, authToken);
         }
     }
